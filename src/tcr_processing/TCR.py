@@ -1,13 +1,12 @@
-
 """
 Created on 3rd April 2024
 @author: Nele Quast based on work by Dunbar and Leem 
 The TCR class.
 """
 
-
 from .Entity import Entity
 import sys
+
 
 class TCR(Entity):
     """
@@ -19,7 +18,7 @@ class TCR(Entity):
         if antigen not in self.antigen:
             self.antigen.append(antigen)
 
-    def _add_mhc(self, mhc = None):
+    def _add_mhc(self, mhc=None):
         if mhc not in self.MHC:
             self.MHC.append(mhc)
             # If there are any het antigens that are in the MHC but not in close proximity of the TCR
@@ -34,10 +33,9 @@ class TCR(Entity):
         return self.antigen
 
     def get_MHC(self):
-        """
-        """
+        """ """
         return self.MHC
-    
+
     def is_bound(self):
         """
         Check whether this TCR is bound to an antigen
@@ -46,7 +44,7 @@ class TCR(Entity):
             return True
         else:
             return False
-            
+
     def get_chains(self):
         for c in self:
             yield c
@@ -79,9 +77,9 @@ class TCR(Entity):
 
     def get_TCR_type(self):
         """
-            Get the TCR type
+        Get the TCR type
         """
-        if hasattr(self, 'tcr_type'):
+        if hasattr(self, "tcr_type"):
             return self.tcr_type
         elif hasattr(self, "VB") and hasattr(self, "VA"):
             self.tcr_type = "abTCR"
@@ -93,22 +91,25 @@ class TCR(Entity):
         #     self.tcr_type = "dbTCR"
         #     return self.tcr_type
 
+
 class abTCR(TCR):
     def __init__(self, c1, c2):
         if c1.chain_type == "B":
-            Entity.__init__(self, c1.id+c2.id)
+            Entity.__init__(self, c1.id + c2.id)
         else:
-            Entity.__init__(self, c2.id+c1.id)
+            Entity.__init__(self, c2.id + c1.id)
 
         # The TCR is a Holder class
         self.level = "H"
         self._add_domain(c1)
         self._add_domain(c2)
-        self.child_list = sorted(self.child_list, key=lambda x: x.chain_type, reverse = True) # make sure that the list goes B->A or G->D
+        self.child_list = sorted(
+            self.child_list, key=lambda x: x.chain_type, reverse=True
+        )  # make sure that the list goes B->A or G->D
         self.antigen = []
         self.MHC = []
-        self.engineered   = False
-        self.scTCR = False # This is rare but does happen
+        self.engineered = False
+        self.scTCR = False  # This is rare but does happen
 
     def __repr__(self):
         return "<TCR %s%s beta=%s; alpha=%s>" % (self.VB, self.VA, self.VB, self.VA)
@@ -125,6 +126,7 @@ class abTCR(TCR):
     def get_VB(self):
         if hasattr(self, "VB"):
             return self.child_dict[self.VB]
+
     def get_VA(self):
         if hasattr(self, "VA"):
             return self.child_dict[self.VA]
@@ -138,7 +140,7 @@ class abTCR(TCR):
                 if var_domain and var_domain.is_engineered():
                     self.engineered = True
                     return self.engineered
-        
+
             self.engineered = False
             return False
 
@@ -151,22 +153,25 @@ class abTCR(TCR):
                 for frag in var_domain.get_fragments():
                     yield frag
 
+
 class gdTCR(TCR):
     def __init__(self, c1, c2):
         if c1.chain_type == "D":
-            Entity.__init__(self, c1.id+c2.id)
+            Entity.__init__(self, c1.id + c2.id)
         else:
-            Entity.__init__(self, c2.id+c1.id)
+            Entity.__init__(self, c2.id + c1.id)
 
         # The TCR is a Holder class
         self.level = "H"
         self._add_domain(c1)
         self._add_domain(c2)
-        self.child_list = sorted(self.child_list, key=lambda x: x.chain_type) # make sure that the list goes B->A or D->G
+        self.child_list = sorted(
+            self.child_list, key=lambda x: x.chain_type
+        )  # make sure that the list goes B->A or D->G
         self.antigen = []
         self.MHC = []
-        self.engineered   = False
-        self.scTCR = False # This is rare but does happen
+        self.engineered = False
+        self.scTCR = False  # This is rare but does happen
 
     def __repr__(self):
         return "<TCR %s%s delta=%s; gamma=%s>" % (self.VD, self.VG, self.VD, self.VG)
@@ -183,6 +188,7 @@ class gdTCR(TCR):
     def get_VD(self):
         if hasattr(self, "VD"):
             return self.child_dict[self.VD]
+
     def get_VG(self):
         if hasattr(self, "VG"):
             return self.child_dict[self.VG]
@@ -196,7 +202,7 @@ class gdTCR(TCR):
                 if var_domain and var_domain.is_engineered():
                     self.engineered = True
                     return self.engineered
-        
+
             self.engineered = False
             return False
 

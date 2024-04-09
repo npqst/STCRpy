@@ -1,24 +1,26 @@
-'''
+"""
 Created on 30 Apr 2016
 
 @author: leem, based on work by dunbar
 
 The MHC class. This is similar to the Fab class.
 
-'''
+"""
 
 from .Entity import Entity
 
+
 class MHC(Entity):
-    '''
-    MHC class. 
+    """
+    MHC class.
     Holds paired MHC domains.
-    '''
+    """
+
     def __init__(self, c1, c2):
         if hasattr(c1, "chain_type"):
-            Entity.__init__(self, c1.id+c2.id)
+            Entity.__init__(self, c1.id + c2.id)
         else:
-            Entity.__init__(self, c2.id+c1.id)
+            Entity.__init__(self, c2.id + c1.id)
 
         self.level = "H"
         self._add_domain(c1)
@@ -33,11 +35,11 @@ class MHC(Entity):
         if antigen not in self.antigen:
             self.antigen.append(antigen)
 
-    def _add_tcr(self, tcr = None):
+    def _add_tcr(self, tcr=None):
         self.tcr.append(tcr)
-    
+
     def get_TCR(self):
-        return self.tcr  
+        return self.tcr
 
     def get_antigen(self):
         """
@@ -45,7 +47,7 @@ class MHC(Entity):
         If the antigen has more than one chain, those in contact with the antibody will be returned.
         """
         return self.antigen
-    
+
     def is_bound(self):
         """
         Check whether there is an antigen bound to the antibody fab
@@ -54,7 +56,7 @@ class MHC(Entity):
             return True
         else:
             return False
-            
+
     def get_chains(self):
         for c in self:
             yield c
@@ -73,17 +75,29 @@ class MHC(Entity):
         if hasattr(self, "MHC_type"):
             return self.MHC_type
 
+
 class MH1(MHC):
-    '''
-    Type 1 MHC class. 
+    """
+    Type 1 MHC class.
     Holds paired MHC domains.
-    '''
+    """
 
     def __repr__(self):
         if self.MHC_type == "MH1":
-            return "<%s %s%s GA1/GA2=%s; B2M=%s>" % (self.MHC_type, self.MH1, self.B2M, self.MH1, self.B2M)
+            return "<%s %s%s GA1/GA2=%s; B2M=%s>" % (
+                self.MHC_type,
+                self.MH1,
+                self.B2M,
+                self.MH1,
+                self.B2M,
+            )
         else:
-            return "<GA1/GA2 %s%s GA1=%s; GA2=%s>" % (self.GA1, self.GA2, self.GA1, self.GA2)
+            return "<GA1/GA2 %s%s GA1=%s; GA2=%s>" % (
+                self.GA1,
+                self.GA2,
+                self.GA1,
+                self.GA2,
+            )
 
     def _set_MHC_type(self):
         if hasattr(self, "MH1"):
@@ -107,7 +121,7 @@ class MH1(MHC):
 
         # Add the chain as a child of this entity.
         self.add(chain)
-        
+
     def get_alpha(self):
         for MH1_domain in set(["MH1", "GA1", "GA2"]):
             if hasattr(self, MH1_domain):
@@ -133,15 +147,22 @@ class MH1(MHC):
         if hasattr(self, "B2M"):
             return self.child_dict[self.B2M]
 
+
 class MH2(MHC):
-    '''
-    Type 2 MHC class. 
+    """
+    Type 2 MHC class.
     Holds paired MHC domains.
-    '''
+    """
 
     def __repr__(self):
         if self.MHC_type == "MH2":
-            return "<%s %s%s GA=%s; GB=%s>" % (self.MHC_type, self.GA, self.GB, self.GA, self.GB)
+            return "<%s %s%s GA=%s; GB=%s>" % (
+                self.MHC_type,
+                self.GA,
+                self.GB,
+                self.GA,
+                self.GB,
+            )
         else:
             return "<GA/GB %s%s GA=%s; GB=%s>" % (self.GA, self.GB, self.GA, self.GB)
 
@@ -154,30 +175,43 @@ class MH2(MHC):
     def _add_domain(self, chain):
         if chain.chain_type == "GA":
             self.GA = chain.id
-        elif chain.chain_type == "GB": 
+        elif chain.chain_type == "GB":
             self.GB = chain.id
 
         # Add the chain as a child of this entity.
         self.add(chain)
-    
+
     def get_GA(self):
         if hasattr(self, "GA"):
             return self.child_dict[self.GA]
+
     def get_GB(self):
         if hasattr(self, "GB"):
             return self.child_dict[self.GB]
 
+
 class CD1(MHC):
-    '''
-    CD1 class. 
+    """
+    CD1 class.
     Holds paired CD1/B2M domains.
-    '''
+    """
 
     def __repr__(self):
         if self.MHC_type == "CD1":
-            return "<%s %s%s GA1L/GA2L=%s; B2M=%s>" % (self.MHC_type, self.CD1, self.B2M, self.CD1, self.B2M)
+            return "<%s %s%s GA1L/GA2L=%s; B2M=%s>" % (
+                self.MHC_type,
+                self.CD1,
+                self.B2M,
+                self.CD1,
+                self.B2M,
+            )
         else:
-            return "<GA1L/GA2L %s%s GA1L=%s; GA2L=%s>" % (self.GA1L, self.GA2L, self.GA1L, self.GA2L)
+            return "<GA1L/GA2L %s%s GA1L=%s; GA2L=%s>" % (
+                self.GA1L,
+                self.GA2L,
+                self.GA1L,
+                self.GA2L,
+            )
 
     def _set_MHC_type(self):
         if hasattr(self, "CD1"):
@@ -211,17 +245,29 @@ class CD1(MHC):
         if hasattr(self, "B2M"):
             return self.child_dict[self.B2M]
 
+
 class MR1(MHC):
-    '''
-    MR1 class. 
+    """
+    MR1 class.
     Holds paired MR1/B2M domains.
-    '''
+    """
 
     def __repr__(self):
         if self.MHC_type == "MR1":
-            return "<%s %s%s GA1L/GA2L=%s; B2M=%s>" % (self.MHC_type, self.MR1, self.B2M, self.MR1, self.B2M)
+            return "<%s %s%s GA1L/GA2L=%s; B2M=%s>" % (
+                self.MHC_type,
+                self.MR1,
+                self.B2M,
+                self.MR1,
+                self.B2M,
+            )
         else:
-            return "<GA1L/GA2L %s%s GA1L=%s; GA2L=%s>" % (self.GA1L, self.GA2L, self.GA1L, self.GA2L)
+            return "<GA1L/GA2L %s%s GA1L=%s; GA2L=%s>" % (
+                self.GA1L,
+                self.GA2L,
+                self.GA1L,
+                self.GA2L,
+            )
 
     def _set_MHC_type(self):
         if hasattr(self, "MR1"):
