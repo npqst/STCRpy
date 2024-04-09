@@ -3,7 +3,7 @@ from ..src.tcr_processing import TCRParser
 from ..src.tcr_geometry import TCRDock
 
 
-class TestTCRDock(unittest.TestCase):
+class TestTCRGeometry(unittest.TestCase):
     def test_TCRDock_init(self):
         parser = TCRParser.TCRParser()
         pdb_file = 'TCRpy/test/test_files/5hyj.pdb'
@@ -22,3 +22,8 @@ class TestTCRDock(unittest.TestCase):
                 and x.calculate_docking_angle() > 40.
                 for x in tcr_docks
             ])
+        
+    def test_calculate_tcr_angles(self):
+        parser = TCRParser.TCRParser()
+        pdb_file = 'TCRpy/test/test_files/5hyj.pdb'
+        tcr = parser.get_tcr_structure('test', pdb_file)
