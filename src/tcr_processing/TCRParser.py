@@ -7,9 +7,11 @@ TCRParser object which is based on ABDB's AntibodyParser and BioPython's PDB par
 
 from itertools import combinations, product
 import sys
+import os
 from collections import defaultdict
 
 from Bio.PDB.PDBParser import PDBParser
+from Bio.PDB.MMCIFParser import MMCIFParser
 from Bio.PDB import NeighborSearch
 
 # TCRDB
@@ -38,13 +40,14 @@ MHC_CUTOFF = {
 
 }
 
-class TCRParser(PDBParser):
+class TCRParser():
     def __init__(self, PERMISSIVE=True, get_header=True, QUIET=False):
         """
         Initialise the PDB parser. This is currently set to using IMGT's numbering scheme and uses the IMGT-defined CDRs.
         
         """
-        PDBParser.__init__(self, PERMISSIVE, get_header, None, QUIET)
+        self.pdb_parser = PDBParser(PERMISSIVE, get_header, None, QUIET)
+        self.mmcif_parser = MMCIFParser(None, QUIET)
         self.QUIET=QUIET
         # Structures are numbered using anarci.
         self.numbering_method = "anarci"
@@ -177,9 +180,16 @@ class TCRParser(PDBParser):
             prenumbering: prenumbering for the chains in the structure.
         """
         self.warnings = error_stream()
-        # get a structure object from biopython.                 
-        structure = self.get_structure(id, file)
-        
+        # get a structure object from biopython.  
+        _, ext = os.path.splitext(file)
+        if ext.lower() == '.pdb':
+            structure = self.pdb_parser.get_structure(id, file)
+        elif ext.lower() in ['.cif', '.mmcif']:
+            structure = self.mmcif_parser.get_structure(id, file)
+        else:
+            sys.stderr.write(f'Unrecognised structure file format: {file}')
+            raise ValueError
+
         # Create a new TCRStructure object
         tcrstructure = TCRStructure(structure.id)
 
@@ -364,7 +374,7 @@ class TCRParser(PDBParser):
 
         del structure
         if not self.QUIET and self.warnings.log:
-            sys.stderr.write(self.warnings)
+            sys.stderr.write("\n".join(self.warnings.log))
             sys.stderr.write("\n")
         tcrstructure.warnings = self.warnings
         
@@ -382,43 +392,45 @@ class TCRParser(PDBParser):
             header = {}
         
         header["chain_details"] = {}
-        
-        for compound in header["compound"]:
-            # iteration over details.
-            if "chain" in header["compound"][compound]:
-                # get the chains that the compound is refering to.
-                chains = [ c.strip().upper() for c in header["compound"][compound]["chain"].split(",") if len(c.strip())==1 ]
-                
-                for chain in chains:
-                    if chain not in header["chain_details"]:
-                        header["chain_details"][chain] = {}
-                
-                if "molecule" in header["compound"][compound]:
-                    # add molecule annotation to each chain
-                    for chain in chains:
-                        header["chain_details"][chain]["molecule"] = header["compound"][compound]["molecule"] 
-                else:
-                    for chain in chains:
-                        header["chain_details"][chain]["molecule"] = "unknown" 
+        if "compound" in header:
+            for compound in header["compound"]:
+                # iteration over details.
+                if "chain" in header["compound"][compound]:
+                    # get the chains that the compound is refering to.
+                    chains = [ c.strip().upper() for c in header["compound"][compound]["chain"].split(",") if len(c.strip())==1 ]
                     
-                if "engineered" in header["compound"][compound]:
-                    if "no" in header["compound"][compound]["engineered"] or "false" in header["compound"][compound]["engineered"] or not header["compound"][compound]["engineered"]:
-                        header["compound"][compound]["engineered"] = False
+                    for chain in chains:
+                        if chain not in header["chain_details"]:
+                            header["chain_details"][chain] = {}
+                    
+                    if "molecule" in header["compound"][compound]:
+                        # add molecule annotation to each chain
+                        for chain in chains:
+                            header["chain_details"][chain]["molecule"] = header["compound"][compound]["molecule"] 
                     else:
-                        header["compound"][compound]["engineered"] = True
-                    for chain in chains:
-                        header["chain_details"][chain]["engineered"] = header["compound"][compound]["engineered"]
+                        for chain in chains:
+                            header["chain_details"][chain]["molecule"] = "unknown" 
+                        
+                    if "engineered" in header["compound"][compound]:
+                        if "no" in header["compound"][compound]["engineered"] or "false" in header["compound"][compound]["engineered"] or not header["compound"][compound]["engineered"]:
+                            header["compound"][compound]["engineered"] = False
+                        else:
+                            header["compound"][compound]["engineered"] = True
+                        for chain in chains:
+                            header["chain_details"][chain]["engineered"] = header["compound"][compound]["engineered"]
+                    else:
+                        for chain in chains:
+                            header["chain_details"][chain]["engineered"] = False
                 else:
-                    for chain in chains:
-                        header["chain_details"][chain]["engineered"] = False
-            else:
-                continue
+                    continue
 
-        # analyse the journal reference and the title for references to hapten or scfv
-        # compile title-like text    
-        title = header["journal_reference"].lower()+" ".join(header["structure_reference"]).lower()
-        if "journal" in header:
-            title += header["journal"].lower()
+            # analyse the journal reference and the title for references to hapten or scfv
+            # compile title-like text    
+            title = header["journal_reference"].lower()+" ".join(header["structure_reference"]).lower()
+            if "journal" in header:
+                title += header["journal"].lower()
+        else:
+            sys.stderr.write('Header could not be parsed')
 
     def _create_ag_chain(self,chain):
         """
