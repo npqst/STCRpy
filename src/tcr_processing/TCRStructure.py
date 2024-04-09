@@ -98,12 +98,16 @@ class TCRStructure(Entity):
                     
     def get_antigens(self):
         """
-            This gets the 'antigen' chains in the structure. 
+            This gets the 'antigen' chains in the structure,
+            that have been assigned to a TCR or an MHC.
         """
+        antigens = set([])
         for h in self.get_holders():
-            if h.id == "Antigen":
-                for c in h:
-                    yield c
+            if isinstance(h, MHC) or isinstance(h, TCR) or h.id == "TCRchain":
+                for c in h.antigen:
+                    if c not in antigens:
+                        antigens = antigens.union(set([c]))
+                        yield c
 
     def get_unpaired_TCRchains(self):
         """
