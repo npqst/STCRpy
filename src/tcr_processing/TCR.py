@@ -1,0 +1,210 @@
+
+"""
+Created on 3rd April 2024
+@author: Nele Quast based on work by Dunbar and Leem 
+The TCR class.
+"""
+
+
+from .Entity import Entity
+import sys
+
+class TCR(Entity):
+    """
+    TCR class. This is generic which is inherited later.
+    Holds paired TCR chains.
+    """
+
+    def _add_antigen(self, antigen=None):
+        if antigen not in self.antigen:
+            self.antigen.append(antigen)
+
+    def _add_mhc(self, mhc = None):
+        if mhc not in self.MHC:
+            self.MHC.append(mhc)
+            # If there are any het antigens that are in the MHC but not in close proximity of the TCR
+            # (e.g. 4x6c antigen) then add it to the TCR.
+            if set(mhc.antigen) - set(self.antigen):
+                self.antigen.extend(mhc.antigen)
+
+    def get_antigen(self):
+        """
+        Return a list of bound antigens.
+        """
+        return self.antigen
+
+    def get_MHC(self):
+        """
+        """
+        return self.MHC
+    
+    def is_bound(self):
+        """
+        Check whether this TCR is bound to an antigen
+        """
+        if self.get_antigen():
+            return True
+        else:
+            return False
+            
+    def get_chains(self):
+        for c in self:
+            yield c
+
+    def get_residues(self):
+        for c in self.get_chains():
+            for r in c:
+                yield r
+
+    def get_atoms(self):
+        for r in self.get_residues():
+            for a in r:
+                yield a
+
+    def get_frameworks(self):
+        """
+        Obtain framework regions from a TCR structure object.
+        """
+        for f in self.get_fragments():
+            if "fw" in f.id:
+                yield f
+
+    def get_CDRs(self):
+        """
+        Obtain CDR loops from a TCR structure object
+        """
+        for f in self.get_fragments():
+            if "cdr" in f.id:
+                yield f
+
+    def get_TCR_type(self):
+        """
+            Get the TCR type
+        """
+        if hasattr(self, 'tcr_type'):
+            return self.tcr_type
+        elif hasattr(self, "VB") and hasattr(self, "VA"):
+            self.tcr_type = "abTCR"
+            return self.tcr_type
+        elif hasattr(self, "VD") and hasattr(self, "VG"):
+            self.tcr_type = "gdTCR"
+            return self.tcr_type
+        # elif hasattr(self, "VB") and hasattr(self, "VD"):
+        #     self.tcr_type = "dbTCR"
+        #     return self.tcr_type
+
+class abTCR(TCR):
+    def __init__(self, c1, c2):
+        if c1.chain_type == "B":
+            Entity.__init__(self, c1.id+c2.id)
+        else:
+            Entity.__init__(self, c2.id+c1.id)
+
+        # The TCR is a Holder class
+        self.level = "H"
+        self._add_domain(c1)
+        self._add_domain(c2)
+        self.child_list = sorted(self.child_list, key=lambda x: x.chain_type, reverse = True) # make sure that the list goes B->A or G->D
+        self.antigen = []
+        self.MHC = []
+        self.engineered   = False
+        self.scTCR = False # This is rare but does happen
+
+    def __repr__(self):
+        return "<TCR %s%s beta=%s; alpha=%s>" % (self.VB, self.VA, self.VB, self.VA)
+
+    def _add_domain(self, chain):
+        if chain.chain_type == "B":
+            self.VB = chain.id
+        elif chain.chain_type == "A":
+            self.VA = chain.id
+
+        # Add the chain as a child of this entity.
+        self.add(chain)
+
+    def get_VB(self):
+        if hasattr(self, "VB"):
+            return self.child_dict[self.VB]
+    def get_VA(self):
+        if hasattr(self, "VA"):
+            return self.child_dict[self.VA]
+
+    def is_engineered(self):
+        if self.engineered:
+            return True
+        else:
+            vb, va = self.get_VB(), self.get_VA()
+            for var_domain in [vb, va]:
+                if var_domain and var_domain.is_engineered():
+                    self.engineered = True
+                    return self.engineered
+        
+            self.engineered = False
+            return False
+
+    def get_fragments(self):
+        vb, va = self.get_VB(), self.get_VA()
+
+        # If a variable domain exists
+        for var_domain in [vb, va]:
+            if var_domain:
+                for frag in var_domain.get_fragments():
+                    yield frag
+
+class gdTCR(TCR):
+    def __init__(self, c1, c2):
+        if c1.chain_type == "D":
+            Entity.__init__(self, c1.id+c2.id)
+        else:
+            Entity.__init__(self, c2.id+c1.id)
+
+        # The TCR is a Holder class
+        self.level = "H"
+        self._add_domain(c1)
+        self._add_domain(c2)
+        self.child_list = sorted(self.child_list, key=lambda x: x.chain_type) # make sure that the list goes B->A or D->G
+        self.antigen = []
+        self.MHC = []
+        self.engineered   = False
+        self.scTCR = False # This is rare but does happen
+
+    def __repr__(self):
+        return "<TCR %s%s delta=%s; gamma=%s>" % (self.VD, self.VG, self.VD, self.VG)
+
+    def _add_domain(self, chain):
+        if chain.chain_type == "D":
+            self.VD = chain.id
+        elif chain.chain_type == "G":
+            self.VG = chain.id
+
+        # Add the chain as a child of this entity.
+        self.add(chain)
+
+    def get_VD(self):
+        if hasattr(self, "VD"):
+            return self.child_dict[self.VD]
+    def get_VG(self):
+        if hasattr(self, "VG"):
+            return self.child_dict[self.VG]
+
+    def is_engineered(self):
+        if self.engineered:
+            return True
+        else:
+            vd, vg = self.get_VD(), self.get_VG()
+            for var_domain in [vd, vg]:
+                if var_domain and var_domain.is_engineered():
+                    self.engineered = True
+                    return self.engineered
+        
+            self.engineered = False
+            return False
+
+    def get_fragments(self):
+        vd, vg = self.get_VD(), self.get_VG()
+
+        # If a variable domain exists
+        for var_domain in [vg, vd]:
+            if var_domain:
+                for frag in var_domain.get_fragments():
+                    yield frag
