@@ -1,6 +1,6 @@
 import unittest
-from ..src.tcr_processing import TCRParser
-from ..src.tcr_geometry import TCRDock, TCRAngle
+from ..TCRpy.tcr_processing import TCRParser
+from ..TCRpy.tcr_geometry import TCRDock, TCRAngle
 
 
 class TestTCRGeometry(unittest.TestCase):

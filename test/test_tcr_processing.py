@@ -1,5 +1,5 @@
 import unittest
-from ..src.tcr_processing import TCRParser
+from ..TCRpy.tcr_processing import TCRParser
 
 
 class TestTCRParser(unittest.TestCase):
