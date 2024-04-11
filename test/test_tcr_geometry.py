@@ -1,6 +1,6 @@
 import unittest
 from ..src.tcr_processing import TCRParser
-from ..src.tcr_geometry import TCRDock
+from ..src.tcr_geometry import TCRDock, TCRAngle
 
 
 class TestTCRGeometry(unittest.TestCase):
@@ -27,3 +27,7 @@ class TestTCRGeometry(unittest.TestCase):
         parser = TCRParser.TCRParser()
         pdb_file = 'TCRpy/test/test_files/5hyj.pdb'
         tcr = parser.get_tcr_structure('test', pdb_file)
+        tcr_angle = TCRAngle.abTCRAngle()
+        ED_tcr_angles = tcr_angle.get_angles(tcr[0]['ED'])
+        all_tcr_angles = tcr_angle.get_angles(tcr)
+        assert all_tcr_angles['ED'] == ED_tcr_angles
