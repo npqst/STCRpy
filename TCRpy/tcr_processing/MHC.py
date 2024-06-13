@@ -113,8 +113,10 @@ class MH1(MHC):
             self.GA1 = chain.id
             self.GA2 = chain.id
         elif chain.chain_type == "GA1":
+            self.MH1 = chain.id
             self.GA1 = chain.id
         elif chain.chain_type == "GA2":
+            self.MH1 = chain.id
             self.GA2 = chain.id
         elif chain.chain_type == "B2M":
             self.B2M = chain.id

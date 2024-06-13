@@ -48868,9 +48868,8 @@ def get_from_expo(residue):
             raise
         resname_to_name_and_type[residue] = (name, ctype)
         return name, ctype
-    except Exception as e:  # lazy exception handling. - end result is the same anyway
+    except Exception:  # lazy exception handling. - end result is the same anyway
         sys.stdout.write("Warning: Unknown residue code %s\n" % residue)
-        print(e)
         return "unknown", None
 
 

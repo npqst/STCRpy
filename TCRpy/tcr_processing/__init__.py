@@ -1,3 +1,3 @@
-from .TCR import TCR, abTCR, gdTCR
+from .TCR import TCR, abTCR, gdTCR, dbTCR
 from .MHC import MHC
 from .MHCchain import MHCchain

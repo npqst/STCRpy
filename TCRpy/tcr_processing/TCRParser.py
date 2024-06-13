@@ -18,9 +18,11 @@ from Bio.PDB import NeighborSearch
 from .annotate import annotate, extract_sequence, align_numbering
 from .utils.common import angle
 
+from ..utils.error_stream import ErrorStream
+
 from .TCRStructure import TCRStructure
 from .Model import Model
-from .TCR import TCR, abTCR, gdTCR
+from .TCR import TCR, abTCR, gdTCR, dbTCR
 from .MHC import MHC, MH1, MH2, CD1, MR1
 from .Holder import Holder
 from .TCRchain import TCRchain
@@ -39,8 +41,9 @@ MHC_CUTOFF = {
 }
 
 
-class TCRParser:
+class TCRParser(PDBParser, MMCIFParser):
     def __init__(self, PERMISSIVE=True, get_header=True, QUIET=False):
+    # def __init__(self, PERMISSIVE=True, get_header=True, QUIET=False):
         """
         Initialise the PDB parser. This is currently set to using IMGT's numbering scheme and uses the IMGT-defined CDRs.
 
@@ -203,15 +206,17 @@ class TCRParser:
         optional:
             prenumbering: prenumbering for the chains in the structure.
         """
-        self.warnings = error_stream()
+        self.warnings = ErrorStream()
         # get a structure object from biopython.
         _, ext = os.path.splitext(file)
         if ext.lower() == ".pdb":
             structure = self.pdb_parser.get_structure(id, file)
+            self.current_parser = self.pdb_parser
         elif ext.lower() in [".cif", ".mmcif"]:
             structure = self.mmcif_parser.get_structure(id, file)
+            self.current_parser = self.mmcif_parser
         else:
-            sys.stderr.write(f"Unrecognised structure file format: {file}")
+            self.warnings.write(f"Unrecognised structure file format: {file}")
             raise ValueError
 
         # Create a new TCRStructure object
@@ -341,6 +346,8 @@ class TCRParser:
                             tcr = abTCR(chain1, chain2)
                         elif not obs_chaintypes - set(["G", "D"]):
                             tcr = gdTCR(chain1, chain2)
+                        elif not obs_chaintypes - set(["B", "D"]):
+                            tcr = dbTCR(chain1, chain2)
 
                         tcr.scTCR = True  #
                         newmodel.add(tcr)
@@ -373,8 +380,10 @@ class TCRParser:
                         tcr = abTCR(pair[0], pair[1])
                     elif not obs_chaintypes - set(["G", "D"]):
                         tcr = gdTCR(pair[0], pair[1])
+                    elif not obs_chaintypes - set(["B", "D"]):
+                        tcr = dbTCR(pair[0], pair[1])
                     else:
-                        sys.stderr.write(
+                        self.warnings.write(
                             "Unusual pairing between %s (V%s) and %s (V%s) has been detected. Treating as separate TCR chains.\n"
                             % (
                                 pair[0].id,
@@ -400,8 +409,10 @@ class TCRParser:
                         tcr = abTCR(pair[0], pair[1])
                     elif not obs_chaintypes - set(["G", "D"]):
                         tcr = gdTCR(pair[0], pair[1])
+                    elif not obs_chaintypes - set(["B", "D"]):
+                        tcr = dbTCR(pair[0], pair[1])
                     else:
-                        sys.stderr.write(
+                        self.warnings.write(
                             "Unusual pairing between %s (V%s) and %s (V%s) has been detected. Treating as separate TCR chains.\n"
                             % (
                                 pair[0].id,
@@ -647,7 +658,7 @@ class TCRParser:
         #        22 - 26         Integer          serial          Serial number of bonded atom
         #        27 - 31         Integer          serial          Serial number of bonded atom
         connect_records = {}
-        for c in [l.strip() for l in self.trailer if "CONECT" in l]:
+        for c in [l.strip() for l in self.current_parser.trailer if "CONECT" in l]:
             try:
                 connect_records[int(c[6:11])] = []
             except IndexError:
@@ -793,6 +804,16 @@ class TCRParser:
                 )
                 antigen_hetatoms[tr.VG], antigen_sugars[tr.VG] = (
                     self._find_chain_hetatoms(gamma_chain)
+                )
+
+            elif isinstance(tr, TCR) and tr.get_TCR_type() == "dbTCR":
+                beta_chain = tr.get_VB()
+                delta_chain = tr.get_VD()
+                antigen_hetatoms[tr.VB], antigen_sugars[tr.VB] = (
+                    self._find_chain_hetatoms(beta_chain)
+                )
+                antigen_hetatoms[tr.VD], antigen_sugars[tr.VD] = (
+                    self._find_chain_hetatoms(delta_chain)
                 )
 
             # Unpaired TCR chain
@@ -1160,15 +1181,15 @@ class TCRParser:
         return numbering, chain_type
 
 
-class error_stream:
-    def __init__(self):
-        self.log = []
+# class error_stream:
+#     def __init__(self):
+#         self.log = []
 
-    def __str__(self):
-        return "\n".join(self.log)
+#     def __str__(self):
+#         return "\n".join(self.log)
 
-    def __repr__(self):
-        return self.__str__()
+#     def __repr__(self):
+#         return self.__str__()
 
-    def write(self, s):
-        self.log.append(str(s).strip("\n"))
+#     def write(self, s):
+#         self.log.append(str(s).strip("\n"))

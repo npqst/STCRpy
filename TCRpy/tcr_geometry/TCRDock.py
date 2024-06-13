@@ -10,16 +10,21 @@ Jun 12, 2017
 """
 # from TCRDB.TcrPDB.TCR import TCR
 from ..tcr_processing import TCR, MHC, MHCchain
+from ..utils.error_stream import ErrorStream
+
 import numpy as np
 import sys
 
 
 class TCRDock(object):
-    def __init__(self, tcr):
+    def __init__(self, tcr, QUIET=False):
         """
         Calculate the docking angle between TCR and pMHC.
-        @param TCR: input a TCR object (abTCR or gdTCR).
+        @param TCR: input a TCR object (abTCR or gdTCR or dbTCR).
         """
+        self.warnings = ErrorStream()
+        self.QUIET = QUIET
+        
         self.TCR = tcr
         self.angle = np.nan
 
@@ -27,7 +32,7 @@ class TCRDock(object):
         self.MHC = tcr.get_MHC()
 
         if not self.MHC:
-            sys.stderr.write(
+            self.warnings.write(
                 "The TCR structure does not have a detected MHC molecule. No docking angle will be calculated.\n"
             )
             self.abort = True
@@ -37,7 +42,7 @@ class TCRDock(object):
 
         self.abort = False
         if not isinstance(self.TCR, TCR):
-            sys.stderr.write(
+            self.warnings.write(
                 "The TCR structure is an unpaired TCR chain. No docking angle will be calculated.\n"
             )
             self.abort = True
@@ -51,6 +56,7 @@ class TCRDock(object):
                 self.MHC.chain_type == "MH1"
                 or self.MHC.chain_type == "CD1"
                 or self.MHC.chain_type == "MR1"
+                or self.MHC.chain_type == "GA1"
             ):
                 acceptable_range = list(range(50, 87))
                 residues = [
@@ -59,26 +65,26 @@ class TCRDock(object):
                     if r.id[1] % 1000 in acceptable_range
                 ]
                 if len(residues) >= (len(acceptable_range) - 10):
-                    sys.stderr.write(
+                    self.warnings.write(
                         "Warning: detected an MHC chain of type %s; doesn't seem to have an associated B2M molecule.\n"
                         % self.MHC.chain_type
                     )
                     pass
                 else:
-                    sys.stderr.write(
+                    self.warnings.write(
                         "An MHC molecule was not found. No docking angle will be calculated.\n"
                     )
                     self.abort = True
                     return
             else:
-                sys.stderr.write(
+                self.warnings.write(
                     "An MHC molecule was not found. No docking angle will be calculated.\n"
                 )
                 self.abort = True
                 return
 
         elif not isinstance(self.MHC, MHC):
-            sys.stderr.write(
+            self.warnings.write(
                 "An MHC molecule was not found. No docking angle will be calculated.\n"
             )
             self.abort = True
@@ -105,6 +111,8 @@ class TCRDock(object):
             vbg, vda = self.TCR.get_VB(), self.TCR.get_VA()
         elif self.TCR.get_TCR_type() == "gdTCR":
             vbg, vda = self.TCR.get_VD(), self.TCR.get_VG()
+        elif self.TCR.get_TCR_type() == "dbTCR":
+            vbg, vda = self.TCR.get_VB(), self.TCR.get_VD()
 
         try:
             # Get sulphur atoms of each of the cysteines
@@ -117,7 +125,7 @@ class TCRDock(object):
             self.vec_centroid = bg_centroid - da_centroid
 
         except KeyError:
-            sys.stderr.write(
+            self.warnings.write(
                 "Cysteine(s) or sulphur atom(s) not detected. Check for IMGT residues 23/104 in beta/alpha/delta/gamma chains.\n"
             )
             self.abort = True
@@ -189,6 +197,7 @@ class TCRDock(object):
                 self.MHC.chain_type == "MH1"
                 or self.MHC.chain_type == "CD1"
                 or self.MHC.chain_type == "MR1"
+                or self.MHC.chain_type == "GA1"
             ):
                 acceptable_range = list(range(50, 87))
                 ca_atoms = np.array(
@@ -222,6 +231,10 @@ class TCRDock(object):
         self.V = v[0]
 
         self.angle = self._angle(self.V, self.vec_centroid)
+
+        if not self.QUIET and self.warnings.log:
+            sys.stderr.write("\n".join(self.warnings.log))
+            sys.stderr.write("\n")
 
         return self.angle
 

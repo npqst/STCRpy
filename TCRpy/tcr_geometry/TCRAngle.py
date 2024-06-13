@@ -226,3 +226,15 @@ class gdTCRAngle(TCRAngle):
 
     def _get_TCR_chain_ids(self):
         return ['G', 'D']
+
+
+class dbTCRAngle(TCRAngle):
+    """
+    Class to calculate the orientation angles between the variable domains of a dbTCR.
+    """
+
+    def __init__(self):
+        super().__init__()
+
+    def _get_TCR_chain_ids(self):
+        return ['D', 'B']

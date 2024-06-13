@@ -86,7 +86,8 @@ class variable_only(select_all):
         """
         # Accept an abTCR or a gdTCR
         if (hasattr(holder, "VB") and hasattr(holder, "VA")) or (
-            hasattr(holder, "VD") and hasattr(holder, "VG")
+            hasattr(holder, "VD") and hasattr(holder, "VG")) or (
+            hasattr(holder, "VB") and hasattr(holder, "VD")
         ):
             return 1
         else:

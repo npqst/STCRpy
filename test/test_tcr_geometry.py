@@ -1,4 +1,6 @@
 import unittest
+import glob
+
 from ..TCRpy.tcr_processing import TCRParser
 from ..TCRpy.tcr_geometry import TCRDock, TCRAngle
 
@@ -31,3 +33,15 @@ class TestTCRGeometry(unittest.TestCase):
         ED_tcr_angles = tcr_angle.get_angles(tcr[0]['ED'])
         all_tcr_angles = tcr_angle.get_angles(tcr)
         assert all_tcr_angles['ED'] == ED_tcr_angles
+
+    def test_calculate_docking_angle_of_docks(self):
+        parser = TCRParser.TCRParser()
+        dock_pdb_files = glob.glob(
+            '/home/quast/Collaborations/SamuelsLab_Weizmann/docking/results/N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb'
+        )
+        dock_pdb_files.sort()
+        for pdb_file in dock_pdb_files:
+            tcr = parser.get_tcr_structure('test', pdb_file)
+
+            tcr_docks = [TCRDock.TCRDock(x) for x in tcr.get_TCRs()]
+            

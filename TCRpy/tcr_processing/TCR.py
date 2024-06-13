@@ -87,9 +87,9 @@ class TCR(Entity):
         elif hasattr(self, "VD") and hasattr(self, "VG"):
             self.tcr_type = "gdTCR"
             return self.tcr_type
-        # elif hasattr(self, "VB") and hasattr(self, "VD"):
-        #     self.tcr_type = "dbTCR"
-        #     return self.tcr_type
+        elif hasattr(self, "VB") and hasattr(self, "VD"):
+            self.tcr_type = "dbTCR"
+            return self.tcr_type
 
 
 class abTCR(TCR):
@@ -211,6 +211,68 @@ class gdTCR(TCR):
 
         # If a variable domain exists
         for var_domain in [vg, vd]:
+            if var_domain:
+                for frag in var_domain.get_fragments():
+                    yield frag
+
+
+class dbTCR(TCR):
+    def __init__(self, c1, c2):
+        if c1.chain_type == "B":
+            Entity.__init__(self, c1.id + c2.id)
+        else:
+            Entity.__init__(self, c2.id + c1.id)
+
+        # The TCR is a Holder class
+        self.level = "H"
+        self._add_domain(c1)
+        self._add_domain(c2)
+        self.child_list = sorted(
+            self.child_list, key=lambda x: x.chain_type, reverse=False
+        )  # make sure that the list goes B->D
+        self.antigen = []
+        self.MHC = []
+        self.engineered = False
+        self.scTCR = False  # This is rare but does happen
+
+    def __repr__(self):
+        return "<TCR %s%s beta=%s; delta=%s>" % (self.VB, self.VD, self.VB, self.VD)
+
+    def _add_domain(self, chain):
+        if chain.chain_type == "B":
+            self.VB = chain.id
+        elif chain.chain_type == "D":
+            self.VD = chain.id
+
+        # Add the chain as a child of this entity.
+        self.add(chain)
+
+    def get_VB(self):
+        if hasattr(self, "VB"):
+            return self.child_dict[self.VB]
+
+    def get_VD(self):
+        if hasattr(self, "VD"):
+            return self.child_dict[self.VD]
+
+    def is_engineered(self):
+        if self.engineered:
+            return True
+        else:
+            vb, vd = self.get_VB(), self.get_VD()
+            for var_domain in [vb, vd]:
+                if var_domain and var_domain.is_engineered():
+                    self.engineered = True
+                    return self.engineered
+
+            self.engineered = False
+            return False
+
+    def get_fragments(self):
+        vb, vd = self.get_VB(), self.get_VD()
+
+        # If a variable domain exists
+        for var_domain in [vb, vd]:
             if var_domain:
                 for frag in var_domain.get_fragments():
                     yield frag
