@@ -130,6 +130,16 @@ class abTCR(TCR):
     def get_VA(self):
         if hasattr(self, "VA"):
             return self.child_dict[self.VA]
+    
+    def get_domain_assignment(self):
+        try:
+            return {"VA": self.VA, "VB": self.VB}
+        except AttributeError:
+            if hasattr(self, "VB"):
+                return {"VB": self.VB}
+            if hasattr(self, "VA"):
+                return {"VA": self.VA}
+        return None
 
     def is_engineered(self):
         if self.engineered:
@@ -193,6 +203,16 @@ class gdTCR(TCR):
         if hasattr(self, "VG"):
             return self.child_dict[self.VG]
 
+    def get_domain_assignment(self):
+        try:
+            return {"VG": self.VG, "VD": self.VD}
+        except AttributeError:
+            if hasattr(self, "VD"):
+                return {"VD": self.VD}
+            if hasattr(self, "VG"):
+                return {"VG": self.VG}
+        return None
+
     def is_engineered(self):
         if self.engineered:
             return True
@@ -254,6 +274,16 @@ class dbTCR(TCR):
     def get_VD(self):
         if hasattr(self, "VD"):
             return self.child_dict[self.VD]
+        
+    def get_domain_assignment(self):
+        try:
+            return {"VD": self.VD, "VB": self.VB}
+        except AttributeError:
+            if hasattr(self, "VB"):
+                return {"VB": self.VB}
+            if hasattr(self, "VD"):
+                return {"VD": self.VD}
+        return None
 
     def is_engineered(self):
         if self.engineered:
