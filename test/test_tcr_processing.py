@@ -1,4 +1,6 @@
 import unittest
+import os
+
 from ..TCRpy.tcr_processing import TCRParser
 
 
@@ -29,11 +31,18 @@ class TestTCRParser(unittest.TestCase):
         )
         stcrdab_pdb_files.sort()
         badly_parsed_pdb = []
+        errors = {}
+        pdb_types = {}
         for pdb_file in stcrdab_pdb_files:
             pdb_id = pdb_file.split('/')[-1].split('.')[0]
-            tcr = parser.get_tcr_structure(pdb_id, pdb_file)
-            if len(list(tcr.get_TCRs())) == 0:
-                badly_parsed_pdb.append(pdb_id)
+            try:
+                tcr = parser.get_tcr_structure(pdb_id, pdb_file)
+                if len(list(tcr.get_TCRs())) == 0:
+                    badly_parsed_pdb.append(pdb_id)
+                else:
+                    pdb_types[pdb_id] = (type(list(tcr.get_TCRs())[0]), list([str(x) for x in tcr.get_TCRs()]))                
+            except Exception as e:
+                errors[pdb_id] = e
         print(badly_parsed_pdb)
         print(len(badly_parsed_pdb))
 
@@ -67,3 +76,26 @@ class TestTCRParser(unittest.TestCase):
         pdb_file = 'TCRpy/test/test_files/DB_test_T104_rank_0_model_0_refined.pdb'
         tcr = parser.get_tcr_structure('test', pdb_file)
         assert set([''.join(sorted(x.id)) for x in tcr.get_TCRs()]) == set(['AB'])
+
+
+    def test_save(self):
+        parser = TCRParser.TCRParser()
+
+        pdb_file = 'TCRpy/test/test_files/4nhu.pdb'
+        tcr = parser.get_tcr_structure('test', pdb_file)
+
+        from ..TCRpy.tcr_processing.TCRIO import TCRIO
+
+        io = TCRIO()
+        for x in tcr.get_TCRs():
+            io.save(
+                x,
+                save_as=f'TCRpy/test/test_files/test_{x.id}_TCR_only.pdb'
+                )
+        
+        for x in tcr.get_TCRs():
+            io.save(
+                x,
+                tcr_only=True,
+                save_as=f'TCRpy/test/test_files/test_{x.id}.pdb'
+                )
