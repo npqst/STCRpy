@@ -2,7 +2,7 @@ import unittest
 import glob
 
 from ..TCRpy.tcr_processing import TCRParser
-from ..TCRpy.tcr_geometry import TCRDock, TCRAngle
+from ..TCRpy.tcr_geometry import TCRDock, TCRAngle, TCRCoM
 
 
 class TestTCRGeometry(unittest.TestCase):
@@ -12,7 +12,7 @@ class TestTCRGeometry(unittest.TestCase):
         tcr = parser.get_tcr_structure('test', pdb_file)
         [TCRDock.TCRDock(x) for x in tcr.get_TCRs()]
 
-    def test_calculate_docking_angle(self):
+    def test_calculate_docking_angle_5hyj(self):
         parser = TCRParser.TCRParser()
         pdb_file = 'TCRpy/test/test_files/5hyj.pdb'
         tcr = parser.get_tcr_structure('test', pdb_file)
@@ -22,6 +22,32 @@ class TestTCRGeometry(unittest.TestCase):
             [
                 x.calculate_docking_angle() < 50.
                 and x.calculate_docking_angle() > 40.
+                for x in tcr_docks
+            ])
+        
+    def test_calculate_docking_angle_7l1d(self):
+        parser = TCRParser.TCRParser()
+        pdb_file = 'TCRpy/test/test_files/7l1d.pdb'
+        tcr = parser.get_tcr_structure('test', pdb_file)
+
+        tcr_docks = [TCRDock.TCRDock(x) for x in tcr.get_TCRs()]
+        assert all(
+            [
+                x.calculate_docking_angle() < 50.
+                and x.calculate_docking_angle() > 40.
+                for x in tcr_docks
+            ])
+    
+    def test_calculate_docking_angle_7rrg(self):
+        parser = TCRParser.TCRParser()
+        pdb_file = 'TCRpy/test/test_files/7rrg.pdb'
+        tcr = parser.get_tcr_structure('test', pdb_file)
+
+        tcr_docks = [TCRDock.TCRDock(x) for x in tcr.get_TCRs()]
+        assert all(
+            [
+                x.calculate_docking_angle() < 80.
+                and x.calculate_docking_angle() > 70.
                 for x in tcr_docks
             ])
         
@@ -45,3 +71,59 @@ class TestTCRGeometry(unittest.TestCase):
 
             tcr_docks = [TCRDock.TCRDock(x) for x in tcr.get_TCRs()]
             
+
+    def test_docking_angle_reverse_docks(self):
+        parser = TCRParser.TCRParser()
+        reverse_dock_108 = '/home/quast/Projects/TCRpy/TCRpy/test/test_files/aligned_complex_108.pdb'
+        dock_63 = '/home/quast/Projects/TCRpy/TCRpy/test/test_files/aligned_complex_63.pdb'
+        dock_pdb_files = [dock_63, reverse_dock_108]
+        docking_angles = []
+        for pdb_file in dock_pdb_files:
+            tcr = parser.get_tcr_structure('test', pdb_file)
+
+            tcr_docks = [TCRDock.TCRDock(x) for x in tcr.get_TCRs()]
+            docking_angles.append(tcr_docks[0].calculate_docking_angle())
+
+        print(docking_angles)
+
+    def test_MH1_TCRCoM(self):
+        parser = TCRParser.TCRParser()
+        pdb_file = 'TCRpy/test/test_files/4nhu.pdb'
+        tcr_structure = parser.get_tcr_structure('test', pdb_file)
+        tcr_com = TCRCoM.MHCI_TCRCoM()
+        for tcr in tcr_structure.get_TCRs():
+            r, theta, phi = tcr_com.calculate_geometry(
+                tcr, 
+                save_aligned_as=f'TCRpy/test/test_files/out/aligned_test_{tcr.id}.pdb'
+                )
+            print(r, theta, phi)
+        pdb_file = 'TCRpy/TCRpy/tcr_geometry/reference_data/dock_reference_1_imgt_numbered.pdb'
+        tcr_structure = parser.get_tcr_structure('test', pdb_file)
+        tcr_com = TCRCoM.MHCI_TCRCoM()
+        for tcr in tcr_structure.get_TCRs():
+            r, theta, phi = tcr_com.calculate_geometry(
+                tcr, 
+                save_aligned_as=f'TCRpy/test/test_files/out/aligned_test_dock_ref_mhcI_{tcr.id}.pdb'
+                )
+            print(r, theta, phi)
+            
+    def test_MH2_TCRCoM(self):
+        parser = TCRParser.TCRParser()
+        pdb_file = 'TCRpy/test/test_files/6r0e.cif'
+        tcr_structure = parser.get_tcr_structure('test', pdb_file)
+        tcr_com = TCRCoM.MHCII_TCRCoM()
+        for tcr in tcr_structure.get_TCRs():
+            r, theta, phi = tcr_com.calculate_geometry(
+                tcr, 
+                save_aligned_as=f'TCRpy/test/test_files/out/aligned_test_{tcr.id}.pdb'
+                )
+
+        pdb_file = 'TCRpy/TCRpy/tcr_geometry/reference_data/dock_reference_2_imgt_numbered.pdb'
+        tcr_structure = parser.get_tcr_structure('test', pdb_file)
+        tcr_com = TCRCoM.MHCII_TCRCoM()
+        for tcr in tcr_structure.get_TCRs():
+            r, theta, phi = tcr_com.calculate_geometry(
+                tcr,
+                save_aligned_as=f'TCRpy/test/test_files/out/aligned_test_dock_ref_mhcII_{tcr.id}.pdb'
+                )
+            print(r, theta, phi)

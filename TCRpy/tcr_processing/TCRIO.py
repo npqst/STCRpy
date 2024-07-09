@@ -43,7 +43,8 @@ class TCRIO(PDBIO):
             else:
                 save_as = f'{tcr.parent.parent.id}_{tcr.id}_TCR_only.{format}'
 
-        self.io.save(save_as)        
+        self.io.save(save_as)
+        
 
 
 
