@@ -1,7 +1,7 @@
 
 from Bio import PDB
 from Bio.PDB.PDBIO import PDBIO
-from ..tcr_processing import TCR
+from ..tcr_processing import TCR, MHC, MHCchain
 
 
 class TCRIO(PDBIO):
@@ -22,9 +22,16 @@ class TCRIO(PDBIO):
             chain.serial_num = 0
             structure_to_save.add(chain)
         if not tcr_only:
-            for chain in tcr.get_MHC():
-                chain.serial_num = 0
-                structure_to_save.add(chain)
+            for mhc in tcr.get_MHC():
+                if isinstance(mhc, MHCchain):    # handle MHC that is single chain 
+                    chain = mhc
+                    chain.serial_num = 0
+                    structure_to_save.add(chain)
+                else:
+                    for chain in mhc.get_chains():          # handle multichain MHC object
+                        chain.serial_num = 0
+                        structure_to_save.add(chain)
+                
             for chain in tcr.get_antigen():
                 chain.serial_num = 0
                 structure_to_save.add(chain)

@@ -87,6 +87,7 @@ class TestTCRParser(unittest.TestCase):
         from ..TCRpy.tcr_processing.TCRIO import TCRIO
 
         io = TCRIO()
+
         for x in tcr.get_TCRs():
             io.save(
                 x,
@@ -97,5 +98,13 @@ class TestTCRParser(unittest.TestCase):
             io.save(
                 x,
                 tcr_only=True,
+                save_as=f'TCRpy/test/test_files/test_{x.id}.pdb'
+                )
+
+        pdb_file = 'TCRpy/TCRpy/tcr_geometry/reference_data/dock_reference_1.pdb'
+        tcr = parser.get_tcr_structure('test', pdb_file)
+        for x in tcr.get_TCRs():
+            io.save(
+                x,
                 save_as=f'TCRpy/test/test_files/test_{x.id}.pdb'
                 )
