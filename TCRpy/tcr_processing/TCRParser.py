@@ -347,7 +347,8 @@ class TCRParser(PDBParser, MMCIFParser):
                         elif not obs_chaintypes - set(["G", "D"]):
                             tcr = gdTCR(chain1, chain2)
                         elif not obs_chaintypes - set(["B", "D"]):
-                            tcr = dbTCR(chain1, chain2)
+                            tcr = abTCR(chain1, chain2)         # initial way to deal with narci missclassification of alpha chains as delta chains
+                            # tcr = dbTCR(chain1, chain2)
 
                         tcr.scTCR = True  #
                         newmodel.add(tcr)
@@ -381,7 +382,9 @@ class TCRParser(PDBParser, MMCIFParser):
                     elif not obs_chaintypes - set(["G", "D"]):
                         tcr = gdTCR(pair[0], pair[1])
                     elif not obs_chaintypes - set(["B", "D"]):
-                        tcr = dbTCR(pair[0], pair[1])
+                        # tcr = dbTCR(pair[0], pair[1])
+                        tcr = abTCR(pair[0], pair[1])
+
                     else:
                         self.warnings.write(
                             "Unusual pairing between %s (V%s) and %s (V%s) has been detected. Treating as separate TCR chains.\n"
@@ -410,7 +413,8 @@ class TCRParser(PDBParser, MMCIFParser):
                     elif not obs_chaintypes - set(["G", "D"]):
                         tcr = gdTCR(pair[0], pair[1])
                     elif not obs_chaintypes - set(["B", "D"]):
-                        tcr = dbTCR(pair[0], pair[1])
+                        tcr = abTCR(pair[0], pair[1])
+                        # tcr = dbTCR(pair[0], pair[1])
                     else:
                         self.warnings.write(
                             "Unusual pairing between %s (V%s) and %s (V%s) has been detected. Treating as separate TCR chains.\n"

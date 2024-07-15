@@ -2,10 +2,11 @@
 import os
 import numpy as np
 import Bio
+from typing import Union
 
 from ..tcr_processing.TCRParser import TCRParser
 from ..tcr_processing.TCRIO import TCRIO
-from ..tcr_processing import TCR, MHCchain
+from ..tcr_processing import abTCR, MHCchain
 
 
 class TCRCoM():
@@ -30,10 +31,10 @@ class TCRCoM():
     def set_mhc_reference(self):
         raise NotImplementedError('TCRCom cannot be insantiated directly, instantiate its subclass')
 
-    def get_filtered_TCR_residues(self):
-        tcr_A_residues = [self.tcr.get_VA()[r.get_id()] for r in self.reference_VA_residues if r.get_id() in self.tcr.get_VA()]
-        tcr_B_residues = [self.tcr.get_VB()[r.get_id()] for r in self.reference_VB_residues if r.get_id() in self.tcr.get_VB()]
-        return tcr_A_residues + tcr_B_residues
+    def get_filtered_TCR_residues(self, tcr):
+        tcr_A_residues = [tcr.get_VA()[r.get_id()] for r in self.reference_VA_residues if r.get_id() in tcr.get_VA()]
+        tcr_B_residues = [tcr.get_VB()[r.get_id()] for r in self.reference_VB_residues if r.get_id() in tcr.get_VB()]
+        return tcr_A_residues, tcr_B_residues
 
     def center_of_mass(self, entity, geometric=False):
         # Structure, Model, Chain, Residue
@@ -61,13 +62,13 @@ class TCRCoM():
         else:
             return np.matmul(np.asarray(masses), positions) / len(atom_list)
 
-    def add_com(self, mhc_com, tcr_com):
+    def add_com(self, mhc_com, tcr_com, VA_com, VB_com, tcr):
         """
         Function to add pseudoatoms at MHC-CoM, TCR-CoM, and XYZ axis to the output PDB file
         """
-        new_structure = self.tcr.copy()
+        new_structure = tcr.copy()
         
-        # mhc_com
+        # mhc com
         mhc_com_chain = "X"
         new_structure.add(Bio.PDB.Chain.Chain(mhc_com_chain))
         res_id = (" ", 1, " ")
@@ -79,11 +80,14 @@ class TCRCoM():
         # tcr com
         tcr_com_chain = "Y"
         new_structure.add(Bio.PDB.Chain.Chain(tcr_com_chain))
-        res_id = (" ", 1, " ")
-        new_residue = Bio.PDB.Residue.Residue(res_id, "TCM", " ")
-        new_atom = Bio.PDB.Atom.Atom("C", tcr_com, 0, 0.0, " ", "C", 1, "C")
-        new_residue.add(new_atom)
-        new_structure.child_dict[tcr_com_chain].add(new_residue)
+        pseudo_atom_ids = ["TCM", "ACM", "BCM"]
+        tcr_com_list = [tcr_com, VA_com, VB_com]
+        for i in range(3):
+            res_id = (" ", i + 1, " ")
+            new_residue = Bio.PDB.Residue.Residue(res_id, pseudo_atom_ids[i], " ")
+            new_atom = Bio.PDB.Atom.Atom("C", tcr_com_list[i], 0, 0.0, " ", "C", 1, "C")
+            new_residue.add(new_atom)
+            new_structure.child_dict[tcr_com_chain].add(new_residue)
         
         # X,Y,Z atoms
         pos = [[50, 0, 0], [0, 50, 0], [0, 0, 50]]
@@ -99,37 +103,54 @@ class TCRCoM():
         
         return new_structure
 
-    def calculate_geometry(
+    def calculate_centres_of_mass(
             self,
-            tcr: TCR,
-            save_aligned_as: str = None,
+            tcr: abTCR,
+            save_aligned_as: Union[str, bool] = None,
     ):
-        self.tcr = tcr
 
-        ref_mhc_atoms = [res["CA"] for res in self.reference_MHC_residues]
+        assert len(tcr.get_MHC()) > 0, 'No MHC associated with TCR'
+        if not isinstance(tcr, abTCR):
+            raise NotImplementedError(f'TCR MHC geometry only implemented for abTCR types, not {type(tcr)}')
 
-        mhc_atoms = [res["CA"] for res in self.get_filtered_MHC_residues()]
+        mhc_atoms = [res["CA"] for res in self.get_filtered_MHC_residues(tcr)]
+        ref_mhc_atoms = [
+            res["CA"] for res in self.reference_MHC_residues
+            if res.get_id() in [a.parent.get_id() for a in mhc_atoms]
+            ]
 
         superimposer = Bio.PDB.Superimposer()
         superimposer.set_atoms(ref_mhc_atoms, mhc_atoms)
-        superimposer.apply(self.tcr.parent.get_atoms())
+        superimposer.apply(tcr.parent.get_atoms())
 
         mhc_com = self.center_of_mass(mhc_atoms, geometric=True)
 
-        tcr_atoms = [res["CA"] for res in self.get_filtered_TCR_residues()]
-        tcr_com = self.center_of_mass(tcr_atoms, geometric=True)
+        tcr_VA_residues, tcr_VB_residues = self.get_filtered_TCR_residues(tcr)
+        tcr_VA_atoms = [res["CA"] for res in tcr_VA_residues]
+        tcr_VA_com = self.center_of_mass(tcr_VA_atoms, geometric=True)
+
+        tcr_VB_atoms = [res["CA"] for res in tcr_VB_residues]
+        tcr_VB_com = self.center_of_mass(tcr_VB_atoms, geometric=True)
+
+        tcr_com = self.center_of_mass(tcr_VA_atoms + tcr_VB_atoms, geometric=True)
 
         if save_aligned_as:
-            aligned_tcr = self.add_com(mhc_com, tcr_com)
+            if not isinstance(save_aligned_as, str):
+                save_aligned_as = os.path.join(os.getcwd(), f'{tcr.parent.parent.id}_{tcr.id}.pdb')
+            aligned_tcr = self.add_com(mhc_com, tcr_com, tcr_VA_com, tcr_VB_com, tcr)
             io = TCRIO()
             io.save(aligned_tcr, save_as=save_aligned_as)
         
-        com_distance = tcr_com - mhc_com
-        self.r = np.sqrt(np.sum(np.square(com_distance)))
-        self.theta = np.degrees(np.arctan2(com_distance[1], com_distance[0]))
-        self.phi = np.degrees(np.arccos(com_distance[2] / self.r))
+        # com_distance = tcr_com - mhc_com
+        # r = np.sqrt(np.sum(np.square(com_distance)))
+        # theta = np.degrees(np.arctan2(com_distance[1], com_distance[0]))
+        # phi = np.degrees(np.arccos(com_distance[2] / r))
 
-        return self.r, self.theta, self.phi
+        # return r, theta, phi
+
+        return tcr_com, mhc_com, tcr_VA_com, tcr_VB_com
+
+
 
 
 class MHCI_TCRCoM(TCRCoM):
@@ -145,8 +166,8 @@ class MHCI_TCRCoM(TCRCoM):
         mhc = self.ref_model.get_MHC()[0].get_MH1()
         self.reference_MHC_residues = [r for r in mhc.get_residues() if r.get_id()[1] >= 1 and r.get_id()[1] <= 179]
 
-    def get_filtered_MHC_residues(self):
-        mhc = self.tcr.get_MHC()[0]
+    def get_filtered_MHC_residues(self, tcr):
+        mhc = tcr.get_MHC()[0]
         if not isinstance(mhc, MHCchain):           # handle single MHC chain case
             mhc = mhc.get_MH1()
         filtered_MHC_residues = [mhc[ref_res.get_id()] for ref_res in self.reference_MHC_residues if ref_res.get_id() in mhc]
@@ -167,8 +188,8 @@ class MHCII_TCRCoM(TCRCoM):
         self.reference_MHC_residues = [r for r in mhc.get_GA().get_residues() if r.get_id()[1] >= 1 and r.get_id()[1] <= 88]
         self.reference_MHC_residues.extend([r for r in mhc.get_GB().get_residues() if r.get_id()[1] >= 1 and r.get_id()[1] <= 87])
     
-    def get_filtered_MHC_residues(self):
-        mhc = self.tcr.get_MHC()[0]
+    def get_filtered_MHC_residues(self, tcr):
+        mhc = tcr.get_MHC()[0]
         filtered_MHC_residues = [
             mhc.get_GA()[ref_res.get_id()] 
             for ref_res in self.reference_MHC_residues 

@@ -1,7 +1,8 @@
 import unittest
 import os
+import glob
 
-from ..TCRpy.tcr_processing import TCRParser
+from ..TCRpy.tcr_processing import TCRParser, abTCR, TCR
 
 
 class TestTCRParser(unittest.TestCase):
@@ -70,13 +71,13 @@ class TestTCRParser(unittest.TestCase):
         print(tcr)
 
 
-    def test_delta_beta_tcr(self):
+    def test_delta_beta_tcr_parsed_as_abTCR(self):
         parser = TCRParser.TCRParser()
 
         pdb_file = 'TCRpy/test/test_files/DB_test_T104_rank_0_model_0_refined.pdb'
         tcr = parser.get_tcr_structure('test', pdb_file)
         assert set([''.join(sorted(x.id)) for x in tcr.get_TCRs()]) == set(['AB'])
-
+        assert all([isinstance(x, abTCR) for x in tcr.get_TCRs()])
 
     def test_save(self):
         parser = TCRParser.TCRParser()
@@ -108,3 +109,14 @@ class TestTCRParser(unittest.TestCase):
                 x,
                 save_as=f'TCRpy/test/test_files/test_{x.id}.pdb'
                 )
+
+    def test_error_prone_tcrs(self):
+        parser = TCRParser.TCRParser()
+        pdb_files = glob.glob('TCRpy/test/test_files/TCRParser_test_files/*')
+        for file in pdb_files:
+            pdb_id = file.split('/')[-1].split('.')[0]
+            print(pdb_id)
+            tcr_structure = parser.get_tcr_structure(pdb_id, file)
+            for tcr in tcr_structure.get_TCRs():
+                assert isinstance(tcr, TCR)
+

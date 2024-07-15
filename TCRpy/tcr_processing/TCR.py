@@ -117,7 +117,7 @@ class abTCR(TCR):
     def _add_domain(self, chain):
         if chain.chain_type == "B":
             self.VB = chain.id
-        elif chain.chain_type == "A":
+        elif chain.chain_type == "A" or chain.chain_type == "D":
             self.VA = chain.id
 
         # Add the chain as a child of this entity.
