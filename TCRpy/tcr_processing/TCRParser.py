@@ -37,13 +37,12 @@ MHC_CUTOFF = {
     "CD1:B2M": [32, 37, 32, 32],
     "MR1:B2M": [32, 37, 32, 32],
     "GA1:B2M": [32, 37, 32, 32],
-    "GB:GA": [22, 32, 34, 28],
+    "GB:GA": [22, 32, 35, 28],
 }
 
 
 class TCRParser(PDBParser, MMCIFParser):
     def __init__(self, PERMISSIVE=True, get_header=True, QUIET=False):
-    # def __init__(self, PERMISSIVE=True, get_header=True, QUIET=False):
         """
         Initialise the PDB parser. This is currently set to using IMGT's numbering scheme and uses the IMGT-defined CDRs.
 
