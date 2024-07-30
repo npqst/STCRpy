@@ -48828,9 +48828,9 @@ def get_name_type(residue):
     if not isinstance(residue, str):
         residue = residue.get_resname()
     residue = residue.strip()
-    try:
+    if residue in resname_to_name_and_type:
         return resname_to_name_and_type[residue]
-    except KeyError:
+    else:
         return get_from_expo(residue)
 
 
@@ -48849,7 +48849,7 @@ def get_from_expo(residue):
         response = urllib.request.urlopen(url, timeout=1)
 
         # parse the file for three things.
-        d = response.read()
+        d = str(response.read())
         ident = chem_comp_id.search(d).groups()[0].strip().strip("\"'")
         ctype = chem_comp_type.search(d).groups()[0].strip().strip("\"'").lower()
         name = chem_comp_name.search(d).groups()[0].strip().strip("\"'")
