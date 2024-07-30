@@ -153,18 +153,18 @@ def get_region( position, chain ):
     state_vec  = _regions["imgt"][chain]
 
     if chain in TCR_CHAINS:
-        try:
+        if index in imgt_state:
             state_idx  = imgt_state[index]
             # Returns a fwb1, cdra2... etc.
             return _reg_one2three[ state_vec[ state_idx ] ] % chain.lower()
-        except KeyError:
+        else:
             return "?"
     else:
-        try:
+        if index in imgt_state:
             state_idx  = imgt_state[index]
             # Returns whether helix or turn on the MHC (G-Domain annotation)
             return _reg_tostring[ state_vec[ state_idx ] ]
-        except KeyError:
+        else:
             return "?"
 
 def annotate_regions(numbered_sequence, chain):

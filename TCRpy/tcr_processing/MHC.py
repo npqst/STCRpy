@@ -220,6 +220,8 @@ class CD1(MHC):
             self.MHC_type = "CD1"
         elif hasattr(self, "GA1L") and hasattr(self, "GA2L"):
             self.MHC_type = "CD1"
+        elif hasattr(self, "GA1L") and hasattr(self, "B2M"):
+            self.MHC_type = "CD1"
         else:
             self.MHC_type = ""
 
@@ -230,6 +232,7 @@ class CD1(MHC):
             self.GA1L = chain.id
             self.GA2L = chain.id
         elif chain.chain_type == "GA1L":
+            self.CD1 = chain.id
             self.GA1L = chain.id
         elif chain.chain_type == "GA2L":
             self.GA2L = chain.id
@@ -302,3 +305,136 @@ class MR1(MHC):
     def get_B2M(self):
         if hasattr(self, "B2M"):
             return self.child_dict[self.B2M]
+
+
+class scMH1(MHC):
+    """
+    Type 1 MHC class.
+    Holds single chain MHC domains for Class I MHC if the identiifed chain
+    is the double alpha helix, ie. MH1 without B2M, with exception for GA1. 
+    """
+
+    def __init__(self, c1):
+        assert c1.chain_type in ["GA1", "GA2", "MH1"], f"Chain {c1} with can not form a single chain MHC class I."
+        Entity.__init__(self, c1.id)
+        
+        self.level = "H"
+        self._add_domain(c1)
+        self._set_MHC_type()
+        self.child_list = sorted(self.child_list, key=lambda x: x.id)
+        self.antigen = []
+        self.tcr = []
+        self.engineered = False
+
+    def __repr__(self):
+        if self.MHC_type == "MH1":
+            return "<%s %s GA1/GA2=%s>" % (
+                self.MHC_type,
+                self.MH1,
+                self.MH1,
+            )
+        else:
+            return "<GA1/GA2 %s GA1/GA2=%s>" % (
+                self.GA1,
+                self.GA1,
+            )
+
+    def _set_MHC_type(self):
+        if hasattr(self, "MH1") or hasattr(self, "GA1") or hasattr(self, "GA2"):
+            self.MHC_type = "MH1"
+        else:
+            self.MHC_type = ""
+
+    def _add_domain(self, chain):
+        if chain.chain_type in ["MH1", "GA1", "GA2"]:
+            self.MH1 = chain.id
+            self.GA1 = chain.id
+            self.GA2 = chain.id
+
+        # Add the chain as a child of this entity.
+        self.add(chain)
+
+    def get_alpha(self):
+        for MH1_domain in set(["MH1", "GA1", "GA2"]):
+            if hasattr(self, MH1_domain):
+                return self.child_dict[getattr(self, MH1_domain)]
+
+    def get_MH1(self):
+        if hasattr(self, "MH1"):
+            return self.child_dict[self.MH1]
+
+    def get_GA1(self):
+        if hasattr(self, "GA1"):
+            return self.child_dict[self.GA1]
+        else:
+            return self.get_MH1()
+        
+    def get_GA2(self):
+        if hasattr(self, "GA2"):
+            return self.child_dict[self.GA2]
+        else:
+            return self.get_MH1()
+        
+    def get_B2M(self):
+        return None
+    
+
+
+class scCD1(MHC):
+    """
+    Type 1 MHC class.
+    Holds single chain MHC domains of type CD1 for Class I MHC if the identiifed chain
+    is the double alpha helix, ie. CD1 without B2M. 
+    """
+
+    def __init__(self, c1):
+        assert c1.chain_type in ["GA1L", "CD1"], f"Chain {c1} with can not form a single chain MHC class I."
+        Entity.__init__(self, c1.id)
+        
+        self.level = "H"
+        self._add_domain(c1)
+        self._set_MHC_type()
+        self.child_list = sorted(self.child_list, key=lambda x: x.id)
+        self.antigen = []
+        self.tcr = []
+        self.engineered = False
+
+    def __repr__(self):
+        if self.MHC_type == "CD1":
+            return "<%s %s GA1L=%s>" % (
+                self.MHC_type,
+                self.CD1,
+                self.CD1,
+            )
+        else:
+            return "<GA1L %s GA1L=%s>" % (
+                self.GA1L,
+                self.GA1L,
+            )
+
+    def _set_MHC_type(self):
+        if hasattr(self, "CD1") or hasattr(self, "GA1L"):
+            self.MHC_type = "CD1"
+        else:
+            self.MHC_type = ""
+
+    def _add_domain(self, chain):
+        if chain.chain_type in ["CD1", "GA1L"]:
+            self.CD1 = chain.id
+            self.GA1L = chain.id
+
+        # Add the chain as a child of this entity.
+        self.add(chain)
+
+    def get_CD1(self):
+        if hasattr(self, "CD1"):
+            return self.child_dict[self.CD1]
+
+    def get_GA1L(self):
+        if hasattr(self, "GA1L"):
+            return self.child_dict[self.GA1L]
+        else:
+            return self.get_CD1()
+
+    def get_B2M(self):
+        return None

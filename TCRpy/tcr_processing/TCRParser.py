@@ -23,7 +23,7 @@ from ..utils.error_stream import ErrorStream
 from .TCRStructure import TCRStructure
 from .Model import Model
 from .TCR import TCR, abTCR, gdTCR, dbTCR
-from .MHC import MHC, MH1, MH2, CD1, MR1
+from .MHC import MHC, MH1, MH2, CD1, MR1, scMH1, scCD1
 from .Holder import Holder
 from .TCRchain import TCRchain
 from .MHCchain import MHCchain
@@ -35,9 +35,10 @@ from .Chemical_components import is_aa, is_common_buffer, get_res_type, is_carbo
 MHC_CUTOFF = {
     "MH1:B2M": [32, 37, 32, 32],
     "CD1:B2M": [32, 37, 32, 32],
+    "GA1L:B2M": [33, 37, 33, 32],           # added for GA1L case 2po6
     "MR1:B2M": [32, 37, 32, 32],
     "GA1:B2M": [32, 37, 32, 32],
-    "GB:GA": [22, 32, 35, 28],
+    "GB:GA": [22, 32, 35, 29],
 }
 
 
@@ -446,13 +447,31 @@ class TCRParser(PDBParser, MMCIFParser):
                 elif not (obs_chaintypes - set(["GA", "GB"])):
                     mhc = MH2(pair[0], pair[1])
                 elif not (obs_chaintypes - set(["CD1", "B2M"])) or not (
-                    obs_chaintypes - set(["GA1L", "GA2L"])
+                    obs_chaintypes - set(["GA1L", "GA2L"])) or not (
+                        obs_chaintypes - set(["GA1L", "B2M"])
                 ):
                     mhc = CD1(pair[0], pair[1])
                 elif not (obs_chaintypes - set(["MR1", "B2M"])):
                     mhc = MR1(pair[0], pair[1])
+                else:
+                    raise ValueError(f'MHC pairing {pair} could not be assigned.')
 
                 newmodel.add(mhc)
+
+            # allow instantiation of single chain MH1 type MH class if the alpha helices forming chain has been observed
+            ids_to_detach = []
+            for mhc_chain in mhchains:
+                if mhc_chain.chain_type in ["MH1", "GA1", "GA2"]:
+                    ids_to_detach.append(mhc_chain.id)
+                    sc_mhc = scMH1(mhc_chain)
+                    newmodel.add(sc_mhc)
+                elif mhc_chain.chain_type in ["CD1", "GA1L"]:
+                    ids_to_detach.append(mhc_chain.id)
+                    sc_mhc = scCD1(mhc_chain)
+                    newmodel.add(sc_mhc)
+                    
+            for mhc_chain_id in ids_to_detach:
+                mhchains.detach_child(mhc_chain_id)
 
             # Match MHC+antigen complex with a TCR
             self._match_units(newmodel, trchains, mhchains, agchains, crystal_contacts)
@@ -595,6 +614,7 @@ class TCRParser(PDBParser, MMCIFParser):
             "GA1": [(" ", 15, " "), (" ", 51, " ")],
             "GA2": [(" ", 15, " "), (" ", 51, " ")],
             "CD1": [(" ", 15, " "), (" ", 51, " ")],  # pretty similar to MH1
+            "GA1L": [(" ", 15, " "), (" ", 51, " ")],  # pretty similar to MH1
             "MR1": [(" ", 15, " "), (" ", 51, " ")],  # pretty similar to MH1
             "B2M": [(" ", 23, " "), (" ", 104, " ")],
             "GA": [(" ", 29, " "), (" ", 37, " ")],
@@ -607,7 +627,7 @@ class TCRParser(PDBParser, MMCIFParser):
             "CD1:B2M",
             "MR1:B2M",
             "GA1:B2M",
-            "GA1:B2M",
+            "GA1L:B2M",
         ]
 
         for pair in combinations(chains, 2):
@@ -844,18 +864,21 @@ class TCRParser(PDBParser, MMCIFParser):
                     antigen_hetatoms[mh.GA1], antigen_sugars[mh.GA1] = (
                         self._find_chain_hetatoms(GA1)
                     )
-                antigen_hetatoms[mh.B2M], antigen_sugars[mh.B2M] = (
-                    self._find_chain_hetatoms(B2M)
-                )
+                if B2M is not None:         # handle single chain MH1 case
+                    antigen_hetatoms[mh.B2M], antigen_sugars[mh.B2M] = (
+                        self._find_chain_hetatoms(B2M)
+                    )
 
             elif isinstance(mh, MHC) and mh.MHC_type == "CD1":
                 CD1, B2M = mh.get_CD1(), mh.get_B2M()
-                antigen_hetatoms[mh.CD1], antigen_sugars[mh.CD1] = (
-                    self._find_chain_hetatoms(CD1)
-                )
-                antigen_hetatoms[mh.B2M], antigen_sugars[mh.B2M] = (
-                    self._find_chain_hetatoms(B2M)
-                )
+                if CD1 is not None:
+                    antigen_hetatoms[mh.CD1], antigen_sugars[mh.CD1] = (
+                        self._find_chain_hetatoms(CD1)
+                    )
+                if B2M is not None:
+                    antigen_hetatoms[mh.B2M], antigen_sugars[mh.B2M] = (
+                        self._find_chain_hetatoms(B2M)
+                    )
 
             elif isinstance(mh, MHC) and mh.MHC_type == "MR1":
                 MR1, B2M = mh.get_MR1(), mh.get_B2M()

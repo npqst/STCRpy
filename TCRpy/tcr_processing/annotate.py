@@ -8,12 +8,8 @@ Implementation to call anarci (built-in to STrDab) to annotate structures.
 import os, sys, subprocess, tempfile
 import Bio
 
-try:
-    from Bio.PDB.Polypeptide import to_one_letter_code
-except ImportError:  # version handling
-    from Bio.PDB.Polypeptide import aa1, aa3  # to allow me to return "X" if not found.
-
-    to_one_letter_code = dict(list(zip(aa3, aa1)))
+from Bio.PDB.Polypeptide import aa1, aa3  # to allow me to return "X" if not found.
+to_one_letter_code = dict(list(zip(aa3, aa1)))
 
 # Import TCRDB's constants and common functions.
 from .utils.constants import RESIDUES_SINGLE_STRING, TCR_CHAINS

@@ -3,6 +3,7 @@ import os
 import numpy as np
 import Bio
 from typing import Union
+import warnings
 
 from ..tcr_processing.TCRParser import TCRParser
 from ..tcr_processing.TCRIO import TCRIO
@@ -116,7 +117,10 @@ class TCRCoM():
         mhc_atoms = [res["CA"] for res in self.get_filtered_MHC_residues(tcr)]
         ref_mhc_atoms = [
             res["CA"] for res in self.reference_MHC_residues
-            if res.get_id() in [a.parent.get_id() for a in mhc_atoms]
+            if (res.parent.chain_type, res.get_id()) in [
+                (a.parent.parent.chain_type, a.parent.get_id())
+                for a in mhc_atoms
+                ]
             ]
 
         superimposer = Bio.PDB.Superimposer()
@@ -190,14 +194,20 @@ class MHCII_TCRCoM(TCRCoM):
     
     def get_filtered_MHC_residues(self, tcr):
         mhc = tcr.get_MHC()[0]
-        filtered_MHC_residues = [
-            mhc.get_GA()[ref_res.get_id()] 
-            for ref_res in self.reference_MHC_residues 
-            if ref_res.parent.chain_type == 'GA' and ref_res.get_id() in mhc.get_GA()
-            ]
-        filtered_MHC_residues.extend([
-            mhc.get_GB()[ref_res.get_id()] 
-            for ref_res in self.reference_MHC_residues
-            if ref_res.parent.chain_type == 'GB' and ref_res.get_id() in mhc.get_GB()
-            ])
+        if hasattr(mhc, 'get_GA'):
+            filtered_MHC_residues = [
+                mhc.get_GA()[ref_res.get_id()]
+                for ref_res in self.reference_MHC_residues
+                if ref_res.parent.chain_type == 'GA' and ref_res.get_id() in mhc.get_GA()
+                ]
+        else:
+            warnings.warn(f'No GA chain found for MHC class II: {mhc}')
+        if hasattr(mhc, 'get_GA'):
+            filtered_MHC_residues.extend([
+                mhc.get_GB()[ref_res.get_id()] 
+                for ref_res in self.reference_MHC_residues
+                if ref_res.parent.chain_type == 'GB' and ref_res.get_id() in mhc.get_GB()
+                ])
+        else:
+            warnings.warn(f'No GB chain found for MHC class II: {mhc}')
         return filtered_MHC_residues

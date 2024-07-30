@@ -64,11 +64,11 @@ class MHCchain(Chain, Entity):
     def set_sequence(self):
         i = 0
         for residue in self:
-            try:
+            if residue.get_resname().capitalize() in SeqUtils.IUPACData.protein_letters_3to1:
                 resname = SeqUtils.IUPACData.protein_letters_3to1[
-                    residue.get_resname()
+                    residue.get_resname().capitalize()
                 ]  # change this to use our chemical components.
-            except KeyError:
+            else:
                 # skip the residue if the code is not recognised - e.g. UNK
                 continue
             hetflag, resseq, icode = residue.get_id()

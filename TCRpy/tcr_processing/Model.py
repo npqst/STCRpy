@@ -22,13 +22,11 @@ class Model(Bio.PDB.Model.Model, Bio.PDB.Entity.Entity):
 
     def __getitem__(self, identifier):
         "Return the child with given identifier."
-        try:
+        if identifier in self.child_dict:
             return self.child_dict[identifier]
-        except KeyError:
+        else:
             # Allow a single chain to be called from a model.
             for child in self:
-                try:
+                if child.id in self.child_dict and identifier in self.child_dict[child.id].child_dict:
                     return self.child_dict[child.id].child_dict[identifier]
-                except KeyError:
-                    continue
-            raise KeyError(identifier)
+            raise KeyError(identifier)          # raise error if chain belonging to identifier is not found
