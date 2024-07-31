@@ -4,10 +4,12 @@ import typing
 import pandas as pd
 import plip
 
-from ..tcr_processing.TCR import abTCR, gdTCR
+# if typing.TYPE_CHECKING:
+#     from ..tcr_processing.TCR import abTCR, gdTCR
+
 
 from . import utils as plip_utils
-from .TCRpMHC_Plip_Model_Parser import TCRpMHC_PLIP_Model_Parser
+from .TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
 
 # from plip.basic.remote import VisualizerData
 # from plip.visualization.visualize import visualize_in_pymol
@@ -18,7 +20,7 @@ class PLIPParser():
     def parse_complex(
             self,
             complex: plip.structure.preparation.PDBComplex,
-            tcr_pmhc_complex: typing.Union[abTCR, gdTCR] = None, 
+            tcr_pmhc_complex: typing.Union['abTCR', 'gdTCR'] = None,
             renumbering = None, 
             domain_assignment = None,
             ) -> pd.DataFrame:

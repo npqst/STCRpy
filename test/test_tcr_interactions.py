@@ -7,8 +7,8 @@ from rdkit import Chem
 
 
 from ..TCRpy.tcr_processing import TCRParser
-from ..TCRpy.tcr_interactions.TCRpMHC_Plip_Model_Parser import TCRpMHC_PLIP_Model_Parser
-from ..TCRpy.tcr_interactions.PlipParser import PLIPParser
+from ..TCRpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
+from ..TCRpy.tcr_interactions.PLIPParser import PLIPParser
 
 class TestTCRInteractions(unittest.TestCase):
 
@@ -51,6 +51,25 @@ class TestTCRInteractions(unittest.TestCase):
         assert len(interactions[interactions.domain == 'VB']) == 1
         assert interactions[interactions.domain == 'VB'].protein_residue.item() == 'ASP'
         assert interactions[interactions.domain == 'VB'].protein_number.item() == 96
+
+    def test_TCR_plip_methods(self):
+        parser = TCRParser.TCRParser()
+        test_file = './TCRpy/test/test_files/8gvb.cif'
+        tcr = [x for x in parser.get_tcr_structure('tmp', test_file).get_TCRs()][0]
+
+        interactions = tcr.profile_peptide_interactions()
+        
+        assert len(interactions) == 28
+        assert len(interactions[interactions.type == 'hbond']) == 12
+        assert len(interactions[interactions.type == 'hydrophobic']) == 12
+        assert len(interactions[interactions.type == 'pistack']) == 1
+        assert len(interactions[interactions.type == 'saltbridge']) == 3
+
+        assert len(interactions[interactions.domain == 'VB']) == 1
+        assert interactions[interactions.domain == 'VB'].protein_residue.item() == 'ASP'
+        assert interactions[interactions.domain == 'VB'].protein_number.item() == 96
+
+
 
 
 

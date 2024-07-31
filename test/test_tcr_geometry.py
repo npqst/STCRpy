@@ -129,7 +129,6 @@ class TestTCRGeometry(unittest.TestCase):
                 )
             print(r, theta, phi)
 
-
     def test_error_prone_MHC_I_TCRCoM_examples(self):
         parser = TCRParser.TCRParser()
         pdb_files = glob.glob('TCRpy/test/test_files/TCRCoM_test_files/*')
@@ -170,3 +169,11 @@ class TestTCRGeometry(unittest.TestCase):
                     print(x.geometry)
                 except Exception as e:
                     print(e)
+
+    def test_TCR_geom_methods(self):
+        parser = TCRParser.TCRParser()
+        test_file = './TCRpy/test/test_files/8gvb.cif'
+        tcr = list(parser.get_tcr_structure('8gvb', test_file).get_TCRs())[0]
+        geometry = tcr.calculate_docking_geometry()
+        assert 'scanning_angle' in geometry
+
