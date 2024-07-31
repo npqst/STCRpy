@@ -2,7 +2,7 @@ import unittest
 import os
 import glob
 
-from ..TCRpy.tcr_processing import TCRParser, abTCR, TCR
+from ..TCRpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
 
 
 class TestTCRParser(unittest.TestCase):
@@ -119,4 +119,69 @@ class TestTCRParser(unittest.TestCase):
             tcr_structure = parser.get_tcr_structure(pdb_id, file)
             for tcr in tcr_structure.get_TCRs():
                 assert isinstance(tcr, TCR)
+
+    def test_MHC_single_chain_handling(self):
+        import glob
+        parser = TCRParser.TCRParser()
+        stcrdab_pdb_files = glob.glob(
+            '/home/quast/Projects/STCRDab/Data/entries/*/structure/imgt/*.pdb'
+        )
+        stcrdab_pdb_files.sort()
+        badly_parsed_pdb = []
+        errors = {}
+        single_chain_MHC = {}
+        apo_TCRs = {}
+        for pdb_file in stcrdab_pdb_files:
+            pdb_id = pdb_file.split('/')[-1].split('.')[0]
+            try:
+                tcr = parser.get_tcr_structure(pdb_id, pdb_file)
+                if len(list(tcr.get_TCRs())) == 0:
+                    badly_parsed_pdb.append(pdb_id)
+                else:
+                    for t in tcr.get_TCRs():
+                        if len(t.get_MHC()) == 0:
+                            apo_TCRs[f'{pdb_id}_{t.id}'] = t
+                            print(pdb_id, 'No MHC found')
+                            continue
+                        mhc = t.get_MHC()
+                        print(pdb_id, mhc)
+                        if isinstance(mhc[0], MHCchain):
+                            single_chain_MHC[pdb_id] = t
+            except Exception as e:
+                errors[pdb_id] = e
+        print(badly_parsed_pdb)
+        print(len(badly_parsed_pdb))
+        assert len(single_chain_MHC) == 0
+
+
+    def test_MHC_association(self):
+        import glob
+        parser = TCRParser.TCRParser()
+        stcrdab_pdb_files = glob.glob(
+            '/home/quast/Projects/STCRDab/Data/entries/*/structure/imgt/*.pdb'
+        )
+        stcrdab_pdb_files.sort()
+        badly_parsed_pdb = []
+        errors = {}
+        apo_TCRs = {}
+        true_apo = [
+            '1hxm','1kb5', '1kgc', '1nfd', '1tcr', '2bnu', '2cde', '2cdf', '2cdg', '2eyr', '2eys', '2eyt', '2ial',
+        ]
+        for pdb_file in stcrdab_pdb_files:
+            pdb_id = pdb_file.split('/')[-1].split('.')[0]
+            try:
+                tcr = parser.get_tcr_structure(pdb_id, pdb_file)
+                if len(list(tcr.get_TCRs())) == 0:
+                    badly_parsed_pdb.append(pdb_id)
+                else:
+                    for t in tcr.get_TCRs():
+                        if len(t.get_MHC()) == 0 and any([isinstance(x, MHC) for x in tcr.child_list]):
+                            apo_TCRs[f'{pdb_id}_{t.id}'] = t
+                            print(pdb_id, 'No MHC found')
+                            continue
+            except Exception as e:
+                errors[pdb_id] = e
+        print(badly_parsed_pdb)
+        print(len(badly_parsed_pdb))
+        assert len(apo_TCRs) == 0
 

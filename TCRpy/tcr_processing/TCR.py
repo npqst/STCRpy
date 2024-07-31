@@ -3,9 +3,17 @@ Created on 3rd April 2024
 @author: Nele Quast based on work by Dunbar and Leem 
 The TCR class.
 """
+import sys
+import warnings
+import typing
 
 from .Entity import Entity
-import sys
+
+try:
+    from .. import tcr_interactions
+except ImportError as e:
+    warnings.warn('TCR interaction profiling could not be imported. Check PLIP installation')
+    print(e)
 
 
 class TCR(Entity):
@@ -90,6 +98,51 @@ class TCR(Entity):
         elif hasattr(self, "VB") and hasattr(self, "VD"):
             self.tcr_type = "dbTCR"
             return self.tcr_type
+
+    def calculate_docking_geometry(self):
+        
+        if len(self.get_MHC()) == 0:
+            warnings.warn(f'No MHC found for TCR {self}. Docking geometry cannot be calcuated')
+            return None
+        
+        try:            # import here to avoid circular imports
+            from ..tcr_geometry.TCRGeom import TCRGeom
+        except ImportError as e:
+            warnings.warn('TCR geometry calculation could not be imported. Check installation')
+            raise ImportError(str(e))
+        
+        self.geometry = TCRGeom(self)
+        return self.geometry.to_dict()
+
+    def profile_peptide_interactions(self, renumber: bool=True, save_to: str=None) -> 'pd.DataFrame':
+        if len(self.get_antigen()) == 0:
+            warnings.warn(f'No peptide antigen found for TCR {self}. Peptide interactions cannot be profiled')
+            return None 
+
+        if 'TCRpy.TCRpy.tcr_interactions.PLIPParser' not in sys.modules:
+            warnings.warn(f'TCR interactions module was not imported. Check warning log and PLIP installation')
+            return None
+        
+        plip_parser = tcr_interactions.PLIPParser.PLIPParser()
+        model_parser = tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser()
+
+        mol = model_parser.parse_tcr_pmhc_complex(self, renumber=renumber)
+        if renumber:
+            mol, renumbering, domains = mol
+        else:
+            renumbering = None
+        mol.analyze()
+        interactions = plip_parser.parse_complex(mol, self, renumbering, domain_assignment=domains)
+        if save_to is not None:
+            interactions.to_csv(save_to)
+        
+        return interactions
+
+    def profile_TCR_interactions(self):
+        raise NotImplementedError
+
+    def profile_MHC_interactions(self):
+        raise NotImplementedError
 
 
 class abTCR(TCR):
