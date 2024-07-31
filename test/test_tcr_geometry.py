@@ -156,12 +156,13 @@ class TestTCRGeometry(unittest.TestCase):
         parser = TCRParser.TCRParser()
         pdb_files = glob.glob(
             'TCRpy/test/test_files/TCRCoM_test_files/*.cif')
+            # 'TCRpy/test/test_files/TCRCoM_test_files/7sg0.cif')
         for file in pdb_files:
             file_id = file.split('/')[-1].split('.')[0]
             print(file_id)
             tcr = parser.get_tcr_structure(file_id, file)
             for x in tcr.get_TCRs():
-                try: 
+                try:
                     x.geometry = TCRGeom.TCRGeom(
                         x,
                         save_aligned_as=f'TCRpy/test/test_files/out/{file_id}_aligned.pdb'
