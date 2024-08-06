@@ -1,7 +1,7 @@
 import unittest
 
 from ..TCRpy.tcr_processing.TCRParser import TCRParser
-from ..TCRpy.tcr_datasets.tcr_graph_dataset import TCRGraphConstructor
+from ..TCRpy.tcr_datasets.tcr_graph_dataset import TCRGraphConstructor, TCRGraphDataset
 
 
 class TestTCRDatasets(unittest.TestCase):    
@@ -26,3 +26,10 @@ class TestTCRDatasets(unittest.TestCase):
             }
         
         graph_constructor.build_graph(self.tcr)
+
+    def test_TCRGraphDataset(self):
+        dataset = TCRGraphDataset(root='TCRpy/test/test_files/TCRGraphDataset_test_files', force_reload=True)
+        print(dataset)
+        for i in range(len(dataset)):
+            datapoint = dataset[i]
+            print(datapoint)
