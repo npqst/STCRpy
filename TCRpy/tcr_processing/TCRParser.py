@@ -16,13 +16,12 @@ from Bio.PDB import NeighborSearch
 
 # TCRDB
 from .annotate import annotate, extract_sequence, align_numbering
-from .utils.common import angle
 
 from ..utils.error_stream import ErrorStream
 
 from .TCRStructure import TCRStructure
 from .Model import Model
-from .TCR import TCR, abTCR, gdTCR, dbTCR
+from .TCR import TCR, abTCR, gdTCR
 from .MHC import MHC, MH1, MH2, CD1, MR1, scMH1, scCD1
 from .Holder import Holder
 from .TCRchain import TCRchain
@@ -227,7 +226,8 @@ class TCRParser(PDBParser, MMCIFParser):
         self._analyse_header(tcrstructure)
 
         # iterate over the models in the structure
-        # iterate backwards through the model list - delete old structure as we go - e.g. NMR structures will be extremely memory expensive (72 models!)
+        # iterate backwards through the model list - delete old structure as we go
+        # e.g. NMR structures will be extremely memory expensive (72 models!)
 
         for mid in range(len(structure.child_list) - 1, -1, -1):
             # add a model to the TCR structure
@@ -324,7 +324,7 @@ class TCRParser(PDBParser, MMCIFParser):
                     mhchains.add(newchain)
 
                 elif numbering and scTCR:
-                    ## Separate numbering into two domains
+                    # Separate numbering into two domains
                     types = list(chain_type)
                     domain1, domain2 = numbering
 
@@ -469,7 +469,7 @@ class TCRParser(PDBParser, MMCIFParser):
                     ids_to_detach.append(mhc_chain.id)
                     sc_mhc = scCD1(mhc_chain)
                     newmodel.add(sc_mhc)
-                    
+
             for mhc_chain_id in ids_to_detach:
                 mhchains.detach_child(mhc_chain_id)
 
@@ -577,7 +577,8 @@ class TCRParser(PDBParser, MMCIFParser):
     def _pair_chains(self, chains):
         """
         Method to pair beta/alpha and gamma/delta chains to form TCRs.
-        Currently this is based off of ABDB.AbPDB's chain pairing method where the distance between positions 104 are calculated using the same 22A cutoff.
+        Currently this is based off of ABDB.AbPDB's chain pairing method where the
+        distance between positions 104 are calculated using the same 22A cutoff.
         This is a simple heuristic for now.
         """
         pairings = []
@@ -604,7 +605,8 @@ class TCRParser(PDBParser, MMCIFParser):
         """
         This is a heuristic that pairs MHC chains together. In theory, we should have a GA-GB chain (MHC2) or a GA1/GA2-C (MHC1).
         Use an arbitrary cutoff of 45A for pairing the MHC for now.
-        Where possible, use the conserved cysteine in the GA2/GB domains (resi 1074 or 11) and pair up with another conserved point (Cys 104 in B2M, N86 in GA)
+        Where possible, use the conserved cysteine in the GA2/GB domains (resi 1074 or 11) and pair up with another
+        conserved point (Cys 104 in B2M, N86 in GA)
 
         Impose an angle cutoff so that the cysteine of the B2M points in the correct orientation
         """
@@ -681,7 +683,9 @@ class TCRParser(PDBParser, MMCIFParser):
         #        22 - 26         Integer          serial          Serial number of bonded atom
         #        27 - 31         Integer          serial          Serial number of bonded atom
         connect_records = {}
-        for c in [l.strip() for l in self.current_parser.trailer if "CONECT" in l]:
+        for c in [
+            line.strip() for line in self.current_parser.trailer if "CONECT" in line
+        ]:
             try:
                 connect_records[int(c[6:11])] = []
             except IndexError:
@@ -696,7 +700,7 @@ class TCRParser(PDBParser, MMCIFParser):
                     break
                 except ValueError:
                     self.warnings.write(
-                        "Warning: unexpected CONECT record format %s" % l.strip()
+                        "Warning: unexpected CONECT record format %s" % c.strip()
                     )
 
         monomer_atoms = []
@@ -967,7 +971,8 @@ class TCRParser(PDBParser, MMCIFParser):
 
         # Pair a TCR with an MHC and vice-versa; go through all possible combinations of TCR/MHC
         # We see if a CB/CA atom of the helix region of an MHC is within 8A of a TCR CDR loop's CB/CA atoms.
-        # This is similar to the _protein_peptide_pass algorithm; we find the number of contacts between MHC and TCR, and use the MHC with highest no. of contacts
+        # This is similar to the _protein_peptide_pass algorithm; we find the number of contacts between MHC and TCR,
+        # and use the MHC with highest no. of contacts
         contact_freq = defaultdict(int)
         tr_mh_pairs = list(product(tcell_receptors, mhc_complexes))
 
@@ -979,7 +984,7 @@ class TCRParser(PDBParser, MMCIFParser):
                 for c in contacts:
                     contact_freq[(tr.id, mh.id)] += 1
 
-        ## Sort TR-MH pairs by number of contacts and then get the highest-frequency pairs
+        # Sort TR-MH pairs by number of contacts and then get the highest-frequency pairs
         sorted_contacts = sorted(
             list(contact_freq.items()), key=lambda z: z[1], reverse=True
         )
@@ -1043,7 +1048,8 @@ class TCRParser(PDBParser, MMCIFParser):
             ):
                 T = all_cpx_chains[p1]
                 ag = p2
-            # If the second set of potential contacting set of chains (p2+p1) is not a TR and p2 is a TR chain but p1 is NOT a TR chain, then p1 is an AG
+            # If the second set of potential contacting set of chains (p2+p1) is not a TR and p2 is a TR chain but p1 is NOT a TR chain,
+            # then p1 is an AG
             elif (
                 (potential_contact2 not in cpxids)
                 and (p2 in all_cpx_chains)
@@ -1123,7 +1129,8 @@ class TCRParser(PDBParser, MMCIFParser):
 
                             if residue_type == "Hapten":
                                 self.warnings.write(
-                                    "Warning: Multiple hapten-antigen like molecules found in binding site - this needs attention as could be solvent/cofactor."
+                                    """Warning: Multiple hapten-antigen like molecules found in binding site -
+                                    this needs attention as could be solvent/cofactor."""
                                 )
                             if residue_type == "non-polymer":
                                 contact.type = "Hapten"  # add a antigen type attribute to the residue

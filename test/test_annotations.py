@@ -15,6 +15,3 @@ class TestAnnotaions(unittest.TestCase):
 
     def test_TCR_numbering(self):
         pass
-
-
-    

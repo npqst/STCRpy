@@ -311,13 +311,17 @@ class scMH1(MHC):
     """
     Type 1 MHC class.
     Holds single chain MHC domains for Class I MHC if the identiifed chain
-    is the double alpha helix, ie. MH1 without B2M, with exception for GA1. 
+    is the double alpha helix, ie. MH1 without B2M, with exception for GA1.
     """
 
     def __init__(self, c1):
-        assert c1.chain_type in ["GA1", "GA2", "MH1"], f"Chain {c1} with can not form a single chain MHC class I."
+        assert c1.chain_type in [
+            "GA1",
+            "GA2",
+            "MH1",
+        ], f"Chain {c1} with can not form a single chain MHC class I."
         Entity.__init__(self, c1.id)
-        
+
         self.level = "H"
         self._add_domain(c1)
         self._set_MHC_type()
@@ -368,29 +372,31 @@ class scMH1(MHC):
             return self.child_dict[self.GA1]
         else:
             return self.get_MH1()
-        
+
     def get_GA2(self):
         if hasattr(self, "GA2"):
             return self.child_dict[self.GA2]
         else:
             return self.get_MH1()
-        
+
     def get_B2M(self):
         return None
-    
 
 
 class scCD1(MHC):
     """
     Type 1 MHC class.
     Holds single chain MHC domains of type CD1 for Class I MHC if the identiifed chain
-    is the double alpha helix, ie. CD1 without B2M. 
+    is the double alpha helix, ie. CD1 without B2M.
     """
 
     def __init__(self, c1):
-        assert c1.chain_type in ["GA1L", "CD1"], f"Chain {c1} with can not form a single chain MHC class I."
+        assert c1.chain_type in [
+            "GA1L",
+            "CD1",
+        ], f"Chain {c1} with can not form a single chain MHC class I."
         Entity.__init__(self, c1.id)
-        
+
         self.level = "H"
         self._add_domain(c1)
         self._set_MHC_type()

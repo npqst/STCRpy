@@ -7,6 +7,7 @@ A modified Entity class based on SAbDab's ABDB.AbPDB and Bio.PDB's entity
 """
 
 import sys
+import io
 from copy import copy
 from textwrap import wrap
 
@@ -97,7 +98,7 @@ class Entity(Bio.PDB.Entity.Entity):
                     output_string += output_string_add
         return output_string, n
 
-        ## TODO
+        # TODO
 
     def save(self, output=sys.stdout, renumber=True, selection=False, remarks=True):
         """
@@ -231,8 +232,8 @@ class Entity(Bio.PDB.Entity.Entity):
                             remark_string += (
                                 "\n".join(
                                     [
-                                        "REMARK   5 " + l.upper()
-                                        for l in wrap(warning, width=60)
+                                        "REMARK   5 " + w.upper()
+                                        for w in wrap(warning, width=60)
                                     ]
                                 )
                                 + "\n"
@@ -252,7 +253,7 @@ class Entity(Bio.PDB.Entity.Entity):
         elif type(output) is str:
             with open(output, "w") as out:
                 out.write(output_string)
-        elif type(output) is file:
+        elif isinstance(output, io.IOBase):
             output.write(output_string)
 
     def transform(self, rot, tran):

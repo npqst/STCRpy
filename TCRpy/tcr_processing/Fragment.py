@@ -5,7 +5,7 @@ Modified version of the ABDB.AbPDB.Fragment class
 """
 
 from .Entity import Entity
-from Bio.PDB.PDBExceptions import PDBConstructionException, PDBException
+from Bio.PDB.PDBExceptions import PDBConstructionException
 
 
 class Fragment(Entity):

@@ -4,16 +4,14 @@ Created on 10 May 2017
 
 Implementation to call anarci (built-in to STrDab) to annotate structures.
 """
-
-import os, sys, subprocess, tempfile
-import Bio
+import sys
 
 from Bio.PDB.Polypeptide import aa1, aa3  # to allow me to return "X" if not found.
+
 to_one_letter_code = dict(list(zip(aa3, aa1)))
 
 # Import TCRDB's constants and common functions.
-from .utils.constants import RESIDUES_SINGLE_STRING, TCR_CHAINS
-from .utils.common import identity
+from .utils.constants import TCR_CHAINS
 from anarci import number as anarci_number
 from Bio.pairwise2 import align
 
@@ -50,7 +48,7 @@ def call_anarci(
 
     if numbering and "MR" not in chain_type and chain_type in allow:
         return [(_, aa) for _, aa in numbering if aa != "-"], chain_type
-    elif numbering and chain_type in ["BA", "GD", "AB", "DG", "CD1", "MR1"]:
+    elif numbering and chain_type in ["BA", "GD", "AB", "DG"]:
         return [[(_, aa) for _, aa in n if aa != "-"] for n in numbering], chain_type
     else:
         return False, False
@@ -59,8 +57,11 @@ def call_anarci(
 def annotate(chain):
     """
     Annotate the sequence of a chain object from TCRDB.TcrPDB
-    # e.g. if you have chains B, A and X, you want to force the annotator to return the annotation for B and A but not for X (the antigen)
-    returns a dictionary which has the residue ids as key and the annotation as value or is False, and chain type which is B/A/G/D/MH1/GA/GB/B2M or False.
+    # e.g. if you have chains B, A and X, you want to force the annotator to return the annotation
+    # for B and A but not for X (the antigen)
+
+    returns a dictionary which has the residue ids as key and the annotation as value or is False,
+    and chain type which is B/A/G/D/MH1/GA/GB/B2M or False.
     """
     sequence_list, sequence_str = extract_sequence(chain)
     numbering, chain_type = call_anarci(sequence_str)
@@ -126,7 +127,8 @@ def extract_sequence(
                 if ignore_hets:
                     if return_warnings:
                         warnings.append(
-                            "Warning: HETATM residue %s at position %s (PDB numbering) found in chain %s. Not including it in structure's sequence."
+                            """Warning: HETATM residue %s at position %s (PDB numbering) found in chain %s.
+                            Not including it in structure's sequence."""
                             % (
                                 residue.get_resname(),
                                 str(residue.id[1]) + residue.id[2].strip(),
@@ -135,7 +137,8 @@ def extract_sequence(
                         )
                     else:
                         sys.stderr.write(
-                            "Warning: HETATM residue %s position %s (PDB numbering) found in chain %s. Not including it in structure's sequence.\n"
+                            """Warning: HETATM residue %s position %s (PDB numbering) found in chain %s.
+                            Not including it in structure's sequence.\n"""
                             % (
                                 residue.get_resname(),
                                 str(residue.id[1]) + residue.id[2].strip(),
@@ -207,7 +210,7 @@ def align_numbering(numbering, sequence_list, alignment_dict={}):
                 alignment_dict = get_alignment_dict(
                     input_sequence_ali, numbered_sequence_ali
                 )
-            except:
+            except Exception:
                 raise Exception(
                     "Could not align numbered sequence to aligned sequence:"
                     + " "
@@ -265,7 +268,7 @@ def align_scTCR_numbering(numbering, sequence_list, sequence_str):
                     a_sequence, input_sequence
                 )
                 alignment_dict = get_alignment_dict(input_sequence_ali, a_sequence_ali)
-            except:
+            except Exception:
                 raise Exception(
                     "Could not align numbered sequence to aligned sequence"
                     + "\n"
@@ -306,9 +309,10 @@ def align_scTCR_numbering(numbering, sequence_list, sequence_str):
 
 def cleanup_scTCR_numbering(numbering_dict, sequence_list):
     """
-    The scTCR numbering method, while useful for sequences with two domains, can have gaps in between (e.g. CD1 molecule of 4lhu).
-    This is to close the gaps in the numbering so that residues that were unnumbered by anarci don't move around during structural parsing
-    (when they're probably just connections between domains).
+    The scTCR numbering method, while useful for sequences with two domains,
+    can have gaps in between (e.g. CD1 molecule of 4lhu).
+    This is to close the gaps in the numbering so that residues that were unnumbered by anarci don't move around
+    during structural parsing (when they're probably just connections between domains).
 
     @param numbering_dict: numbered dictionary from align_scTCR_numbering
     @param sequence_list : sequence list from the structure for alignment.

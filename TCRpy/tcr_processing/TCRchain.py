@@ -1,15 +1,3 @@
-"""
-Created on 9 May 2017
-
-@author: leem; derived from the ABchain class from dunbar.
-
-@change: unnumbered list now contains the id's of the unnumbered residues. Unnumbered residues are now yielded by iterating over the list.
-@change: The child residues now have a chothia numbered flag (True if chothia numbered false otherwise).
-@change: non-amino acid HETATMs now included in the children. (and reference in unnumbered)
-
-@change: TCRchain.antigen is now a list. Each member of the list is a bound antigen. This handles multi-chain antigens. 
-"""
-
 from Bio.PDB import Chain
 from Bio import SeqUtils
 from .utils.region_definitions import get_region
@@ -51,7 +39,10 @@ class TCRchain(Chain.Chain, Entity):
             self.antigen.append(antigen)
 
     def is_bound(self):
-        if self.antigen:
+        """
+        Check whether there is an antigen bound to the TCR
+        """
+        if self.get_antigen():
             return True
         else:
             return False
@@ -71,7 +62,10 @@ class TCRchain(Chain.Chain, Entity):
     def set_sequence(self):
         i = 0
         for residue in self:
-            if residue.get_resname().capitalize() in SeqUtils.IUPACData.protein_letters_3to1:
+            if (
+                residue.get_resname().capitalize()
+                in SeqUtils.IUPACData.protein_letters_3to1
+            ):
                 resname = SeqUtils.IUPACData.protein_letters_3to1[
                     residue.get_resname().capitalize()
                 ]  # change this to use our chemical components.
@@ -117,15 +111,6 @@ class TCRchain(Chain.Chain, Entity):
         self.fragments.set_parent(self)
         for region in regions[self.chain_type]:
             self.fragments.add(Fragment(region))
-
-    def is_bound(self):
-        """
-        Check whether there is an antigen bound to the TCR
-        """
-        if self.get_antigen():
-            return True
-        else:
-            return False
 
     def is_engineered(self):
         return self.engineered

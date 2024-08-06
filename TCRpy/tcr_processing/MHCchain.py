@@ -11,7 +11,6 @@ from Bio.PDB.Chain import Chain
 from .Entity import Entity
 from .Fragment import Fragment
 from Bio import SeqUtils
-from copy import copy
 
 
 class MHCchain(Chain, Entity):
@@ -64,7 +63,10 @@ class MHCchain(Chain, Entity):
     def set_sequence(self):
         i = 0
         for residue in self:
-            if residue.get_resname().capitalize() in SeqUtils.IUPACData.protein_letters_3to1:
+            if (
+                residue.get_resname().capitalize()
+                in SeqUtils.IUPACData.protein_letters_3to1
+            ):
                 resname = SeqUtils.IUPACData.protein_letters_3to1[
                     residue.get_resname().capitalize()
                 ]  # change this to use our chemical components.

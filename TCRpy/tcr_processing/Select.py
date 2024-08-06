@@ -85,9 +85,10 @@ class variable_only(select_all):
         Overload this to reject holders for output.
         """
         # Accept an abTCR or a gdTCR
-        if (hasattr(holder, "VB") and hasattr(holder, "VA")) or (
-            hasattr(holder, "VD") and hasattr(holder, "VG")) or (
-            hasattr(holder, "VB") and hasattr(holder, "VD")
+        if (
+            (hasattr(holder, "VB") and hasattr(holder, "VA"))
+            or (hasattr(holder, "VD") and hasattr(holder, "VG"))
+            or (hasattr(holder, "VB") and hasattr(holder, "VD"))
         ):
             return 1
         else:

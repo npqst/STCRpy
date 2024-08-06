@@ -24,7 +24,7 @@ class TCRDock(object):
         """
         self.warnings = ErrorStream()
         self.QUIET = QUIET
-        
+
         self.TCR = tcr
         self.angle = np.nan
 

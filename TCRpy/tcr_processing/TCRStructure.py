@@ -18,7 +18,7 @@ class TCRStructure(Entity):
     def __init__(self, identifier):
         self.level = "TS"
         Entity.__init__(self, identifier)
-        header = {}
+        self.header = {}
 
     def __repr__(self):
         return "<Structure id=%s>" % self.get_id()

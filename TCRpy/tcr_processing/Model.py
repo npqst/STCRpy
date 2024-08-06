@@ -27,6 +27,11 @@ class Model(Bio.PDB.Model.Model, Bio.PDB.Entity.Entity):
         else:
             # Allow a single chain to be called from a model.
             for child in self:
-                if child.id in self.child_dict and identifier in self.child_dict[child.id].child_dict:
+                if (
+                    child.id in self.child_dict
+                    and identifier in self.child_dict[child.id].child_dict
+                ):
                     return self.child_dict[child.id].child_dict[identifier]
-            raise KeyError(identifier)          # raise error if chain belonging to identifier is not found
+            raise KeyError(
+                identifier
+            )  # raise error if chain belonging to identifier is not found
