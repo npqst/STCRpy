@@ -161,9 +161,49 @@ class TCR(Entity):
     def profile_MHC_interactions(self):
         raise NotImplementedError
 
+    def _create_interaction_visualiser(self):
+        """Function called during TCR initialisation checks if pymol is installed and assigns a visualisation method accordingly.
+        If pymol is installed, method to generate interaction visualisations is returned.
+        If pymol is not installed, calling the visualisation
+
+
+        Returns:
+            callable: TCR bound method to visualise interactions of the TCR and MHC to the peptide.
+        """
+        try:
+            import pymol
+
+            def visualise_interactions(
+                save_as=None, antigen_residues_to_highlight=None
+            ):
+                from ..tcr_interactions import PLIPParser
+
+                plip_parser = PLIPParser.PLIPParser()
+                interaction_session_file = plip_parser.create_pymol_session(
+                    self,
+                    save_as=save_as,
+                    antigen_residues_to_highlight=antigen_residues_to_highlight,
+                )
+                return interaction_session_file
+
+            return visualise_interactions
+
+        except ModuleNotFoundError:
+
+            def visualise_interactions(antigen_residues_to_highlight=None):
+                warnings.warn(
+                    f"""pymol was not imported. Interactions were not visualised.
+                    \nTo enable pymol visualisations please install pymol in a conda environment with:
+                    \nconda install -c conda-forge -c schrodinger pymol-bundle\n\n
+                    """
+                )
+
+            return visualise_interactions
+
 
 class abTCR(TCR):
     def __init__(self, c1, c2):
+
         if c1.chain_type == "B":
             Entity.__init__(self, c1.id + c2.id)
         else:
@@ -180,6 +220,8 @@ class abTCR(TCR):
         self.MHC = []
         self.engineered = False
         self.scTCR = False  # This is rare but does happen
+
+        self.visualise_interactions = self._create_interaction_visualiser()
 
     def __repr__(self):
         return "<TCR %s%s beta=%s; alpha=%s>" % (self.VB, self.VA, self.VB, self.VA)
@@ -236,6 +278,8 @@ class abTCR(TCR):
 
 class gdTCR(TCR):
     def __init__(self, c1, c2):
+        super(TCR, self).__init__()
+
         if c1.chain_type == "D":
             Entity.__init__(self, c1.id + c2.id)
         else:
@@ -252,6 +296,8 @@ class gdTCR(TCR):
         self.MHC = []
         self.engineered = False
         self.scTCR = False  # This is rare but does happen
+
+        self.visualise_interactions = self._create_interaction_visualiser()
 
     def __repr__(self):
         return "<TCR %s%s delta=%s; gamma=%s>" % (self.VD, self.VG, self.VD, self.VG)
@@ -308,6 +354,8 @@ class gdTCR(TCR):
 
 class dbTCR(TCR):
     def __init__(self, c1, c2):
+        super(TCR, self).__init__()
+
         if c1.chain_type == "B":
             Entity.__init__(self, c1.id + c2.id)
         else:
@@ -324,6 +372,8 @@ class dbTCR(TCR):
         self.MHC = []
         self.engineered = False
         self.scTCR = False  # This is rare but does happen
+
+        self.visualise_interactions = self._create_interaction_visualiser()
 
     def __repr__(self):
         return "<TCR %s%s beta=%s; delta=%s>" % (self.VB, self.VD, self.VB, self.VD)
