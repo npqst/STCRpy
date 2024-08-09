@@ -11,15 +11,6 @@ import plip
 from . import utils as plip_utils
 from .TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
 
-try:
-    from plip.basic.remote import VisualizerData
-    from plip.visualization.visualize import visualize_in_pymol
-except ModuleNotFoundError:
-    warnings.warn(
-        """\nPymol package not found. \nInteraction profiler initialising without visualisation capabilitites. \nTo enable pymol visualisations, install pymol with: 
-        \nconda install -c conda-forge -c schrodinger pymol-bundle\n\n"""
-    )
-
 
 class PLIPParser:
 
@@ -74,6 +65,7 @@ class PLIPParser:
         return interactions_df
 
         for chain_id, renumber in renumbering.items():
+
             for plip_idx, original_idx in renumber.items():
                 mask = (interactions_df.protein_chain == chain_id) & (
                     interactions_df.protein_number == plip_idx[1]
@@ -140,123 +132,3 @@ class PLIPParser:
             extended_columns.extend(["ligand_residue", "ligand_number"])
             interactions_df = pd.DataFrame(columns=extended_columns)
         return interactions_df
-
-    def _visualize_interactions(self, complex: plip.structure.preparation.PDBComplex):
-
-        from plip.basic import config
-
-        if not config.PYMOL:
-            config.PYMOL = True
-        for ligand in complex.ligands:
-            complex.characterize_complex(ligand)
-            visualizer_complexes = [
-                VisualizerData(complex, site)
-                for site in sorted(complex.interaction_sets)
-                if not len(complex.interaction_sets[site].interacting_res) == 0
-            ]
-            try:
-                visualize_in_pymol(visualizer_complexes[0])
-            except NameError as e:
-                warnings.warn(
-                    f"""Interactions could not be visualised. Raised error {e}.
-                \nTo enable pymol visualisations please install pymol in a conda environment with:
-                \nconda install -c conda-forge -c schrodinger pymol-bundle\n\n
-                """
-                )
-            return
-
-    def create_pymol_session(
-        self,
-        tcr_pmhc: "TCR",
-        save_as=None,
-        antigen_residues_to_highlight=None,
-    ):
-
-        try:
-            import pymol
-            from pymol import cmd
-        except ImportError as e:
-            warnings.warn(
-                f"""pymol could not be imported. Raised error: {str(e)}.
-                \nTo enable pymol visualisations please install pymol in a conda environment with:
-                \nconda install -c conda-forge -c schrodinger pymol-bundle\n\n
-                """
-            )
-            return
-
-        import os
-        import re
-
-        pymol.finish_launching(["pymol", "-qc"])
-
-        plip_parser = PLIPParser()
-        model_parser = TCRpMHC_PLIP_Model_Parser()
-
-        mol = model_parser.parse_tcr_pmhc_complex(
-            tcr_pmhc, renumber=True, delete_tmp_files=False
-        )
-        mol, prot_fil, lig_file, _, _, _ = mol
-        mol.analyze()
-        try:
-            plip_parser.parse_complex(mol)
-            plip_parser._visualize_interactions(mol)
-        except (
-            pymol.CmdException
-        ):  # for some reason sometimes this only works the second time? Probably to do with latency in pymol loading and object selection
-            plip_parser.parse_complex(mol)
-            plip_parser._visualize_interactions(mol)
-
-        pymol_session = next(
-            (
-                f
-                for f in os.listdir(".")
-                if re.match(rf"^{mol.pymol_name.upper()}.*\.pse$", f)
-            ),
-            None,
-        )
-        cmd.load(pymol_session)
-
-        # create temporary file containing the TCR and its MHC and antigen.
-        from ..tcr_processing import TCRIO
-
-        tcrio = TCRIO.TCRIO()
-        tmp_file = f"tmp_for_vis_{tcr_pmhc.parent.parent.id}_{tcr_pmhc.id}.pdb"
-        tcrio.save(tcr_pmhc, save_as=tmp_file)
-        cmd.load(tmp_file)
-
-        if len(tcr_pmhc.antigen) == 1:
-            antigen_chain = tcr_pmhc.antigen[0].id
-            cmd.show("sticks", f"chain {antigen_chain}")
-            cmd.hide("cartoon", f"chain {antigen_chain}")
-
-            if antigen_residues_to_highlight is not None:
-                if isinstance(antigen_residues_to_highlight, int):
-                    antigen_residues_to_highlight = [antigen_residues_to_highlight]
-                for res_nr in antigen_residues_to_highlight:
-                    cmd.color(
-                        "red",
-                        f"chain {antigen_chain} and res {str(res_nr)} and elem C",
-                    )
-        else:
-            if len(tcr_pmhc.antigen) == 0:
-                warnings.warn(
-                    f"""Could not highlight antigen, no antigen found for TCR {tcr_pmhc.parent.parent.id}_{tcr_pmhc.id}"""
-                )
-            else:
-                warnings.warn(
-                    f"""Could not highlight antigen, multiple antigen {tcr_pmhc.antigen} found for TCR {tcr_pmhc.parent.parent.id}_{tcr_pmhc.id}"""
-                )
-
-        if save_as is None:
-            save_as = f"{tcr_pmhc.parent.parent.id}_{tcr_pmhc.id}_interactions.pse"
-
-        # cmd.save(pymol_session)
-        cmd.save(save_as)
-        cmd.delete("all")
-
-        # clean up pymol environment and remove temporary files
-        del cmd
-        os.remove(pymol_session)
-        os.remove(tmp_file)
-
-        return save_as

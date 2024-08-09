@@ -136,23 +136,12 @@ class TCR(Entity):
             )
             return None
 
-        plip_parser = tcr_interactions.PLIPParser.PLIPParser()
-        model_parser = (
-            tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser()
-        )
+        from ..tcr_interactions import TCRInteractionProfiler
 
-        mol = model_parser.parse_tcr_pmhc_complex(self, renumber=renumber)
-        if renumber:
-            mol, renumbering, domains = mol
-        else:
-            renumbering = None
-        mol.analyze()
-        interactions = plip_parser.parse_complex(
-            mol, self, renumbering, domain_assignment=domains
+        interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler()
+        interactions = interaction_profiler.get_interactions(
+            self, renumber=renumber, save_as_csv=save_to
         )
-        if save_to is not None:
-            interactions.to_csv(save_to)
-
         return interactions
 
     def profile_TCR_interactions(self):
@@ -176,14 +165,15 @@ class TCR(Entity):
             def visualise_interactions(
                 save_as=None, antigen_residues_to_highlight=None
             ):
-                from ..tcr_interactions import PLIPParser
+                from ..tcr_interactions import TCRInteractionProfiler
 
-                plip_parser = PLIPParser.PLIPParser()
-                interaction_session_file = plip_parser.create_pymol_session(
+                interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler()
+                interaction_session_file = interaction_profiler.create_pymol_session(
                     self,
                     save_as=save_as,
                     antigen_residues_to_highlight=antigen_residues_to_highlight,
                 )
+
                 return interaction_session_file
 
             return visualise_interactions
@@ -277,8 +267,8 @@ class abTCR(TCR):
 
 
 class gdTCR(TCR):
+
     def __init__(self, c1, c2):
-        super(TCR, self).__init__()
 
         if c1.chain_type == "D":
             Entity.__init__(self, c1.id + c2.id)

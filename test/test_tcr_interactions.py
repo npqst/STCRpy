@@ -8,6 +8,7 @@ from plip.structure.preparation import PDBComplex
 from ..TCRpy.tcr_processing import TCRParser
 from ..TCRpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
 from ..TCRpy.tcr_interactions.PLIPParser import PLIPParser
+from ..TCRpy.tcr_interactions.TCRInteractionProfiler import TCRInteractionProfiler
 
 
 class TestTCRInteractions(unittest.TestCase):
@@ -52,6 +53,40 @@ class TestTCRInteractions(unittest.TestCase):
         assert interactions[interactions.domain == "VB"].protein_residue.item() == "ASP"
         assert interactions[interactions.domain == "VB"].protein_number.item() == 96
 
+    def test_TCR_interaction_profiler(self):
+        parser = TCRParser.TCRParser()
+        test_file = "./TCRpy/test/test_files/8gvb.cif"
+        tcr = [x for x in parser.get_tcr_structure("tmp", test_file).get_TCRs()][0]
+
+        interaction_profiler = TCRInteractionProfiler()
+        interactions = interaction_profiler.get_interactions(tcr, renumber=True)
+
+        assert len(interactions) == 28
+        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions[interactions.type == "hydrophobic"]) == 12
+        assert len(interactions[interactions.type == "pistack"]) == 1
+        assert len(interactions[interactions.type == "saltbridge"]) == 3
+
+        assert len(interactions[interactions.domain == "VB"]) == 1
+        assert interactions[interactions.domain == "VB"].protein_residue.item() == "ASP"
+        assert interactions[interactions.domain == "VB"].protein_number.item() == 96
+
+        interactions = interaction_profiler.get_interactions(tcr, renumber=False)
+        assert len(interactions) == 28
+        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions[interactions.type == "hydrophobic"]) == 12
+        assert len(interactions[interactions.type == "pistack"]) == 1
+        assert len(interactions[interactions.type == "saltbridge"]) == 3
+
+        csv_path = "./TCRpy/test/test_files/out/interactions/test_8gvb_interactions.csv"
+        if pathlib.Path(csv_path).exists():
+            os.remove(csv_path)
+        interactions = interaction_profiler.get_interactions(
+            tcr,
+            save_as_csv=csv_path,
+        )
+        assert pathlib.Path(csv_path).exists()
+
     def test_TCR_plip_methods(self):
         parser = TCRParser.TCRParser()
         test_file = "./TCRpy/test/test_files/8gvb.cif"
@@ -77,7 +112,9 @@ class TestTCRInteractions(unittest.TestCase):
         mol, renumbering, domains = model_parser.parse_tcr_pmhc_complex(tcr)
         # mol.analyze()
 
-        plip_parser = PLIPParser()
+        # plip_parser = PLIPParser()
+
+        interaction_profiler = TCRInteractionProfiler()
 
         # test if plip visualisations are generated
 
@@ -91,11 +128,11 @@ class TestTCRInteractions(unittest.TestCase):
             import pymol
 
             try:
-                plip_parser._visualize_interactions(mol)
+                interaction_profiler._visualize_interactions(mol)
             except (
                 pymol.CmdException
             ):  # sometimes function needs to run twice? Probably due to pymol loading and object selection latency
-                plip_parser._visualize_interactions(mol)
+                interaction_profiler._visualize_interactions(mol)
             path = pathlib.Path(pymol_plip_session_name)
             assert path.is_file()
             os.remove(pymol_plip_session_name)  # cleans up after test
@@ -106,7 +143,7 @@ class TestTCRInteractions(unittest.TestCase):
                 raise ValueError("Only except pymol not found errors")
             with warnings.catch_warnings(record=True) as w:
                 warnings.simplefilter("always")
-                plip_parser._visualize_interactions(mol)
+                interaction_profiler._visualize_interactions(mol)
                 assert len(w) == 1  # check only one warning raised
                 # check warning tells user to install pymol
                 assert (
@@ -121,20 +158,22 @@ class TestTCRInteractions(unittest.TestCase):
             0
         ]
 
-        plip_parser = PLIPParser()
+        interaction_profiler = TCRInteractionProfiler()
 
         try:  # tests to run if pymol is installed
             import pymol
 
             # test automated file name generation
-            saved_session = plip_parser.create_pymol_session(tcr)
+            saved_session = interaction_profiler.create_pymol_session(tcr)
             assert saved_session == f"{tcr.parent.parent.id}_{tcr.id}_interactions.pse"
             assert pathlib.Path(saved_session).exists()
             os.remove(saved_session)  # clean up after test
 
             # test saving to specified file
             session_file = "./TCRpy/test/test_files/out/interactions/8gvb_test.pse"
-            saved_session = plip_parser.create_pymol_session(tcr, save_as=session_file)
+            saved_session = interaction_profiler.create_pymol_session(
+                tcr, save_as=session_file
+            )
             assert pathlib.Path(saved_session).exists()
             assert session_file == saved_session
 
@@ -145,7 +184,7 @@ class TestTCRInteractions(unittest.TestCase):
             assert not pathlib.Path(tmp_plip_file).exists()
 
             # test residue highlighting
-            saved_session = plip_parser.create_pymol_session(
+            saved_session = interaction_profiler.create_pymol_session(
                 tcr,
                 save_as="./TCRpy/test/test_files/out/interactions/8gvb_test_residue_highlighted.pse",
                 antigen_residues_to_highlight=[4, 6],
@@ -153,7 +192,7 @@ class TestTCRInteractions(unittest.TestCase):
             assert pathlib.Path(saved_session).exists()
 
             # test single residue highlighting
-            saved_session = plip_parser.create_pymol_session(
+            saved_session = interaction_profiler.create_pymol_session(
                 tcr,
                 save_as="./TCRpy/test/test_files/out/interactions/8gvb_test_residue_highlighted.pse",
                 antigen_residues_to_highlight=5,
@@ -165,7 +204,7 @@ class TestTCRInteractions(unittest.TestCase):
                 raise ValueError("Only except pymol not found errors")
             with warnings.catch_warnings(record=True) as w:
                 warnings.simplefilter("always")
-                plip_parser.create_pymol_session(tcr)
+                interaction_profiler.create_pymol_session(tcr)
                 assert len(w) == 1  # check only one warning raised
                 # check warning tells user to install pymol
                 assert (
@@ -210,3 +249,13 @@ class TestTCRInteractions(unittest.TestCase):
                 antigen_residues_to_highlight=[4, 6],
             )
             assert pathlib.Path(saved_session).exists()
+
+    def test_interaction_heatmap(self):
+        parser = TCRParser.TCRParser()
+        test_file = "./TCRpy/test/test_files/8gvb.cif"
+        tcr = [x for x in parser.get_tcr_structure("test_8gvb", test_file).get_TCRs()][
+            0
+        ]
+
+        interaction_profiler = TCRInteractionProfiler()
+        heatmaps = interaction_profiler.get_interaction_heatmap(tcr)
