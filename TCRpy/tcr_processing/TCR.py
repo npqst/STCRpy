@@ -102,6 +102,12 @@ class TCR(Entity):
             self.tcr_type = "dbTCR"
             return self.tcr_type
 
+    def save(self, save_as=None, tcr_only: bool = False, format: str = "pdb"):
+        from . import TCRIO
+
+        tcrio = TCRIO.TCRIO()
+        tcrio.save(self, save_as=save_as, tcr_only=tcr_only, format=format)
+
     def calculate_docking_geometry(self):
 
         if len(self.get_MHC()) == 0:
@@ -121,6 +127,18 @@ class TCR(Entity):
         self.geometry = TCRGeom(self)
         return self.geometry.to_dict()
 
+    def score_docking_geometry(self, **kwargs):
+        from ..tcr_geometry.TCRGeomFiltering import DockingGeometryFilter
+
+        geom_filter = DockingGeometryFilter()
+        if not hasattr(self, "geometry"):
+            self.calculate_docking_geometry()
+        return geom_filter.score_docking_geometry(
+            self.geometry.get_scanning_angle(),
+            self.geometry.get_pitch_angle(),
+            self.geometry.tcr_com[-1],  # z component of TCR centre of mass
+        )
+
     def profile_peptide_interactions(
         self, renumber: bool = True, save_to: str = None
     ) -> "pd.DataFrame":
@@ -130,7 +148,7 @@ class TCR(Entity):
             )
             return None
 
-        if "TCRpy.TCRpy.tcr_interactions.PLIPParser" not in sys.modules:
+        if "PLIPParser" not in [m.split(".")[-1] for m in sys.modules]:
             warnings.warn(
                 "TCR interactions module was not imported. Check warning log and PLIP installation"
             )
@@ -143,6 +161,12 @@ class TCR(Entity):
             self, renumber=renumber, save_as_csv=save_to
         )
         return interactions
+
+    def get_interaction_heatmap(self, **plotting_kwargs):
+        from ..tcr_interactions import TCRInteractionProfiler
+
+        interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler()
+        interaction_profiler.get_interaction_heatmap(self, **plotting_kwargs)
 
     def profile_TCR_interactions(self):
         raise NotImplementedError

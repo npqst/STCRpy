@@ -258,4 +258,6 @@ class TestTCRInteractions(unittest.TestCase):
         ]
 
         interaction_profiler = TCRInteractionProfiler()
-        heatmaps = interaction_profiler.get_interaction_heatmap(tcr)
+        heatmaps = interaction_profiler.get_interaction_heatmap(
+            tcr, save_as="./examples/example_8gvb_interaction_heatmap.png"
+        )

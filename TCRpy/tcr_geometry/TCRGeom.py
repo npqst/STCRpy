@@ -14,7 +14,7 @@ class TCRGeom:
         self.tcr_VA_cys_coords = None
         self.tcr_VB_cys_coords = None
         self.tcr_VA_VB_angle = None
-        self.tcr_scanning_angle = None
+        self.scanning_angle = None
         self.tcr_pitch_angle = None
         self.tcr_docking_angles_cys = None
         self.tcr_mhc_dist = None
@@ -48,7 +48,7 @@ class TCRGeom:
             self.tcr_com, self.tcr_VA_com, self.tcr_VB_com
         )
         self.polarity = self.get_polarity(self.tcr_vector)
-        self.scanning_angle, self.tcr_pitch_angle = self.get_tcr_docking_angles(
+        self.scanning_angle, self.tcr_pitch_angle = self.calculate_tcr_docking_angles(
             self.tcr_vector, polarity_as_sign=polarity_as_sign
         )
 
@@ -75,6 +75,18 @@ class TCRGeom:
             "polarity": self.polarity,
         }
 
+    def get_scanning_angle(self, rad=False):
+        if rad:
+            return self.scanning_angle
+        else:
+            return np.degrees(self.scanning_angle)
+
+    def get_pitch_angle(self, rad=False):
+        if rad:
+            return self.tcr_pitch_angle
+        else:
+            return np.degrees(self.tcr_pitch_angle)
+
     def get_tcr_vector(
         self, tcr_com: np.array, tcr_VA_com: np.array, tcr_VB_com: np.array
     ) -> np.array:
@@ -93,7 +105,7 @@ class TCRGeom:
         tcr_vector = direction_vec / np.linalg.norm(direction_vec)
         return tcr_vector
 
-    def get_tcr_docking_angles(
+    def calculate_tcr_docking_angles(
         self, tcr_vector: np.array, polarity_as_sign: bool = True
     ) -> tuple[np.array]:
         """
