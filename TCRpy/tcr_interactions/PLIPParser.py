@@ -1,6 +1,7 @@
 import typing
-
 import pandas as pd
+import warnings
+
 import plip
 
 # if typing.TYPE_CHECKING:
@@ -9,9 +10,6 @@ import plip
 
 from . import utils as plip_utils
 from .TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
-
-# from plip.basic.remote import VisualizerData
-# from plip.visualization.visualize import visualize_in_pymol
 
 
 class PLIPParser:
@@ -67,6 +65,7 @@ class PLIPParser:
         return interactions_df
 
         for chain_id, renumber in renumbering.items():
+
             for plip_idx, original_idx in renumber.items():
                 mask = (interactions_df.protein_chain == chain_id) & (
                     interactions_df.protein_number == plip_idx[1]
@@ -133,17 +132,3 @@ class PLIPParser:
             extended_columns.extend(["ligand_residue", "ligand_number"])
             interactions_df = pd.DataFrame(columns=extended_columns)
         return interactions_df
-
-    def visualize_interactions(self, complex: plip.structure.preparation.PDBComplex):
-        from plip.basic import config
-
-        if not config.PYMOL:
-            config.PYMOL = True
-        for ligand in complex.ligands:
-            complex.characterize_complex(ligand)
-            visualizer_complexes = [
-                VisualizerData(complex, site)
-                for site in sorted(complex.interaction_sets)
-                if not len(complex.interaction_sets[site].interacting_res) == 0
-            ]
-            visualize_in_pymol(visualizer_complexes[0])

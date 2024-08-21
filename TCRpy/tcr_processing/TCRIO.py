@@ -1,6 +1,5 @@
 from Bio import PDB
 from Bio.PDB.PDBIO import PDBIO
-from ..tcr_processing import TCR, MHCchain
 
 
 class TCRIO(PDBIO):
@@ -8,17 +7,24 @@ class TCRIO(PDBIO):
         self.io = PDBIO()
 
     def save(
-        self, tcr: TCR, save_as: str = None, tcr_only: bool = False, format: str = "pdb"
+        self,
+        tcr: "TCR",
+        save_as: str = None,
+        tcr_only: bool = False,
+        format: str = "pdb",
     ):
-        assert isinstance(tcr, TCR), f"{tcr} must be type TCR, not TCRStructure"
-
+        assert (
+            tcr.__module__.split(".")[-1] == "TCR"
+        ), f"{tcr} must be type TCR, not TCRStructure"
         structure_to_save = PDB.Model.Model(0)
         for chain in tcr.get_chains():
             chain.serial_num = 0
             structure_to_save.add(chain)
         if not tcr_only:
             for mhc in tcr.get_MHC():
-                if isinstance(mhc, MHCchain):  # handle MHC that is single chain
+                if (
+                    mhc.__class__.__name__ == "MHCchain"
+                ):  # handle MHC that is single chain
                     chain = mhc
                     chain.serial_num = 0
                     structure_to_save.add(chain)

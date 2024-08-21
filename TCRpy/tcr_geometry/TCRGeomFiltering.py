@@ -141,7 +141,7 @@ class DockingGeometryPDF:
             plt.savefig(save_as)
             print(f"PDF distribution plot saved to: {save_as}")
         else:
-            fig.show()
+            plt.show()
 
 
 class GaussianMixturePDF(DockingGeometryPDF):
