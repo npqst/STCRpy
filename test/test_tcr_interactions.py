@@ -5,10 +5,12 @@ import os
 
 from plip.structure.preparation import PDBComplex
 
-from ..TCRpy.tcr_processing import TCRParser
-from ..TCRpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
-from ..TCRpy.tcr_interactions.PLIPParser import PLIPParser
-from ..TCRpy.tcr_interactions.TCRInteractionProfiler import TCRInteractionProfiler
+from ..STCRpy.tcr_processing import TCRParser
+from ..STCRpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser import (
+    TCRpMHC_PLIP_Model_Parser,
+)
+from ..STCRpy.tcr_interactions.PLIPParser import PLIPParser
+from ..STCRpy.tcr_interactions.TCRInteractionProfiler import TCRInteractionProfiler
 
 
 class TestTCRInteractions(unittest.TestCase):
@@ -19,7 +21,7 @@ class TestTCRInteractions(unittest.TestCase):
 
         model_parser = TCRpMHC_PLIP_Model_Parser()
 
-        test_file = "./TCRpy/test/test_files/8gvb.cif"
+        test_file = "./STCRpy/test/test_files/8gvb.cif"
         tcr = [x for x in parser.get_tcr_structure("tmp", test_file).get_TCRs()][0]
 
         mol, renumbering, domains = model_parser.parse_tcr_pmhc_complex(tcr)
@@ -35,7 +37,7 @@ class TestTCRInteractions(unittest.TestCase):
     def test_plip_parser(self):
         parser = TCRParser.TCRParser()
         model_parser = TCRpMHC_PLIP_Model_Parser()
-        test_file = "./TCRpy/test/test_files/8gvb.cif"
+        test_file = "./STCRpy/test/test_files/8gvb.cif"
         tcr = [x for x in parser.get_tcr_structure("tmp", test_file).get_TCRs()][0]
         mol, renumbering, domains = model_parser.parse_tcr_pmhc_complex(tcr)
         mol.analyze()
@@ -55,7 +57,7 @@ class TestTCRInteractions(unittest.TestCase):
 
     def test_TCR_interaction_profiler(self):
         parser = TCRParser.TCRParser()
-        test_file = "./TCRpy/test/test_files/8gvb.cif"
+        test_file = "./STCRpy/test/test_files/8gvb.cif"
         tcr = [x for x in parser.get_tcr_structure("tmp", test_file).get_TCRs()][0]
 
         interaction_profiler = TCRInteractionProfiler()
@@ -78,7 +80,9 @@ class TestTCRInteractions(unittest.TestCase):
         assert len(interactions[interactions.type == "pistack"]) == 1
         assert len(interactions[interactions.type == "saltbridge"]) == 3
 
-        csv_path = "./TCRpy/test/test_files/out/interactions/test_8gvb_interactions.csv"
+        csv_path = (
+            "./STCRpy/test/test_files/out/interactions/test_8gvb_interactions.csv"
+        )
         if pathlib.Path(csv_path).exists():
             os.remove(csv_path)
         interactions = interaction_profiler.get_interactions(
@@ -89,7 +93,7 @@ class TestTCRInteractions(unittest.TestCase):
 
     def test_TCR_plip_methods(self):
         parser = TCRParser.TCRParser()
-        test_file = "./TCRpy/test/test_files/8gvb.cif"
+        test_file = "./STCRpy/test/test_files/8gvb.cif"
         tcr = [x for x in parser.get_tcr_structure("tmp", test_file).get_TCRs()][0]
 
         interactions = tcr.profile_peptide_interactions()
@@ -107,7 +111,7 @@ class TestTCRInteractions(unittest.TestCase):
     def test_pymol_visualisation(self):
         parser = TCRParser.TCRParser()
         model_parser = TCRpMHC_PLIP_Model_Parser()
-        test_file = "./TCRpy/test/test_files/8gvb.cif"
+        test_file = "./STCRpy/test/test_files/8gvb.cif"
         tcr = [x for x in parser.get_tcr_structure("tmp", test_file).get_TCRs()][0]
         mol, renumbering, domains = model_parser.parse_tcr_pmhc_complex(tcr)
         # mol.analyze()
@@ -153,7 +157,7 @@ class TestTCRInteractions(unittest.TestCase):
 
     def test_create_pymol_session(self):
         parser = TCRParser.TCRParser()
-        test_file = "./TCRpy/test/test_files/8gvb.cif"
+        test_file = "./STCRpy/test/test_files/8gvb.cif"
         tcr = [x for x in parser.get_tcr_structure("test_8gvb", test_file).get_TCRs()][
             0
         ]
@@ -170,7 +174,7 @@ class TestTCRInteractions(unittest.TestCase):
             os.remove(saved_session)  # clean up after test
 
             # test saving to specified file
-            session_file = "./TCRpy/test/test_files/out/interactions/8gvb_test.pse"
+            session_file = "./STCRpy/test/test_files/out/interactions/8gvb_test.pse"
             saved_session = interaction_profiler.create_pymol_session(
                 tcr, save_as=session_file
             )
@@ -186,7 +190,7 @@ class TestTCRInteractions(unittest.TestCase):
             # test residue highlighting
             saved_session = interaction_profiler.create_pymol_session(
                 tcr,
-                save_as="./TCRpy/test/test_files/out/interactions/8gvb_test_residue_highlighted.pse",
+                save_as="./STCRpy/test/test_files/out/interactions/8gvb_test_residue_highlighted.pse",
                 antigen_residues_to_highlight=[4, 6],
             )
             assert pathlib.Path(saved_session).exists()
@@ -194,7 +198,7 @@ class TestTCRInteractions(unittest.TestCase):
             # test single residue highlighting
             saved_session = interaction_profiler.create_pymol_session(
                 tcr,
-                save_as="./TCRpy/test/test_files/out/interactions/8gvb_test_residue_highlighted.pse",
+                save_as="./STCRpy/test/test_files/out/interactions/8gvb_test_residue_highlighted.pse",
                 antigen_residues_to_highlight=5,
             )
             assert pathlib.Path(saved_session).exists()
@@ -214,7 +218,7 @@ class TestTCRInteractions(unittest.TestCase):
 
     def test_bound_tcr_interaction_visualisation_method(self):
         parser = TCRParser.TCRParser()
-        test_file = "./TCRpy/test/test_files/8gvb.cif"
+        test_file = "./STCRpy/test/test_files/8gvb.cif"
         tcr = [x for x in parser.get_tcr_structure("test_8gvb", test_file).get_TCRs()][
             0
         ]
@@ -245,19 +249,19 @@ class TestTCRInteractions(unittest.TestCase):
 
             # test residue highlighting
             saved_session = tcr.visualise_interactions(
-                save_as="./TCRpy/test/test_files/out/interactions/8gvb_test_residue_highlighted_TCR_bound_method.pse",
+                save_as="./STCRpy/test/test_files/out/interactions/8gvb_test_residue_highlighted_TCR_bound_method.pse",
                 antigen_residues_to_highlight=[4, 6],
             )
             assert pathlib.Path(saved_session).exists()
 
-    def test_interaction_heatmap(self):
-        parser = TCRParser.TCRParser()
-        test_file = "./TCRpy/test/test_files/8gvb.cif"
-        tcr = [x for x in parser.get_tcr_structure("test_8gvb", test_file).get_TCRs()][
-            0
-        ]
+    # def test_interaction_heatmap(self):           ## matplotlib pyplot kills vscode unit test suite
+    #     parser = TCRParser.TCRParser()
+    #     test_file = "./STCRpy/test/test_files/8gvb.cif"
+    #     tcr = [x for x in parser.get_tcr_structure("test_8gvb", test_file).get_TCRs()][
+    #         0
+    #     ]
 
-        interaction_profiler = TCRInteractionProfiler()
-        heatmaps = interaction_profiler.get_interaction_heatmap(
-            tcr, save_as="./examples/example_8gvb_interaction_heatmap.png"
-        )
+    #     interaction_profiler = TCRInteractionProfiler()
+    #     heatmaps = interaction_profiler.get_interaction_heatmap(
+    #         tcr, save_as="./examples/example_8gvb_interaction_heatmap.png"
+    #     )
