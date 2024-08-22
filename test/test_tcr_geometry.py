@@ -121,7 +121,9 @@ N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb"""
                 save_aligned_as=f"./STCRpy/test/test_files/out/aligned_test_{tcr.id}.pdb",
             )
 
-        pdb_file = "./STCRpy/STCRpy/tcr_geometry/reference_data/dock_reference_2_imgt_numbered.pdb"
+        pdb_file = (
+            "./STCRpy/STCRpy/tcr_geometry/include/dock_reference_2_imgt_numbered.pdb"
+        )
         tcr_structure = parser.get_tcr_structure("test", pdb_file)
         tcr_com = TCRCoM.MHCII_TCRCoM()
         for tcr in tcr_structure.get_TCRs():

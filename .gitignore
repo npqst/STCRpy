@@ -1,5 +1,7 @@
 __pycache__
-TCRpy.egg-info
+STCRpy.egg-info
+build
+dist
 test/test_files/out/*.pdb
 test/test_files/out/*.cif
 test/test_files/out/*.pse
