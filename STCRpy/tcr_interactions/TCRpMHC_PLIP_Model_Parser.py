@@ -1,6 +1,14 @@
 import os
+import warnings
 
-from plip.structure.preparation import PDBComplex
+try:
+    from plip.structure.preparation import PDBComplex
+except ModuleNotFoundError:
+    warnings.warn(
+        """\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:
+        \npip install plip --no-deps\n\n"""
+    )
+
 from rdkit import Chem
 from Bio import PDB
 from Bio.PDB.PDBParser import PDBParser
@@ -20,7 +28,7 @@ class TCRpMHC_PLIP_Model_Parser:
         tcr_pmhc_complex: TCR,
         delete_tmp_files=True,
         renumber=True,
-    ) -> PDBComplex:
+    ) -> "PDBComplex":
         # tcr_pmhc_complex = self.tcr_parser.get_tcr_structure('tmp', tcr_pmhc_pdb_file)
 
         ligand = PDB.Model.Model(id=0)

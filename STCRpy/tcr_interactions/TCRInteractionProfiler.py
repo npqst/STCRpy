@@ -4,7 +4,14 @@ import numpy as np
 
 from ..tcr_processing.TCRParser import TCRParser
 
-import plip
+try:
+    import plip
+except ModuleNotFoundError:
+    warnings.warn(
+        """\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:
+        \npip install plip --no-deps\n\n"""
+    )
+
 
 from . import utils as plip_utils
 from .PLIPParser import PLIPParser
@@ -14,11 +21,17 @@ from .TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
 try:
     from plip.basic.remote import VisualizerData
     from plip.visualization.visualize import visualize_in_pymol
-except ModuleNotFoundError:
-    warnings.warn(
-        """\nPymol package not found. \nInteraction profiler initialising without visualisation capabilitites. \nTo enable pymol visualisations, install pymol with: 
-        \nconda install -c conda-forge -c schrodinger pymol-bundle\n\n"""
-    )
+except ModuleNotFoundError as e:
+    if "pymol" in str(e):
+        warnings.warn(
+            """\nPymol package not found. \nInteraction profiler initialising without visualisation capabilitites. \nTo enable pymol visualisations, install pymol with:
+            \nconda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle\n\n"""
+        )
+    elif "plip" in str(e):
+        warnings.warn(
+            """\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:
+        \npip install plip --no-deps\n\n"""
+        )
 
 
 class TCRInteractionProfiler:
@@ -27,7 +40,7 @@ class TCRInteractionProfiler:
         self.model_parser = TCRpMHC_PLIP_Model_Parser()
         self.plip_parser = PLIPParser()
 
-    def _visualize_interactions(self, complex: plip.structure.preparation.PDBComplex):
+    def _visualize_interactions(self, complex: "plip.structure.preparation.PDBComplex"):
 
         from plip.basic import config
 
@@ -46,7 +59,7 @@ class TCRInteractionProfiler:
                 warnings.warn(
                     f"""Interactions could not be visualised. Raised error {e}.
                 \nTo enable pymol visualisations please install pymol in a conda environment with:
-                \nconda install -c conda-forge -c schrodinger pymol-bundle\n\n
+                \nconda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle\n\n
                 """
                 )
             return
@@ -65,7 +78,7 @@ class TCRInteractionProfiler:
             warnings.warn(
                 f"""pymol could not be imported. Raised error: {str(e)}.
                 \nTo enable pymol visualisations please install pymol in a conda environment with:
-                \nconda install -c conda-forge -c schrodinger pymol-bundle\n\n
+                \nconda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle\n\n
                 """
             )
             return

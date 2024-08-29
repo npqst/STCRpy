@@ -3,7 +3,10 @@ import pathlib
 import warnings
 import os
 
-from plip.structure.preparation import PDBComplex
+try:
+    from plip.structure.preparation import PDBComplex
+except ModuleNotFoundError:
+    pass
 
 from ..STCRpy.tcr_processing import TCRParser
 from ..STCRpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser import (
@@ -151,7 +154,7 @@ class TestTCRInteractions(unittest.TestCase):
                 assert len(w) == 1  # check only one warning raised
                 # check warning tells user to install pymol
                 assert (
-                    "conda install -c conda-forge -c schrodinger pymol-bundle"
+                    "conda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle"
                     in str(w[0].message)
                 )
 
@@ -212,7 +215,7 @@ class TestTCRInteractions(unittest.TestCase):
                 assert len(w) == 1  # check only one warning raised
                 # check warning tells user to install pymol
                 assert (
-                    "conda install -c conda-forge -c schrodinger pymol-bundle"
+                    "conda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle"
                     in str(w[0].message)
                 )
 
@@ -237,7 +240,7 @@ class TestTCRInteractions(unittest.TestCase):
                 assert len(w) == 1  # check only one warning raised
                 # check warning tells user to install pymol
                 assert (
-                    "conda install -c conda-forge -c schrodinger pymol-bundle"
+                    "conda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle"
                     in str(w[0].message)
                 )
             pymol_installed = False

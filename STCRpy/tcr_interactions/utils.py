@@ -1,10 +1,13 @@
-# from plip.structure import preparation, detection
-from plip.structure.preparation import PDBComplex
-from rdkit import Chem
+import warnings
 
-# from plip.basic.remote import VisualizerData
-# from plip.visualization.visualize import visualize_in_pymol
-# from plip.structure.detection import pistacking
+try:
+    from plip.structure.preparation import PDBComplex
+except ModuleNotFoundError:
+    warnings.warn(
+        """\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:
+        \npip install plip --no-deps\n\n"""
+    )
+from rdkit import Chem
 
 
 def return_interactions(
