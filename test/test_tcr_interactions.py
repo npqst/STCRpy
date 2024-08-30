@@ -8,12 +8,12 @@ try:
 except ModuleNotFoundError:
     pass
 
-from ..STCRpy.tcr_processing import TCRParser
-from ..STCRpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser import (
+from STCRpy.tcr_processing import TCRParser
+from STCRpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser import (
     TCRpMHC_PLIP_Model_Parser,
 )
-from ..STCRpy.tcr_interactions.PLIPParser import PLIPParser
-from ..STCRpy.tcr_interactions.TCRInteractionProfiler import TCRInteractionProfiler
+from STCRpy.tcr_interactions.PLIPParser import PLIPParser
+from STCRpy.tcr_interactions.TCRInteractionProfiler import TCRInteractionProfiler
 
 
 class TestTCRInteractions(unittest.TestCase):

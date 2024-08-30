@@ -1,7 +1,7 @@
 import unittest
 import glob
 
-from ..STCRpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
+from STCRpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
 
 
 class TestTCRParser(unittest.TestCase):

@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from ..STCRpy.tcr_geometry.TCRGeomFiltering import (
+from STCRpy.tcr_geometry.TCRGeomFiltering import (
     DockingGeometryFilter,
     DockingGeometryPDF,
     GaussianMixturePDF,

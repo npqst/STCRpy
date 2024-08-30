@@ -2,8 +2,8 @@ import unittest
 import glob
 import numpy as np
 
-from ..STCRpy.tcr_processing import TCRParser
-from ..STCRpy.tcr_geometry import TCRDock, TCRAngle, TCRCoM, TCRGeom
+from STCRpy.tcr_processing import TCRParser
+from STCRpy.tcr_geometry import TCRDock, TCRAngle, TCRCoM, TCRGeom
 
 
 class TestTCRGeometry(unittest.TestCase):
