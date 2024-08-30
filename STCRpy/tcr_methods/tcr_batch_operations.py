@@ -19,12 +19,12 @@ class TCRBatchOperator:
     def tcrs_from_file_list(self, file_list):
         for file in file_list:
             tcr_id = file.split("/")[-1].split(".")[0]
-            for tcr in self.tcr_parser.get_structure(tcr_id, file).get_TCRs():
+            for tcr in self._tcr_parser.get_tcr_structure(tcr_id, file).get_TCRs():
                 yield tcr
 
     def tcrs_from_file_dict(self, file_dict):
         for tcr_id, file in file_dict.items():
-            for tcr in self.tcr_parser.get_structure(tcr_id, file).get_TCRs():
+            for tcr in self._tcr_parser.get_tcr_structure(tcr_id, file).get_TCRs():
                 yield tcr_id, tcr
 
     def get_TCR_pMHC_interactions(self, tcr_generator, renumber=True, save_as_csv=None):
