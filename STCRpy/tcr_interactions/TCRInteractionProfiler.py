@@ -89,9 +89,9 @@ class TCRInteractionProfiler:
         pymol.finish_launching(["pymol", "-qc"])
 
         mol = self.model_parser.parse_tcr_pmhc_complex(
-            tcr_pmhc, renumber=True, delete_tmp_files=False
+            tcr_pmhc, renumber=True, delete_tmp_files=True
         )
-        mol, prot_fil, lig_file, _, _, _ = mol
+        mol, _, _ = mol
         mol.analyze()
         try:
             self.plip_parser.parse_complex(mol)
