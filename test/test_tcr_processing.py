@@ -1,14 +1,20 @@
 import unittest
 import glob
 
+import STCRpy
 from STCRpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
 
 
 class TestTCRParser(unittest.TestCase):
+
+    def test_imports(self):
+        import STCRpy
+        from STCRpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
+
     def test_get_tcr_structure_class_I(self):
         parser = TCRParser.TCRParser()
 
-        pdb_file = "./STCRpy/test/test_files/5hyj.pdb"
+        pdb_file = "./test_files/5hyj.pdb"
         tcr = parser.get_tcr_structure("test", pdb_file)
         assert set(["".join(sorted(x.id)) for x in tcr.get_TCRs()]) == set(["DE", "IJ"])
         assert set(["".join(sorted(x.id)) for x in tcr.get_MHCs()]) == set(["FG", "AB"])
@@ -19,7 +25,7 @@ class TestTCRParser(unittest.TestCase):
     def test_get_tcr_structure_class_II(self):
         parser = TCRParser.TCRParser()
 
-        pdb_file = "./STCRpy/test/test_files/6r0e.cif"
+        pdb_file = "./test_files/6r0e.cif"
         tcr = parser.get_tcr_structure("test", pdb_file)
         assert set(["".join(sorted(x.id)) for x in tcr.get_TCRs()]) == set(["DE"])
         assert set(["".join(sorted(x.id)) for x in tcr.get_MHCs()]) == set(["AB"])
@@ -78,7 +84,7 @@ class TestTCRParser(unittest.TestCase):
     def test_delta_beta_tcr_parsed_as_abTCR(self):
         parser = TCRParser.TCRParser()
 
-        pdb_file = "./STCRpy/test/test_files/DB_test_T104_rank_0_model_0_refined.pdb"
+        pdb_file = "./test_files/DB_test_T104_rank_0_model_0_refined.pdb"
         tcr = parser.get_tcr_structure("test", pdb_file)
         assert set(["".join(sorted(x.id)) for x in tcr.get_TCRs()]) == set(["AB"])
         assert all([isinstance(x, abTCR) for x in tcr.get_TCRs()])
@@ -86,7 +92,7 @@ class TestTCRParser(unittest.TestCase):
     def test_save(self):
         parser = TCRParser.TCRParser()
 
-        pdb_file = "./STCRpy/test/test_files/4nhu.pdb"
+        pdb_file = "./test_files/4nhu.pdb"
         tcr = parser.get_tcr_structure("test", pdb_file)
 
         from ..STCRpy.tcr_processing.TCRIO import TCRIO
@@ -94,21 +100,19 @@ class TestTCRParser(unittest.TestCase):
         io = TCRIO()
 
         for x in tcr.get_TCRs():
-            io.save(x, save_as=f"./STCRpy/test/test_files/test_{x.id}_TCR_only.pdb")
+            io.save(x, save_as=f"./test_files/test_{x.id}_TCR_only.pdb")
 
         for x in tcr.get_TCRs():
-            io.save(
-                x, tcr_only=True, save_as=f"./STCRpy/test/test_files/test_{x.id}.pdb"
-            )
+            io.save(x, tcr_only=True, save_as=f"./test_files/test_{x.id}.pdb")
 
         pdb_file = "./STCRpy/STCRpy/tcr_geometry/reference_data/dock_reference_1_imgt_numbered.pdb"
         tcr = parser.get_tcr_structure("test", pdb_file)
         for x in tcr.get_TCRs():
-            io.save(x, save_as=f"./STCRpy/test/test_files/test_{x.id}.pdb")
+            io.save(x, save_as=f"./test_files/test_{x.id}.pdb")
 
     def test_error_prone_tcrs(self):
         parser = TCRParser.TCRParser()
-        pdb_files = glob.glob("./STCRpy/test/test_files/TCRParser_test_files/*")
+        pdb_files = glob.glob("./test_files/TCRParser_test_files/*")
         for file in pdb_files:
             pdb_id = file.split("/")[-1].split(".")[0]
             print(pdb_id)
