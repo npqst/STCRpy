@@ -1,7 +1,7 @@
 import unittest
 
-from ..TCRpy.tcr_processing.TCRParser import TCRParser
-from ..TCRpy.tcr_datasets.tcr_graph_dataset import TCRGraphConstructor, TCRGraphDataset
+from STCRpy.tcr_processing.TCRParser import TCRParser
+from STCRpy.tcr_datasets.tcr_graph_dataset import TCRGraphConstructor, TCRGraphDataset
 
 
 class TestTCRDatasets(unittest.TestCase):
@@ -10,9 +10,7 @@ class TestTCRDatasets(unittest.TestCase):
 
         parser = TCRParser()
         tcr = list(
-            parser.get_tcr_structure(
-                "test", "TCRpy/test/test_files/8gvb.cif"
-            ).get_TCRs()
+            parser.get_tcr_structure("test", "./test_files/8gvb.cif").get_TCRs()
         )[0]
         self.tcr = tcr
 
@@ -33,7 +31,8 @@ class TestTCRDatasets(unittest.TestCase):
 
     def test_TCRGraphDataset(self):
         dataset = TCRGraphDataset(
-            root="TCRpy/test/test_files/TCRGraphDataset_test_files", force_reload=True
+            root="./test_files/TCRGraphDataset_test_files",
+            force_reload=True,
         )
         print(dataset)
         for i in range(len(dataset)):

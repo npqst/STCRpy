@@ -1,11 +1,7 @@
 import typing
 import pandas as pd
 import warnings
-
-import plip
-
-# if typing.TYPE_CHECKING:
-#     from ..tcr_processing.TCR import abTCR, gdTCR
+import os
 
 
 from . import utils as plip_utils
@@ -16,7 +12,7 @@ class PLIPParser:
 
     def parse_complex(
         self,
-        complex: plip.structure.preparation.PDBComplex,
+        complex: "plip.structure.preparation.PDBComplex",
         tcr_pmhc_complex: typing.Union["abTCR", "gdTCR"] = None,
         renumbering=None,
         domain_assignment=None,
@@ -116,7 +112,7 @@ class PLIPParser:
         self, interactions_df: pd.DataFrame, tcr_pmhc_complex: str
     ):
         parser = TCRpMHC_PLIP_Model_Parser()
-        _, _, ligand_pdb, ligand_sdf = parser.parse_tcr_pmhc_complex(
+        _, tcr_mhc_pdb, ligand_pdb, ligand_sdf = parser.parse_tcr_pmhc_complex(
             tcr_pmhc_complex, delete_tmp_files=False, renumber=False
         )
         coordinate_mapping = parser.map_amino_acids_to_ligands(ligand_pdb, ligand_sdf)
@@ -131,4 +127,10 @@ class PLIPParser:
             extended_columns = list(interactions_df.columns)
             extended_columns.extend(["ligand_residue", "ligand_number"])
             interactions_df = pd.DataFrame(columns=extended_columns)
+
+        # delete temp files needed for renumbering
+        os.remove(tcr_mhc_pdb)
+        os.remove(ligand_pdb)
+        os.remove(ligand_sdf)
+
         return interactions_df

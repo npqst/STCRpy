@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from ..TCRpy.tcr_geometry.TCRGeomFiltering import (
+from STCRpy.tcr_geometry.TCRGeomFiltering import (
     DockingGeometryFilter,
     DockingGeometryPDF,
     GaussianMixturePDF,
@@ -151,7 +151,7 @@ class TestTCRGeometryFilters(unittest.TestCase):
         assert all([p < 1.0 for p in probs])
         # scan_angle_pdf.plot(# plotting in unittest is causing weird kernel crash, but seems to be ok when not run in test environment?
         #     data=data,
-        #     save_as="./TCRpy/test/test_files/out/geometric_filters/scan_angle_test.png",
+        #     save_as="./test_files/out/geometric_filters/scan_angle_test.png",
         # )
 
     def test_z_dist_pdf(self):
@@ -186,7 +186,7 @@ class TestTCRGeometryFilters(unittest.TestCase):
         assert all([p < 1.0 for p in probs])
         # zdistpdf.plot(            # plotting in unittest is causing weird kernel crash, but seems to be ok when not run in test environment?
         #     data=data,
-        #     save_as="./TCRpy/test/test_files/out/geometric_filters/zdist_test.png",
+        #     save_as="./test_files/out/geometric_filters/zdist_test.png",
         # )
 
     def test_pitch_angle_pdf(self):
@@ -213,11 +213,11 @@ class TestTCRGeometryFilters(unittest.TestCase):
         assert all([isinstance(p, float) for p in probs])
         # pitch_pdf.plot(  # plotting in unittest is causing weird kernel crash, but seems to be ok when not run in test environment?
         #     data=data,
-        #     save_as="./TCRpy/test/test_files/out/geometric_filters/pitch_angle_test.png",
+        #     save_as="./test_files/out/geometric_filters/pitch_angle_test.png",
         # )
 
     def test_default_STCRDab_parameter_initialisation(self):
-        from ..TCRpy.tcr_geometry import TCRGeomFiltering
+        from ..STCRpy.tcr_geometry import TCRGeomFiltering
 
         scan_angle_pdf = ScanningAnglePDF(
             mean=TCRGeomFiltering.SCANNING_ANGLE_MEAN,
