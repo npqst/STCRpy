@@ -22,3 +22,8 @@ pip install --no-deps plip
 pip install torch --index-url https://download.pytorch.org/whl/cpu
 pip install torch_geometric
 ```
+
+### PyMOL visualisations 
+```
+conda install -c conda-forge -c schrodinger pymol-bundle numpy=1.26.0 -y
+```
