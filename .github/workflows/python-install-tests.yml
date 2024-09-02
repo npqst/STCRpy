@@ -20,7 +20,9 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple .
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple anarci-mhc
+        pip install biopython numpy==1.26.0 lxml openbabel-wheel rdkit pandas matplotlib scipy scikit-learn
+        pip install .
         pip install plip --no-deps
         conda install -c conda-forge -c schrodinger pymol-bundle numpy=1.26.0 -y
 
