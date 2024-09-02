@@ -1,0 +1,33 @@
+name: STCRpy installation and tests
+
+on: [push]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Add conda to system path
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        echo $CONDA/bin >> $GITHUB_PATH
+    - name: Install dependencies
+      run: |
+        pip install --index-url https://test.pypi.org/simple/ anarci-mhc
+        pip install .
+        pip install plip --no-deps
+        conda install -c conda-forge pymol-bundle
+        
+    - name: Test with unittest
+      run: |
+        conda install unittest
+        cd test
+        python -m unittest
+        
