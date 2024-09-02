@@ -95,7 +95,7 @@ class TestTCRParser(unittest.TestCase):
         pdb_file = "./test_files/4nhu.pdb"
         tcr = parser.get_tcr_structure("test", pdb_file)
 
-        from ..STCRpy.tcr_processing.TCRIO import TCRIO
+        from STCRpy.tcr_processing.TCRIO import TCRIO
 
         io = TCRIO()
 
@@ -105,7 +105,9 @@ class TestTCRParser(unittest.TestCase):
         for x in tcr.get_TCRs():
             io.save(x, tcr_only=True, save_as=f"./test_files/test_{x.id}.pdb")
 
-        pdb_file = "./STCRpy/STCRpy/tcr_geometry/reference_data/dock_reference_1_imgt_numbered.pdb"
+        pdb_file = (
+            "../STCRpy/tcr_geometry/reference_data/dock_reference_1_imgt_numbered.pdb"
+        )
         tcr = parser.get_tcr_structure("test", pdb_file)
         for x in tcr.get_TCRs():
             io.save(x, save_as=f"./test_files/test_{x.id}.pdb")
