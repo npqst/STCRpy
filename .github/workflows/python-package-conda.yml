@@ -20,8 +20,7 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        pip install --index-url https://test.pypi.org/simple/ anarci-mhc==0.0.4
-        pip install .
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple .
         pip install plip --no-deps
         conda install -c conda-forge pymol-bundle
         
