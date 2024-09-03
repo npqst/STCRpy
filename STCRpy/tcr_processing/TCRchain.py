@@ -130,6 +130,14 @@ class TCRchain(Chain.Chain, Entity):
             if f.id.lower()[:3] == "cdr":
                 yield f
 
+    def get_frameworks(self):
+        """
+        Obtain framework regions from a TCRChain object.
+        """
+        for f in self.get_fragments():
+            if "fw" in f.id:
+                yield f
+
     def get_sequence(self, type=dict):
         if not self.sequence:
             self.set_sequence()
