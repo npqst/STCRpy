@@ -155,3 +155,24 @@ class RMSD:
                 ref_framework_atom_coords, aligned_framework_atom_coords
             )
         return rmsds
+
+    def rmsd_from_files(self, pred_and_target_files: list) -> pd.DataFrame:
+        """Calculates the RMSD between TCR structures from a list of files.
+
+        Args:
+            pred_and_target_files (list of tuples): List of tuples, where each tuple contains
+                the path to the predicticted PDB at index 0 and the path to the target PDB at index 1.
+
+        Returns:
+            pandas.Dataframe: Pandas dataframe indexed by the TCR ID of the predicted structure, with columns
+                containing the RMSD of the whole alpha and beta chain, and all framework and CDR regions.
+        """
+        from ..tcr_methods.tcr_methods import load_TCRs
+
+        all_rmsds = {}
+        for pred_tcr_file, target_tcr_file in pred_and_target_files:
+            pred_tcr, target_tcr = load_TCRs([pred_tcr_file, target_tcr_file])
+            all_rmsds[pred_tcr.parent.parent.id] = self.calculate_rmsd(
+                pred_tcr, target_tcr
+            )
+        return pd.DataFrame(all_rmsds).transpose()
