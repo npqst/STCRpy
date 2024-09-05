@@ -21,7 +21,7 @@ setup(
         "lxml",
         "openbabel-wheel",
         "rdkit",
-        "anarci-mhc==0.0.4",
+        "anarci-mhc==0.0.6",
         "pandas",
         "matplotlib",
         "scipy",
