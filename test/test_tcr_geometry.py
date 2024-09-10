@@ -184,3 +184,104 @@ N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb"""
         tcr = list(parser.get_tcr_structure("8gvb", test_file).get_TCRs())[0]
         geometry = tcr.calculate_docking_geometry()
         assert "scanning_angle" in geometry
+
+    def test_calculate_docking_angle_cys_method(self):
+        import STCRpy
+
+        pdb_files = [
+            "./test_files/5hyj.pdb",
+            "./test_files/7l1d.pdb",
+            "./test_files/7rrg.pdb",
+        ]
+        tcrs = STCRpy.load_TCRs(pdb_files)
+
+        true_scanning_angles = [42.9581, 47.4101, 73.7909]  # [5hyj, 7l1d, 7rrg]
+        true_pitch_angles = [12.3062, 3.46555, 12.0141]
+
+        cys_crossing_angles = []
+        com_crossing_angles = []
+        for i, tcr in enumerate(tcrs):
+            cys_crossing_angles.append(tcr.get_scanning_angle(mode="cys"))
+            com_crossing_angles.append(tcr.get_scanning_angle(mode="com"))
+
+        print(cys_crossing_angles)
+        print(com_crossing_angles)
+
+        self.assertAlmostEqual(
+            cys_crossing_angles,
+            true_scanning_angles,
+        )
+
+        # pitch = tcr.get_pitch_angle()
+        # self.assertAlmostEqual(pitch, true_pitch_angles[i])
+
+    def test_calculate_docking_angle_com_method(self):
+        import STCRpy
+
+        pdb_files = [
+            "./test_files/5hyj.pdb",
+            "./test_files/7l1d.pdb",
+            "./test_files/7rrg.pdb",
+        ]
+        tcrs = STCRpy.load_TCRs(pdb_files)
+
+        true_scanning_angles = [42.9581, 47.4101, 73.7909]  # [5hyj, 7l1d, 7rrg]
+        true_pitch_angles = [12.3062, 3.46555, 12.0141]
+        for i, tcr in enumerate(tcrs):
+            crossing_angle = tcr.get_scanning_angle(mode="com")
+            self.assertAlmostEqual(
+                crossing_angle,
+                true_scanning_angles[i],
+            )
+            pitch = tcr.get_pitch_angle()
+            self.assertAlmostEqual(pitch, true_pitch_angles[i])
+
+    def test_get_alpha_helices(self):
+        import STCRpy
+
+        tcrs = STCRpy.load_TCRs(glob.glob("test_files/TCRCoM_test_files/*.cif"))
+
+        for tcr in tcrs:
+            if (
+                len(tcr.get_MHC()) == 1
+                and hasattr(tcr.get_MHC()[0], "MHC_type")
+                and tcr.get_MHC()[0].MHC_type in ["MH1", "MH2"]
+            ):
+                tcr_geom = TCRGeom.TCRGeom(tcr)
+                # since tcr should be aligned to reference MHC mhc vector should be approximately [0, 1, 0]
+                self.assertAlmostEqual(
+                    np.dot(
+                        tcr_geom._get_mhc_helix_vectors(tcr.get_MHC()[0]),
+                        np.asarray([0, 1, 0]),
+                    ),
+                    1,
+                    places=1,
+                )
+
+    def test_rudolph_scanning_angle(self):
+        import STCRpy
+
+        tcrs = STCRpy.load_TCRs(
+            glob.glob("test_files/TCRGeom_rudolph_test_files/*.cif")
+        )
+
+        rudolph_scanning_angles = {
+            "2ckb": 22,
+            "1g6r": 23,
+            "1mwa": 23,
+            "1fo0": 41,
+            "1nam": 40,
+            "1kj2": 31,
+            "1bd2": 48,
+        }
+
+        for tcr in tcrs:
+            tcr_geom = TCRGeom.TCRGeom(tcr, mode="rudolph")
+
+            assert (
+                abs(
+                    np.degrees(tcr_geom.scanning_angle)
+                    - rudolph_scanning_angles[tcr.parent.parent.id]
+                )
+                < 3.0
+            )
