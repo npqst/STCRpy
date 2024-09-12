@@ -6,7 +6,7 @@ The TCR class.
 
 import sys
 import warnings
-import typing
+import numpy as np
 
 from .Entity import Entity
 
@@ -108,8 +108,17 @@ class TCR(Entity):
         tcrio = TCRIO.TCRIO()
         tcrio.save(self, save_as=save_as, tcr_only=tcr_only, format=format)
 
-    def calculate_docking_geometry(self):
+    def get_scanning_angle(self, mode="rudolph"):
+        if not hasattr(self, "geometry") or self.geometry.mode != mode:
+            self.calculate_docking_geometry(mode=mode)
+        return self.geometry.get_scanning_angle()
 
+    def get_pitch_angle(self, mode="rudolph"):
+        if not hasattr(self, "geometry") or self.geometry.mode != mode:
+            self.calculate_docking_geometry(mode=mode)
+        return self.geometry.get_pitch_angle()
+
+    def calculate_docking_geometry(self, mode="rudolph"):
         if len(self.get_MHC()) == 0:
             warnings.warn(
                 f"No MHC found for TCR {self}. Docking geometry cannot be calcuated"
@@ -124,7 +133,7 @@ class TCR(Entity):
             )
             raise ImportError(str(e))
 
-        self.geometry = TCRGeom(self)
+        self.geometry = TCRGeom(self, mode=mode)
         return self.geometry.to_dict()
 
     def score_docking_geometry(self, **kwargs):

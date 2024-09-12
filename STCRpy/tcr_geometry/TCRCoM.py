@@ -147,6 +147,7 @@ class TCRCoM:
 
         superimposer = Bio.PDB.Superimposer()
         superimposer.set_atoms(ref_mhc_atoms, mhc_atoms)
+        self.mhc_alignment_transform = (x.astype("f") for x in superimposer.rotran)
         superimposer.apply(tcr.parent.get_atoms())
 
         mhc_com = self.center_of_mass(mhc_atoms, geometric=True)

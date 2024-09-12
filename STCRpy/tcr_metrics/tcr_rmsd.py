@@ -20,7 +20,7 @@ class RMSD:
         except KeyError:
             # map chain type A to G and B to D
             chain_type = {"A": "G", "B": "D"}[chain_type]
-            return tcr[tcr.get_domain_assignment(f"V{chain_type}")]
+            return tcr[tcr.get_domain_assignment()[f"V{chain_type}"]]
 
     @staticmethod
     def _rmsd(x1, x2):
