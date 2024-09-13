@@ -1,6 +1,8 @@
 import warnings
 import matplotlib.pyplot as plt
 import numpy as np
+from importlib import reload
+
 
 from ..tcr_processing.TCRParser import TCRParser
 
@@ -35,10 +37,100 @@ except ModuleNotFoundError as e:
 
 
 class TCRInteractionProfiler:
-    def __init__(self):
+
+    def __init__(self, **kwargs):
         self.tcr_parser = TCRParser()
         self.model_parser = TCRpMHC_PLIP_Model_Parser()
         self.plip_parser = PLIPParser()
+
+        from plip.basic import config
+
+        config = reload(config)
+        self.config = config
+
+        if len(kwargs) > 0:
+            self.set_interaction_parameters(**kwargs)
+
+    def reset_parameters(self):
+        from plip.basic import config
+
+        config = reload(config)
+        self.config = config
+
+    def set_interaction_parameters(self, **kwargs):
+        """
+        Function to set global PLIP detection parameters, ie. the STCRpy API for PLIP config parameters.
+        See https://github.com/pharmai/plip/blob/master/plip/plipcmd.py for how these are set in native PLIP
+        See https://github.com/pharmai/plip/blob/master/plip/basic/config.py for the default values
+
+        Default Parameters (from PLIP distribution):
+            BS_DIST = 7.5  # Determines maximum distance to include binding site residues
+            AROMATIC_PLANARITY = 5.0  # Determines allowed deviation from planarity in aromatic rings
+            MIN_DIST = 0.5  # Minimum distance for all distance thresholds
+            HYDROPH_DIST_MAX = 4.0  # Distance cutoff for detection of hydrophobic contacts
+            HBOND_DIST_MAX = 4.1  # Max. distance between hydrogen bond donor and acceptor (Hubbard & Haider, 2001) + 0.6 A
+            HBOND_DON_ANGLE_MIN = 100  # Min. angle at the hydrogen bond donor (Hubbard & Haider, 2001) + 10
+            PISTACK_DIST_MAX = 5.5  # Max. distance for parallel or offset pistacking (McGaughey, 1998)
+            PISTACK_ANG_DEV = 30  # Max. Deviation from parallel or perpendicular orientation (in degrees)
+            PISTACK_OFFSET_MAX = 2.0  # Maximum offset of the two rings (corresponds to the radius of benzene + 0.5 A)
+            PICATION_DIST_MAX = 6.0  # Max. distance between charged atom and aromatic ring center (Gallivan and Dougherty, 1999)
+            SALTBRIDGE_DIST_MAX = 5.5  # Max. distance between centers of charge for salt bridges (Barlow and Thornton, 1983) + 1.5
+            HALOGEN_DIST_MAX = 4.0  # Max. distance between oxy. and halogen (Halogen bonds in biological molecules., Auffinger)+0.5
+            HALOGEN_ACC_ANGLE = 120  # Optimal acceptor angle (Halogen bonds in biological molecules., Auffinger)
+            HALOGEN_DON_ANGLE = 165  # Optimal donor angle (Halogen bonds in biological molecules., Auffinger)
+            HALOGEN_ANGLE_DEV = 30  # Max. deviation from optimal angle
+            WATER_BRIDGE_MINDIST = 2.5  # Min. distance between water oxygen and polar atom (Jiang et al., 2005) -0.1
+            WATER_BRIDGE_MAXDIST = 4.1  # Max. distance between water oxygen and polar atom (Jiang et al., 2005) +0.5
+            WATER_BRIDGE_OMEGA_MIN = 71  # Min. angle between acceptor, water oxygen and donor hydrogen (Jiang et al., 2005) - 9
+            WATER_BRIDGE_OMEGA_MAX = 140  # Max. angle between acceptor, water oxygen and donor hydrogen (Jiang et al., 2005)
+            WATER_BRIDGE_THETA_MIN = 100  # Min. angle between water oxygen, donor hydrogen and donor atom (Jiang et al., 2005)
+            METAL_DIST_MAX = 3.0  # Max. distance between metal ion and interacting atom (Harding, 2001)
+            MAX_COMPOSITE_LENGTH = 200  # Filter out ligands with more than 200 fragments
+
+        Raises:
+            AttributeError: Raised if parameter being modified does not exist in config
+            ValueError: Raised if value being set is not permitted.
+        """
+
+        self.reset_parameters()  # reset to ensure no leaks between configurations
+
+        for param, value in kwargs.items():
+            if not hasattr(self.config, param):
+                raise AttributeError(f"PLIP self.config has no parameter {param}")
+
+            if (
+                "ANGLE" in param and not 0 < value < 180
+            ):  # Check value for angle thresholds
+                raise ValueError(
+                    "Threshold for angles need to have values within 0 and 180."
+                )
+            if "DIST" in param:
+                if value > 10:  # Check value for distance thresholds
+                    raise ValueError(
+                        "Threshold for distances must not be larger than 10 Angstrom."
+                    )
+                elif (
+                    value > self.config.BS_DIST + 1
+                ):  # Dynamically adapt the search space for binding site residues
+                    self.config.BS_DIST = value + 1
+            setattr(self.config, param, value)
+        # Check additional conditions for interdependent thresholds
+        if not self.config.HALOGEN_ACC_ANGLE > self.config.HALOGEN_ANGLE_DEV:
+            raise ValueError(
+                "The halogen acceptor angle has to be larger than the halogen angle deviation."
+            )
+        if not self.config.HALOGEN_DON_ANGLE > self.config.HALOGEN_ANGLE_DEV:
+            raise ValueError(
+                "The halogen donor angle has to be larger than the halogen angle deviation."
+            )
+        if not self.config.WATER_BRIDGE_MINDIST < self.config.WATER_BRIDGE_MAXDIST:
+            raise ValueError(
+                "The water bridge minimum distance has to be smaller than the water bridge maximum distance."
+            )
+        if not self.config.WATER_BRIDGE_OMEGA_MIN < self.config.WATER_BRIDGE_OMEGA_MAX:
+            raise ValueError(
+                "The water bridge omega minimum angle has to be smaller than the water bridge omega maximum angle"
+            )
 
     def _visualize_interactions(self, complex: "plip.structure.preparation.PDBComplex"):
 

@@ -149,7 +149,7 @@ class TCR(Entity):
         )
 
     def profile_peptide_interactions(
-        self, renumber: bool = True, save_to: str = None
+        self, renumber: bool = True, save_to: str = None, **kwargs
     ) -> "pd.DataFrame":
         if len(self.get_antigen()) == 0:
             warnings.warn(
@@ -165,7 +165,7 @@ class TCR(Entity):
 
         from ..tcr_interactions import TCRInteractionProfiler
 
-        interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler()
+        interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler(**kwargs)
         interactions = interaction_profiler.get_interactions(
             self, renumber=renumber, save_as_csv=save_to
         )
