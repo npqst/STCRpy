@@ -171,10 +171,12 @@ class TCR(Entity):
         )
         return interactions
 
-    def get_interaction_heatmap(self, **plotting_kwargs):
+    def get_interaction_heatmap(self, plotting_kwargs={}, **interaction_kwargs):
         from ..tcr_interactions import TCRInteractionProfiler
 
-        interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler()
+        interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler(
+            **interaction_kwargs
+        )
         interaction_profiler.get_interaction_heatmap(self, **plotting_kwargs)
 
     def profile_TCR_interactions(self):

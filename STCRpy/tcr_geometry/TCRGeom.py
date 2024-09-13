@@ -27,15 +27,17 @@ class TCRGeom:
 
         self._set_mhc_reference(mhc)
 
-        (self.tcr_com, self.mhc_com, self.tcr_VA_com, self.tcr_VB_com) = (
-            self.mhc_tcr_com_calculator.calculate_centres_of_mass(
-                tcr, save_aligned_as=save_aligned_as
+        if self.mode != "rudolph":
+            (self.tcr_com, self.mhc_com, self.tcr_VA_com, self.tcr_VB_com) = (
+                self.mhc_tcr_com_calculator.calculate_centres_of_mass(
+                    tcr, save_aligned_as=save_aligned_as
+                )
             )
-        )
 
-        (self.tcr_VA_cys_centroid, self.tcr_VB_cys_centroid) = self._get_cys_centroids(
-            tcr
-        )
+        if self.mode != "com":
+            (self.tcr_VA_cys_centroid, self.tcr_VB_cys_centroid) = (
+                self._get_cys_centroids(tcr)
+            )
 
         if self.mode in ["cys", "rudolph"]:
             self.tcr_vector = self.get_tcr_vector(
