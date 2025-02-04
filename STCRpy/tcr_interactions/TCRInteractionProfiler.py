@@ -93,7 +93,6 @@ class TCRInteractionProfiler:
         """
 
         self.reset_parameters()  # reset to ensure no leaks between configurations
-
         for param, value in kwargs.items():
             if not hasattr(self.config, param):
                 raise AttributeError(f"PLIP self.config has no parameter {param}")
@@ -384,15 +383,18 @@ class TCRInteractionProfiler:
 
         fig, (ax_alpha, ax_beta) = plt.subplots(2, 1, figsize=(18, 4))
 
+        plt.subplots_adjust(hspace=0.5)
+
         for pair in TCRA_tuples:
             heatmap_a[pair[0][1], ligand_number_mapping[int(pair[1][1])]] = (
                 heatmap_a[pair[0][1], ligand_number_mapping[int(pair[1][1])]] + 1
             )
 
-        ax_alpha.imshow(heatmap_a.T)
+        ax_alpha.imshow(heatmap_a.T, cmap="PuRd")
+
         for i in plot_index:
-            ax_alpha.axhline(y=i - 0.5, color="red", linewidth=2)
-            ax_alpha.axhline(y=i + 0.5, color="red", linewidth=2)
+            ax_alpha.axhline(y=i - 0.5, color="blue", linewidth=1)
+            ax_alpha.axhline(y=i + 0.5, color="blue", linewidth=1)
         ax_alpha.set_title(
             f"{tcr_name} TCR alpha chain to {antigen_name}; {interaction_type} interactions"
         )
@@ -407,10 +409,10 @@ class TCRInteractionProfiler:
             heatmap_b[pair[0][1], ligand_number_mapping[int(pair[1][1])]] = (
                 heatmap_b[pair[0][1], ligand_number_mapping[int(pair[1][1])]] + 1
             )
-        ax_beta.imshow(heatmap_b.T)
+        ax_beta.imshow(heatmap_b.T, cmap="PuRd")
         for i in plot_index:
-            ax_beta.axhline(y=i - 0.5, color="red", linewidth=2)
-            ax_beta.axhline(y=i + 0.5, color="red", linewidth=2)
+            ax_beta.axhline(y=i - 0.5, color="blue", linewidth=1)
+            ax_beta.axhline(y=i + 0.5, color="blue", linewidth=1)
         ax_beta.set_title(
             f"{tcr_name} TCR beta chain to {antigen_name}; {interaction_type} interactions"
         )
