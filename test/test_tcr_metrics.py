@@ -1,7 +1,10 @@
 import unittest
 
 import os
+import STCRpy.tcr_methods
 import pandas as pd
+import glob
+
 
 import STCRpy
 import STCRpy.tcr_metrics
@@ -16,7 +19,7 @@ class TestTCRMetrics(unittest.TestCase):
             }
         ).values()
 
-        from STCRpy.tcr_metrics.tcr_rmsd import RMSD
+        from STCRpy.tcr_metrics import RMSD
 
         rmsds = RMSD().calculate_rmsd(pred_tcr, true_tcr, save_alignment=True)
 
@@ -50,7 +53,7 @@ class TestTCRMetrics(unittest.TestCase):
             )
         )
 
-        from STCRpy.tcr_metrics.tcr_rmsd import RMSD
+        from STCRpy.tcr_metrics import RMSD
 
         rmsd_df = RMSD().rmsd_from_files(files)
         assert len(rmsd_df) == 46
@@ -72,3 +75,37 @@ class TestTCRMetrics(unittest.TestCase):
                     for col in rmsd_row.index
                 ]
             )
+
+    def test_interface_rmsd(self):
+        from STCRpy.tcr_metrics import InterfaceRMSD
+
+        interface_rmsd = InterfaceRMSD()
+
+        dock_files = sorted(
+            glob.glob(
+                "./test_files/TCRHaddock_test_files/387937-tcr_6eqa_mel5_bulged/structures/it1/renumbered_complex_*.pdb"
+            )
+        )
+        docked_tcrs = STCRpy.load_TCRs(dock_files)
+
+        reference_tcr = STCRpy.load_TCRs(
+            "./test_files/TCRInterfaceRMSD_test_files/6eqa.cif"
+        )[0]
+
+        irmsds = [
+            interface_rmsd.get_interface_rmsd(tcr, reference_tcr) for tcr in docked_tcrs
+        ]
+        assert len(irmsds) == 200
+        detached_peptide_indices = [13, 35, 37, 127]
+        assert all(
+            [
+                r > 0.0
+                for i, r in enumerate(irmsds)
+                if not any(
+                    [
+                        f"renumbered_complex_{p_idx}" in dock_files[i]
+                        for p_idx in detached_peptide_indices
+                    ]
+                )
+            ]
+        )

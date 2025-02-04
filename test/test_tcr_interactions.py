@@ -48,8 +48,8 @@ class TestTCRInteractions(unittest.TestCase):
         plip_parser = PLIPParser()
         interactions = plip_parser.parse_complex(mol, tcr, renumbering, domains)
 
-        assert len(interactions) == 28
-        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions) == 27
+        assert len(interactions[interactions.type == "hbond"]) == 11
         assert len(interactions[interactions.type == "hydrophobic"]) == 12
         assert len(interactions[interactions.type == "pistack"]) == 1
         assert len(interactions[interactions.type == "saltbridge"]) == 3
@@ -66,8 +66,8 @@ class TestTCRInteractions(unittest.TestCase):
         interaction_profiler = TCRInteractionProfiler()
         interactions = interaction_profiler.get_interactions(tcr, renumber=True)
 
-        assert len(interactions) == 28
-        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions) == 27
+        assert len(interactions[interactions.type == "hbond"]) == 11
         assert len(interactions[interactions.type == "hydrophobic"]) == 12
         assert len(interactions[interactions.type == "pistack"]) == 1
         assert len(interactions[interactions.type == "saltbridge"]) == 3
@@ -77,8 +77,8 @@ class TestTCRInteractions(unittest.TestCase):
         assert interactions[interactions.domain == "VB"].protein_number.item() == 96
 
         interactions = interaction_profiler.get_interactions(tcr, renumber=False)
-        assert len(interactions) == 28
-        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions) == 27
+        assert len(interactions[interactions.type == "hbond"]) == 11
         assert len(interactions[interactions.type == "hydrophobic"]) == 12
         assert len(interactions[interactions.type == "pistack"]) == 1
         assert len(interactions[interactions.type == "saltbridge"]) == 3
@@ -99,8 +99,8 @@ class TestTCRInteractions(unittest.TestCase):
 
         interactions = tcr.profile_peptide_interactions()
 
-        assert len(interactions) == 28
-        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions) == 27
+        assert len(interactions[interactions.type == "hbond"]) == 11
         assert len(interactions[interactions.type == "hydrophobic"]) == 12
         assert len(interactions[interactions.type == "pistack"]) == 1
         assert len(interactions[interactions.type == "saltbridge"]) == 3
@@ -266,3 +266,100 @@ class TestTCRInteractions(unittest.TestCase):
     #     heatmaps = interaction_profiler.get_interaction_heatmap(
     #         tcr, save_as="./examples/example_8gvb_interaction_heatmap.png"
     #     )
+
+    def test_set_interaction_parameters(self):
+
+        from plip.basic import config
+
+        interaction_profiler = TCRInteractionProfiler()
+
+        assert (
+            interaction_profiler.config.HBOND_DON_ANGLE_MIN
+            == 100.0
+            == config.HBOND_DON_ANGLE_MIN
+        )
+
+        assert interaction_profiler.config.BS_DIST == 7.5 == config.BS_DIST
+
+        interaction_profiler.set_interaction_parameters(
+            HBOND_DON_ANGLE_MIN=25, BS_DIST=8.5
+        )
+
+        assert (
+            interaction_profiler.config.HBOND_DON_ANGLE_MIN
+            == 25.0
+            == config.HBOND_DON_ANGLE_MIN
+        )
+
+        assert interaction_profiler.config.BS_DIST == 8.5 == config.BS_DIST
+
+        interaction_profiler.reset_parameters()
+
+        assert (
+            interaction_profiler.config.HBOND_DON_ANGLE_MIN
+            == 100.0
+            == config.HBOND_DON_ANGLE_MIN
+        )
+
+        assert interaction_profiler.config.BS_DIST == 7.5 == config.BS_DIST
+
+        # same test but set paramters from initialisation
+        interaction_profiler = TCRInteractionProfiler(
+            HBOND_DON_ANGLE_MIN=25, BS_DIST=8.5
+        )
+
+        assert (
+            interaction_profiler.config.HBOND_DON_ANGLE_MIN
+            == 25.0
+            == config.HBOND_DON_ANGLE_MIN
+        )
+
+        assert interaction_profiler.config.BS_DIST == 8.5 == config.BS_DIST
+
+        interaction_profiler.reset_parameters()
+
+        assert (
+            interaction_profiler.config.HBOND_DON_ANGLE_MIN
+            == 100.0
+            == config.HBOND_DON_ANGLE_MIN
+        )
+
+        assert interaction_profiler.config.BS_DIST == 7.5 == config.BS_DIST
+
+    def test_setting_and_using_alternative_interaction_parameters(self):
+        import STCRpy
+
+        tcr = STCRpy.load_TCRs("test_files/8gvb.cif")[0]
+
+        interaction_profiler = TCRInteractionProfiler(
+            BS_DIST=10.0,
+            HYDROPH_DIST_MAX=6.0,
+            HBOND_DIST_MAX=5.0,
+            HBOND_DON_ANGLE_MIN=1.0,
+        )  # these parameters are more permissive -> leads to larger dataframe of interactions
+        alt_interactions_df = interaction_profiler.get_interactions(tcr)
+
+        default_interaction_profiler = TCRInteractionProfiler()
+
+        default_interactions_df = default_interaction_profiler.get_interactions(tcr)
+
+        interaction_profiler.reset_parameters()
+        reset_interactions_df = interaction_profiler.get_interactions(tcr)
+
+        assert len(alt_interactions_df) > len(default_interactions_df)
+        assert len(default_interactions_df) == len(reset_interactions_df)
+
+    def test_bound_method_alternative_interaction_parameters(self):
+        import STCRpy
+
+        tcr = STCRpy.load_TCRs("test_files/8gvb.cif")[0]
+
+        alt_interactions_df = tcr.profile_peptide_interactions(
+            BS_DIST=10.0,
+            HYDROPH_DIST_MAX=6.0,
+            HBOND_DIST_MAX=5.0,
+            HBOND_DON_ANGLE_MIN=1.0,
+        )
+
+        default_interactions_df = tcr.profile_peptide_interactions()
+        assert len(alt_interactions_df) > len(default_interactions_df)

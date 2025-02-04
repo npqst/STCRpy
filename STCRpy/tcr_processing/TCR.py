@@ -171,10 +171,12 @@ class TCR(Entity):
         )
         return interactions
 
-    def get_interaction_heatmap(self, **plotting_kwargs):
+    def get_interaction_heatmap(self, plotting_kwargs={}, **interaction_kwargs):
         from ..tcr_interactions import TCRInteractionProfiler
 
-        interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler()
+        interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler(
+            **interaction_kwargs
+        )
         interaction_profiler.get_interaction_heatmap(self, **plotting_kwargs)
 
     def profile_TCR_interactions(self):
@@ -196,11 +198,13 @@ class TCR(Entity):
             import pymol
 
             def visualise_interactions(
-                save_as=None, antigen_residues_to_highlight=None
+                save_as=None, antigen_residues_to_highlight=None, **interaction_kwargs
             ):
                 from ..tcr_interactions import TCRInteractionProfiler
 
-                interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler()
+                interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler(
+                    **interaction_kwargs
+                )
                 interaction_session_file = interaction_profiler.create_pymol_session(
                     self,
                     save_as=save_as,

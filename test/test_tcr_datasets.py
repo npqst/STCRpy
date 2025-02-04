@@ -5,7 +5,8 @@ from STCRpy.tcr_datasets.tcr_graph_dataset import TCRGraphConstructor, TCRGraphD
 
 
 class TestTCRDatasets(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
+
+    def test_init(self, *args, **kwargs):
         super(TestTCRDatasets, self).__init__(*args, **kwargs)
 
         parser = TCRParser()
