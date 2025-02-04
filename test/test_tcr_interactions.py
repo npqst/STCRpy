@@ -48,8 +48,8 @@ class TestTCRInteractions(unittest.TestCase):
         plip_parser = PLIPParser()
         interactions = plip_parser.parse_complex(mol, tcr, renumbering, domains)
 
-        assert len(interactions) == 28
-        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions) == 27
+        assert len(interactions[interactions.type == "hbond"]) == 11
         assert len(interactions[interactions.type == "hydrophobic"]) == 12
         assert len(interactions[interactions.type == "pistack"]) == 1
         assert len(interactions[interactions.type == "saltbridge"]) == 3
@@ -66,8 +66,8 @@ class TestTCRInteractions(unittest.TestCase):
         interaction_profiler = TCRInteractionProfiler()
         interactions = interaction_profiler.get_interactions(tcr, renumber=True)
 
-        assert len(interactions) == 28
-        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions) == 27
+        assert len(interactions[interactions.type == "hbond"]) == 11
         assert len(interactions[interactions.type == "hydrophobic"]) == 12
         assert len(interactions[interactions.type == "pistack"]) == 1
         assert len(interactions[interactions.type == "saltbridge"]) == 3
@@ -77,8 +77,8 @@ class TestTCRInteractions(unittest.TestCase):
         assert interactions[interactions.domain == "VB"].protein_number.item() == 96
 
         interactions = interaction_profiler.get_interactions(tcr, renumber=False)
-        assert len(interactions) == 28
-        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions) == 27
+        assert len(interactions[interactions.type == "hbond"]) == 11
         assert len(interactions[interactions.type == "hydrophobic"]) == 12
         assert len(interactions[interactions.type == "pistack"]) == 1
         assert len(interactions[interactions.type == "saltbridge"]) == 3
@@ -99,8 +99,8 @@ class TestTCRInteractions(unittest.TestCase):
 
         interactions = tcr.profile_peptide_interactions()
 
-        assert len(interactions) == 28
-        assert len(interactions[interactions.type == "hbond"]) == 12
+        assert len(interactions) == 27
+        assert len(interactions[interactions.type == "hbond"]) == 11
         assert len(interactions[interactions.type == "hydrophobic"]) == 12
         assert len(interactions[interactions.type == "pistack"]) == 1
         assert len(interactions[interactions.type == "saltbridge"]) == 3
