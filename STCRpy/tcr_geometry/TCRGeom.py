@@ -94,14 +94,22 @@ class TCRGeom:
 
     def to_dict(self):
         return {
-            "tcr_com": self.tcr_com.tolist(),
-            "mhc_com": self.mhc_com.tolist(),
-            "tcr_VA_com": self.tcr_VA_com.tolist(),
-            "tcr_VB_com": self.tcr_VB_com.tolist(),
+            "tcr_com": [self.tcr_com],
+            "mhc_com": [self.mhc_com],
+            "tcr_VA_com": [self.tcr_VA_com],
+            "tcr_VB_com": [self.tcr_VB_com],
+            "tcr_VA_cys_centroid": [self.tcr_VA_cys_centroid],
+            "tcr_VB_cys_centroid": [self.tcr_VB_cys_centroid],
             "scanning_angle": np.degrees(self.scanning_angle),
             "pitch_angle": np.degrees(self.tcr_pitch_angle),
             "polarity": self.polarity,
+            "mode": self.mode,
         }
+
+    def to_df(self):
+        import pandas as pd
+
+        return pd.DataFrame.from_dict(self.to_dict())
 
     def get_scanning_angle(self, rad=False):
         if rad:
