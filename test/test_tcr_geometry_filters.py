@@ -217,7 +217,7 @@ class TestTCRGeometryFilters(unittest.TestCase):
         # )
 
     def test_default_STCRDab_parameter_initialisation(self):
-        from ..STCRpy.tcr_geometry import TCRGeomFiltering
+        from STCRpy.tcr_geometry import TCRGeomFiltering
 
         scan_angle_pdf = ScanningAnglePDF(
             mean=TCRGeomFiltering.SCANNING_ANGLE_MEAN,
