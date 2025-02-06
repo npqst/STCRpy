@@ -2,8 +2,8 @@ import unittest
 import glob
 import numpy as np
 
-from STCRpy.tcr_processing import TCRParser
-from STCRpy.tcr_geometry import TCRDock, TCRAngle, TCRCoM, TCRGeom
+from stcrpy.tcr_processing import TCRParser
+from stcrpy.tcr_geometry import TCRDock, TCRAngle, TCRCoM, TCRGeom
 
 
 class TestTCRGeometry(unittest.TestCase):
@@ -101,7 +101,7 @@ N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb"""
         #         save_aligned_as=f"./test_files/out/aligned_test_{tcr.id}.pdb",
         #     )
         #     print(r, theta, phi)
-        # pdb_file = "./STCRpy/STCRpy/tcr_geometry/reference_data/dock_reference_1_imgt_numbered.pdb"
+        # pdb_file = "./stcrpy/stcrpy/tcr_geometry/reference_data/dock_reference_1_imgt_numbered.pdb"
         # tcr_structure = parser.get_tcr_structure("test", pdb_file)
         # tcr_com = TCRCoM.MHCI_TCRCoM()
         # for tcr in tcr_structure.get_TCRs():
@@ -124,7 +124,7 @@ N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb"""
         #     )
 
         # pdb_file = (
-        #     "./STCRpy/STCRpy/tcr_geometry/include/dock_reference_2_imgt_numbered.pdb"
+        #     "./stcrpy/stcrpy/tcr_geometry/include/dock_reference_2_imgt_numbered.pdb"
         # )
         # tcr_structure = parser.get_tcr_structure("test", pdb_file)
         # tcr_com = TCRCoM.MHCII_TCRCoM()
@@ -188,14 +188,14 @@ N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb"""
         assert "scanning_angle" in geometry
 
     def test_calculate_docking_angle_cys_method(self):
-        import STCRpy
+        import stcrpy
 
         pdb_files = [
             "./test_files/5hyj.pdb",
             "./test_files/7l1d.pdb",
             "./test_files/7rrg.pdb",
         ]
-        tcrs = STCRpy.load_TCRs(pdb_files)
+        tcrs = stcrpy.load_TCRs(pdb_files)
 
         true_scanning_angles = [
             42.9581,
@@ -225,14 +225,14 @@ N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb"""
         # self.assertAlmostEqual(pitch, true_pitch_angles[i])
 
     # def test_calculate_docking_angle_com_method(self):
-    #     import STCRpy
+    #     import stcrpy
 
     #     pdb_files = [
     #         "./test_files/5hyj.pdb",
     #         "./test_files/7l1d.pdb",
     #         "./test_files/7rrg.pdb",
     #     ]
-    #     tcrs = STCRpy.load_TCRs(pdb_files)
+    #     tcrs = stcrpy.load_TCRs(pdb_files)
 
     #     true_scanning_angles = [42.9581, 47.4101, 73.7909]  # [5hyj, 7l1d, 7rrg]
     #     true_pitch_angles = [12.3062, 3.46555, 12.0141]
@@ -246,9 +246,9 @@ N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb"""
     #         self.assertAlmostEqual(pitch, true_pitch_angles[i])
 
     def test_get_alpha_helices(self):
-        import STCRpy
+        import stcrpy
 
-        tcrs = STCRpy.load_TCRs(glob.glob("test_files/TCRCoM_test_files/*.cif"))
+        tcrs = stcrpy.load_TCRs(glob.glob("test_files/TCRCoM_test_files/*.cif"))
 
         for tcr in tcrs:
             if (
@@ -268,9 +268,9 @@ N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb"""
                 )
 
     def test_rudolph_scanning_angle(self):
-        import STCRpy
+        import stcrpy
 
-        tcrs = STCRpy.load_TCRs(
+        tcrs = stcrpy.load_TCRs(
             glob.glob("test_files/TCRGeom_rudolph_test_files/*.cif")
         )
 

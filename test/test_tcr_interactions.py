@@ -8,12 +8,12 @@ try:
 except ModuleNotFoundError:
     pass
 
-from STCRpy.tcr_processing import TCRParser
-from STCRpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser import (
+from stcrpy.tcr_processing import TCRParser
+from stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser import (
     TCRpMHC_PLIP_Model_Parser,
 )
-from STCRpy.tcr_interactions.PLIPParser import PLIPParser
-from STCRpy.tcr_interactions.TCRInteractionProfiler import TCRInteractionProfiler
+from stcrpy.tcr_interactions.PLIPParser import PLIPParser
+from stcrpy.tcr_interactions.TCRInteractionProfiler import TCRInteractionProfiler
 
 
 class TestTCRInteractions(unittest.TestCase):
@@ -152,7 +152,7 @@ class TestTCRInteractions(unittest.TestCase):
                 assert len(w) == 1  # check only one warning raised
                 # check warning tells user to install pymol
                 assert (
-                    "conda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle"
+                    "conda install -c conda-forge -c schrodinger numpy pymol-bundle"
                     in str(w[0].message)
                 )
 
@@ -213,7 +213,7 @@ class TestTCRInteractions(unittest.TestCase):
                 assert len(w) == 1  # check only one warning raised
                 # check warning tells user to install pymol
                 assert (
-                    "conda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle"
+                    "conda install -c conda-forge -c schrodinger numpy pymol-bundle"
                     in str(w[0].message)
                 )
 
@@ -238,7 +238,7 @@ class TestTCRInteractions(unittest.TestCase):
                 assert len(w) == 1  # check only one warning raised
                 # check warning tells user to install pymol
                 assert (
-                    "conda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle"
+                    "conda install -c conda-forge -c schrodinger numpy pymol-bundle"
                     in str(w[0].message)
                 )
             pymol_installed = False
@@ -327,9 +327,9 @@ class TestTCRInteractions(unittest.TestCase):
         assert interaction_profiler.config.BS_DIST == 7.5 == config.BS_DIST
 
     def test_setting_and_using_alternative_interaction_parameters(self):
-        import STCRpy
+        import stcrpy
 
-        tcr = STCRpy.load_TCRs("test_files/8gvb.cif")[0]
+        tcr = stcrpy.load_TCRs("test_files/8gvb.cif")[0]
 
         interaction_profiler = TCRInteractionProfiler(
             BS_DIST=10.0,
@@ -350,9 +350,9 @@ class TestTCRInteractions(unittest.TestCase):
         assert len(default_interactions_df) == len(reset_interactions_df)
 
     def test_bound_method_alternative_interaction_parameters(self):
-        import STCRpy
+        import stcrpy
 
-        tcr = STCRpy.load_TCRs("test_files/8gvb.cif")[0]
+        tcr = stcrpy.load_TCRs("test_files/8gvb.cif")[0]
 
         alt_interactions_df = tcr.profile_peptide_interactions(
             BS_DIST=10.0,

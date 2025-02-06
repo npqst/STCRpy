@@ -2,31 +2,31 @@ import unittest
 import glob
 import os
 
-import STCRpy.tcr_processing
+import stcrpy.tcr_processing
 
 
 class TestTCRFormats(unittest.TestCase):
     def test_tcr_to_haddock(self):
-        import STCRpy
+        import stcrpy
 
-        tcrs = STCRpy.load_TCRs(glob.glob("./test_files/*.pdb")) + STCRpy.load_TCRs(
+        tcrs = stcrpy.load_TCRs(glob.glob("./test_files/*.pdb")) + stcrpy.load_TCRs(
             glob.glob("./test_files/*.cif")
         )
 
-        from STCRpy.tcr_formats import tcr_haddock
+        from stcrpy.tcr_formats import tcr_haddock
 
         haddock_formatter = tcr_haddock.HADDOCKFormatter("./test_files/out/haddock/")
         for tcr in tcrs:
             haddock_formatter.tcr_to_haddock(tcr)
 
     def test_pMHC_to_haddock(self):
-        import STCRpy
+        import stcrpy
 
-        tcrs = STCRpy.load_TCRs(glob.glob("./test_files/*.pdb")) + STCRpy.load_TCRs(
+        tcrs = stcrpy.load_TCRs(glob.glob("./test_files/*.pdb")) + stcrpy.load_TCRs(
             glob.glob("./test_files/*.cif")
         )
 
-        from STCRpy.tcr_formats import tcr_haddock
+        from stcrpy.tcr_formats import tcr_haddock
 
         haddock_formatter = tcr_haddock.HADDOCKFormatter(
             save_dir="./test_files/out/haddock/"
@@ -35,13 +35,13 @@ class TestTCRFormats(unittest.TestCase):
             if (
                 len(tcr.get_MHC()) > 0
                 and len(tcr.antigen) > 0
-                and isinstance(tcr.antigen[0], STCRpy.tcr_processing.AGchain.AGchain)
+                and isinstance(tcr.antigen[0], stcrpy.tcr_processing.AGchain.AGchain)
             ):
                 haddock_formatter.pMHC_to_haddock(tcr.get_MHC()[0], tcr.antigen)
 
     def test_from_haddock_to_TCR_pMHC(self):
-        import STCRpy
-        from STCRpy.tcr_formats import tcr_haddock
+        import stcrpy
+        from stcrpy.tcr_formats import tcr_haddock
 
         haddock_results_parser = tcr_haddock.HADDOCKResultsParser(
             haddock_results_dir="./test_files/TCRHaddock_test_files/387937-tcr_6eqa_mel5_bulged",
@@ -66,8 +66,8 @@ class TestTCRFormats(unittest.TestCase):
             assert os.path.exists(renumbered_file_path)
 
     def test_get_haddock_scores(self):
-        import STCRpy
-        from STCRpy.tcr_formats import tcr_haddock
+        import stcrpy
+        from stcrpy.tcr_formats import tcr_haddock
 
         haddock_results_parser = tcr_haddock.HADDOCKResultsParser(
             haddock_results_dir="./test_files/TCRHaddock_test_files/387937-tcr_6eqa_mel5_bulged",
