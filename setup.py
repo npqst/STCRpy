@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="stcrpy",
-    version="0.1.18",
+    version="0.1.21",
     description="Set of methods to parse, annotate, and calculate features of TCR structures",
     license="BSD 3-clause license",
     maintainer="Nele Quast",
@@ -17,7 +17,7 @@ setup(
     package_data={"stcrpy": ["tcr_geometry/reference_data/*.pdb"]},
     install_requires=[
         "biopython",
-        "numpy==1.26.0",  # required for PLIP utils, which aren't compatible beyond this numpy version
+        "numpy",
         "lxml",
         "openbabel-wheel",
         "rdkit",
@@ -26,5 +26,6 @@ setup(
         "matplotlib",
         "scipy",
         "scikit-learn",
+        "plip",
     ],
 )
