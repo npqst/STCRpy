@@ -48,3 +48,13 @@ python3 -m twine upload --repository testpypi dist/*
 !! Note that to re-deploy the code the version number in `setup.py` must be updated so that pypi can stage the package. 
 
 
+## Debugging
+To install a development version of stvrpy and enable local debugging: 
+```
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple anarci-mhc
+ANARCI --build_models
+pip install -e .
+```
+
+
+

@@ -1,5 +1,6 @@
 import os
 import warnings
+import copy
 
 try:
     from plip.structure.preparation import PDBComplex
@@ -29,7 +30,10 @@ class TCRpMHC_PLIP_Model_Parser:
         delete_tmp_files=True,
         renumber=True,
     ) -> "PDBComplex":
-        # tcr_pmhc_complex = self.tcr_parser.get_tcr_structure('tmp', tcr_pmhc_pdb_file)
+
+        # tcr_pmhc_complex = copy.deepcopy(
+        #     tcr_pmhc_complex
+        # )  # copy the complex to prevent renumbering from persisting in TCR object
 
         ligand = PDB.Model.Model(id=0)
 
@@ -37,11 +41,13 @@ class TCRpMHC_PLIP_Model_Parser:
         assert (
             len(peptide_chain) == 1
         ), f"More or less than one peptide chain found: {peptide_chain}"
-        ligand.add(peptide_chain[0])
+        ligand.add(peptide_chain[0].copy())
 
-        tcr_and_mhc_chains = list(tcr_pmhc_complex.get_chains()) + list(
-            tcr_pmhc_complex.get_MHC()[0].get_chains()
-        )
+        tcr_and_mhc_chains = [
+            c.copy()
+            for c in list(tcr_pmhc_complex.get_chains())
+            + list(tcr_pmhc_complex.get_MHC()[0].get_chains())
+        ]
         if renumber:
             # renumber each chain from one to N to avoid automated renumbering issues related to plip and openbabel
             renumbering = {}
