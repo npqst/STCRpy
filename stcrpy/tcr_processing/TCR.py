@@ -217,11 +217,11 @@ class TCR(Entity):
 
         except ModuleNotFoundError:
 
-            def visualise_interactions(antigen_residues_to_highlight=None):
+            def visualise_interactions(**interaction_kwargs):
                 warnings.warn(
                     f"""pymol was not imported. Interactions were not visualised.
                     \nTo enable pymol visualisations please install pymol in a conda environment with:
-                    \nconda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle\n\n
+                    \nconda install -c conda-forge -c schrodinger numpy pymol-bundle\n\n
                     """
                 )
 

@@ -27,7 +27,7 @@ except ModuleNotFoundError as e:
     if "pymol" in str(e):
         warnings.warn(
             """\nPymol package not found. \nInteraction profiler initialising without visualisation capabilitites. \nTo enable pymol visualisations, install pymol with:
-            \nconda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle\n\n"""
+            \nconda install -c conda-forge -c schrodinger numpy pymol-bundle\n\n"""
         )
     elif "plip" in str(e):
         warnings.warn(
@@ -59,7 +59,7 @@ class TCRInteractionProfiler:
 
     def set_interaction_parameters(self, **kwargs):
         """
-        Function to set global PLIP detection parameters, ie. the STCRpy API for PLIP config parameters.
+        Function to set global PLIP detection parameters, ie. the stcrpy API for PLIP config parameters.
         See https://github.com/pharmai/plip/blob/master/plip/plipcmd.py for how these are set in native PLIP
         See https://github.com/pharmai/plip/blob/master/plip/basic/config.py for the default values
 
@@ -150,7 +150,7 @@ class TCRInteractionProfiler:
                 warnings.warn(
                     f"""Interactions could not be visualised. Raised error {e}.
                 \nTo enable pymol visualisations please install pymol in a conda environment with:
-                \nconda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle\n\n
+                \nconda install -c conda-forge -c schrodinger numpy pymol-bundle\n\n
                 """
                 )
             return
@@ -169,7 +169,7 @@ class TCRInteractionProfiler:
             warnings.warn(
                 f"""pymol could not be imported. Raised error: {str(e)}.
                 \nTo enable pymol visualisations please install pymol in a conda environment with:
-                \nconda install -c conda-forge -c schrodinger numpy==1.26.0 pymol-bundle\n\n
+                \nconda install -c conda-forge -c schrodinger numpy pymol-bundle\n\n
                 """
             )
             return

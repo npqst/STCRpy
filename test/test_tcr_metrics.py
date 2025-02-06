@@ -1,25 +1,25 @@
 import unittest
 
 import os
-import STCRpy.tcr_methods
+import stcrpy.tcr_methods
 import pandas as pd
 import glob
 
 
-import STCRpy
-import STCRpy.tcr_metrics
+import stcrpy
+import stcrpy.tcr_metrics
 
 
 class TestTCRMetrics(unittest.TestCase):
     def test_tcr_rmsd(self):
-        true_tcr, pred_tcr = STCRpy.load_TCRs(
+        true_tcr, pred_tcr = stcrpy.load_TCRs(
             {
                 "true_7su9": "/home/quast/Projects/ImmuneBuilder/data/independent_test_set_no_cdr3_filter/7su9_0_ED.pdb",
                 "pred_7su9": "/home/quast/Projects/ImmuneBuilder/structure_predictions/all_ab/independent_test_data_no_cdr_filter/7su9.pdb",
             }
         ).values()
 
-        from STCRpy.tcr_metrics import RMSD
+        from stcrpy.tcr_metrics import RMSD
 
         rmsds = RMSD().calculate_rmsd(pred_tcr, true_tcr, save_alignment=True)
 
@@ -53,7 +53,7 @@ class TestTCRMetrics(unittest.TestCase):
             )
         )
 
-        from STCRpy.tcr_metrics import RMSD
+        from stcrpy.tcr_metrics import RMSD
 
         rmsd_df = RMSD().rmsd_from_files(files)
         assert len(rmsd_df) == 46
@@ -77,7 +77,7 @@ class TestTCRMetrics(unittest.TestCase):
             )
 
     def test_interface_rmsd(self):
-        from STCRpy.tcr_metrics import InterfaceRMSD
+        from stcrpy.tcr_metrics import InterfaceRMSD
 
         interface_rmsd = InterfaceRMSD()
 
@@ -86,9 +86,9 @@ class TestTCRMetrics(unittest.TestCase):
                 "./test_files/TCRHaddock_test_files/387937-tcr_6eqa_mel5_bulged/structures/it1/renumbered_complex_*.pdb"
             )
         )
-        docked_tcrs = STCRpy.load_TCRs(dock_files)
+        docked_tcrs = stcrpy.load_TCRs(dock_files)
 
-        reference_tcr = STCRpy.load_TCRs(
+        reference_tcr = stcrpy.load_TCRs(
             "./test_files/TCRInterfaceRMSD_test_files/6eqa.cif"
         )[0]
 

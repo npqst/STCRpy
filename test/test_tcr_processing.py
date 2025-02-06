@@ -1,15 +1,15 @@
 import unittest
 import glob
 
-import STCRpy
-from STCRpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
+import stcrpy
+from stcrpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
 
 
 class TestTCRParser(unittest.TestCase):
 
     def test_imports(self):
-        import STCRpy
-        from STCRpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
+        import stcrpy
+        from stcrpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
 
     def test_get_tcr_structure_class_I(self):
         parser = TCRParser.TCRParser()
@@ -95,7 +95,7 @@ class TestTCRParser(unittest.TestCase):
         pdb_file = "./test_files/4nhu.pdb"
         tcr = parser.get_tcr_structure("test", pdb_file)
 
-        from STCRpy.tcr_processing.TCRIO import TCRIO
+        from stcrpy.tcr_processing.TCRIO import TCRIO
 
         io = TCRIO()
 
@@ -106,7 +106,7 @@ class TestTCRParser(unittest.TestCase):
             io.save(x, tcr_only=True, save_as=f"./test_files/test_{x.id}.pdb")
 
         pdb_file = (
-            "../STCRpy/tcr_geometry/reference_data/dock_reference_1_imgt_numbered.pdb"
+            "../stcrpy/tcr_geometry/reference_data/dock_reference_1_imgt_numbered.pdb"
         )
         tcr = parser.get_tcr_structure("test", pdb_file)
         for x in tcr.get_TCRs():
