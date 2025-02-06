@@ -1,13 +1,13 @@
-# STCRpy
+# stcrpy
 
 Author: Nele Quast
 
 
 ## Installation
 
-The core STCRpy package can be installed from PyPi: 
+The core stcrpy package can be installed from PyPi: 
 ```
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple STCRpy
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy
 ```
 
 Certain extensions and functionality have additional dependencies: 
@@ -25,7 +25,7 @@ pip install torch_geometric
 
 ### PyMOL visualisations 
 ```
-conda install -c conda-forge -c schrodinger pymol-bundle numpy=1.26.0 -y
+conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
 ```
 
 
@@ -36,7 +36,7 @@ pip install --upgrade build
 pip install --upgrade twine
 ```
 
-To build the package run: (this will build the wheel and compress the source code to `STCRpy/dist`)
+To build the package run: (this will build the wheel and compress the source code to `stcrpy/dist`)
 ```
 python -m build
 ```
