@@ -1,5 +1,5 @@
 __pycache__
-STCRpy.egg-info
+stcrpy.egg-info
 build
 dist
 test/test_files/out/*.pdb
