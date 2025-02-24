@@ -140,3 +140,7 @@ class MHCchain(Chain, Entity):
     def get_unnumbered(self):
         for r in self.unnumbered:
             yield self.child_dict[r]
+
+    def get_chains(self):  # implemented to retain interface with MHC.get_chains()
+        for c in [self]:
+            yield c

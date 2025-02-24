@@ -141,7 +141,7 @@ class TCR(Entity):
 
         geom_filter = DockingGeometryFilter()
         if not hasattr(self, "geometry"):
-            self.calculate_docking_geometry()
+            self.calculate_docking_geometry(mode="com")
         return geom_filter.score_docking_geometry(
             self.geometry.get_scanning_angle(),
             self.geometry.get_pitch_angle(),

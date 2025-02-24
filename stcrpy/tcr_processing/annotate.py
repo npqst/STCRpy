@@ -5,6 +5,7 @@ Created on 10 May 2017
 Implementation to call anarci (built-in to STrDab) to annotate structures.
 """
 import sys
+import warnings
 
 from Bio.PDB.Polypeptide import aa1, aa3  # to allow me to return "X" if not found.
 
@@ -13,7 +14,6 @@ to_one_letter_code = dict(list(zip(aa3, aa1)))
 # Import TCRDB's constants and common functions.
 from .utils.constants import TCR_CHAINS
 from anarci import number as anarci_number
-from Bio.pairwise2 import align
 
 
 def call_anarci(
@@ -410,6 +410,10 @@ def pairwise_alignment(seq1, seq2, exact=False):
     """
     Function to do alignment of sequences between sequences using biopython.
     """
+    with warnings.catch_warnings():  # prevents pairwise2 deprecation warning from being raised
+        warnings.simplefilter("ignore")
+        from Bio.pairwise2 import align
+
     alignment = None
     s1_aln, s2_aln = easy_alignment(seq1, seq2)
     if s1_aln:
