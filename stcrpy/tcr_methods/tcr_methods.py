@@ -3,7 +3,7 @@ import requests
 import os
 
 from ..tcr_processing.TCRParser import TCRParser
-from .tcr_batch_operations import batch_load_TCRs
+from .tcr_batch_operations import batch_load_TCRs, batch_yield_TCRs
 
 
 def load_TCRs(tcr_structure_files, tcr_ids=None):
@@ -33,6 +33,30 @@ def load_TCRs(tcr_structure_files, tcr_ids=None):
                 f"Length of TCR IDs {len(tcr_ids)} does not match length of files {len(tcr_structure_files)}. TCR IDs reverted to default."
             )
     return batch_load_TCRs(tcr_structure_files)
+
+
+def yield_TCRs(tcr_structure_files, tcr_ids=None):
+    tcr_parser = TCRParser()
+    if isinstance(tcr_structure_files, str):  # loading single file
+        tcr_id = tcr_structure_files.split("/")[-1].split(".")[
+            0
+        ]  # set tcr_id to file name without extension
+        if tcr_ids is not None:
+            if not isinstance(tcr_ids, str):
+                warnings.warn(f"TCR ID: {tcr_ids} for a single TCR should be type str.")
+            tcr_id = tcr_ids
+
+        tcr_structure = tcr_parser.get_tcr_structure(tcr_id, tcr_structure_files)
+        return list(tcr_structure.get_TCRs())
+
+    if tcr_ids is not None:
+        if len(tcr_structure_files) == len(tcr_ids):
+            return batch_yield_TCRs(dict(zip(tcr_ids, tcr_structure_files)))
+        else:
+            warnings.warn(
+                f"Length of TCR IDs {len(tcr_ids)} does not match length of files {len(tcr_structure_files)}. TCR IDs reverted to default."
+            )
+    return batch_yield_TCRs(tcr_structure_files)
 
 
 def fetch_TCR(pdb_id: str):
@@ -70,23 +94,31 @@ def fetch_TCR(pdb_id: str):
     filename = f"{pdb_id.upper()}.pdb"
 
     url = stcrdab_base_url + pdb_id.lower()
-    response = requests.get(url, stream=True)
-
     TCR_FOUND = False
 
-    if response.status_code == 200:
-        with open(filename, "wb") as file:
-            for chunk in response.iter_content(chunk_size=1024):
-                file.write(chunk)
-            if (
-                not b"does not exist" in chunk
-            ):  # STCRDab returns '$PDB does not exist for downloading' if PDB code not found in database
-                TCR_FOUND = True
+    try:
+        response = requests.get(url, stream=True, timeout=10)
+        if response.status_code == 200:
+            with open(filename, "wb") as file:
+                for chunk in response.iter_content(chunk_size=1024):
+                    file.write(chunk)
+                if (
+                    not b"does not exist" in chunk
+                ):  # STCRDab returns '$PDB does not exist for downloading' if PDB code not found in database
+                    TCR_FOUND = True
+
+    except requests.exceptions.Timeout:
+        warnings.warn(f"Request to STCRDab ({url}) timed out. Trying RCSB.")
+
     if not TCR_FOUND:
-        os.remove(filename)  # remove the file written with response from STCRDab
+        if os.path.exists(filename):
+            os.remove(filename)  # remove the file written with response from STCRDab
+
+        # Request from RCSB data base
         filename = f"{pdb_id.upper()}.cif"
         url = pdb_base_url + filename
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream=True, timeout=10)
+
         if response.status_code == 200:
             with open(filename, "wb") as file:
                 for chunk in response.iter_content(chunk_size=1024):
