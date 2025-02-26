@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="stcrpy",
-    version="0.1.21",
+    version="0.1.22",
     description="Set of methods to parse, annotate, and calculate features of TCR structures",
     license="BSD 3-clause license",
     maintainer="Nele Quast",
@@ -21,10 +21,11 @@ setup(
         "lxml",
         "openbabel-wheel",
         "rdkit",
-        "anarci-mhc==0.0.6",
+        "anarci-mhc==0.0.12",
         "pandas",
         "matplotlib",
         "scipy",
+        "requests",
         "scikit-learn",
         "plip",
     ],

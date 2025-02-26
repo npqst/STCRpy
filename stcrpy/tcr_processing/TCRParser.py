@@ -284,7 +284,7 @@ class TCRParser(PDBParser, MMCIFParser):
                         scTCR = False
 
                 else:
-                    numbering, chain_type, scTCR = annotate(chain)
+                    numbering, chain_type, germline_info, scTCR = annotate(chain)
 
                 if chain.id in tcrstructure.header["chain_details"]:  # clean this up!!!
                     engineered = tcrstructure.header["chain_details"][chain.id][
@@ -294,6 +294,8 @@ class TCRParser(PDBParser, MMCIFParser):
                 else:
                     engineered = False
                     details = {"molecule": "unknown", "engineered": False}
+
+                details["genetic_origin"] = germline_info
 
                 if numbering and chain_type in ["G", "D", "B", "A"]:
                     # create a new TCR chain

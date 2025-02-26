@@ -44,14 +44,20 @@ def call_anarci(
 
     @return: numbering, chain type
     """
-    numbering, chain_type = anarci_number(seq, allow=allow)
+    numbering, chain_type, germline_info = anarci_number(
+        seq, allow=allow, assign_germline=True
+    )
 
     if numbering and "MR" not in chain_type and chain_type in allow:
-        return [(_, aa) for _, aa in numbering if aa != "-"], chain_type
+        return [(_, aa) for _, aa in numbering if aa != "-"], chain_type, germline_info
     elif numbering and chain_type in ["BA", "GD", "AB", "DG"]:
-        return [[(_, aa) for _, aa in n if aa != "-"] for n in numbering], chain_type
+        return (
+            [[(_, aa) for _, aa in n if aa != "-"] for n in numbering],
+            chain_type,
+            germline_info,
+        )
     else:
-        return False, False
+        return False, False, False
 
 
 def annotate(chain):
@@ -64,7 +70,7 @@ def annotate(chain):
     and chain type which is B/A/G/D/MH1/GA/GB/B2M or False.
     """
     sequence_list, sequence_str = extract_sequence(chain)
-    numbering, chain_type = call_anarci(sequence_str)
+    numbering, chain_type, germline_info = call_anarci(sequence_str)
 
     # Use
     if chain_type:
@@ -93,7 +99,7 @@ def annotate(chain):
         scTCR = False
 
     # aligned numbering is a dictionary of the original residue ids and the new numbering
-    return aligned_numbering, chain_type, scTCR
+    return aligned_numbering, chain_type, germline_info, scTCR
 
 
 def extract_sequence(

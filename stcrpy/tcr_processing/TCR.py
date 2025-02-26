@@ -102,6 +102,12 @@ class TCR(Entity):
             self.tcr_type = "dbTCR"
             return self.tcr_type
 
+    def get_germline_assignments(self):
+        return {c.id: c.get_germline_assignments() for c in self.get_chains()}
+
+    def get_MHC_allele_assignments(self):
+        return [mhc.get_allele_assignments() for mhc in self.get_MHC()]
+
     def save(self, save_as=None, tcr_only: bool = False, format: str = "pdb"):
         from . import TCRIO
 

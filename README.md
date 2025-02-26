@@ -5,9 +5,11 @@ Author: Nele Quast
 
 ## Installation
 
-The core stcrpy package can be installed from PyPi: 
+The core stcrpy package can be installed from PyPi. 
+After installing stcrpy, the anarci HMM models must be built to enable annotation.
 ```
 pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy
+ANARCI --build_models
 ```
 
 Certain extensions and functionality have additional dependencies: 
@@ -49,7 +51,7 @@ python3 -m twine upload --repository testpypi dist/*
 
 
 ## Debugging
-To install a development version of stvrpy and enable local debugging: 
+To install a development version of stcrpy and enable local debugging: 
 ```
 pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple anarci-mhc
 ANARCI --build_models

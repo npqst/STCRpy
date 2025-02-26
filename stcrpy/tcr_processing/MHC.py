@@ -75,6 +75,9 @@ class MHC(Entity):
         if hasattr(self, "MHC_type"):
             return self.MHC_type
 
+    def get_allele_assignments(self):
+        return {c.id: c.get_allele_assignments() for c in self.get_chains()}
+
 
 class MH1(MHC):
     """

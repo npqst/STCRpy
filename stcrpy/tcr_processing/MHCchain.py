@@ -144,3 +144,6 @@ class MHCchain(Chain, Entity):
     def get_chains(self):  # implemented to retain interface with MHC.get_chains()
         for c in [self]:
             yield c
+
+    def get_allele_assignments(self):
+        return self.xtra["genetic_origin"]

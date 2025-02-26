@@ -155,3 +155,6 @@ class TCRchain(Chain.Chain, Entity):
     def get_unnumbered(self):
         for r in self.unnumbered:
             yield self.child_dict[r]
+
+    def get_germline_assignments(self):
+        return self.xtra["genetic_origin"]
