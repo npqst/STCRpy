@@ -14,11 +14,6 @@ ANARCI --build_models
 
 Certain extensions and functionality have additional dependencies: 
 
-### Interaction Profiling
-```
-pip install --no-deps plip
-```
-
 ### PyTorch dataset generation
 ```
 pip install torch --index-url https://download.pytorch.org/whl/cpu
