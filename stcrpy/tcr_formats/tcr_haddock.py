@@ -247,16 +247,6 @@ class HADDOCKResultsParser:
         with open(haddock_renumbering_file, "r") as f:
             lines = f.readlines()
 
-        # if antigen renumbering file is provided, get antigen renumbering from there
-        if antigen_renumbering_file is not None:
-            with open(antigen_renumbering_file, "r") as f:
-                antigen_xtal_lines = f.readlines()
-            antigen_renumbering_index = antigen_xtal_lines.index(
-                "ANTIGEN RESIDUE RENUMBERING FOR HADDOCK\n"
-            )
-            lines.extend(antigen_xtal_lines[antigen_renumbering_index:])
-
-        # get index of renumbering where TCR renumbering ends and antigen renumbering begins
         try:
             antigen_renumbering_index = lines.index(
                 "ANTIGEN RESIDUE RENUMBERING FOR HADDOCK\n"
@@ -272,6 +262,22 @@ class HADDOCKResultsParser:
                 -1,
             )
         tcr_renumber_indices = (1, antigen_renumbering_index)
+
+        # if antigen renumbering file is provided, get antigen renumbering from there
+        if antigen_renumbering_file is not None:
+            lines = (
+                lines[: antigen_renumber_indices[0] - 1]
+                if antigen_renumber_indices[0] != -1
+                else lines
+            )
+            tcr_renumber_indices = (1, len(lines) - 1)
+
+            with open(antigen_renumbering_file, "r") as f:
+                antigen_xtal_lines = f.readlines()
+            antigen_renumbering_index = antigen_xtal_lines.index(
+                "ANTIGEN RESIDUE RENUMBERING FOR HADDOCK\n"
+            )
+            lines.extend(antigen_xtal_lines[antigen_renumbering_index:])
 
         # renumber TCR by creating new PDB model and populating with residues
         tcr_parsed_lines = list(
