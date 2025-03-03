@@ -106,7 +106,66 @@ class TCR(Entity):
         return {c.id: c.get_germline_assignments() for c in self.get_chains()}
 
     def get_MHC_allele_assignments(self):
-        return [mhc.get_allele_assignments() for mhc in self.get_MHC()]
+        return [
+            (
+                mhc.get_allele_assignments()
+                if mhc.level
+                != "C"  # results in identical nesting structure for MHC and MHCchain types
+                else {mhc.id: mhc.get_allele_assignments()}
+            )
+            for mhc in self.get_MHC()
+        ]
+
+    def get_germlines_and_alleles(self):
+        from ..tcr_formats.tcr_formats import get_sequences
+
+        germlines_and_alleles = {}
+
+        try:
+            germlines = self.get_germline_assignments()
+            for tcr_domain, c in self.get_domain_assignment().items():
+                germlines_and_alleles[tcr_domain] = (
+                    germlines[c]["v_gene"][0][1],
+                    germlines[c]["j_gene"][0][1],
+                )
+                germlines_and_alleles[f"{tcr_domain}_species"] = sorted(
+                    tuple(
+                        set(
+                            (
+                                germlines[c]["v_gene"][0][0],
+                                germlines[c]["j_gene"][0][0],
+                            )
+                        )
+                    )
+                )
+                germlines_and_alleles[f"TCR_{tcr_domain}_seq"] = get_sequences(self[c])[
+                    c
+                ]
+            if len(self.get_MHC()) == 1:
+                MHC = self.get_MHC()[0]
+                alleles = self.get_MHC_allele_assignments()[0]
+                germlines_and_alleles["MHC_type"] = (
+                    MHC.get_MHC_type() if MHC.level != "C" else MHC.chain_type
+                )
+                MHC_domains = {list(d.keys())[0]: c for c, d in alleles.items()}
+                for d, c in MHC_domains.items():
+                    germlines_and_alleles[f"MHC_{d}"] = alleles[c][d][0][1]
+                    germlines_and_alleles[f"MHC_{d}_seq"] = (
+                        get_sequences(MHC[c])[c]
+                        if MHC.level != "C"
+                        else get_sequences(MHC)[c]
+                    )
+            germlines_and_alleles["antigen"] = (
+                get_sequences(self.get_antigen()[0])[self.get_antigen()[0].id]
+                if len(self.get_antigen()) == 1
+                else None
+            )
+        except Exception as e:
+            warnings.warn(
+                f"Germline and allele retrieval failed for {self} with error {str(e)}"
+            )
+
+        return germlines_and_alleles
 
     def save(self, save_as=None, tcr_only: bool = False, format: str = "pdb"):
         from . import TCRIO
@@ -124,7 +183,7 @@ class TCR(Entity):
             self.calculate_docking_geometry(mode=mode)
         return self.geometry.get_pitch_angle()
 
-    def calculate_docking_geometry(self, mode="rudolph"):
+    def calculate_docking_geometry(self, mode="rudolph", as_df=False):
         if len(self.get_MHC()) == 0:
             warnings.warn(
                 f"No MHC found for TCR {self}. Docking geometry cannot be calcuated"
@@ -140,6 +199,8 @@ class TCR(Entity):
             raise ImportError(str(e))
 
         self.geometry = TCRGeom(self, mode=mode)
+        if as_df:
+            return self.geometry.to_df()
         return self.geometry.to_dict()
 
     def score_docking_geometry(self, **kwargs):
