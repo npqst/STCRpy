@@ -60,6 +60,7 @@ class TCRGeom:
             self.scanning_angle = self.calculate_rudolph_angle(
                 self.tcr_vector, self.mhc_vector
             )
+            self.polarity = 0 if self.scanning_angle < 120.0 else 1
 
         else:
             self.scanning_angle, self.tcr_pitch_angle = (
