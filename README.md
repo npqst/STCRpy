@@ -2,8 +2,11 @@
 
 Author: Nele Quast
 
-## Pre-release alpha version
-
+## Pre-release alpha version (v0.1.24)
+We anticipate changes to this repository. Please feel free to reach out with any comments or feedback.
+Manuscript in preparation, please cite: 
+{
+}
 
 ## Installation
 
