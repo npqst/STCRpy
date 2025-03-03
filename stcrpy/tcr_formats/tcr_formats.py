@@ -46,13 +46,24 @@ def get_sequences(entity, amino_acids_only=True, residues_to_include=None):
 
         def residue_filter(res):
             return res.id[1] in residues_to_include
-
-    sequences = {
-        chain.id: seq1(
-            "".join(residue.resname for residue in chain if residue_filter(residue))
-        )
-        for chain in entity.get_chains()
-    }
+    try:
+        sequences = {
+            chain.id: seq1(
+                "".join(residue.resname for residue in chain if residue_filter(residue))
+            )
+            for chain in entity.get_chains()
+        }
+    except AttributeError as e:
+        if entity.level == "C":
+            sequences = {
+                entity.id: seq1(
+                    "".join(
+                        residue.resname for residue in entity if residue_filter(residue)
+                    )
+                )
+            }
+        else:
+            raise e
     if amino_acids_only:
         sequences = {k: seq.replace("X", "") for k, seq in sequences.items()}
     return sequences
