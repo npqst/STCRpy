@@ -1,6 +1,8 @@
-# stcrpy
+# STCRpy
 
 Author: Nele Quast
+
+## Pre-release alpha version
 
 
 ## Installation
