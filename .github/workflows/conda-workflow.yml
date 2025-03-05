@@ -30,8 +30,11 @@ jobs:
           conda activate env
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.26
           pip list
-          ANARCI --build_models
           conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
+      - name: Build ANARCI Models
+        shell: bash -el {0}
+        run: |
+          ANARCI --build_models
       - name: Test import
         shell: bash -el {0}
         run: |
