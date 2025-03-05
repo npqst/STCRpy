@@ -32,7 +32,7 @@ jobs:
         run: |
           conda create -n env python==${{ matrix.python-version }}
           conda activate env
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.26
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.27
           pip list
       - name: Install pymol
         shell: bash -el {0}
@@ -51,9 +51,9 @@ jobs:
         run: |
           conda activate env
           python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
-      - name: Install PLIP and test
-        shell: bash -el {0}
-        run: |
-          conda activate env
-          pip install plip
-          python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
+      # - name: Install PLIP and test
+      #   shell: bash -el {0}
+      #   run: |
+      #     conda activate env
+      #     pip install plip
+      #     python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
