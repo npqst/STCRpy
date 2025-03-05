@@ -38,7 +38,7 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate env
-          pip uninstall numpy
+          pip uninstall -y numpy
           conda install -c conda-forge -c schrodinger numpy pymol-bundle -y
           conda list
       - name: Build ANARCI Models
