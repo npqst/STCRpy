@@ -19,7 +19,7 @@ setup(
         "biopython",
         "numpy",
         "lxml",
-        "openbabel-wheel",
+        "openbabel-wheel==3.1.1.21",
         "rdkit",
         "anarci-mhc==0.0.12",
         "pandas",
