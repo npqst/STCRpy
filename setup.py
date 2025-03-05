@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="stcrpy",
-    version="0.1.25",
+    version="0.1.26",
     description="Set of methods to parse, annotate, and calculate features of TCR structures",
     license="BSD 3-clause license",
     maintainer="Nele Quast",
@@ -27,6 +27,6 @@ setup(
         "scipy",
         "requests",
         "scikit-learn",
-        "plip",
+        # "plip",
     ],
 )

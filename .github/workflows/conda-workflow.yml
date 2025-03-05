@@ -24,8 +24,9 @@ jobs:
         run: conda list
       - name: Install dependencies
         run: |
-          pip install openbabel-wheel==3.1.1.21
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.25
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.26
+          pip list
+          pip install plip --no-deps
           ANARCI --build_models
           conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
       - name: Test import
