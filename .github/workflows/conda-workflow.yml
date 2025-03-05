@@ -38,7 +38,7 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate env
-          conda install -c schrodinger pymol-bundle -y
+          conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |
