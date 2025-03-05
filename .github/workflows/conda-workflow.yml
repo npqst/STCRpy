@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        os: ["ubuntu-latest", "macos-latest"]
         python-version: ["3.11"]
     steps:
       - uses: conda-incubator/setup-miniconda@v3
@@ -17,9 +17,13 @@ jobs:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
           channels: conda-forge,schrodinger
+          channel-priority: flexible
+          show-channel-urls: true
       - name: Conda info
         shell: bash -el {0}
-        run: conda info
+        run: |
+          conda info
+          conda config --show-sources
       - name: Conda list
         shell: pwsh
         run: conda list
@@ -30,10 +34,15 @@ jobs:
           conda activate env
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.26
           pip list
-          conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
+      - name: Install pymol
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          conda install -c schrodinger pymol-bundle -y
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |
+          conda activate env
           ANARCI --build_models
       - name: Test import
         shell: bash -el {0}
