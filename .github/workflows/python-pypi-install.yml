@@ -1,4 +1,4 @@
-name: stcrpy installation and tests
+name: stcrpy pypi installation
 
 on: [push]
 
