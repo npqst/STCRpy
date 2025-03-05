@@ -20,6 +20,7 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
+        pip install openbabel-wheel
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple anarci-mhc==0.0.6
         ANARCI --build_models
         pip install biopython numpy lxml openbabel-wheel rdkit pandas matplotlib scipy scikit-learn plip
