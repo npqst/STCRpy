@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         shell: bash -el {0}
         run: |
-          conda create env
+          conda create -n env
           conda activate env
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.26
           pip list
