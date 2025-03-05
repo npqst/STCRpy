@@ -38,7 +38,7 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate env
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.27
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.26
           pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
@@ -50,9 +50,9 @@ jobs:
         run: |
           conda activate env
           python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
-      # - name: Install PLIP and test
-      #   shell: bash -el {0}
-      #   run: |
-      #     conda activate env
-      #     pip install plip
-      #     python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
+      - name: Install PLIP and test
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          pip install plip
+          python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
