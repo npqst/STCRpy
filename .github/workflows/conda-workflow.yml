@@ -27,16 +27,10 @@ jobs:
       - name: Conda list
         shell: pwsh
         run: conda list
-      - name: Install pymol
-        shell: bash -el {0}
-        run: |
-          conda create -n env python==${{ matrix.python-version }}
-          conda activate env
-          conda install -c conda-forge -c schrodinger numpy pymol-bundle -y
-          conda list
       - name: Install dependencies
         shell: bash -el {0}
         run: |
+          conda create -n env python==${{ matrix.python-version }}
           conda activate env
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.26
           pip list
@@ -45,6 +39,12 @@ jobs:
         run: |
           conda activate env
           ANARCI --build_models
+      - name: Install pymol
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          conda install -c conda-forge -c schrodinger numpy pymol-bundle -y
+          conda list
       - name: Test import
         shell: bash -el {0}
         run: |
@@ -55,4 +55,4 @@ jobs:
         run: |
           conda activate env
           pip install plip
-          python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
+          python -c 'import stcrpy; x=stcrpy.fetch_TCR("7pb2"); print(x[0].profile_peptide_interactions())'
