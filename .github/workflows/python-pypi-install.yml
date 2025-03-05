@@ -40,9 +40,9 @@ jobs:
         python-version: '3.10'
     - name: Install dependencies
       run: |
-        brew install open-babel
+        pip install openbabel-wheel==3.1.1.21
         python -c 'import openbabel'
-        pip install plip --no-deps
+        pip install plip
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.25
         ANARCI --build_models
         conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
