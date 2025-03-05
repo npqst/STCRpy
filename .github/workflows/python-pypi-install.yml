@@ -19,7 +19,7 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        python -c 'import sys; sys.executable'
+        python -c 'import sys; print(print(sys.executable))'
         pip install openbabel-wheel==3.1.1.21
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.25
         ANARCI --build_models
@@ -41,7 +41,7 @@ jobs:
         python-version: '3.10'
     - name: Install dependencies
       run: |
-        python -c 'import sys; sys.executable'
+        python -c 'import sys; print(sys.executable)'
         pip install openbabel-wheel==3.1.1.21
         python -c 'import openbabel'
         pip install plip
@@ -65,7 +65,7 @@ jobs:
         python-version: '3.10'
     - name: Install dependencies
       run: |
-        python -c 'import sys; sys.executable'
+        python -c 'import sys; print(sys.executable)'
         pip install openbabel-wheel==3.1.1.21
         python -c 'import openbabel'
         pip install plip
