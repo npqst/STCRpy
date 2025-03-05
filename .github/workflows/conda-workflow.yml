@@ -23,12 +23,16 @@ jobs:
         shell: pwsh
         run: conda list
       - name: Install dependencies
+        shell: bash -el {0}
         run: |
+          conda create env
+          conda activate env
           pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.26
           pip list
-          pip install plip --no-deps
           ANARCI --build_models
           conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
       - name: Test import
+        shell: bash -el {0}
         run: |
+          conda activate env
           python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
