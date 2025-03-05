@@ -41,6 +41,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install openbabel-wheel==3.1.1.21
+        python -c 'import openbabel'
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.25
         ANARCI --build_models
         conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
@@ -62,6 +63,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install openbabel-wheel==3.1.1.21
+        python -c 'import openbabel'
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.25
         ANARCI --build_models
         conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
