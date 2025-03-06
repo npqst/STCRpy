@@ -32,7 +32,7 @@ jobs:
         run: |
           conda create -n env python==${{ matrix.python-version }}
           conda activate env
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.26
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.28
           pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
