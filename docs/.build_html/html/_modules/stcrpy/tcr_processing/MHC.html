@@ -1,0 +1,652 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_processing.MHC &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_processing.MHC</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_processing.MHC</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on 30 Apr 2016</span>
+
+<span class="sd">@author: leem, based on work by dunbar</span>
+
+<span class="sd">The MHC class. This is similar to the Fab class.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.Entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+
+
+<div class="viewcode-block" id="MHC">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MHC</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MHC class.</span>
+<span class="sd">    Holds paired MHC domains.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="s2">&quot;chain_type&quot;</span><span class="p">):</span>
+            <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">c2</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c2</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_MHC_type</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_antigen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antigen</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">antigen</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antigen</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_tcr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tcr</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MHC.get_TCR">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_TCR">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_TCR</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcr</span></div>
+
+
+<div class="viewcode-block" id="MHC.get_antigen">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_antigen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_antigen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of bound antigens.</span>
+<span class="sd">        If the antigen has more than one chain, those in contact with the antibody will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span></div>
+
+
+<div class="viewcode-block" id="MHC.is_bound">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.is_bound">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check whether there is an antigen bound to the antibody fab</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_antigen</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="MHC.get_chains">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_chains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">c</span></div>
+
+
+<div class="viewcode-block" id="MHC.get_residues">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_residues">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chains</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">r</span></div>
+
+
+<div class="viewcode-block" id="MHC.get_atoms">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_atoms">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_residues</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="MHC.get_MHC_type">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_MHC_type">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_MHC_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;MHC_type&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span></div>
+
+
+<div class="viewcode-block" id="MHC.get_allele_assignments">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_allele_assignments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_allele_assignments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">get_allele_assignments</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chains</span><span class="p">()}</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MH1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MH1</span><span class="p">(</span><span class="n">MHC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type 1 MHC class.</span>
+<span class="sd">    Holds paired MHC domains.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">==</span> <span class="s2">&quot;MH1&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s%s</span><span class="s2"> GA1/GA2=</span><span class="si">%s</span><span class="s2">; B2M=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MH1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B2M</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MH1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B2M</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;GA1/GA2 </span><span class="si">%s%s</span><span class="s2"> GA1=</span><span class="si">%s</span><span class="s2">; GA2=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA2</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA2</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_MHC_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;MH1&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;MH1&quot;</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;MH1&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;MH1&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MH1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA2</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA1&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MH1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA2&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MH1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA2</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;B2M&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">B2M</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MH1.get_alpha">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_alpha">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">MH1_domain</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;MH1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MH1_domain</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MH1_domain</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="MH1.get_MH1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_MH1">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_MH1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;MH1&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">MH1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MH1.get_GA1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_GA1">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_GA1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GA1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_MH1</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MH1.get_GA2">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_GA2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_GA2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GA2</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_MH1</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MH1.get_B2M">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_B2M">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_B2M</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;B2M&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">B2M</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MH2">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH2">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MH2</span><span class="p">(</span><span class="n">MHC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type 2 MHC class.</span>
+<span class="sd">    Holds paired MHC domains.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">==</span> <span class="s2">&quot;MH2&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s%s</span><span class="s2"> GA=</span><span class="si">%s</span><span class="s2">; GB=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;GA/GB </span><span class="si">%s%s</span><span class="s2"> GA=</span><span class="si">%s</span><span class="s2">; GB=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_MHC_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;MH2&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GB&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GB</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MH2.get_GA">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH2.get_GA">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_GA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MH2.get_GB">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH2.get_GB">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_GB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CD1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.CD1">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CD1</span><span class="p">(</span><span class="n">MHC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CD1 class.</span>
+<span class="sd">    Holds paired CD1/B2M domains.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">==</span> <span class="s2">&quot;CD1&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s%s</span><span class="s2"> GA1L/GA2L=</span><span class="si">%s</span><span class="s2">; B2M=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">CD1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B2M</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">CD1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B2M</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;GA1L/GA2L </span><span class="si">%s%s</span><span class="s2"> GA1L=</span><span class="si">%s</span><span class="s2">; GA2L=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA2L</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA2L</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_MHC_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;CD1&quot;</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA1L&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA2L&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;CD1&quot;</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA1L&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;B2M&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;CD1&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;CD1&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;CD1&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CD1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA2L</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA1L&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CD1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA2L&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA2L</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;B2M&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">B2M</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CD1.get_CD1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.CD1.get_CD1">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_CD1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">CD1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="CD1.get_B2M">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.CD1.get_B2M">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_B2M</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;B2M&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">B2M</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MR1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MR1">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MR1</span><span class="p">(</span><span class="n">MHC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MR1 class.</span>
+<span class="sd">    Holds paired MR1/B2M domains.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">==</span> <span class="s2">&quot;MR1&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s%s</span><span class="s2"> GA1L/GA2L=</span><span class="si">%s</span><span class="s2">; B2M=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MR1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B2M</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MR1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">B2M</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;GA1L/GA2L </span><span class="si">%s%s</span><span class="s2"> GA1L=</span><span class="si">%s</span><span class="s2">; GA2L=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA2L</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA2L</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_MHC_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;MR1&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;MR1&quot;</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA1L&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA2L&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;MR1&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;MR1&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;MR1&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MR1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA2L</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA1L&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA2L&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA2L</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;B2M&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">B2M</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MR1.get_MR1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MR1.get_MR1">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_MR1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;MR1&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">MR1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MR1.get_B2M">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MR1.get_B2M">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_B2M</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;B2M&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">B2M</span><span class="p">]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="scMH1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">scMH1</span><span class="p">(</span><span class="n">MHC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type 1 MHC class.</span>
+<span class="sd">    Holds single chain MHC domains for Class I MHC if the identiifed chain</span>
+<span class="sd">    is the double alpha helix, ie. MH1 without B2M, with exception for GA1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">c1</span><span class="o">.</span><span class="n">chain_type</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;GA1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;GA2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;MH1&quot;</span><span class="p">,</span>
+        <span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;Chain </span><span class="si">{</span><span class="n">c1</span><span class="si">}</span><span class="s2"> with can not form a single chain MHC class I.&quot;</span>
+        <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_MHC_type</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">==</span> <span class="s2">&quot;MH1&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> GA1/GA2=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MH1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MH1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;GA1/GA2 </span><span class="si">%s</span><span class="s2"> GA1/GA2=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_MHC_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;MH1&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;MH1&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;MH1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MH1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA2</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="scMH1.get_alpha">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_alpha">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">MH1_domain</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;MH1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MH1_domain</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">MH1_domain</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="scMH1.get_MH1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_MH1">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_MH1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;MH1&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">MH1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="scMH1.get_GA1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_GA1">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_GA1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GA1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_MH1</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="scMH1.get_GA2">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_GA2">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_GA2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GA2</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_MH1</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="scMH1.get_B2M">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_B2M">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_B2M</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="scCD1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scCD1">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">scCD1</span><span class="p">(</span><span class="n">MHC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Type 1 MHC class.</span>
+<span class="sd">    Holds single chain MHC domains of type CD1 for Class I MHC if the identiifed chain</span>
+<span class="sd">    is the double alpha helix, ie. CD1 without B2M.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">c1</span><span class="o">.</span><span class="n">chain_type</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;GA1L&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;CD1&quot;</span><span class="p">,</span>
+        <span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;Chain </span><span class="si">{</span><span class="n">c1</span><span class="si">}</span><span class="s2"> with can not form a single chain MHC class I.&quot;</span>
+        <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_MHC_type</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">==</span> <span class="s2">&quot;CD1&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> GA1L=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">CD1</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">CD1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&lt;GA1L </span><span class="si">%s</span><span class="s2"> GA1L=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_MHC_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA1L&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;CD1&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;CD1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1L&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CD1</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="scCD1.get_CD1">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scCD1.get_CD1">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_CD1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">CD1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="scCD1.get_GA1L">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scCD1.get_GA1L">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_GA1L</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA1L&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GA1L</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_CD1</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="scCD1.get_B2M">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scCD1.get_B2M">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_B2M</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

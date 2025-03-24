@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_geometry.TCRCoM &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_geometry.TCRCoM</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_geometry.TCRCoM</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">Bio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing.TCRParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRParser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing.TCRIO</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRIO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing</span><span class="w"> </span><span class="kn">import</span> <span class="n">abTCR</span><span class="p">,</span> <span class="n">MHCchain</span>
+
+
+<div class="viewcode-block" id="TCRCoM">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TCRCoM</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_reffile</span><span class="p">()</span>
+
+        <span class="n">tcr_parser</span> <span class="o">=</span> <span class="n">TCRParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_model</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="n">tcr_parser</span><span class="o">.</span><span class="n">get_tcr_structure</span><span class="p">(</span><span class="s2">&quot;reference&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reffile</span><span class="p">)</span><span class="o">.</span><span class="n">get_TCRs</span><span class="p">()</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_reference_residues</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TCRCoM.set_reffile">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reffile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_reffile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;TCRCom cannot be insantiated directly, instantiate its subclass&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TCRCoM.set_reference_residues">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reference_residues">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_reference_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_tcr_reference</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_mhc_reference</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TCRCoM.set_tcr_reference">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_tcr_reference">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_tcr_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_VA_residues</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">r</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_model</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">121</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_VB_residues</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">r</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_model</span><span class="o">.</span><span class="n">get_VB</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">126</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="TCRCoM.set_mhc_reference">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_mhc_reference">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_mhc_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;TCRCom cannot be insantiated directly, instantiate its subclass&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TCRCoM.get_filtered_TCR_residues">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.get_filtered_TCR_residues">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_TCR_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+        <span class="n">tcr_A_residues</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">tcr</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()[</span><span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()]</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_VA_residues</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span> <span class="ow">in</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="n">tcr_B_residues</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">tcr</span><span class="o">.</span><span class="n">get_VB</span><span class="p">()[</span><span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()]</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_VB_residues</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span> <span class="ow">in</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_VB</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">tcr_A_residues</span><span class="p">,</span> <span class="n">tcr_B_residues</span></div>
+
+
+<div class="viewcode-block" id="TCRCoM.center_of_mass">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.center_of_mass">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">geometric</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># Structure, Model, Chain, Residue</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Entity</span><span class="o">.</span><span class="n">Entity</span><span class="p">):</span>
+            <span class="n">atom_list</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">()</span>
+        <span class="c1"># List of Atoms</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">entity</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">]:</span>
+            <span class="n">atom_list</span> <span class="o">=</span> <span class="n">entity</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Center of Mass can only be calculated from the following objects:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Structure, Model, Chain, Residue, list of Atoms.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">masses</span><span class="p">,</span> <span class="n">positions</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[(</span><span class="n">atom</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">coord</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atom_list</span><span class="p">])</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;ukn&quot;</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">masses</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">geometric</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Some Atoms don&#39;t have an element assigned.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Try adding them manually or calculate the geometrical center of mass instead&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">geometric</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">positions</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_list</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">masses</span><span class="p">),</span> <span class="n">positions</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TCRCoM.add_com">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.add_com">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_com</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mhc_com</span><span class="p">,</span> <span class="n">tcr_com</span><span class="p">,</span> <span class="n">VA_com</span><span class="p">,</span> <span class="n">VB_com</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to add pseudoatoms at MHC-CoM, TCR-CoM, and XYZ axis to the output PDB file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_structure</span> <span class="o">=</span> <span class="n">tcr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># mhc com</span>
+        <span class="n">mhc_com_chain</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span>
+        <span class="n">new_structure</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="n">mhc_com_chain</span><span class="p">))</span>
+        <span class="n">res_id</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">new_residue</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Residue</span><span class="o">.</span><span class="n">Residue</span><span class="p">(</span><span class="n">res_id</span><span class="p">,</span> <span class="s2">&quot;MCM&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">new_atom</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Atom</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">mhc_com</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+        <span class="n">new_residue</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_atom</span><span class="p">)</span>
+        <span class="n">new_structure</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="n">mhc_com_chain</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_residue</span><span class="p">)</span>
+
+        <span class="c1"># tcr com</span>
+        <span class="n">tcr_com_chain</span> <span class="o">=</span> <span class="s2">&quot;Y&quot;</span>
+        <span class="n">new_structure</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="n">tcr_com_chain</span><span class="p">))</span>
+        <span class="n">pseudo_atom_ids</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TCM&quot;</span><span class="p">,</span> <span class="s2">&quot;ACM&quot;</span><span class="p">,</span> <span class="s2">&quot;BCM&quot;</span><span class="p">]</span>
+        <span class="n">tcr_com_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">tcr_com</span><span class="p">,</span> <span class="n">VA_com</span><span class="p">,</span> <span class="n">VB_com</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">res_id</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">new_residue</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Residue</span><span class="o">.</span><span class="n">Residue</span><span class="p">(</span><span class="n">res_id</span><span class="p">,</span> <span class="n">pseudo_atom_ids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">new_atom</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Atom</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">tcr_com_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+            <span class="n">new_residue</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_atom</span><span class="p">)</span>
+            <span class="n">new_structure</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="n">tcr_com_chain</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_residue</span><span class="p">)</span>
+
+        <span class="c1"># X,Y,Z atoms</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">]]</span>
+        <span class="n">resn</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">]</span>
+        <span class="n">xyz_chain</span> <span class="o">=</span> <span class="s2">&quot;Z&quot;</span>
+        <span class="n">new_structure</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="n">xyz_chain</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="n">res_id</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">new_residue</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Residue</span><span class="o">.</span><span class="n">Residue</span><span class="p">(</span><span class="n">res_id</span><span class="p">,</span> <span class="n">resn</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="n">new_atom</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Atom</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">)</span>
+            <span class="n">new_residue</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_atom</span><span class="p">)</span>
+            <span class="n">new_structure</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="n">xyz_chain</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_residue</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_structure</span></div>
+
+
+<div class="viewcode-block" id="TCRCoM.calculate_centres_of_mass">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.calculate_centres_of_mass">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_centres_of_mass</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tcr</span><span class="p">:</span> <span class="n">abTCR</span><span class="p">,</span>
+        <span class="n">save_aligned_as</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tcr</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;No MHC associated with TCR&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="n">abTCR</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;TCR MHC geometry only implemented for abTCR types, not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">tcr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">mhc_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filtered_MHC_residues</span><span class="p">(</span><span class="n">tcr</span><span class="p">)]</span>
+        <span class="n">ref_mhc_atoms</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">res</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_MHC_residues</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">chain_type</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span>
+            <span class="ow">in</span> <span class="p">[(</span><span class="n">a</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">chain_type</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">get_id</span><span class="p">())</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">mhc_atoms</span><span class="p">]</span>
+        <span class="p">]</span>
+
+        <span class="n">superimposer</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Superimposer</span><span class="p">()</span>
+        <span class="n">superimposer</span><span class="o">.</span><span class="n">set_atoms</span><span class="p">(</span><span class="n">ref_mhc_atoms</span><span class="p">,</span> <span class="n">mhc_atoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mhc_alignment_transform</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;f&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">superimposer</span><span class="o">.</span><span class="n">rotran</span><span class="p">)</span>
+        <span class="n">superimposer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">tcr</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">())</span>
+
+        <span class="n">mhc_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">mhc_atoms</span><span class="p">,</span> <span class="n">geometric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">tcr_VA_residues</span><span class="p">,</span> <span class="n">tcr_VB_residues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_filtered_TCR_residues</span><span class="p">(</span><span class="n">tcr</span><span class="p">)</span>
+        <span class="n">tcr_VA_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">tcr_VA_residues</span><span class="p">]</span>
+        <span class="n">tcr_VA_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">tcr_VA_atoms</span><span class="p">,</span> <span class="n">geometric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">tcr_VB_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">tcr_VB_residues</span><span class="p">]</span>
+        <span class="n">tcr_VB_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">tcr_VB_atoms</span><span class="p">,</span> <span class="n">geometric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">tcr_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">tcr_VA_atoms</span> <span class="o">+</span> <span class="n">tcr_VB_atoms</span><span class="p">,</span> <span class="n">geometric</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save_aligned_as</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">save_aligned_as</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">save_aligned_as</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">tcr</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.pdb&quot;</span>
+                <span class="p">)</span>
+            <span class="n">aligned_tcr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_com</span><span class="p">(</span><span class="n">mhc_com</span><span class="p">,</span> <span class="n">tcr_com</span><span class="p">,</span> <span class="n">tcr_VA_com</span><span class="p">,</span> <span class="n">tcr_VB_com</span><span class="p">,</span> <span class="n">tcr</span><span class="p">)</span>
+            <span class="n">io</span> <span class="o">=</span> <span class="n">TCRIO</span><span class="p">()</span>
+            <span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">aligned_tcr</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="n">save_aligned_as</span><span class="p">)</span>
+
+        <span class="c1"># com_distance = tcr_com - mhc_com</span>
+        <span class="c1"># r = np.sqrt(np.sum(np.square(com_distance)))</span>
+        <span class="c1"># theta = np.degrees(np.arctan2(com_distance[1], com_distance[0]))</span>
+        <span class="c1"># phi = np.degrees(np.arccos(com_distance[2] / r))</span>
+
+        <span class="c1"># return r, theta, phi</span>
+
+        <span class="k">return</span> <span class="n">tcr_com</span><span class="p">,</span> <span class="n">mhc_com</span><span class="p">,</span> <span class="n">tcr_VA_com</span><span class="p">,</span> <span class="n">tcr_VB_com</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MHCI_TCRCoM">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MHCI_TCRCoM</span><span class="p">(</span><span class="n">TCRCoM</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MHCI_TCRCoM.set_reffile">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.set_reffile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_reffile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets reference file for MHC class I structures&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reffile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span>
+            <span class="s2">&quot;reference_data/dock_reference_1_imgt_numbered.pdb&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MHCI_TCRCoM.set_mhc_reference">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.set_mhc_reference">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_mhc_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mhc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_model</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_MH1</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_MHC_residues</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">179</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MHCI_TCRCoM.get_filtered_MHC_residues">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.get_filtered_MHC_residues">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_MHC_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+        <span class="n">mhc</span> <span class="o">=</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mhc</span><span class="p">,</span> <span class="n">MHCchain</span><span class="p">):</span>  <span class="c1"># handle single MHC chain case</span>
+            <span class="n">mhc</span> <span class="o">=</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_MH1</span><span class="p">()</span>
+        <span class="n">filtered_MHC_residues</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">mhc</span><span class="p">[</span><span class="n">ref_res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()]</span>
+            <span class="k">for</span> <span class="n">ref_res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_MHC_residues</span>
+            <span class="k">if</span> <span class="n">ref_res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span> <span class="ow">in</span> <span class="n">mhc</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">filtered_MHC_residues</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MHCII_TCRCoM">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MHCII_TCRCoM</span><span class="p">(</span><span class="n">TCRCoM</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MHCII_TCRCoM.set_reffile">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.set_reffile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_reffile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets reference file for MHC class II structures&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reffile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span>
+            <span class="s2">&quot;reference_data/dock_reference_2_imgt_numbered.pdb&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MHCII_TCRCoM.set_mhc_reference">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.set_mhc_reference">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_mhc_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mhc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_model</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_MHC_residues</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">r</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_GA</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">88</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_MHC_residues</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">r</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_GB</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">87</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MHCII_TCRCoM.get_filtered_MHC_residues">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.get_filtered_MHC_residues">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_MHC_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+        <span class="n">mhc</span> <span class="o">=</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mhc</span><span class="p">,</span> <span class="s2">&quot;get_GA&quot;</span><span class="p">):</span>
+            <span class="n">filtered_MHC_residues</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">mhc</span><span class="o">.</span><span class="n">get_GA</span><span class="p">()[</span><span class="n">ref_res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()]</span>
+                <span class="k">for</span> <span class="n">ref_res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_MHC_residues</span>
+                <span class="k">if</span> <span class="n">ref_res</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA&quot;</span>
+                <span class="ow">and</span> <span class="n">ref_res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span> <span class="ow">in</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_GA</span><span class="p">()</span>
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No GA chain found for MHC class II: </span><span class="si">{</span><span class="n">mhc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mhc</span><span class="p">,</span> <span class="s2">&quot;get_GA&quot;</span><span class="p">):</span>
+            <span class="n">filtered_MHC_residues</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">mhc</span><span class="o">.</span><span class="n">get_GB</span><span class="p">()[</span><span class="n">ref_res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()]</span>
+                    <span class="k">for</span> <span class="n">ref_res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_MHC_residues</span>
+                    <span class="k">if</span> <span class="n">ref_res</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GB&quot;</span>
+                    <span class="ow">and</span> <span class="n">ref_res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span> <span class="ow">in</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_GB</span><span class="p">()</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No GB chain found for MHC class II: </span><span class="si">{</span><span class="n">mhc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filtered_MHC_residues</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,698 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy package &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34399df3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="stcrpy.tcr_datasets package" href="stcrpy.tcr_datasets.html" />
+    <link rel="prev" title="STCRpy documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">stcrpy package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_datasets.html">stcrpy.tcr_datasets package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html">stcrpy.tcr_formats package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html">stcrpy.tcr_geometry package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html">stcrpy.tcr_interactions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html">stcrpy.tcr_methods package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_metrics.html">stcrpy.tcr_metrics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_ml.html">stcrpy.tcr_ml package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html">stcrpy.tcr_processing package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.utils.html">stcrpy.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-stcrpy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">stcrpy package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/stcrpy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="stcrpy-package">
+<h1>stcrpy package<a class="headerlink" href="#stcrpy-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.tcr_datasets.html">stcrpy.tcr_datasets package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_datasets.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_datasets.html#module-stcrpy.tcr_datasets.tcr_graph_dataset">stcrpy.tcr_datasets.tcr_graph_dataset module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphConstructor"><code class="docutils literal notranslate"><span class="pre">TCRGraphConstructor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphConstructor.build_graph"><code class="docutils literal notranslate"><span class="pre">TCRGraphConstructor.build_graph()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphConstructor.set_edge_featuriser"><code class="docutils literal notranslate"><span class="pre">TCRGraphConstructor.set_edge_featuriser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphConstructor.set_node_featuriser"><code class="docutils literal notranslate"><span class="pre">TCRGraphConstructor.set_node_featuriser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphConstructor.set_node_selector"><code class="docutils literal notranslate"><span class="pre">TCRGraphConstructor.set_node_selector()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphDataset"><code class="docutils literal notranslate"><span class="pre">TCRGraphDataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphDataset.get"><code class="docutils literal notranslate"><span class="pre">TCRGraphDataset.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphDataset.len"><code class="docutils literal notranslate"><span class="pre">TCRGraphDataset.len()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphDataset.pop"><code class="docutils literal notranslate"><span class="pre">TCRGraphDataset.pop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphDataset.process"><code class="docutils literal notranslate"><span class="pre">TCRGraphDataset.process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphDataset.processed_file_names"><code class="docutils literal notranslate"><span class="pre">TCRGraphDataset.processed_file_names</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphDataset.raw_file_names"><code class="docutils literal notranslate"><span class="pre">TCRGraphDataset.raw_file_names</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphDataset.set_y"><code class="docutils literal notranslate"><span class="pre">TCRGraphDataset.set_y()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_datasets.html#module-stcrpy.tcr_datasets.tcr_selector">stcrpy.tcr_datasets.tcr_selector module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_datasets.html#module-stcrpy.tcr_datasets.tcr_structure_dataset">stcrpy.tcr_datasets.tcr_structure_dataset module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_datasets.html#module-stcrpy.tcr_datasets.utils">stcrpy.tcr_datasets.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_datasets.html#module-stcrpy.tcr_datasets">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.tcr_formats.html">stcrpy.tcr_formats package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_formats.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_formats.html#module-stcrpy.tcr_formats.tcr_formats">stcrpy.tcr_formats.tcr_formats module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_formats.get_sequences"><code class="docutils literal notranslate"><span class="pre">get_sequences()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_formats.to_AF3_json"><code class="docutils literal notranslate"><span class="pre">to_AF3_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_formats.html#module-stcrpy.tcr_formats.tcr_haddock">stcrpy.tcr_formats.tcr_haddock module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter"><code class="docutils literal notranslate"><span class="pre">HADDOCKFormatter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.pMHC_to_haddock"><code class="docutils literal notranslate"><span class="pre">HADDOCKFormatter.pMHC_to_haddock()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.tcr_to_haddock"><code class="docutils literal notranslate"><span class="pre">HADDOCKFormatter.tcr_to_haddock()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_TCR_pdb_file"><code class="docutils literal notranslate"><span class="pre">HADDOCKFormatter.write_TCR_pdb_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_antigen_pdb_file"><code class="docutils literal notranslate"><span class="pre">HADDOCKFormatter.write_antigen_pdb_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser"><code class="docutils literal notranslate"><span class="pre">HADDOCKResultsParser</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.get_haddock_scores"><code class="docutils literal notranslate"><span class="pre">HADDOCKResultsParser.get_haddock_scores()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.renumber_all_haddock_predictions"><code class="docutils literal notranslate"><span class="pre">HADDOCKResultsParser.renumber_all_haddock_predictions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.renumber_haddock_prediction"><code class="docutils literal notranslate"><span class="pre">HADDOCKResultsParser.renumber_haddock_prediction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.imgt_insertion_char_to_int"><code class="docutils literal notranslate"><span class="pre">imgt_insertion_char_to_int()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.parse_renumbered_line"><code class="docutils literal notranslate"><span class="pre">parse_renumbered_line()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.sort_residues_by_imgt_numbering"><code class="docutils literal notranslate"><span class="pre">sort_residues_by_imgt_numbering()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_formats.html#module-stcrpy.tcr_formats">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.tcr_geometry.html">stcrpy.tcr_geometry package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_geometry.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.reference_data.html">stcrpy.tcr_geometry.reference_data package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.reference_data.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.reference_data.html#module-stcrpy.tcr_geometry.reference_data.reference_data">stcrpy.tcr_geometry.reference_data.reference_data module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.reference_data.html#module-stcrpy.tcr_geometry.reference_data">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_geometry.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_geometry.html#module-stcrpy.tcr_geometry.TCRAngle">stcrpy.tcr_geometry.TCRAngle module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.TCRAngle"><code class="docutils literal notranslate"><span class="pre">TCRAngle</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.TCRAngle.calculate_angles"><code class="docutils literal notranslate"><span class="pre">TCRAngle.calculate_angles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.TCRAngle.calculate_points"><code class="docutils literal notranslate"><span class="pre">TCRAngle.calculate_points()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.TCRAngle.get_angles"><code class="docutils literal notranslate"><span class="pre">TCRAngle.get_angles()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.abTCRAngle"><code class="docutils literal notranslate"><span class="pre">abTCRAngle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.dbTCRAngle"><code class="docutils literal notranslate"><span class="pre">dbTCRAngle</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.gdTCRAngle"><code class="docutils literal notranslate"><span class="pre">gdTCRAngle</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_geometry.html#module-stcrpy.tcr_geometry.TCRCoM">stcrpy.tcr_geometry.TCRCoM module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM"><code class="docutils literal notranslate"><span class="pre">MHCII_TCRCoM</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.get_filtered_MHC_residues"><code class="docutils literal notranslate"><span class="pre">MHCII_TCRCoM.get_filtered_MHC_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.set_mhc_reference"><code class="docutils literal notranslate"><span class="pre">MHCII_TCRCoM.set_mhc_reference()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.set_reffile"><code class="docutils literal notranslate"><span class="pre">MHCII_TCRCoM.set_reffile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM"><code class="docutils literal notranslate"><span class="pre">MHCI_TCRCoM</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.get_filtered_MHC_residues"><code class="docutils literal notranslate"><span class="pre">MHCI_TCRCoM.get_filtered_MHC_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.set_mhc_reference"><code class="docutils literal notranslate"><span class="pre">MHCI_TCRCoM.set_mhc_reference()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.set_reffile"><code class="docutils literal notranslate"><span class="pre">MHCI_TCRCoM.set_reffile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM"><code class="docutils literal notranslate"><span class="pre">TCRCoM</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.add_com"><code class="docutils literal notranslate"><span class="pre">TCRCoM.add_com()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.calculate_centres_of_mass"><code class="docutils literal notranslate"><span class="pre">TCRCoM.calculate_centres_of_mass()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.center_of_mass"><code class="docutils literal notranslate"><span class="pre">TCRCoM.center_of_mass()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.get_filtered_TCR_residues"><code class="docutils literal notranslate"><span class="pre">TCRCoM.get_filtered_TCR_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_mhc_reference"><code class="docutils literal notranslate"><span class="pre">TCRCoM.set_mhc_reference()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reference_residues"><code class="docutils literal notranslate"><span class="pre">TCRCoM.set_reference_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reffile"><code class="docutils literal notranslate"><span class="pre">TCRCoM.set_reffile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_tcr_reference"><code class="docutils literal notranslate"><span class="pre">TCRCoM.set_tcr_reference()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_geometry.html#module-stcrpy.tcr_geometry.TCRDock">stcrpy.tcr_geometry.TCRDock module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRDock.TCRDock"><code class="docutils literal notranslate"><span class="pre">TCRDock</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRDock.TCRDock.calculate_docking_angle"><code class="docutils literal notranslate"><span class="pre">TCRDock.calculate_docking_angle()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_geometry.html#module-stcrpy.tcr_geometry.TCRGeom">stcrpy.tcr_geometry.TCRGeom module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeom.TCRGeom"><code class="docutils literal notranslate"><span class="pre">TCRGeom</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeom.TCRGeom.calculate_rudolph_angle"><code class="docutils literal notranslate"><span class="pre">TCRGeom.calculate_rudolph_angle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeom.TCRGeom.calculate_tcr_docking_angles"><code class="docutils literal notranslate"><span class="pre">TCRGeom.calculate_tcr_docking_angles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_pitch_angle"><code class="docutils literal notranslate"><span class="pre">TCRGeom.get_pitch_angle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_polarity"><code class="docutils literal notranslate"><span class="pre">TCRGeom.get_polarity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_scanning_angle"><code class="docutils literal notranslate"><span class="pre">TCRGeom.get_scanning_angle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_tcr_vector"><code class="docutils literal notranslate"><span class="pre">TCRGeom.get_tcr_vector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_df"><code class="docutils literal notranslate"><span class="pre">TCRGeom.to_df()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_dict"><code class="docutils literal notranslate"><span class="pre">TCRGeom.to_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_geometry.html#module-stcrpy.tcr_geometry.TCRGeomFiltering">stcrpy.tcr_geometry.TCRGeomFiltering module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter"><code class="docutils literal notranslate"><span class="pre">DockingGeometryFilter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter.score_docking_geometry"><code class="docutils literal notranslate"><span class="pre">DockingGeometryFilter.score_docking_geometry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter.set_pitch_angle_pdf"><code class="docutils literal notranslate"><span class="pre">DockingGeometryFilter.set_pitch_angle_pdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter.set_scanning_angle_pdf"><code class="docutils literal notranslate"><span class="pre">DockingGeometryFilter.set_scanning_angle_pdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter.set_zdist_angle_pdf"><code class="docutils literal notranslate"><span class="pre">DockingGeometryFilter.set_zdist_angle_pdf()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF"><code class="docutils literal notranslate"><span class="pre">DockingGeometryPDF</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF.fit"><code class="docutils literal notranslate"><span class="pre">DockingGeometryPDF.fit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF.log_probs"><code class="docutils literal notranslate"><span class="pre">DockingGeometryPDF.log_probs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF.pdf"><code class="docutils literal notranslate"><span class="pre">DockingGeometryPDF.pdf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF.plot"><code class="docutils literal notranslate"><span class="pre">DockingGeometryPDF.plot()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GammaPDF"><code class="docutils literal notranslate"><span class="pre">GammaPDF</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GammaPDF.fit"><code class="docutils literal notranslate"><span class="pre">GammaPDF.fit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GammaPDF.pdf"><code class="docutils literal notranslate"><span class="pre">GammaPDF.pdf()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GaussianMixturePDF"><code class="docutils literal notranslate"><span class="pre">GaussianMixturePDF</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GaussianMixturePDF.fit"><code class="docutils literal notranslate"><span class="pre">GaussianMixturePDF.fit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GaussianMixturePDF.pdf"><code class="docutils literal notranslate"><span class="pre">GaussianMixturePDF.pdf()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.PitchAnglePDF"><code class="docutils literal notranslate"><span class="pre">PitchAnglePDF</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.ScanningAnglePDF"><code class="docutils literal notranslate"><span class="pre">ScanningAnglePDF</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.ZDistPDF"><code class="docutils literal notranslate"><span class="pre">ZDistPDF</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_geometry.html#module-stcrpy.tcr_geometry">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.tcr_interactions.html">stcrpy.tcr_interactions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_interactions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_interactions.html#module-stcrpy.tcr_interactions.PLIPParser">stcrpy.tcr_interactions.PLIPParser module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.PLIPParser.PLIPParser"><code class="docutils literal notranslate"><span class="pre">PLIPParser</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.PLIPParser.PLIPParser.parse_complex"><code class="docutils literal notranslate"><span class="pre">PLIPParser.parse_complex()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_interactions.html#module-stcrpy.tcr_interactions.TCRInteractionProfiler">stcrpy.tcr_interactions.TCRInteractionProfiler module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler"><code class="docutils literal notranslate"><span class="pre">TCRInteractionProfiler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.create_pymol_session"><code class="docutils literal notranslate"><span class="pre">TCRInteractionProfiler.create_pymol_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.get_interaction_heatmap"><code class="docutils literal notranslate"><span class="pre">TCRInteractionProfiler.get_interaction_heatmap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.get_interactions"><code class="docutils literal notranslate"><span class="pre">TCRInteractionProfiler.get_interactions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.reset_parameters"><code class="docutils literal notranslate"><span class="pre">TCRInteractionProfiler.reset_parameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.set_interaction_parameters"><code class="docutils literal notranslate"><span class="pre">TCRInteractionProfiler.set_interaction_parameters()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_interactions.html#module-stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser">stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser"><code class="docutils literal notranslate"><span class="pre">TCRpMHC_PLIP_Model_Parser</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser.map_amino_acids_to_ligands"><code class="docutils literal notranslate"><span class="pre">TCRpMHC_PLIP_Model_Parser.map_amino_acids_to_ligands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser.parse_tcr_pmhc_complex"><code class="docutils literal notranslate"><span class="pre">TCRpMHC_PLIP_Model_Parser.parse_tcr_pmhc_complex()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_interactions.html#module-stcrpy.tcr_interactions.utils">stcrpy.tcr_interactions.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.utils.Interaction"><code class="docutils literal notranslate"><span class="pre">Interaction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.utils.Interaction.to_tuple"><code class="docutils literal notranslate"><span class="pre">Interaction.to_tuple()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.utils.parse_interaction"><code class="docutils literal notranslate"><span class="pre">parse_interaction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.utils.process_hbond"><code class="docutils literal notranslate"><span class="pre">process_hbond()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.utils.process_hydrophobic"><code class="docutils literal notranslate"><span class="pre">process_hydrophobic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.utils.process_pi_stack"><code class="docutils literal notranslate"><span class="pre">process_pi_stack()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.utils.process_saltbridge"><code class="docutils literal notranslate"><span class="pre">process_saltbridge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.utils.return_interactions"><code class="docutils literal notranslate"><span class="pre">return_interactions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_interactions.html#module-stcrpy.tcr_interactions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.tcr_methods.html">stcrpy.tcr_methods package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_methods.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_methods.html#module-stcrpy.tcr_methods.tcr_batch_operations">stcrpy.tcr_methods.tcr_batch_operations module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.TCRBatchOperator"><code class="docutils literal notranslate"><span class="pre">TCRBatchOperator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.TCRBatchOperator.full_analysis"><code class="docutils literal notranslate"><span class="pre">TCRBatchOperator.full_analysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.TCRBatchOperator.get_TCR_geometry"><code class="docutils literal notranslate"><span class="pre">TCRBatchOperator.get_TCR_geometry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.TCRBatchOperator.get_TCR_pMHC_interactions"><code class="docutils literal notranslate"><span class="pre">TCRBatchOperator.get_TCR_pMHC_interactions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.TCRBatchOperator.get_germlines_and_alleles"><code class="docutils literal notranslate"><span class="pre">TCRBatchOperator.get_germlines_and_alleles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.TCRBatchOperator.tcrs_from_file_dict"><code class="docutils literal notranslate"><span class="pre">TCRBatchOperator.tcrs_from_file_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.TCRBatchOperator.tcrs_from_file_list"><code class="docutils literal notranslate"><span class="pre">TCRBatchOperator.tcrs_from_file_list()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.analyse_tcrs"><code class="docutils literal notranslate"><span class="pre">analyse_tcrs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.batch_load_TCRs"><code class="docutils literal notranslate"><span class="pre">batch_load_TCRs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.batch_yield_TCRs"><code class="docutils literal notranslate"><span class="pre">batch_yield_TCRs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.get_TCR_geometry"><code class="docutils literal notranslate"><span class="pre">get_TCR_geometry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.get_TCR_interactions"><code class="docutils literal notranslate"><span class="pre">get_TCR_interactions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_batch_operations.get_germlines_and_alleles"><code class="docutils literal notranslate"><span class="pre">get_germlines_and_alleles()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_methods.html#module-stcrpy.tcr_methods.tcr_methods">stcrpy.tcr_methods.tcr_methods module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_methods.fetch_TCR"><code class="docutils literal notranslate"><span class="pre">fetch_TCR()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_methods.load_TCR"><code class="docutils literal notranslate"><span class="pre">load_TCR()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_methods.load_TCRs"><code class="docutils literal notranslate"><span class="pre">load_TCRs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_methods.yield_TCRs"><code class="docutils literal notranslate"><span class="pre">yield_TCRs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_methods.html#module-stcrpy.tcr_methods.tcr_reformatting">stcrpy.tcr_methods.tcr_reformatting module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html#stcrpy.tcr_methods.tcr_reformatting.tcrs_to_AF3_json"><code class="docutils literal notranslate"><span class="pre">tcrs_to_AF3_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_methods.html#module-stcrpy.tcr_methods">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.tcr_metrics.html">stcrpy.tcr_metrics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_metrics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_metrics.html#module-stcrpy.tcr_metrics.constants">stcrpy.tcr_metrics.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_metrics.html#module-stcrpy.tcr_metrics.tcr_interface_rmsd">stcrpy.tcr_metrics.tcr_interface_rmsd module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_metrics.html#stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD"><code class="docutils literal notranslate"><span class="pre">InterfaceRMSD</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_metrics.html#stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD.align_by_mhc"><code class="docutils literal notranslate"><span class="pre">InterfaceRMSD.align_by_mhc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_metrics.html#stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD.check_residue_mapping"><code class="docutils literal notranslate"><span class="pre">InterfaceRMSD.check_residue_mapping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_metrics.html#stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD.get_interface_residues"><code class="docutils literal notranslate"><span class="pre">InterfaceRMSD.get_interface_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_metrics.html#stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD.get_interface_rmsd"><code class="docutils literal notranslate"><span class="pre">InterfaceRMSD.get_interface_rmsd()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_metrics.html#module-stcrpy.tcr_metrics.tcr_rmsd">stcrpy.tcr_metrics.tcr_rmsd module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_metrics.html#stcrpy.tcr_metrics.tcr_rmsd.RMSD"><code class="docutils literal notranslate"><span class="pre">RMSD</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_metrics.html#stcrpy.tcr_metrics.tcr_rmsd.RMSD.calculate_rmsd"><code class="docutils literal notranslate"><span class="pre">RMSD.calculate_rmsd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_metrics.html#stcrpy.tcr_metrics.tcr_rmsd.RMSD.rmsd_from_files"><code class="docutils literal notranslate"><span class="pre">RMSD.rmsd_from_files()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_metrics.html#module-stcrpy.tcr_metrics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.tcr_ml.html">stcrpy.tcr_ml package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_ml.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_ml.html#module-stcrpy.tcr_ml.geometry_predictor">stcrpy.tcr_ml.geometry_predictor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_ml.html#module-stcrpy.tcr_ml">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.tcr_processing.html">stcrpy.tcr_processing package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html">stcrpy.tcr_processing.utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#module-stcrpy.tcr_processing.utils.common">stcrpy.tcr_processing.utils.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#module-stcrpy.tcr_processing.utils.constants">stcrpy.tcr_processing.utils.constants module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#module-stcrpy.tcr_processing.utils.region_definitions">stcrpy.tcr_processing.utils.region_definitions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#module-stcrpy.tcr_processing.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.AGchain">stcrpy.tcr_processing.AGchain module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.AGchain.AGchain"><code class="docutils literal notranslate"><span class="pre">AGchain</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.AGchain.AGchain.get_type"><code class="docutils literal notranslate"><span class="pre">AGchain.get_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.AGchain.AGchain.is_engineered"><code class="docutils literal notranslate"><span class="pre">AGchain.is_engineered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.AGchain.AGchain.set_engineered"><code class="docutils literal notranslate"><span class="pre">AGchain.set_engineered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.AGchain.AGchain.set_type"><code class="docutils literal notranslate"><span class="pre">AGchain.set_type()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.Chemical_components">stcrpy.tcr_processing.Chemical_components module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.get_chemical_name"><code class="docutils literal notranslate"><span class="pre">get_chemical_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.get_from_expo"><code class="docutils literal notranslate"><span class="pre">get_from_expo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.get_name_type"><code class="docutils literal notranslate"><span class="pre">get_name_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.get_res_type"><code class="docutils literal notranslate"><span class="pre">get_res_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.is_aa"><code class="docutils literal notranslate"><span class="pre">is_aa()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.is_carbohydrate"><code class="docutils literal notranslate"><span class="pre">is_carbohydrate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.is_common_buffer"><code class="docutils literal notranslate"><span class="pre">is_common_buffer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.is_complete"><code class="docutils literal notranslate"><span class="pre">is_complete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.is_nucleic_acid"><code class="docutils literal notranslate"><span class="pre">is_nucleic_acid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Chemical_components.is_polymer"><code class="docutils literal notranslate"><span class="pre">is_polymer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.Entity">stcrpy.tcr_processing.Entity module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Entity.Entity"><code class="docutils literal notranslate"><span class="pre">Entity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Entity.Entity.copy"><code class="docutils literal notranslate"><span class="pre">Entity.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Entity.Entity.save"><code class="docutils literal notranslate"><span class="pre">Entity.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Entity.Entity.transform"><code class="docutils literal notranslate"><span class="pre">Entity.transform()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.Fragment">stcrpy.tcr_processing.Fragment module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Fragment.Fragment"><code class="docutils literal notranslate"><span class="pre">Fragment</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Fragment.Fragment.add"><code class="docutils literal notranslate"><span class="pre">Fragment.add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Fragment.Fragment.get_atoms"><code class="docutils literal notranslate"><span class="pre">Fragment.get_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Fragment.Fragment.get_residues"><code class="docutils literal notranslate"><span class="pre">Fragment.get_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Fragment.Fragment.insert"><code class="docutils literal notranslate"><span class="pre">Fragment.insert()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.Holder">stcrpy.tcr_processing.Holder module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Holder.Holder"><code class="docutils literal notranslate"><span class="pre">Holder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.MHC">stcrpy.tcr_processing.MHC module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.CD1"><code class="docutils literal notranslate"><span class="pre">CD1</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.CD1.get_B2M"><code class="docutils literal notranslate"><span class="pre">CD1.get_B2M()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.CD1.get_CD1"><code class="docutils literal notranslate"><span class="pre">CD1.get_CD1()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1"><code class="docutils literal notranslate"><span class="pre">MH1</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_B2M"><code class="docutils literal notranslate"><span class="pre">MH1.get_B2M()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_GA1"><code class="docutils literal notranslate"><span class="pre">MH1.get_GA1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_GA2"><code class="docutils literal notranslate"><span class="pre">MH1.get_GA2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_MH1"><code class="docutils literal notranslate"><span class="pre">MH1.get_MH1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH1.get_alpha"><code class="docutils literal notranslate"><span class="pre">MH1.get_alpha()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH2"><code class="docutils literal notranslate"><span class="pre">MH2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH2.get_GA"><code class="docutils literal notranslate"><span class="pre">MH2.get_GA()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MH2.get_GB"><code class="docutils literal notranslate"><span class="pre">MH2.get_GB()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC"><code class="docutils literal notranslate"><span class="pre">MHC</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_MHC_type"><code class="docutils literal notranslate"><span class="pre">MHC.get_MHC_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_TCR"><code class="docutils literal notranslate"><span class="pre">MHC.get_TCR()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_allele_assignments"><code class="docutils literal notranslate"><span class="pre">MHC.get_allele_assignments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_antigen"><code class="docutils literal notranslate"><span class="pre">MHC.get_antigen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_atoms"><code class="docutils literal notranslate"><span class="pre">MHC.get_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_chains"><code class="docutils literal notranslate"><span class="pre">MHC.get_chains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.get_residues"><code class="docutils literal notranslate"><span class="pre">MHC.get_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC.is_bound"><code class="docutils literal notranslate"><span class="pre">MHC.is_bound()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MR1"><code class="docutils literal notranslate"><span class="pre">MR1</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MR1.get_B2M"><code class="docutils literal notranslate"><span class="pre">MR1.get_B2M()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MR1.get_MR1"><code class="docutils literal notranslate"><span class="pre">MR1.get_MR1()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scCD1"><code class="docutils literal notranslate"><span class="pre">scCD1</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scCD1.get_B2M"><code class="docutils literal notranslate"><span class="pre">scCD1.get_B2M()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scCD1.get_CD1"><code class="docutils literal notranslate"><span class="pre">scCD1.get_CD1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scCD1.get_GA1L"><code class="docutils literal notranslate"><span class="pre">scCD1.get_GA1L()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1"><code class="docutils literal notranslate"><span class="pre">scMH1</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_B2M"><code class="docutils literal notranslate"><span class="pre">scMH1.get_B2M()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_GA1"><code class="docutils literal notranslate"><span class="pre">scMH1.get_GA1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_GA2"><code class="docutils literal notranslate"><span class="pre">scMH1.get_GA2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_MH1"><code class="docutils literal notranslate"><span class="pre">scMH1.get_MH1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH1.get_alpha"><code class="docutils literal notranslate"><span class="pre">scMH1.get_alpha()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.MHCchain">stcrpy.tcr_processing.MHCchain module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain"><code class="docutils literal notranslate"><span class="pre">MHCchain</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.add_unnumbered"><code class="docutils literal notranslate"><span class="pre">MHCchain.add_unnumbered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.analyse"><code class="docutils literal notranslate"><span class="pre">MHCchain.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.annotate_children"><code class="docutils literal notranslate"><span class="pre">MHCchain.annotate_children()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.get_TCR"><code class="docutils literal notranslate"><span class="pre">MHCchain.get_TCR()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.get_allele_assignments"><code class="docutils literal notranslate"><span class="pre">MHCchain.get_allele_assignments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.get_antigen"><code class="docutils literal notranslate"><span class="pre">MHCchain.get_antigen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.get_chains"><code class="docutils literal notranslate"><span class="pre">MHCchain.get_chains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.get_fragments"><code class="docutils literal notranslate"><span class="pre">MHCchain.get_fragments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.get_sequence"><code class="docutils literal notranslate"><span class="pre">MHCchain.get_sequence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.get_unnumbered"><code class="docutils literal notranslate"><span class="pre">MHCchain.get_unnumbered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.is_bound"><code class="docutils literal notranslate"><span class="pre">MHCchain.is_bound()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.set_chain_type"><code class="docutils literal notranslate"><span class="pre">MHCchain.set_chain_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.set_engineered"><code class="docutils literal notranslate"><span class="pre">MHCchain.set_engineered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHCchain.MHCchain.set_sequence"><code class="docutils literal notranslate"><span class="pre">MHCchain.set_sequence()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.Model">stcrpy.tcr_processing.Model module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Model.Model"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.Select">stcrpy.tcr_processing.Select module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.backbone"><code class="docutils literal notranslate"><span class="pre">backbone</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.backbone.accept_atom"><code class="docutils literal notranslate"><span class="pre">backbone.accept_atom()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.cdr3"><code class="docutils literal notranslate"><span class="pre">cdr3</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.cdr3.accept_residue"><code class="docutils literal notranslate"><span class="pre">cdr3.accept_residue()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.fv_only_backbone"><code class="docutils literal notranslate"><span class="pre">fv_only_backbone</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all"><code class="docutils literal notranslate"><span class="pre">select_all</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept"><code class="docutils literal notranslate"><span class="pre">select_all.accept()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_atom"><code class="docutils literal notranslate"><span class="pre">select_all.accept_atom()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_chain"><code class="docutils literal notranslate"><span class="pre">select_all.accept_chain()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_fragment"><code class="docutils literal notranslate"><span class="pre">select_all.accept_fragment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_holder"><code class="docutils literal notranslate"><span class="pre">select_all.accept_holder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_model"><code class="docutils literal notranslate"><span class="pre">select_all.accept_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_residue"><code class="docutils literal notranslate"><span class="pre">select_all.accept_residue()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.variable_only"><code class="docutils literal notranslate"><span class="pre">variable_only</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.variable_only.accept_holder"><code class="docutils literal notranslate"><span class="pre">variable_only.accept_holder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.variable_only.accept_residue"><code class="docutils literal notranslate"><span class="pre">variable_only.accept_residue()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.TCR">stcrpy.tcr_processing.TCR module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR"><code class="docutils literal notranslate"><span class="pre">TCR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.calculate_docking_geometry"><code class="docutils literal notranslate"><span class="pre">TCR.calculate_docking_geometry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_CDRs"><code class="docutils literal notranslate"><span class="pre">TCR.get_CDRs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_MHC"><code class="docutils literal notranslate"><span class="pre">TCR.get_MHC()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_MHC_allele_assignments"><code class="docutils literal notranslate"><span class="pre">TCR.get_MHC_allele_assignments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_TCR_type"><code class="docutils literal notranslate"><span class="pre">TCR.get_TCR_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_antigen"><code class="docutils literal notranslate"><span class="pre">TCR.get_antigen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_atoms"><code class="docutils literal notranslate"><span class="pre">TCR.get_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_chains"><code class="docutils literal notranslate"><span class="pre">TCR.get_chains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_frameworks"><code class="docutils literal notranslate"><span class="pre">TCR.get_frameworks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_germline_assignments"><code class="docutils literal notranslate"><span class="pre">TCR.get_germline_assignments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_germlines_and_alleles"><code class="docutils literal notranslate"><span class="pre">TCR.get_germlines_and_alleles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_interaction_heatmap"><code class="docutils literal notranslate"><span class="pre">TCR.get_interaction_heatmap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_pitch_angle"><code class="docutils literal notranslate"><span class="pre">TCR.get_pitch_angle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_residues"><code class="docutils literal notranslate"><span class="pre">TCR.get_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_scanning_angle"><code class="docutils literal notranslate"><span class="pre">TCR.get_scanning_angle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.is_bound"><code class="docutils literal notranslate"><span class="pre">TCR.is_bound()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.profile_MHC_interactions"><code class="docutils literal notranslate"><span class="pre">TCR.profile_MHC_interactions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.profile_TCR_interactions"><code class="docutils literal notranslate"><span class="pre">TCR.profile_TCR_interactions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.profile_peptide_interactions"><code class="docutils literal notranslate"><span class="pre">TCR.profile_peptide_interactions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.save"><code class="docutils literal notranslate"><span class="pre">TCR.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.score_docking_geometry"><code class="docutils literal notranslate"><span class="pre">TCR.score_docking_geometry()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR"><code class="docutils literal notranslate"><span class="pre">abTCR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_VA"><code class="docutils literal notranslate"><span class="pre">abTCR.get_VA()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_VB"><code class="docutils literal notranslate"><span class="pre">abTCR.get_VB()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_domain_assignment"><code class="docutils literal notranslate"><span class="pre">abTCR.get_domain_assignment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_fragments"><code class="docutils literal notranslate"><span class="pre">abTCR.get_fragments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.is_engineered"><code class="docutils literal notranslate"><span class="pre">abTCR.is_engineered()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR"><code class="docutils literal notranslate"><span class="pre">dbTCR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.get_VB"><code class="docutils literal notranslate"><span class="pre">dbTCR.get_VB()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.get_VD"><code class="docutils literal notranslate"><span class="pre">dbTCR.get_VD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.get_domain_assignment"><code class="docutils literal notranslate"><span class="pre">dbTCR.get_domain_assignment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.get_fragments"><code class="docutils literal notranslate"><span class="pre">dbTCR.get_fragments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.is_engineered"><code class="docutils literal notranslate"><span class="pre">dbTCR.is_engineered()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR"><code class="docutils literal notranslate"><span class="pre">gdTCR</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.get_VD"><code class="docutils literal notranslate"><span class="pre">gdTCR.get_VD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.get_VG"><code class="docutils literal notranslate"><span class="pre">gdTCR.get_VG()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.get_domain_assignment"><code class="docutils literal notranslate"><span class="pre">gdTCR.get_domain_assignment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.get_fragments"><code class="docutils literal notranslate"><span class="pre">gdTCR.get_fragments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.is_engineered"><code class="docutils literal notranslate"><span class="pre">gdTCR.is_engineered()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.TCRIO">stcrpy.tcr_processing.TCRIO module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRIO.TCRIO"><code class="docutils literal notranslate"><span class="pre">TCRIO</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRIO.TCRIO.save"><code class="docutils literal notranslate"><span class="pre">TCRIO.save()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.TCRParser">stcrpy.tcr_processing.TCRParser module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRParser.TCRParser"><code class="docutils literal notranslate"><span class="pre">TCRParser</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRParser.TCRParser.get_tcr_structure"><code class="docutils literal notranslate"><span class="pre">TCRParser.get_tcr_structure()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.TCRStructure">stcrpy.tcr_processing.TCRStructure module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure"><code class="docutils literal notranslate"><span class="pre">TCRStructure</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_MHCs"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_MHCs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_TCRchains"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_TCRchains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_TCRs"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_TCRs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_antigens"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_antigens()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_atoms"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_atoms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_chains"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_chains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_header"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_header()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_holders"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_holders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_models"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_models()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_residues"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_residues()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_seq"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_seq()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_unpaired_TCRchains"><code class="docutils literal notranslate"><span class="pre">TCRStructure.get_unpaired_TCRchains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRStructure.TCRStructure.set_header"><code class="docutils literal notranslate"><span class="pre">TCRStructure.set_header()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.TCRchain">stcrpy.tcr_processing.TCRchain module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain"><code class="docutils literal notranslate"><span class="pre">TCRchain</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.add_unnumbered"><code class="docutils literal notranslate"><span class="pre">TCRchain.add_unnumbered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.analyse"><code class="docutils literal notranslate"><span class="pre">TCRchain.analyse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.annotate_children"><code class="docutils literal notranslate"><span class="pre">TCRchain.annotate_children()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.get_CDRs"><code class="docutils literal notranslate"><span class="pre">TCRchain.get_CDRs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.get_MHC"><code class="docutils literal notranslate"><span class="pre">TCRchain.get_MHC()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.get_antigen"><code class="docutils literal notranslate"><span class="pre">TCRchain.get_antigen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.get_fragments"><code class="docutils literal notranslate"><span class="pre">TCRchain.get_fragments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.get_frameworks"><code class="docutils literal notranslate"><span class="pre">TCRchain.get_frameworks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.get_germline_assignments"><code class="docutils literal notranslate"><span class="pre">TCRchain.get_germline_assignments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.get_sequence"><code class="docutils literal notranslate"><span class="pre">TCRchain.get_sequence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.get_unnumbered"><code class="docutils literal notranslate"><span class="pre">TCRchain.get_unnumbered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.is_bound"><code class="docutils literal notranslate"><span class="pre">TCRchain.is_bound()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.is_engineered"><code class="docutils literal notranslate"><span class="pre">TCRchain.is_engineered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.set_chain_type"><code class="docutils literal notranslate"><span class="pre">TCRchain.set_chain_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.set_engineered"><code class="docutils literal notranslate"><span class="pre">TCRchain.set_engineered()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCRchain.TCRchain.set_sequence"><code class="docutils literal notranslate"><span class="pre">TCRchain.set_sequence()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing.annotate">stcrpy.tcr_processing.annotate module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.align_numbering"><code class="docutils literal notranslate"><span class="pre">align_numbering()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.align_scTCR_numbering"><code class="docutils literal notranslate"><span class="pre">align_scTCR_numbering()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.annotate"><code class="docutils literal notranslate"><span class="pre">annotate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.call_anarci"><code class="docutils literal notranslate"><span class="pre">call_anarci()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.cleanup_scTCR_numbering"><code class="docutils literal notranslate"><span class="pre">cleanup_scTCR_numbering()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.easy_alignment"><code class="docutils literal notranslate"><span class="pre">easy_alignment()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.extract_sequence"><code class="docutils literal notranslate"><span class="pre">extract_sequence()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.get_alignment_dict"><code class="docutils literal notranslate"><span class="pre">get_alignment_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.interpret"><code class="docutils literal notranslate"><span class="pre">interpret()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.pairwise_alignment"><code class="docutils literal notranslate"><span class="pre">pairwise_alignment()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.annotate.validate_sequence"><code class="docutils literal notranslate"><span class="pre">validate_sequence()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.html#module-stcrpy.tcr_processing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.utils.html">stcrpy.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.utils.html#module-stcrpy.utils.error_stream">stcrpy.utils.error_stream module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.utils.html#stcrpy.utils.error_stream.ErrorStream"><code class="docutils literal notranslate"><span class="pre">ErrorStream</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.utils.html#stcrpy.utils.error_stream.ErrorStream.write"><code class="docutils literal notranslate"><span class="pre">ErrorStream.write()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.utils.html#module-stcrpy.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-stcrpy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-stcrpy" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="STCRpy documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="stcrpy.tcr_datasets.html" class="btn btn-neutral float-right" title="stcrpy.tcr_datasets package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

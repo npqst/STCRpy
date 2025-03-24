@@ -1,0 +1,913 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_processing.utils.region_definitions &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_processing.utils.region_definitions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_processing.utils.region_definitions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">A module to deal with region annotations for IMGT scheme.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCR_CHAINS</span><span class="p">,</span> <span class="n">TCR_REGIONS</span>
+
+<span class="n">IMGT_CDR_BOUNDARIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;imgt&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">38</span><span class="p">)},</span>
+    <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;imgt&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">65</span><span class="p">)},</span>
+    <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;imgt&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">117</span><span class="p">)},</span>
+<span class="p">}</span>
+
+<span class="c1"># regions for TCR</span>
+<span class="n">_regions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;imgt&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;A&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;B&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;11111111111111111111111111222222222222333333333333333334444444444555555555555555555555555555555555555555666666666666677777777777&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Set the IMGT definitions for TCR chain types</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;G&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;B&quot;</span><span class="p">]</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;D&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;A&quot;</span><span class="p">]</span>
+
+
+<span class="c1"># For internal use only. These are not direct conversions and are handled heuristically.</span>
+<span class="c1"># Currently only using the IMGT numbering scheme although other numbering schemes may be introduced.</span>
+<span class="n">_index_to_imgt_state</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">):</span> <span class="p">{</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="mi">7</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+        <span class="mi">9</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="mi">10</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+        <span class="mi">11</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="mi">12</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+        <span class="mi">13</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="mi">14</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+        <span class="mi">15</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+        <span class="mi">16</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+        <span class="mi">17</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+        <span class="mi">18</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+        <span class="mi">19</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="mi">20</span><span class="p">:</span> <span class="mi">19</span><span class="p">,</span>
+        <span class="mi">21</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="mi">22</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
+        <span class="mi">23</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+        <span class="mi">24</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span>
+        <span class="mi">25</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+        <span class="mi">26</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+        <span class="mi">27</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span>
+        <span class="mi">28</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span>
+        <span class="mi">29</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+        <span class="mi">30</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span>
+        <span class="mi">31</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+        <span class="mi">32</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span>
+        <span class="mi">33</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="mi">34</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
+        <span class="mi">35</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span>
+        <span class="mi">36</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span>
+        <span class="mi">37</span><span class="p">:</span> <span class="mi">36</span><span class="p">,</span>
+        <span class="mi">38</span><span class="p">:</span> <span class="mi">37</span><span class="p">,</span>
+        <span class="mi">39</span><span class="p">:</span> <span class="mi">38</span><span class="p">,</span>
+        <span class="mi">40</span><span class="p">:</span> <span class="mi">39</span><span class="p">,</span>
+        <span class="mi">41</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+        <span class="mi">42</span><span class="p">:</span> <span class="mi">41</span><span class="p">,</span>
+        <span class="mi">43</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+        <span class="mi">44</span><span class="p">:</span> <span class="mi">43</span><span class="p">,</span>
+        <span class="mi">45</span><span class="p">:</span> <span class="mi">44</span><span class="p">,</span>
+        <span class="mi">46</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span>
+        <span class="mi">47</span><span class="p">:</span> <span class="mi">46</span><span class="p">,</span>
+        <span class="mi">48</span><span class="p">:</span> <span class="mi">47</span><span class="p">,</span>
+        <span class="mi">49</span><span class="p">:</span> <span class="mi">48</span><span class="p">,</span>
+        <span class="mi">50</span><span class="p">:</span> <span class="mi">49</span><span class="p">,</span>
+        <span class="mi">51</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="mi">52</span><span class="p">:</span> <span class="mi">51</span><span class="p">,</span>
+        <span class="mi">53</span><span class="p">:</span> <span class="mi">52</span><span class="p">,</span>
+        <span class="mi">54</span><span class="p">:</span> <span class="mi">53</span><span class="p">,</span>
+        <span class="mi">55</span><span class="p">:</span> <span class="mi">54</span><span class="p">,</span>
+        <span class="mi">56</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
+        <span class="mi">57</span><span class="p">:</span> <span class="mi">56</span><span class="p">,</span>
+        <span class="mi">58</span><span class="p">:</span> <span class="mi">57</span><span class="p">,</span>
+        <span class="mi">59</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
+        <span class="mi">60</span><span class="p">:</span> <span class="mi">59</span><span class="p">,</span>
+        <span class="mi">61</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+        <span class="mi">62</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
+        <span class="mi">63</span><span class="p">:</span> <span class="mi">62</span><span class="p">,</span>
+        <span class="mi">64</span><span class="p">:</span> <span class="mi">63</span><span class="p">,</span>
+        <span class="mi">65</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+        <span class="mi">66</span><span class="p">:</span> <span class="mi">65</span><span class="p">,</span>
+        <span class="mi">67</span><span class="p">:</span> <span class="mi">66</span><span class="p">,</span>
+        <span class="mi">68</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
+        <span class="mi">69</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
+        <span class="mi">70</span><span class="p">:</span> <span class="mi">69</span><span class="p">,</span>
+        <span class="mi">71</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+        <span class="mi">72</span><span class="p">:</span> <span class="mi">71</span><span class="p">,</span>
+        <span class="mi">73</span><span class="p">:</span> <span class="mi">72</span><span class="p">,</span>
+        <span class="mi">74</span><span class="p">:</span> <span class="mi">73</span><span class="p">,</span>
+        <span class="mi">75</span><span class="p">:</span> <span class="mi">74</span><span class="p">,</span>
+        <span class="mi">76</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+        <span class="mi">77</span><span class="p">:</span> <span class="mi">76</span><span class="p">,</span>
+        <span class="mi">78</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span>
+        <span class="mi">79</span><span class="p">:</span> <span class="mi">78</span><span class="p">,</span>
+        <span class="mi">80</span><span class="p">:</span> <span class="mi">79</span><span class="p">,</span>
+        <span class="mi">81</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+        <span class="mi">82</span><span class="p">:</span> <span class="mi">81</span><span class="p">,</span>
+        <span class="mi">83</span><span class="p">:</span> <span class="mi">82</span><span class="p">,</span>
+        <span class="mi">84</span><span class="p">:</span> <span class="mi">83</span><span class="p">,</span>
+        <span class="mi">85</span><span class="p">:</span> <span class="mi">84</span><span class="p">,</span>
+        <span class="mi">86</span><span class="p">:</span> <span class="mi">85</span><span class="p">,</span>
+        <span class="mi">87</span><span class="p">:</span> <span class="mi">86</span><span class="p">,</span>
+        <span class="mi">88</span><span class="p">:</span> <span class="mi">87</span><span class="p">,</span>
+        <span class="mi">89</span><span class="p">:</span> <span class="mi">88</span><span class="p">,</span>
+        <span class="mi">90</span><span class="p">:</span> <span class="mi">89</span><span class="p">,</span>
+        <span class="mi">91</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+        <span class="mi">92</span><span class="p">:</span> <span class="mi">91</span><span class="p">,</span>
+        <span class="mi">93</span><span class="p">:</span> <span class="mi">92</span><span class="p">,</span>
+        <span class="mi">94</span><span class="p">:</span> <span class="mi">93</span><span class="p">,</span>
+        <span class="mi">95</span><span class="p">:</span> <span class="mi">94</span><span class="p">,</span>
+        <span class="mi">96</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span>
+        <span class="mi">97</span><span class="p">:</span> <span class="mi">96</span><span class="p">,</span>
+        <span class="mi">98</span><span class="p">:</span> <span class="mi">97</span><span class="p">,</span>
+        <span class="mi">99</span><span class="p">:</span> <span class="mi">98</span><span class="p">,</span>
+        <span class="mi">100</span><span class="p">:</span> <span class="mi">99</span><span class="p">,</span>
+        <span class="mi">101</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="mi">102</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>
+        <span class="mi">103</span><span class="p">:</span> <span class="mi">102</span><span class="p">,</span>
+        <span class="mi">104</span><span class="p">:</span> <span class="mi">103</span><span class="p">,</span>
+        <span class="mi">105</span><span class="p">:</span> <span class="mi">104</span><span class="p">,</span>
+        <span class="mi">106</span><span class="p">:</span> <span class="mi">105</span><span class="p">,</span>
+        <span class="mi">107</span><span class="p">:</span> <span class="mi">106</span><span class="p">,</span>
+        <span class="mi">108</span><span class="p">:</span> <span class="mi">107</span><span class="p">,</span>
+        <span class="mi">109</span><span class="p">:</span> <span class="mi">108</span><span class="p">,</span>
+        <span class="mi">110</span><span class="p">:</span> <span class="mi">109</span><span class="p">,</span>
+        <span class="mi">111</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span>
+        <span class="mi">112</span><span class="p">:</span> <span class="mi">111</span><span class="p">,</span>
+        <span class="mi">113</span><span class="p">:</span> <span class="mi">112</span><span class="p">,</span>
+        <span class="mi">114</span><span class="p">:</span> <span class="mi">113</span><span class="p">,</span>
+        <span class="mi">115</span><span class="p">:</span> <span class="mi">114</span><span class="p">,</span>
+        <span class="mi">116</span><span class="p">:</span> <span class="mi">115</span><span class="p">,</span>
+        <span class="mi">117</span><span class="p">:</span> <span class="mi">116</span><span class="p">,</span>
+        <span class="mi">118</span><span class="p">:</span> <span class="mi">117</span><span class="p">,</span>
+        <span class="mi">119</span><span class="p">:</span> <span class="mi">118</span><span class="p">,</span>
+        <span class="mi">120</span><span class="p">:</span> <span class="mi">119</span><span class="p">,</span>
+        <span class="mi">121</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span>
+        <span class="mi">122</span><span class="p">:</span> <span class="mi">121</span><span class="p">,</span>
+        <span class="mi">123</span><span class="p">:</span> <span class="mi">122</span><span class="p">,</span>
+        <span class="mi">124</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+        <span class="mi">125</span><span class="p">:</span> <span class="mi">124</span><span class="p">,</span>
+        <span class="mi">126</span><span class="p">:</span> <span class="mi">125</span><span class="p">,</span>
+        <span class="mi">127</span><span class="p">:</span> <span class="mi">126</span><span class="p">,</span>
+        <span class="mi">128</span><span class="p">:</span> <span class="mi">127</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="p">{</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="mi">7</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+        <span class="mi">9</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="mi">10</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+        <span class="mi">11</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="mi">12</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+        <span class="mi">13</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="mi">14</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+        <span class="mi">15</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+        <span class="mi">16</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+        <span class="mi">17</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+        <span class="mi">18</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+        <span class="mi">19</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+        <span class="mi">20</span><span class="p">:</span> <span class="mi">19</span><span class="p">,</span>
+        <span class="mi">21</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="mi">22</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
+        <span class="mi">23</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+        <span class="mi">24</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span>
+        <span class="mi">25</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+        <span class="mi">26</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+        <span class="mi">27</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span>
+        <span class="mi">28</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span>
+        <span class="mi">29</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+        <span class="mi">30</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span>
+        <span class="mi">31</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+        <span class="mi">32</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span>
+        <span class="mi">33</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="mi">34</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
+        <span class="mi">35</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span>
+        <span class="mi">36</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span>
+        <span class="mi">37</span><span class="p">:</span> <span class="mi">36</span><span class="p">,</span>
+        <span class="mi">38</span><span class="p">:</span> <span class="mi">37</span><span class="p">,</span>
+        <span class="mi">39</span><span class="p">:</span> <span class="mi">38</span><span class="p">,</span>
+        <span class="mi">40</span><span class="p">:</span> <span class="mi">39</span><span class="p">,</span>
+        <span class="mi">41</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+        <span class="mi">42</span><span class="p">:</span> <span class="mi">41</span><span class="p">,</span>
+        <span class="mi">43</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+        <span class="mi">44</span><span class="p">:</span> <span class="mi">43</span><span class="p">,</span>
+        <span class="mi">45</span><span class="p">:</span> <span class="mi">44</span><span class="p">,</span>
+        <span class="mi">46</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span>
+        <span class="mi">47</span><span class="p">:</span> <span class="mi">46</span><span class="p">,</span>
+        <span class="mi">48</span><span class="p">:</span> <span class="mi">47</span><span class="p">,</span>
+        <span class="mi">49</span><span class="p">:</span> <span class="mi">48</span><span class="p">,</span>
+        <span class="mi">50</span><span class="p">:</span> <span class="mi">49</span><span class="p">,</span>
+        <span class="mi">51</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="mi">52</span><span class="p">:</span> <span class="mi">51</span><span class="p">,</span>
+        <span class="mi">53</span><span class="p">:</span> <span class="mi">52</span><span class="p">,</span>
+        <span class="mi">54</span><span class="p">:</span> <span class="mi">53</span><span class="p">,</span>
+        <span class="mi">55</span><span class="p">:</span> <span class="mi">54</span><span class="p">,</span>
+        <span class="mi">56</span><span class="p">:</span> <span class="mi">55</span><span class="p">,</span>
+        <span class="mi">57</span><span class="p">:</span> <span class="mi">56</span><span class="p">,</span>
+        <span class="mi">58</span><span class="p">:</span> <span class="mi">57</span><span class="p">,</span>
+        <span class="mi">59</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
+        <span class="mi">60</span><span class="p">:</span> <span class="mi">59</span><span class="p">,</span>
+        <span class="mi">61</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+        <span class="mi">62</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
+        <span class="mi">63</span><span class="p">:</span> <span class="mi">62</span><span class="p">,</span>
+        <span class="mi">64</span><span class="p">:</span> <span class="mi">63</span><span class="p">,</span>
+        <span class="mi">65</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+        <span class="mi">66</span><span class="p">:</span> <span class="mi">65</span><span class="p">,</span>
+        <span class="mi">67</span><span class="p">:</span> <span class="mi">66</span><span class="p">,</span>
+        <span class="mi">68</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
+        <span class="mi">69</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
+        <span class="mi">70</span><span class="p">:</span> <span class="mi">69</span><span class="p">,</span>
+        <span class="mi">71</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+        <span class="mi">72</span><span class="p">:</span> <span class="mi">71</span><span class="p">,</span>
+        <span class="mi">73</span><span class="p">:</span> <span class="mi">72</span><span class="p">,</span>
+        <span class="mi">74</span><span class="p">:</span> <span class="mi">73</span><span class="p">,</span>
+        <span class="mi">75</span><span class="p">:</span> <span class="mi">74</span><span class="p">,</span>
+        <span class="mi">76</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+        <span class="mi">77</span><span class="p">:</span> <span class="mi">76</span><span class="p">,</span>
+        <span class="mi">78</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span>
+        <span class="mi">79</span><span class="p">:</span> <span class="mi">78</span><span class="p">,</span>
+        <span class="mi">80</span><span class="p">:</span> <span class="mi">79</span><span class="p">,</span>
+        <span class="mi">81</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+        <span class="mi">82</span><span class="p">:</span> <span class="mi">81</span><span class="p">,</span>
+        <span class="mi">83</span><span class="p">:</span> <span class="mi">82</span><span class="p">,</span>
+        <span class="mi">84</span><span class="p">:</span> <span class="mi">83</span><span class="p">,</span>
+        <span class="mi">85</span><span class="p">:</span> <span class="mi">84</span><span class="p">,</span>
+        <span class="mi">86</span><span class="p">:</span> <span class="mi">85</span><span class="p">,</span>
+        <span class="mi">87</span><span class="p">:</span> <span class="mi">86</span><span class="p">,</span>
+        <span class="mi">88</span><span class="p">:</span> <span class="mi">87</span><span class="p">,</span>
+        <span class="mi">89</span><span class="p">:</span> <span class="mi">88</span><span class="p">,</span>
+        <span class="mi">90</span><span class="p">:</span> <span class="mi">89</span><span class="p">,</span>
+        <span class="mi">91</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+        <span class="mi">92</span><span class="p">:</span> <span class="mi">91</span><span class="p">,</span>
+        <span class="mi">93</span><span class="p">:</span> <span class="mi">92</span><span class="p">,</span>
+        <span class="mi">94</span><span class="p">:</span> <span class="mi">93</span><span class="p">,</span>
+        <span class="mi">95</span><span class="p">:</span> <span class="mi">94</span><span class="p">,</span>
+        <span class="mi">96</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span>
+        <span class="mi">97</span><span class="p">:</span> <span class="mi">96</span><span class="p">,</span>
+        <span class="mi">98</span><span class="p">:</span> <span class="mi">97</span><span class="p">,</span>
+        <span class="mi">99</span><span class="p">:</span> <span class="mi">98</span><span class="p">,</span>
+        <span class="mi">100</span><span class="p">:</span> <span class="mi">99</span><span class="p">,</span>
+        <span class="mi">101</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="mi">102</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>
+        <span class="mi">103</span><span class="p">:</span> <span class="mi">102</span><span class="p">,</span>
+        <span class="mi">104</span><span class="p">:</span> <span class="mi">103</span><span class="p">,</span>
+        <span class="mi">105</span><span class="p">:</span> <span class="mi">104</span><span class="p">,</span>
+        <span class="mi">106</span><span class="p">:</span> <span class="mi">105</span><span class="p">,</span>
+        <span class="mi">107</span><span class="p">:</span> <span class="mi">106</span><span class="p">,</span>
+        <span class="mi">108</span><span class="p">:</span> <span class="mi">107</span><span class="p">,</span>
+        <span class="mi">109</span><span class="p">:</span> <span class="mi">108</span><span class="p">,</span>
+        <span class="mi">110</span><span class="p">:</span> <span class="mi">109</span><span class="p">,</span>
+        <span class="mi">111</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span>
+        <span class="mi">112</span><span class="p">:</span> <span class="mi">111</span><span class="p">,</span>
+        <span class="mi">113</span><span class="p">:</span> <span class="mi">112</span><span class="p">,</span>
+        <span class="mi">114</span><span class="p">:</span> <span class="mi">113</span><span class="p">,</span>
+        <span class="mi">115</span><span class="p">:</span> <span class="mi">114</span><span class="p">,</span>
+        <span class="mi">116</span><span class="p">:</span> <span class="mi">115</span><span class="p">,</span>
+        <span class="mi">117</span><span class="p">:</span> <span class="mi">116</span><span class="p">,</span>
+        <span class="mi">118</span><span class="p">:</span> <span class="mi">117</span><span class="p">,</span>
+        <span class="mi">119</span><span class="p">:</span> <span class="mi">118</span><span class="p">,</span>
+        <span class="mi">120</span><span class="p">:</span> <span class="mi">119</span><span class="p">,</span>
+        <span class="mi">121</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span>
+        <span class="mi">122</span><span class="p">:</span> <span class="mi">121</span><span class="p">,</span>
+        <span class="mi">123</span><span class="p">:</span> <span class="mi">122</span><span class="p">,</span>
+        <span class="mi">124</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+        <span class="mi">125</span><span class="p">:</span> <span class="mi">124</span><span class="p">,</span>
+        <span class="mi">126</span><span class="p">:</span> <span class="mi">125</span><span class="p">,</span>
+        <span class="mi">127</span><span class="p">:</span> <span class="mi">126</span><span class="p">,</span>
+        <span class="mi">128</span><span class="p">:</span> <span class="mi">127</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="c1"># IMGT states are the same across the board for B/D and A/G</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)]</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">)]</span>
+<span class="n">_reg_one2three</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;fw</span><span class="si">%s</span><span class="s2">1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;cdr</span><span class="si">%s</span><span class="s2">1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="s2">&quot;fw</span><span class="si">%s</span><span class="s2">2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="s2">&quot;cdr</span><span class="si">%s</span><span class="s2">2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;fw</span><span class="si">%s</span><span class="s2">3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;6&quot;</span><span class="p">:</span> <span class="s2">&quot;cdr</span><span class="si">%s</span><span class="s2">3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;7&quot;</span><span class="p">:</span> <span class="s2">&quot;fw</span><span class="si">%s</span><span class="s2">4&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># regions for MHC</span>
+<span class="c1"># This is based on the state vector used for numbering MHCs in ANARCI</span>
+<span class="c1"># http://www.imgt.org/IMGTrepertoireMHC/Proteins/protein/G-DOMAIN/Gdomains.html</span>
+<span class="c1"># Refer to IMGT domain align tool as well</span>
+<span class="c1">#           1     7   10 14   18 21    28  31    38   42 45 49       50  54        61      68  72  74    80        90</span>
+<span class="c1"># 0987654321|.....|A..|...|...|..|......|..|......|...|..|...|1234567|...|ABC......|AB......|...|A.|.....|.........|..</span>
+<span class="n">mhc_svec</span> <span class="o">=</span> <span class="s2">&quot;1111111111111116662222222222266333333336664444444444444445555555555555555555555555555555555555555555566666&quot;</span>
+<span class="c1"># ^ This is the state vector for mhc g-domains for regions</span>
+
+<span class="c1"># Manual observation for residues 88-92: this seems like a loopy region? keep it as &quot;turn&quot; for now.</span>
+<span class="c1"># state vector for CD1/MR1 GA1-like and GA2-like domains</span>
+<span class="c1">#           1     7   10 14   18 21    28  31    38   42 45 49       50  54      61      68  72  74    80        90</span>
+<span class="c1"># 0987654321|.....|A..|...|...|..|......|..|......|...|..|...|1234567|...|A......|AB......|...|A.|.....|.........|..</span>
+<span class="n">cd1_svec</span> <span class="o">=</span> <span class="s2">&quot;11111111111111166622222222222663333333366644444444444444455555555555555555555555555555555555555555555555&quot;</span>
+<span class="c1"># ^ This is the state vector for CD1 ga-like-domains for regions</span>
+
+
+<span class="c1"># This is the state vector for mhc c-domains (B2M)</span>
+<span class="c1">#           1        10   15  16     232627      383941  45      77     84             85  89     96 97   104105       117118</span>
+<span class="c1">#   87654321|........|....|123|......|..||........||.|...|1234567|......|12345677654321|...|......|12|......||...........||.........|</span>
+<span class="n">mhc_cvec</span> <span class="o">=</span> <span class="s2">&quot;1111111111111119992222222222299999999993333333999999944444444999999999999995555555555559966666666999999999999977777777777&quot;</span>
+
+<span class="n">_reg_tostring</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;Astrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;Bstrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="s2">&quot;Cstrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="s2">&quot;Dstrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;Helix&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;6&quot;</span><span class="p">:</span> <span class="s2">&quot;Turn&quot;</span><span class="p">,</span>
+<span class="p">}</span>  <span class="c1"># http://www.imgt.org/IMGTScientificChart/Numbering/IMGTGsuperfamily.html</span>
+<span class="n">_reg_mhc_cdom</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;Astrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;Bstrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="s2">&quot;Cstrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="s2">&quot;Dstrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;Estrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;6&quot;</span><span class="p">:</span> <span class="s2">&quot;Fstrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;7&quot;</span><span class="p">:</span> <span class="s2">&quot;Gstrand&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;9&quot;</span><span class="p">:</span> <span class="s2">&quot;Turn&quot;</span><span class="p">,</span>
+<span class="p">}</span>  <span class="c1"># C-Like domain</span>
+
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;MH1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mhc_svec</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;CD1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cd1_svec</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;MR1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cd1_svec</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;GA&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mhc_svec</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;GB&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;GA&quot;</span><span class="p">]</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;GA1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mhc_svec</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;GA2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mhc_svec</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;GA1L&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cd1_svec</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;GA2L&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cd1_svec</span>
+
+<span class="c1"># C-LIKE And B2-Microglobulin regions</span>
+<span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="s2">&quot;B2M&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mhc_cvec</span>
+
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;MH1&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="mi">7</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="mi">8</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="mi">9</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="mi">10</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="mi">11</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+    <span class="mi">12</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="mi">13</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+    <span class="mi">14</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+    <span class="mi">15</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="mi">16</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+    <span class="mi">17</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+    <span class="mi">18</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+    <span class="mi">19</span><span class="p">:</span> <span class="mi">19</span><span class="p">,</span>
+    <span class="mi">20</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="mi">21</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
+    <span class="mi">22</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+    <span class="mi">23</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span>
+    <span class="mi">24</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+    <span class="mi">25</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+    <span class="mi">26</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span>
+    <span class="mi">27</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span>
+    <span class="mi">28</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+    <span class="mi">29</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span>
+    <span class="mi">30</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="mi">31</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span>
+    <span class="mi">32</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="mi">33</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
+    <span class="mi">34</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span>
+    <span class="mi">35</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span>
+    <span class="mi">36</span><span class="p">:</span> <span class="mi">36</span><span class="p">,</span>
+    <span class="mi">37</span><span class="p">:</span> <span class="mi">37</span><span class="p">,</span>
+    <span class="mi">38</span><span class="p">:</span> <span class="mi">38</span><span class="p">,</span>
+    <span class="mi">39</span><span class="p">:</span> <span class="mi">39</span><span class="p">,</span>
+    <span class="mi">40</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+    <span class="mi">41</span><span class="p">:</span> <span class="mi">41</span><span class="p">,</span>
+    <span class="mi">42</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="mi">43</span><span class="p">:</span> <span class="mi">43</span><span class="p">,</span>
+    <span class="mi">44</span><span class="p">:</span> <span class="mi">44</span><span class="p">,</span>
+    <span class="mi">45</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span>
+    <span class="mi">46</span><span class="p">:</span> <span class="mi">46</span><span class="p">,</span>
+    <span class="mi">47</span><span class="p">:</span> <span class="mi">47</span><span class="p">,</span>
+    <span class="mi">48</span><span class="p">:</span> <span class="mi">48</span><span class="p">,</span>
+    <span class="mi">49</span><span class="p">:</span> <span class="mi">49</span><span class="p">,</span>
+    <span class="mi">50</span><span class="p">:</span> <span class="mi">57</span><span class="p">,</span>
+    <span class="mi">51</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
+    <span class="mi">52</span><span class="p">:</span> <span class="mi">59</span><span class="p">,</span>
+    <span class="mi">53</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="mi">54</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
+    <span class="mi">55</span><span class="p">:</span> <span class="mi">65</span><span class="p">,</span>
+    <span class="mi">56</span><span class="p">:</span> <span class="mi">66</span><span class="p">,</span>
+    <span class="mi">57</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
+    <span class="mi">58</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
+    <span class="mi">59</span><span class="p">:</span> <span class="mi">69</span><span class="p">,</span>
+    <span class="mi">60</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+    <span class="mi">61</span><span class="p">:</span> <span class="mi">71</span><span class="p">,</span>
+    <span class="mi">62</span><span class="p">:</span> <span class="mi">74</span><span class="p">,</span>
+    <span class="mi">63</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+    <span class="mi">64</span><span class="p">:</span> <span class="mi">76</span><span class="p">,</span>
+    <span class="mi">65</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span>
+    <span class="mi">66</span><span class="p">:</span> <span class="mi">78</span><span class="p">,</span>
+    <span class="mi">67</span><span class="p">:</span> <span class="mi">79</span><span class="p">,</span>
+    <span class="mi">68</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+    <span class="mi">69</span><span class="p">:</span> <span class="mi">81</span><span class="p">,</span>
+    <span class="mi">70</span><span class="p">:</span> <span class="mi">82</span><span class="p">,</span>
+    <span class="mi">71</span><span class="p">:</span> <span class="mi">83</span><span class="p">,</span>
+    <span class="mi">72</span><span class="p">:</span> <span class="mi">84</span><span class="p">,</span>
+    <span class="mi">73</span><span class="p">:</span> <span class="mi">86</span><span class="p">,</span>
+    <span class="mi">74</span><span class="p">:</span> <span class="mi">87</span><span class="p">,</span>
+    <span class="mi">75</span><span class="p">:</span> <span class="mi">88</span><span class="p">,</span>
+    <span class="mi">76</span><span class="p">:</span> <span class="mi">89</span><span class="p">,</span>
+    <span class="mi">77</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+    <span class="mi">78</span><span class="p">:</span> <span class="mi">91</span><span class="p">,</span>
+    <span class="mi">79</span><span class="p">:</span> <span class="mi">92</span><span class="p">,</span>
+    <span class="mi">80</span><span class="p">:</span> <span class="mi">93</span><span class="p">,</span>
+    <span class="mi">81</span><span class="p">:</span> <span class="mi">94</span><span class="p">,</span>
+    <span class="mi">82</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span>
+    <span class="mi">83</span><span class="p">:</span> <span class="mi">96</span><span class="p">,</span>
+    <span class="mi">84</span><span class="p">:</span> <span class="mi">97</span><span class="p">,</span>
+    <span class="mi">85</span><span class="p">:</span> <span class="mi">98</span><span class="p">,</span>
+    <span class="mi">86</span><span class="p">:</span> <span class="mi">99</span><span class="p">,</span>
+    <span class="mi">87</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="mi">88</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>
+    <span class="mi">89</span><span class="p">:</span> <span class="mi">102</span><span class="p">,</span>
+    <span class="mi">90</span><span class="p">:</span> <span class="mi">103</span><span class="p">,</span>
+    <span class="mi">91</span><span class="p">:</span> <span class="mi">104</span><span class="p">,</span>
+    <span class="mi">92</span><span class="p">:</span> <span class="mi">105</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="mi">7</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="mi">8</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="mi">9</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="mi">10</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="mi">11</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+    <span class="mi">12</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="mi">13</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span>
+    <span class="mi">14</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>
+    <span class="mi">15</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+    <span class="mi">16</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+    <span class="mi">17</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+    <span class="mi">18</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span>
+    <span class="mi">19</span><span class="p">:</span> <span class="mi">19</span><span class="p">,</span>
+    <span class="mi">20</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="mi">21</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
+    <span class="mi">22</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span>
+    <span class="mi">23</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span>
+    <span class="mi">24</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+    <span class="mi">25</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+    <span class="mi">26</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span>
+    <span class="mi">27</span><span class="p">:</span> <span class="mi">27</span><span class="p">,</span>
+    <span class="mi">28</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+    <span class="mi">29</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span>
+    <span class="mi">30</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="mi">31</span><span class="p">:</span> <span class="mi">31</span><span class="p">,</span>
+    <span class="mi">32</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="mi">33</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
+    <span class="mi">34</span><span class="p">:</span> <span class="mi">34</span><span class="p">,</span>
+    <span class="mi">35</span><span class="p">:</span> <span class="mi">35</span><span class="p">,</span>
+    <span class="mi">36</span><span class="p">:</span> <span class="mi">36</span><span class="p">,</span>
+    <span class="mi">37</span><span class="p">:</span> <span class="mi">37</span><span class="p">,</span>
+    <span class="mi">38</span><span class="p">:</span> <span class="mi">38</span><span class="p">,</span>
+    <span class="mi">39</span><span class="p">:</span> <span class="mi">39</span><span class="p">,</span>
+    <span class="mi">40</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span>
+    <span class="mi">41</span><span class="p">:</span> <span class="mi">41</span><span class="p">,</span>
+    <span class="mi">42</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="mi">43</span><span class="p">:</span> <span class="mi">43</span><span class="p">,</span>
+    <span class="mi">44</span><span class="p">:</span> <span class="mi">44</span><span class="p">,</span>
+    <span class="mi">45</span><span class="p">:</span> <span class="mi">45</span><span class="p">,</span>
+    <span class="mi">46</span><span class="p">:</span> <span class="mi">46</span><span class="p">,</span>
+    <span class="mi">47</span><span class="p">:</span> <span class="mi">47</span><span class="p">,</span>
+    <span class="mi">48</span><span class="p">:</span> <span class="mi">48</span><span class="p">,</span>
+    <span class="mi">49</span><span class="p">:</span> <span class="mi">49</span><span class="p">,</span>
+    <span class="mi">50</span><span class="p">:</span> <span class="mi">57</span><span class="p">,</span>
+    <span class="mi">51</span><span class="p">:</span> <span class="mi">58</span><span class="p">,</span>
+    <span class="mi">52</span><span class="p">:</span> <span class="mi">59</span><span class="p">,</span>
+    <span class="mi">53</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="mi">54</span><span class="p">:</span> <span class="mi">61</span><span class="p">,</span>
+    <span class="mi">55</span><span class="p">:</span> <span class="mi">63</span><span class="p">,</span>
+    <span class="mi">56</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+    <span class="mi">57</span><span class="p">:</span> <span class="mi">65</span><span class="p">,</span>
+    <span class="mi">58</span><span class="p">:</span> <span class="mi">66</span><span class="p">,</span>
+    <span class="mi">59</span><span class="p">:</span> <span class="mi">67</span><span class="p">,</span>
+    <span class="mi">60</span><span class="p">:</span> <span class="mi">68</span><span class="p">,</span>
+    <span class="mi">61</span><span class="p">:</span> <span class="mi">69</span><span class="p">,</span>
+    <span class="mi">62</span><span class="p">:</span> <span class="mi">72</span><span class="p">,</span>
+    <span class="mi">63</span><span class="p">:</span> <span class="mi">73</span><span class="p">,</span>
+    <span class="mi">64</span><span class="p">:</span> <span class="mi">74</span><span class="p">,</span>
+    <span class="mi">65</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+    <span class="mi">66</span><span class="p">:</span> <span class="mi">76</span><span class="p">,</span>
+    <span class="mi">67</span><span class="p">:</span> <span class="mi">77</span><span class="p">,</span>
+    <span class="mi">68</span><span class="p">:</span> <span class="mi">78</span><span class="p">,</span>
+    <span class="mi">69</span><span class="p">:</span> <span class="mi">79</span><span class="p">,</span>
+    <span class="mi">70</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+    <span class="mi">71</span><span class="p">:</span> <span class="mi">81</span><span class="p">,</span>
+    <span class="mi">72</span><span class="p">:</span> <span class="mi">82</span><span class="p">,</span>
+    <span class="mi">73</span><span class="p">:</span> <span class="mi">84</span><span class="p">,</span>
+    <span class="mi">74</span><span class="p">:</span> <span class="mi">85</span><span class="p">,</span>
+    <span class="mi">75</span><span class="p">:</span> <span class="mi">86</span><span class="p">,</span>
+    <span class="mi">76</span><span class="p">:</span> <span class="mi">87</span><span class="p">,</span>
+    <span class="mi">77</span><span class="p">:</span> <span class="mi">88</span><span class="p">,</span>
+    <span class="mi">78</span><span class="p">:</span> <span class="mi">89</span><span class="p">,</span>
+    <span class="mi">79</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+    <span class="mi">80</span><span class="p">:</span> <span class="mi">91</span><span class="p">,</span>
+    <span class="mi">81</span><span class="p">:</span> <span class="mi">92</span><span class="p">,</span>
+    <span class="mi">82</span><span class="p">:</span> <span class="mi">93</span><span class="p">,</span>
+    <span class="mi">83</span><span class="p">:</span> <span class="mi">94</span><span class="p">,</span>
+    <span class="mi">84</span><span class="p">:</span> <span class="mi">95</span><span class="p">,</span>
+    <span class="mi">85</span><span class="p">:</span> <span class="mi">96</span><span class="p">,</span>
+    <span class="mi">86</span><span class="p">:</span> <span class="mi">97</span><span class="p">,</span>
+    <span class="mi">87</span><span class="p">:</span> <span class="mi">98</span><span class="p">,</span>
+    <span class="mi">88</span><span class="p">:</span> <span class="mi">99</span><span class="p">,</span>
+    <span class="mi">89</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="mi">90</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>
+    <span class="mi">91</span><span class="p">:</span> <span class="mi">102</span><span class="p">,</span>
+    <span class="mi">92</span><span class="p">:</span> <span class="mi">103</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;MH1&quot;</span><span class="p">)]</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="p">[(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+<span class="p">)</span>
+
+
+<span class="c1"># To map indices onto index_to_imgt_state: this works for everything apart from MHC constant domains.</span>
+<div class="viewcode-block" id="map_state_index_imgt">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.map_state_index_imgt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">map_state_index_imgt</span><span class="p">(</span><span class="n">statevector</span><span class="p">):</span>
+    <span class="n">numdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">curr_num</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">statevector</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">char</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="n">numdict</span><span class="p">[</span><span class="n">curr_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">curr_num</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">numdict</span></div>
+
+
+
+<span class="c1"># To map indices onto index_to_imgt_state</span>
+<div class="viewcode-block" id="map_state_index_mhc_clike">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.map_state_index_mhc_clike">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">map_state_index_mhc_clike</span><span class="p">(</span><span class="n">statevector</span><span class="p">):</span>
+    <span class="n">numdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">curr_num</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">statevector</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">char</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="n">numdict</span><span class="p">[</span><span class="n">curr_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">if</span> <span class="n">curr_num</span> <span class="o">==</span> <span class="mi">45</span><span class="p">:</span>
+                <span class="n">curr_num</span> <span class="o">+=</span> <span class="mi">32</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">curr_num</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">numdict</span></div>
+
+
+
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;B2M&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">map_state_index_mhc_clike</span><span class="p">(</span><span class="n">mhc_cvec</span><span class="p">)</span>
+
+<span class="c1"># For N numbering, IMGT uses numbers 1000-1100.</span>
+<span class="c1"># For now, we&#39;ll avoid numbering B2M domains and the C-LIKE domains.</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;MH1&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="p">[(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;MH1&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;GA&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">)]</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">)]</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1L&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">)]</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;GA2L&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="p">[(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+<span class="p">)</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="nb">dict</span><span class="p">(</span>
+        <span class="p">[(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;MR1&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">)]</span>
+
+
+<div class="viewcode-block" id="get_region">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.get_region">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_region</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the region in which the position belongs given the chain, numbering scheme and definition.</span>
+
+<span class="sd">    **Note** this function does not know about insertions on the sequence. Therefore, it will get the region annotation</span>
+<span class="sd">    wrong when using non-equivalent scheme-definitions.</span>
+
+<span class="sd">    To get around this please use the annotate_regions function which implements heuristics to get the definition correct</span>
+<span class="sd">    in the scheme.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">index</span><span class="p">,</span> <span class="n">insertion</span> <span class="o">=</span> <span class="n">position</span>
+    <span class="n">chain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="c1"># imgt_state is a dictionary that maps an IMGT position (e.g. 1) onto the position along the state vector;</span>
+    <span class="c1"># Thus, 1 maps to 0 because 1 is the first number in the IMGT numbering scheme but is the 0th position along the state vector.</span>
+    <span class="n">imgt_state</span> <span class="o">=</span> <span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="n">chain</span><span class="p">)]</span>
+    <span class="c1"># Get the state vector corresponding to a particular chain; this is either 1,2,3,4,5,6,7, corresponding to different TCR regions.</span>
+    <span class="n">state_vec</span> <span class="o">=</span> <span class="n">_regions</span><span class="p">[</span><span class="s2">&quot;imgt&quot;</span><span class="p">][</span><span class="n">chain</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">TCR_CHAINS</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">imgt_state</span><span class="p">:</span>
+            <span class="n">state_idx</span> <span class="o">=</span> <span class="n">imgt_state</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="c1"># Returns a fwb1, cdra2... etc.</span>
+            <span class="k">return</span> <span class="n">_reg_one2three</span><span class="p">[</span><span class="n">state_vec</span><span class="p">[</span><span class="n">state_idx</span><span class="p">]]</span> <span class="o">%</span> <span class="n">chain</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;?&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">imgt_state</span><span class="p">:</span>
+            <span class="n">state_idx</span> <span class="o">=</span> <span class="n">imgt_state</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="c1"># Returns whether helix or turn on the MHC (G-Domain annotation)</span>
+            <span class="k">return</span> <span class="n">_reg_tostring</span><span class="p">[</span><span class="n">state_vec</span><span class="p">[</span><span class="n">state_idx</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;?&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="annotate_regions">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.annotate_regions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">annotate_regions</span><span class="p">(</span><span class="n">numbered_sequence</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a numbered sequence (list) annotate which region each residue belongs to.</span>
+<span class="sd">    Currently, only the IMGT numbering and definition are implemented.</span>
+<span class="sd">    If possible, use the corresponding numbering scheme and definition.</span>
+
+<span class="sd">    This function automates the heuristics recognise different definitions in each scheme. However,</span>
+<span class="sd">    some of the conversions are non-trivial.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">numdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">numbered_sequence</span><span class="p">)</span>
+
+    <span class="n">cdr_acceptors</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="n">Accept</span><span class="p">(),</span> <span class="mi">2</span><span class="p">:</span> <span class="n">Accept</span><span class="p">(),</span> <span class="mi">3</span><span class="p">:</span> <span class="n">Accept</span><span class="p">()}</span>
+
+    <span class="n">cdr_acceptors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_regions</span><span class="p">([</span><span class="s2">&quot;cdr</span><span class="si">%s</span><span class="s2">1&quot;</span> <span class="o">%</span> <span class="n">c</span><span class="p">])</span>
+    <span class="n">cdr_acceptors</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_regions</span><span class="p">([</span><span class="s2">&quot;cdr</span><span class="si">%s</span><span class="s2">2&quot;</span> <span class="o">%</span> <span class="n">c</span><span class="p">])</span>
+    <span class="n">cdr_acceptors</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">set_regions</span><span class="p">([</span><span class="s2">&quot;cdr</span><span class="si">%s</span><span class="s2">3&quot;</span> <span class="o">%</span> <span class="n">c</span><span class="p">])</span>
+
+    <span class="c1"># We start off by annotating framework regions; this switches when we find a CDR</span>
+    <span class="n">fw_region</span> <span class="o">=</span> <span class="s2">&quot;fw</span><span class="si">%s</span><span class="s2">1&quot;</span> <span class="o">%</span> <span class="n">c</span>
+    <span class="n">region_annotations</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">cterm</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">_index_to_imgt_state</span><span class="p">[(</span><span class="s2">&quot;imgt&quot;</span><span class="p">,</span> <span class="n">chain</span><span class="p">)]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">numbered_sequence</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cdr_acceptors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+            <span class="n">region_annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="s2">&quot;cdr</span><span class="si">%s</span><span class="s2">1&quot;</span> <span class="o">%</span> <span class="n">c</span><span class="p">))</span>
+            <span class="n">fw_region</span> <span class="o">=</span> <span class="s2">&quot;fw</span><span class="si">%s</span><span class="s2">2&quot;</span> <span class="o">%</span> <span class="n">c</span>
+        <span class="k">elif</span> <span class="n">cdr_acceptors</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+            <span class="n">region_annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="s2">&quot;cdr</span><span class="si">%s</span><span class="s2">2&quot;</span> <span class="o">%</span> <span class="n">c</span><span class="p">))</span>
+            <span class="n">fw_region</span> <span class="o">=</span> <span class="s2">&quot;fw</span><span class="si">%s</span><span class="s2">3&quot;</span> <span class="o">%</span> <span class="n">c</span>
+        <span class="k">elif</span> <span class="n">cdr_acceptors</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+            <span class="n">region_annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="s2">&quot;cdr</span><span class="si">%s</span><span class="s2">3&quot;</span> <span class="o">%</span> <span class="n">c</span><span class="p">))</span>
+            <span class="n">fw_region</span> <span class="o">=</span> <span class="s2">&quot;fw</span><span class="si">%s</span><span class="s2">4&quot;</span> <span class="o">%</span> <span class="n">c</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">cterm</span>
+        <span class="p">):</span>  <span class="c1"># Anything out of the variable region is not assigned a region i.e. &#39;&#39;</span>
+            <span class="n">region_annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">fw_region</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">region_annotations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">region_annotations</span></div>
+
+
+
+<div class="viewcode-block" id="Accept">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Accept</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to select which positions should be compared.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_defined_regions</span> <span class="o">=</span> <span class="n">TCR_REGIONS</span>
+    <span class="n">_macro_regions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;bframework&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;fwb1&quot;</span><span class="p">,</span> <span class="s2">&quot;fwb2&quot;</span><span class="p">,</span> <span class="s2">&quot;fwb3&quot;</span><span class="p">,</span> <span class="s2">&quot;fwb4&quot;</span><span class="p">]),</span>
+        <span class="s2">&quot;bcdrs&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;cdrb1&quot;</span><span class="p">,</span> <span class="s2">&quot;cdrb2&quot;</span><span class="p">,</span> <span class="s2">&quot;cdrb3&quot;</span><span class="p">]),</span>
+        <span class="s2">&quot;aframework&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;fwa1&quot;</span><span class="p">,</span> <span class="s2">&quot;fwa2&quot;</span><span class="p">,</span> <span class="s2">&quot;fwa3&quot;</span><span class="p">,</span> <span class="s2">&quot;fwa4&quot;</span><span class="p">]),</span>
+        <span class="s2">&quot;acdrs&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;cdra1&quot;</span><span class="p">,</span> <span class="s2">&quot;cdra2&quot;</span><span class="p">,</span> <span class="s2">&quot;cdra3&quot;</span><span class="p">]),</span>
+        <span class="s2">&quot;gframework&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;fwg1&quot;</span><span class="p">,</span> <span class="s2">&quot;fwg2&quot;</span><span class="p">,</span> <span class="s2">&quot;fwg3&quot;</span><span class="p">,</span> <span class="s2">&quot;fwg4&quot;</span><span class="p">]),</span>
+        <span class="s2">&quot;gcdrs&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;cdrg1&quot;</span><span class="p">,</span> <span class="s2">&quot;cdrg2&quot;</span><span class="p">,</span> <span class="s2">&quot;cdrg3&quot;</span><span class="p">]),</span>
+        <span class="s2">&quot;dframework&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;fwd1&quot;</span><span class="p">,</span> <span class="s2">&quot;fwd2&quot;</span><span class="p">,</span> <span class="s2">&quot;fwd3&quot;</span><span class="p">,</span> <span class="s2">&quot;fwd4&quot;</span><span class="p">]),</span>
+        <span class="s2">&quot;dcdrs&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;cdrd1&quot;</span><span class="p">,</span> <span class="s2">&quot;cdrd2&quot;</span><span class="p">,</span> <span class="s2">&quot;cdrd3&quot;</span><span class="p">]),</span>
+    <span class="p">}</span>
+
+    <span class="n">_macro_regions</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;framework&quot;</span><span class="p">:</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;bframework&quot;</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;aframework&quot;</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;dframework&quot;</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;gframework&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;cdrs&quot;</span><span class="p">:</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;bcdrs&quot;</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;acdrs&quot;</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;dcdrs&quot;</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;gcdrs&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;vb&quot;</span><span class="p">:</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;bcdrs&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;bframework&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;va&quot;</span><span class="p">:</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;acdrs&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;aframework&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;vg&quot;</span><span class="p">:</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;gcdrs&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;gframework&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;vd&quot;</span><span class="p">:</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;dcdrs&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;dframework&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">_macro_regions</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;ba&quot;</span><span class="p">:</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;vb&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;va&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;dg&quot;</span><span class="p">:</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;vd&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;vg&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;tr&quot;</span><span class="p">:</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;vb&quot;</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;va&quot;</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;vd&quot;</span><span class="p">]</span>
+            <span class="o">|</span> <span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;vg&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">_macro_positions</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">NOT</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NOT</span> <span class="o">=</span> <span class="n">NOT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_regions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s2">&quot;G&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span> <span class="s2">&quot;G&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">()}</span>
+
+<div class="viewcode-block" id="Accept.set_regions">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.set_regions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regions</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the regions to be used. Will clear anything added using add regions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">NOT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_macro_regions</span><span class="p">[</span><span class="s2">&quot;tr&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_regions</span><span class="p">(</span><span class="n">regions</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Accept.add_regions">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.add_regions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_regions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regions</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add regions to the selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="n">region</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">region</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defined_regions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">NOT</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">-</span> <span class="nb">set</span><span class="p">([</span><span class="n">region</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">region</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_macro_regions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">NOT</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_macro_regions</span><span class="p">[</span><span class="n">region</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_macro_regions</span><span class="p">[</span><span class="n">region</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">region</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_macro_positions</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Undefined region&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Undefined region&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Accept.add_positions">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.add_positions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">insertion</span> <span class="o">=</span> <span class="n">position</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">index</span><span class="p">,</span> <span class="n">insertion</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Accept.exclude_positions">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.exclude_positions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exclude_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
+            <span class="n">index</span><span class="p">,</span> <span class="n">insertion</span> <span class="o">=</span> <span class="n">position</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">index</span><span class="p">,</span> <span class="n">insertion</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Accept.accept">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.accept">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="p">[</span><span class="n">chain</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="n">get_region</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">chain</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span>
+            <span class="ow">or</span> <span class="n">position</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

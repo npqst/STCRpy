@@ -1,0 +1,1534 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_processing package &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34399df3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="stcrpy.tcr_processing.utils package" href="stcrpy.tcr_processing.utils.html" />
+    <link rel="prev" title="stcrpy.tcr_ml package" href="stcrpy.tcr_ml.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="stcrpy.html">stcrpy package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="stcrpy.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_datasets.html">stcrpy.tcr_datasets package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html">stcrpy.tcr_formats package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html">stcrpy.tcr_geometry package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_interactions.html">stcrpy.tcr_interactions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html">stcrpy.tcr_methods package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_metrics.html">stcrpy.tcr_metrics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_ml.html">stcrpy.tcr_ml package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">stcrpy.tcr_processing package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.AGchain">stcrpy.tcr_processing.AGchain module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.Chemical_components">stcrpy.tcr_processing.Chemical_components module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.Entity">stcrpy.tcr_processing.Entity module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.Fragment">stcrpy.tcr_processing.Fragment module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.Holder">stcrpy.tcr_processing.Holder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.MHC">stcrpy.tcr_processing.MHC module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.MHCchain">stcrpy.tcr_processing.MHCchain module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.Model">stcrpy.tcr_processing.Model module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.Select">stcrpy.tcr_processing.Select module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.TCR">stcrpy.tcr_processing.TCR module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.TCRIO">stcrpy.tcr_processing.TCRIO module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.TCRParser">stcrpy.tcr_processing.TCRParser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.TCRStructure">stcrpy.tcr_processing.TCRStructure module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.TCRchain">stcrpy.tcr_processing.TCRchain module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing.annotate">stcrpy.tcr_processing.annotate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_processing">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.utils.html">stcrpy.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.html#module-stcrpy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="stcrpy.html">stcrpy package</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_processing package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/stcrpy.tcr_processing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="stcrpy-tcr-processing-package">
+<h1>stcrpy.tcr_processing package<a class="headerlink" href="#stcrpy-tcr-processing-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="stcrpy.tcr_processing.utils.html">stcrpy.tcr_processing.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#module-stcrpy.tcr_processing.utils.common">stcrpy.tcr_processing.utils.common module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.common.angle"><code class="docutils literal notranslate"><span class="pre">angle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.common.fastcross"><code class="docutils literal notranslate"><span class="pre">fastcross()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.common.fastnorm"><code class="docutils literal notranslate"><span class="pre">fastnorm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.common.identity"><code class="docutils literal notranslate"><span class="pre">identity()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#module-stcrpy.tcr_processing.utils.constants">stcrpy.tcr_processing.utils.constants module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.constants.tuplefy"><code class="docutils literal notranslate"><span class="pre">tuplefy()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#module-stcrpy.tcr_processing.utils.region_definitions">stcrpy.tcr_processing.utils.region_definitions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept"><code class="docutils literal notranslate"><span class="pre">Accept</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.accept"><code class="docutils literal notranslate"><span class="pre">Accept.accept()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.add_positions"><code class="docutils literal notranslate"><span class="pre">Accept.add_positions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.add_regions"><code class="docutils literal notranslate"><span class="pre">Accept.add_regions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.exclude_positions"><code class="docutils literal notranslate"><span class="pre">Accept.exclude_positions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.Accept.set_regions"><code class="docutils literal notranslate"><span class="pre">Accept.set_regions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.annotate_regions"><code class="docutils literal notranslate"><span class="pre">annotate_regions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.get_region"><code class="docutils literal notranslate"><span class="pre">get_region()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.map_state_index_imgt"><code class="docutils literal notranslate"><span class="pre">map_state_index_imgt()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.region_definitions.map_state_index_mhc_clike"><code class="docutils literal notranslate"><span class="pre">map_state_index_mhc_clike()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.tcr_processing.utils.html#module-stcrpy.tcr_processing.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-stcrpy.tcr_processing.AGchain">
+<span id="stcrpy-tcr-processing-agchain-module"></span><h2>stcrpy.tcr_processing.AGchain module<a class="headerlink" href="#module-stcrpy.tcr_processing.AGchain" title="Link to this heading"></a></h2>
+<p>Created on 10 May 2017
+&#64;author: leem</p>
+<p>Based on the AGchain class from ABDB.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.AGchain.AGchain">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.AGchain.</span></span><span class="sig-name descname"><span class="pre">AGchain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/AGchain.html#AGchain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.AGchain.AGchain" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Chain</span></code></p>
+<p>Non-TCR and non-MHC (peptide) chains are described using this class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.AGchain.AGchain.get_type">
+<span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/AGchain.html#AGchain.get_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.AGchain.AGchain.get_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.AGchain.AGchain.is_engineered">
+<span class="sig-name descname"><span class="pre">is_engineered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/AGchain.html#AGchain.is_engineered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.AGchain.AGchain.is_engineered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.AGchain.AGchain.set_engineered">
+<span class="sig-name descname"><span class="pre">set_engineered</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engineered</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/AGchain.html#AGchain.set_engineered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.AGchain.AGchain.set_engineered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.AGchain.AGchain.set_type">
+<span class="sig-name descname"><span class="pre">set_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/AGchain.html#AGchain.set_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.AGchain.AGchain.set_type" title="Link to this definition"></a></dt>
+<dd><p>Use the type check to check the residue name from the chemical component dictionary
+For ease of use I have binned these into four types
+peptide
+nucleic-acid
+saccharide (carbohydrate)
+non-polymer</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.Chemical_components">
+<span id="stcrpy-tcr-processing-chemical-components-module"></span><h2>stcrpy.tcr_processing.Chemical_components module<a class="headerlink" href="#module-stcrpy.tcr_processing.Chemical_components" title="Link to this heading"></a></h2>
+<p>Created on 12 May 2017</p>
+<p>&#64;author: leem
+Based on the ABDB.AbPDB.Chemical_components module by dunbar.</p>
+<p>Analyse the chemical component dictionary
+<a class="reference external" href="http://www.wwpdb.org/ccd.html">http://www.wwpdb.org/ccd.html</a></p>
+<p>These are the types of chemical components in the pdb: ( grep “_chem_comp.type” components.cif | cut -c 50-120 | sort | uniq )</p>
+<p>We will bin them into:</p>
+<dl class="simple">
+<dt>peptide:</dt><dd><p>“D-beta-peptide, C-gamma linking” 
+“D-gamma-peptide, C-delta linking” 
+“D-peptide linking” 
+“D-PEPTIDE LINKING” 
+“D-peptide NH3 amino terminus” 
+“D-PEPTIDE NH3 AMINO TERMINUS” 
+“L-beta-peptide, C-gamma linking” 
+“L-gamma-peptide, C-delta linking” 
+“L-peptide COOH carboxy terminus” 
+“L-PEPTIDE COOH CARBOXY TERMINUS” 
+“L-peptide linking” 
+“L-PEPTIDE LINKING” 
+“L-peptide NH3 amino terminus” 
+peptide-like 
+PEPTIDE-LIKE 
+“peptide linking” 
+“PEPTIDE LINKING”</p>
+</dd>
+<dt>nucleic-acid:</dt><dd><p>“DNA linking” 
+“DNA LINKING” 
+“DNA OH 3 prime terminus” 
+“DNA OH 3 PRIME TERMINUS” 
+“L-DNA LINKING”
+“L-RNA LINKING”
+“RNA linking” 
+“RNA LINKING” 
+“RNA OH 3 prime terminus”</p>
+</dd>
+<dt>saccharide:</dt><dd><p>D-saccharide 
+D-SACCHARIDE 
+“D-saccharide 1,4 and 1,4 linking” 
+“D-SACCHARIDE 1,4 AND 1,4 LINKING” 
+L-saccharide 
+L-SACCHARIDE 
+“L-SACCHARIDE 1,4 AND 1,4 LINKING”
+saccharide 
+SACCHARIDE</p>
+</dd>
+<dt>non-polymer:</dt><dd><p>non-polymer 
+NON-POLYMER</p>
+</dd>
+</dl>
+<p>This has been done in resname_to_type</p>
+<p>Common buffers/molecules in the PDB which are unlikely to be hapten antigens</p>
+<dl>
+<dt>Method 1:</dt><dd><p>This list was taken from the supplementary material (Table 2) of:
+Visualizing ligand molecules in twilight electron density. C. X. Weichenberger, E. Pozharski and B. Rupp. Acta Cryst. (2013). F69, 195-200.</p>
+<p>Acknowledgement -  Anthony’s JC 03/04/13</p>
+</dd>
+</dl>
+<p>Method 2:</p>
+<blockquote>
+<div><p>The list of chemical component code to pdb code was taken from:
+<a class="reference external" href="http://ligand-expo.rcsb.org/ld-download.html">http://ligand-expo.rcsb.org/ld-download.html</a>
+Saved as: ./Antibody/AbPDB/dat/Resources/cc-to-pdb.tdd.txt</p>
+<p>We look at the number of structures with each code.
+Distribution of number of pdb codes with the chemical component found at:
+./Antibody/AbPDB/dat/Resources/Frequency_of_cc_in_pdb.pdf</p>
+<p>We use the cut-off of 15. (and manually examine those which are over but under 50 and have mainly known Antibodies - just in case it’s a pet hapten antigen)</p>
+<p>This is a harsh cut off! This is fine for analysing antibodies (as you are unlikely to have more than 15 bound to the same ag). However, change the cutoff for other purposes (suggest at least 200 for “common”)</p>
+<p>There is still a problem if there is a rarely used code or a newly introduced code for buffer.</p>
+<p>fix 120613 will chemical component dict api - runs to online database if cannot find it - obviously requires web access.</p>
+<p>Acknowledgement - JP for suggesting the method.
+The following have been removed from the list as they are either common sugar or peptides</p>
+<blockquote>
+<div><p>BGC saccharide  
+NAG saccharide
+XYP saccharide
+XYS saccharide
+MAL saccharide
+MAN saccharide
+GLA saccharide
+GLC saccharide
+A2G saccharide
+LMT saccharide
+PE1 peptide
+F6P saccharide
+DPN peptide
+GAL saccharide
+BOG saccharide
+NGA saccharide
+FUC saccharide
+BMA saccharide
+SUC saccharide
+FUL saccharide
+NDG saccharide</p>
+</div></blockquote>
+</div></blockquote>
+<p>I have updated method 1 list with method 2 list</p>
+<p>It is left as a dictionary of dictionaries if we decide to add annotations</p>
+<p>Functions provided are:</p>
+<p>is_aa 
+is_common_buffer
+is_carbohydrate
+is_nucleic_acid
+is_polymer
+get_type
+get_chemical_name</p>
+<p>each take either a three letter code or a residue object as argument</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.get_chemical_name">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">get_chemical_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#get_chemical_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.get_chemical_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.get_from_expo">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">get_from_expo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#get_from_expo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.get_from_expo" title="Link to this definition"></a></dt>
+<dd><p>The PDB has a habit of updating …therefore, if we don’t have the three letter code try to get it from ligand expo database online.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.get_name_type">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">get_name_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#get_name_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.get_name_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.get_res_type">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">get_res_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#get_res_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.get_res_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.is_aa">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">is_aa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">standard</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#is_aa"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.is_aa" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.is_carbohydrate">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">is_carbohydrate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#is_carbohydrate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.is_carbohydrate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.is_common_buffer">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">is_common_buffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#is_common_buffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.is_common_buffer" title="Link to this definition"></a></dt>
+<dd><p>Is the residue a common buffer?
+If it occurs in the L{common buffers&lt;common_buffers&gt;} list it is considered a common buffer.</p>
+<p>&#64;param residue: A AbPDB residue object or residues identifier e.g. PO4</p>
+<p>&#64;return: Flag if the residue is a common buffer.
+&#64;rtype: C{bool}</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.is_complete">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">is_complete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#is_complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.is_complete" title="Link to this definition"></a></dt>
+<dd><p>Check the whether a residue has all the heavy atoms we would expect for the residue type.
+Works on the residue object in biopython pdb.
+Returns a flag (True or False) and a list of missing atom names missing</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.is_nucleic_acid">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">is_nucleic_acid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#is_nucleic_acid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.is_nucleic_acid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Chemical_components.is_polymer">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Chemical_components.</span></span><span class="sig-name descname"><span class="pre">is_polymer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Chemical_components.html#is_polymer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Chemical_components.is_polymer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.Entity">
+<span id="stcrpy-tcr-processing-entity-module"></span><h2>stcrpy.tcr_processing.Entity module<a class="headerlink" href="#module-stcrpy.tcr_processing.Entity" title="Link to this heading"></a></h2>
+<p>Created on 9 May 2017
+&#64;author: leem</p>
+<p>A modified Entity class based on SAbDab’s ABDB.AbPDB and Bio.PDB’s entity</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Entity.Entity">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Entity.</span></span><span class="sig-name descname"><span class="pre">Entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Entity.html#Entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Entity.Entity" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></p>
+<p>A modified entity object allows for direct writing of coordinates.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Entity.Entity.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Entity.html#Entity.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Entity.Entity.copy" title="Link to this definition"></a></dt>
+<dd><p>Copy has been played with a bit. For my purposes the version in 1.61 did not work as explicit copying of the child list
+meant that the child objects became referenced to both self and shallow.
+This may be due to overriding the residue and chain classes so may not be a bug in biopython.</p>
+<p>When copying the child_list in the loop, I use the list to iterate over instead of the dictionary.
+This preserves the ordering of the children.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Entity.Entity.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output=&lt;_io.TextIOWrapper</span> <span class="pre">name='&lt;stdout&gt;'</span> <span class="pre">mode='w'</span> <span class="pre">encoding='utf-8'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renumber=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remarks=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Entity.html#Entity.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Entity.Entity.save" title="Link to this definition"></a></dt>
+<dd><p>Save the coordinates of the entity</p>
+<dl class="simple">
+<dt>&#64;param output: Where to write coordinates to. Should be an an open file, string or sys.stdout.</dt><dd><p>By default the output is written to stdout</p>
+</dd>
+<dt>&#64;param renumber: Flag whether to renumber the atoms to IMGT scheme</dt><dd><p>Default is to renumber the atoms so that the first is 1 etc.
+Use renumber = False to retain the original atom numbering from the pdb file</p>
+</dd>
+<dt>&#64;param selection: Provide a selector object to select which children of the entity should be outputted.</dt><dd><p>Selection should be a selector object from TcrPDB.Select.
+Some basic selector classes are provided in the module. More complex classes can be created by inheriting from these.
+If selection = False (default) all atoms in the entity are output</p>
+</dd>
+</dl>
+<p>&#64;param remarks: Flag to print out remarks generated by TcrPDB. Default TRUE
+Example:
+entity.save(“path/to/file/filename.pdb”)
+residue.save( “residue1.pdb” )</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Entity.Entity.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tran</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Entity.html#Entity.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Entity.Entity.transform" title="Link to this definition"></a></dt>
+<dd><p>Apply rotation and translation to the atomic coordinates.</p>
+<dl>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rotation</span><span class="o">=</span><span class="n">rotmat</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">Vector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">translation</span><span class="o">=</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;f&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">entity</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="n">translation</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>&#64;param rot: A right multiplying rotation matrix
+&#64;type rot: 3x3 Numeric array</p>
+<p>&#64;param tran: the translation vector
+&#64;type tran: size 3 Numeric array</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.Fragment">
+<span id="stcrpy-tcr-processing-fragment-module"></span><h2>stcrpy.tcr_processing.Fragment module<a class="headerlink" href="#module-stcrpy.tcr_processing.Fragment" title="Link to this heading"></a></h2>
+<p>Created on 9 May 2017
+&#64;author: leem
+Modified version of the ABDB.AbPDB.Fragment class</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Fragment.Fragment">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Fragment.</span></span><span class="sig-name descname"><span class="pre">Fragment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Fragment.html#Fragment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Fragment.Fragment" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.Entity.Entity" title="stcrpy.tcr_processing.Entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
+<dl class="simple">
+<dt>A modified Entity class that can be thought of as a way of grouping children:</dt><dd><dl class="simple">
+<dt>e.g. TCR (TCR object) -&gt; TCRchain (TCRchain object) -&gt; Fragment CDRB3 (Fragment object)</dt><dd><p>-&gt; Residue  B110  (Residue object)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Does not modify the parent/child attributes of its children.
+For instance, one might define a fragment and add residues to it in order to visualise them.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Fragment.Fragment.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Fragment.html#Fragment.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Fragment.Fragment.add" title="Link to this definition"></a></dt>
+<dd><p>Add a child to the Entity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Fragment.Fragment.get_atoms">
+<span class="sig-name descname"><span class="pre">get_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Fragment.html#Fragment.get_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Fragment.Fragment.get_atoms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Fragment.Fragment.get_residues">
+<span class="sig-name descname"><span class="pre">get_residues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Fragment.html#Fragment.get_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Fragment.Fragment.get_residues" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Fragment.Fragment.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Fragment.html#Fragment.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Fragment.Fragment.insert" title="Link to this definition"></a></dt>
+<dd><p>Add a child to the Entity at a specified position.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.Holder">
+<span id="stcrpy-tcr-processing-holder-module"></span><h2>stcrpy.tcr_processing.Holder module<a class="headerlink" href="#module-stcrpy.tcr_processing.Holder" title="Link to this heading"></a></h2>
+<p>Created on 9 May 2017
+&#64;author: leem</p>
+<p>A generic holder class that can be used to contain individual chains, etc.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Holder.Holder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Holder.</span></span><span class="sig-name descname"><span class="pre">Holder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Holder.html#Holder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Holder.Holder" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.Entity.Entity" title="stcrpy.tcr_processing.Entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.MHC">
+<span id="stcrpy-tcr-processing-mhc-module"></span><h2>stcrpy.tcr_processing.MHC module<a class="headerlink" href="#module-stcrpy.tcr_processing.MHC" title="Link to this heading"></a></h2>
+<p>Created on 30 Apr 2016</p>
+<p>&#64;author: leem, based on work by dunbar</p>
+<p>The MHC class. This is similar to the Fab class.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.CD1">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.MHC.</span></span><span class="sig-name descname"><span class="pre">CD1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#CD1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.CD1" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><code class="xref py py-class docutils literal notranslate"><span class="pre">MHC</span></code></a></p>
+<p>CD1 class.
+Holds paired CD1/B2M domains.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.CD1.get_B2M">
+<span class="sig-name descname"><span class="pre">get_B2M</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#CD1.get_B2M"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.CD1.get_B2M" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.CD1.get_CD1">
+<span class="sig-name descname"><span class="pre">get_CD1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#CD1.get_CD1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.CD1.get_CD1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MH1">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.MHC.</span></span><span class="sig-name descname"><span class="pre">MH1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MH1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MH1" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><code class="xref py py-class docutils literal notranslate"><span class="pre">MHC</span></code></a></p>
+<p>Type 1 MHC class.
+Holds paired MHC domains.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MH1.get_B2M">
+<span class="sig-name descname"><span class="pre">get_B2M</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MH1.get_B2M"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MH1.get_B2M" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MH1.get_GA1">
+<span class="sig-name descname"><span class="pre">get_GA1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MH1.get_GA1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MH1.get_GA1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MH1.get_GA2">
+<span class="sig-name descname"><span class="pre">get_GA2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MH1.get_GA2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MH1.get_GA2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MH1.get_MH1">
+<span class="sig-name descname"><span class="pre">get_MH1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MH1.get_MH1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MH1.get_MH1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MH1.get_alpha">
+<span class="sig-name descname"><span class="pre">get_alpha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MH1.get_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MH1.get_alpha" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MH2">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.MHC.</span></span><span class="sig-name descname"><span class="pre">MH2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MH2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MH2" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><code class="xref py py-class docutils literal notranslate"><span class="pre">MHC</span></code></a></p>
+<p>Type 2 MHC class.
+Holds paired MHC domains.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MH2.get_GA">
+<span class="sig-name descname"><span class="pre">get_GA</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MH2.get_GA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MH2.get_GA" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MH2.get_GB">
+<span class="sig-name descname"><span class="pre">get_GB</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MH2.get_GB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MH2.get_GB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MHC">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.MHC.</span></span><span class="sig-name descname"><span class="pre">MHC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MHC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MHC" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.Entity.Entity" title="stcrpy.tcr_processing.Entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
+<p>MHC class.
+Holds paired MHC domains.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MHC.get_MHC_type">
+<span class="sig-name descname"><span class="pre">get_MHC_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MHC.get_MHC_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MHC.get_MHC_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MHC.get_TCR">
+<span class="sig-name descname"><span class="pre">get_TCR</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MHC.get_TCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MHC.get_TCR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MHC.get_allele_assignments">
+<span class="sig-name descname"><span class="pre">get_allele_assignments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MHC.get_allele_assignments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MHC.get_allele_assignments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MHC.get_antigen">
+<span class="sig-name descname"><span class="pre">get_antigen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MHC.get_antigen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MHC.get_antigen" title="Link to this definition"></a></dt>
+<dd><p>Return a list of bound antigens.
+If the antigen has more than one chain, those in contact with the antibody will be returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MHC.get_atoms">
+<span class="sig-name descname"><span class="pre">get_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MHC.get_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MHC.get_atoms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MHC.get_chains">
+<span class="sig-name descname"><span class="pre">get_chains</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MHC.get_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MHC.get_chains" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MHC.get_residues">
+<span class="sig-name descname"><span class="pre">get_residues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MHC.get_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MHC.get_residues" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MHC.is_bound">
+<span class="sig-name descname"><span class="pre">is_bound</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MHC.is_bound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MHC.is_bound" title="Link to this definition"></a></dt>
+<dd><p>Check whether there is an antigen bound to the antibody fab</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MR1">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.MHC.</span></span><span class="sig-name descname"><span class="pre">MR1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MR1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MR1" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><code class="xref py py-class docutils literal notranslate"><span class="pre">MHC</span></code></a></p>
+<p>MR1 class.
+Holds paired MR1/B2M domains.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MR1.get_B2M">
+<span class="sig-name descname"><span class="pre">get_B2M</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MR1.get_B2M"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MR1.get_B2M" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.MR1.get_MR1">
+<span class="sig-name descname"><span class="pre">get_MR1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#MR1.get_MR1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.MR1.get_MR1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scCD1">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.MHC.</span></span><span class="sig-name descname"><span class="pre">scCD1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scCD1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scCD1" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><code class="xref py py-class docutils literal notranslate"><span class="pre">MHC</span></code></a></p>
+<p>Type 1 MHC class.
+Holds single chain MHC domains of type CD1 for Class I MHC if the identiifed chain
+is the double alpha helix, ie. CD1 without B2M.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scCD1.get_B2M">
+<span class="sig-name descname"><span class="pre">get_B2M</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scCD1.get_B2M"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scCD1.get_B2M" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scCD1.get_CD1">
+<span class="sig-name descname"><span class="pre">get_CD1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scCD1.get_CD1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scCD1.get_CD1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scCD1.get_GA1L">
+<span class="sig-name descname"><span class="pre">get_GA1L</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scCD1.get_GA1L"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scCD1.get_GA1L" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scMH1">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.MHC.</span></span><span class="sig-name descname"><span class="pre">scMH1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scMH1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scMH1" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><code class="xref py py-class docutils literal notranslate"><span class="pre">MHC</span></code></a></p>
+<p>Type 1 MHC class.
+Holds single chain MHC domains for Class I MHC if the identiifed chain
+is the double alpha helix, ie. MH1 without B2M, with exception for GA1.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scMH1.get_B2M">
+<span class="sig-name descname"><span class="pre">get_B2M</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scMH1.get_B2M"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scMH1.get_B2M" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scMH1.get_GA1">
+<span class="sig-name descname"><span class="pre">get_GA1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scMH1.get_GA1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scMH1.get_GA1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scMH1.get_GA2">
+<span class="sig-name descname"><span class="pre">get_GA2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scMH1.get_GA2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scMH1.get_GA2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scMH1.get_MH1">
+<span class="sig-name descname"><span class="pre">get_MH1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scMH1.get_MH1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scMH1.get_MH1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHC.scMH1.get_alpha">
+<span class="sig-name descname"><span class="pre">get_alpha</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHC.html#scMH1.get_alpha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHC.scMH1.get_alpha" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.MHCchain">
+<span id="stcrpy-tcr-processing-mhcchain-module"></span><h2>stcrpy.tcr_processing.MHCchain module<a class="headerlink" href="#module-stcrpy.tcr_processing.MHCchain" title="Link to this heading"></a></h2>
+<p>Created on 30 Apr 2016
+&#64;author: leem</p>
+<p>Based on the ABchain class from &#64;dunbar</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.MHCchain.</span></span><span class="sig-name descname"><span class="pre">MHCchain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Chain</span></code>, <a class="reference internal" href="#stcrpy.tcr_processing.Entity.Entity" title="stcrpy.tcr_processing.Entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
+<p>A class to hold an MHC chain</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.add_unnumbered">
+<span class="sig-name descname"><span class="pre">add_unnumbered</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.add_unnumbered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.add_unnumbered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chain_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.analyse" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.annotate_children">
+<span class="sig-name descname"><span class="pre">annotate_children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.annotate_children"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.annotate_children" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.get_TCR">
+<span class="sig-name descname"><span class="pre">get_TCR</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.get_TCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.get_TCR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.get_allele_assignments">
+<span class="sig-name descname"><span class="pre">get_allele_assignments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.get_allele_assignments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.get_allele_assignments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.get_antigen">
+<span class="sig-name descname"><span class="pre">get_antigen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.get_antigen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.get_antigen" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.get_chains">
+<span class="sig-name descname"><span class="pre">get_chains</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.get_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.get_chains" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.get_fragments">
+<span class="sig-name descname"><span class="pre">get_fragments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.get_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.get_fragments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.get_sequence">
+<span class="sig-name descname"><span class="pre">get_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type=&lt;class</span> <span class="pre">'dict'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.get_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.get_sequence" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.get_unnumbered">
+<span class="sig-name descname"><span class="pre">get_unnumbered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.get_unnumbered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.get_unnumbered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.is_bound">
+<span class="sig-name descname"><span class="pre">is_bound</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.is_bound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.is_bound" title="Link to this definition"></a></dt>
+<dd><p>Check whether there is an antigen bound to the antibody chain</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.set_chain_type">
+<span class="sig-name descname"><span class="pre">set_chain_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chain_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.set_chain_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.set_chain_type" title="Link to this definition"></a></dt>
+<dd><p>Set the MHC’s chain type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.set_engineered">
+<span class="sig-name descname"><span class="pre">set_engineered</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engineered</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.set_engineered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.set_engineered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.MHCchain.MHCchain.set_sequence">
+<span class="sig-name descname"><span class="pre">set_sequence</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/MHCchain.html#MHCchain.set_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.MHCchain.MHCchain.set_sequence" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.Model">
+<span id="stcrpy-tcr-processing-model-module"></span><h2>stcrpy.tcr_processing.Model module<a class="headerlink" href="#module-stcrpy.tcr_processing.Model" title="Link to this heading"></a></h2>
+<p>Created on 9 May 2017
+&#64;author: leem</p>
+<p>Based on the ABDB.AbPDB.Model class.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Model.Model">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Model.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serial_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Model.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Model.Model" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></p>
+<p>Override to use our Entity</p>
+<dl class="simple">
+<dt>&#64;change: __getitem__ changed so that single chains can be called as well as holder object from a model.</dt><dd><p>e.g. s[0][“B”] and s[0][“BA”] gets the B chain and the BA tcr respectively.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.Select">
+<span id="stcrpy-tcr-processing-select-module"></span><h2>stcrpy.tcr_processing.Select module<a class="headerlink" href="#module-stcrpy.tcr_processing.Select" title="Link to this heading"></a></h2>
+<p>Select.py
+Created on 9 May 2017
+&#64;author: leem</p>
+<p>These are selection classes for the save method of the TcrPDB entity
+They are based on the ABDB.AbPDB.Select and Bio.PDB.PDBIO Selection classes</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.backbone">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Select.</span></span><span class="sig-name descname"><span class="pre">backbone</span></span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#backbone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.backbone" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.Select.select_all" title="stcrpy.tcr_processing.Select.select_all"><code class="xref py py-class docutils literal notranslate"><span class="pre">select_all</span></code></a></p>
+<p>Select only backbone (no side chains) atoms in the structure.
+Backbone defined as “C”,”CA”,”N”,”CB” and “O” atom identifiers in amino acid (pdb notation)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.backbone.accept_atom">
+<span class="sig-name descname"><span class="pre">accept_atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#backbone.accept_atom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.backbone.accept_atom" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject atoms for output.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.cdr3">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Select.</span></span><span class="sig-name descname"><span class="pre">cdr3</span></span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#cdr3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.cdr3" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.Select.variable_only" title="stcrpy.tcr_processing.Select.variable_only"><code class="xref py py-class docutils literal notranslate"><span class="pre">variable_only</span></code></a></p>
+<p>Select only CDR3.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.cdr3.accept_residue">
+<span class="sig-name descname"><span class="pre">accept_residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#cdr3.accept_residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.cdr3.accept_residue" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject residues for output.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.fv_only_backbone">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Select.</span></span><span class="sig-name descname"><span class="pre">fv_only_backbone</span></span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#fv_only_backbone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.fv_only_backbone" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.Select.variable_only" title="stcrpy.tcr_processing.Select.variable_only"><code class="xref py py-class docutils literal notranslate"><span class="pre">variable_only</span></code></a>, <a class="reference internal" href="#stcrpy.tcr_processing.Select.backbone" title="stcrpy.tcr_processing.Select.backbone"><code class="xref py py-class docutils literal notranslate"><span class="pre">backbone</span></code></a></p>
+<p>Select the backbone atoms of the variable region.
+Example of combining selection classes.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.select_all">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Select.</span></span><span class="sig-name descname"><span class="pre">select_all</span></span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#select_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.select_all" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Default selection (everything) during writing - can be used as base class
+to implement selective output. This selects which entities will be written out.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.select_all.accept">
+<span class="sig-name descname"><span class="pre">accept</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ob</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#select_all.accept"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.select_all.accept" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.select_all.accept_atom">
+<span class="sig-name descname"><span class="pre">accept_atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#select_all.accept_atom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.select_all.accept_atom" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject atoms for output.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.select_all.accept_chain">
+<span class="sig-name descname"><span class="pre">accept_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#select_all.accept_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.select_all.accept_chain" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject chains for output.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.select_all.accept_fragment">
+<span class="sig-name descname"><span class="pre">accept_fragment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fragment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#select_all.accept_fragment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.select_all.accept_fragment" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject residues for output.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.select_all.accept_holder">
+<span class="sig-name descname"><span class="pre">accept_holder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#select_all.accept_holder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.select_all.accept_holder" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject holders for output. (TCRs, TCRchains-holder, MHCchains-holder, AGchains-holder)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.select_all.accept_model">
+<span class="sig-name descname"><span class="pre">accept_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#select_all.accept_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.select_all.accept_model" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject models for output.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.select_all.accept_residue">
+<span class="sig-name descname"><span class="pre">accept_residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#select_all.accept_residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.select_all.accept_residue" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject residues for output.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.variable_only">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.Select.</span></span><span class="sig-name descname"><span class="pre">variable_only</span></span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#variable_only"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.variable_only" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.Select.select_all" title="stcrpy.tcr_processing.Select.select_all"><code class="xref py py-class docutils literal notranslate"><span class="pre">select_all</span></code></a></p>
+<p>Select the variable region(s) of the structure.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.variable_only.accept_holder">
+<span class="sig-name descname"><span class="pre">accept_holder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">holder</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#variable_only.accept_holder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.variable_only.accept_holder" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject holders for output.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.Select.variable_only.accept_residue">
+<span class="sig-name descname"><span class="pre">accept_residue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Select.html#variable_only.accept_residue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Select.variable_only.accept_residue" title="Link to this definition"></a></dt>
+<dd><p>Overload this to reject residues for output.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.TCR">
+<span id="stcrpy-tcr-processing-tcr-module"></span><h2>stcrpy.tcr_processing.TCR module<a class="headerlink" href="#module-stcrpy.tcr_processing.TCR" title="Link to this heading"></a></h2>
+<p>Created on 3rd April 2024
+&#64;author: Nele Quast based on work by Dunbar and Leem 
+The TCR class.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.TCR.</span></span><span class="sig-name descname"><span class="pre">TCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.Entity.Entity" title="stcrpy.tcr_processing.Entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
+<p>TCR class. This is generic which is inherited later.
+Holds paired TCR chains.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.calculate_docking_geometry">
+<span class="sig-name descname"><span class="pre">calculate_docking_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rudolph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.calculate_docking_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.calculate_docking_geometry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_CDRs">
+<span class="sig-name descname"><span class="pre">get_CDRs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_CDRs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_CDRs" title="Link to this definition"></a></dt>
+<dd><p>Obtain CDR loops from a TCR structure object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_MHC">
+<span class="sig-name descname"><span class="pre">get_MHC</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_MHC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_MHC" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_MHC_allele_assignments">
+<span class="sig-name descname"><span class="pre">get_MHC_allele_assignments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_MHC_allele_assignments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_MHC_allele_assignments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_TCR_type">
+<span class="sig-name descname"><span class="pre">get_TCR_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_TCR_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_TCR_type" title="Link to this definition"></a></dt>
+<dd><p>Get the TCR type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_antigen">
+<span class="sig-name descname"><span class="pre">get_antigen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_antigen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_antigen" title="Link to this definition"></a></dt>
+<dd><p>Return a list of bound antigens.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_atoms">
+<span class="sig-name descname"><span class="pre">get_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_atoms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_chains">
+<span class="sig-name descname"><span class="pre">get_chains</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_chains" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_frameworks">
+<span class="sig-name descname"><span class="pre">get_frameworks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_frameworks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_frameworks" title="Link to this definition"></a></dt>
+<dd><p>Obtain framework regions from a TCR structure object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_germline_assignments">
+<span class="sig-name descname"><span class="pre">get_germline_assignments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_germline_assignments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_germline_assignments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_germlines_and_alleles">
+<span class="sig-name descname"><span class="pre">get_germlines_and_alleles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_germlines_and_alleles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_germlines_and_alleles" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_interaction_heatmap">
+<span class="sig-name descname"><span class="pre">get_interaction_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plotting_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">interaction_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_interaction_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_interaction_heatmap" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_pitch_angle">
+<span class="sig-name descname"><span class="pre">get_pitch_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rudolph'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_pitch_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_pitch_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_residues">
+<span class="sig-name descname"><span class="pre">get_residues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_residues" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.get_scanning_angle">
+<span class="sig-name descname"><span class="pre">get_scanning_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rudolph'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.get_scanning_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.get_scanning_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.is_bound">
+<span class="sig-name descname"><span class="pre">is_bound</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.is_bound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.is_bound" title="Link to this definition"></a></dt>
+<dd><p>Check whether this TCR is bound to an antigen</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.profile_MHC_interactions">
+<span class="sig-name descname"><span class="pre">profile_MHC_interactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.profile_MHC_interactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.profile_MHC_interactions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.profile_TCR_interactions">
+<span class="sig-name descname"><span class="pre">profile_TCR_interactions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.profile_TCR_interactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.profile_TCR_interactions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.profile_peptide_interactions">
+<span class="sig-name descname"><span class="pre">profile_peptide_interactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">renumber</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pd.DataFrame</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.profile_peptide_interactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.profile_peptide_interactions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pdb'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.save" title="Link to this definition"></a></dt>
+<dd><p>Save the coordinates of the entity</p>
+<dl class="simple">
+<dt>&#64;param output: Where to write coordinates to. Should be an an open file, string or sys.stdout.</dt><dd><p>By default the output is written to stdout</p>
+</dd>
+<dt>&#64;param renumber: Flag whether to renumber the atoms to IMGT scheme</dt><dd><p>Default is to renumber the atoms so that the first is 1 etc.
+Use renumber = False to retain the original atom numbering from the pdb file</p>
+</dd>
+<dt>&#64;param selection: Provide a selector object to select which children of the entity should be outputted.</dt><dd><p>Selection should be a selector object from TcrPDB.Select.
+Some basic selector classes are provided in the module. More complex classes can be created by inheriting from these.
+If selection = False (default) all atoms in the entity are output</p>
+</dd>
+</dl>
+<p>&#64;param remarks: Flag to print out remarks generated by TcrPDB. Default TRUE
+Example:
+entity.save(“path/to/file/filename.pdb”)
+residue.save( “residue1.pdb” )</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR.score_docking_geometry">
+<span class="sig-name descname"><span class="pre">score_docking_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#TCR.score_docking_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.TCR.score_docking_geometry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.abTCR">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.TCR.</span></span><span class="sig-name descname"><span class="pre">abTCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#abTCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.abTCR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><code class="xref py py-class docutils literal notranslate"><span class="pre">TCR</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.abTCR.get_VA">
+<span class="sig-name descname"><span class="pre">get_VA</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#abTCR.get_VA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.abTCR.get_VA" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.abTCR.get_VB">
+<span class="sig-name descname"><span class="pre">get_VB</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#abTCR.get_VB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.abTCR.get_VB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.abTCR.get_domain_assignment">
+<span class="sig-name descname"><span class="pre">get_domain_assignment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#abTCR.get_domain_assignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.abTCR.get_domain_assignment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.abTCR.get_fragments">
+<span class="sig-name descname"><span class="pre">get_fragments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#abTCR.get_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.abTCR.get_fragments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.abTCR.is_engineered">
+<span class="sig-name descname"><span class="pre">is_engineered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#abTCR.is_engineered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.abTCR.is_engineered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.dbTCR">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.TCR.</span></span><span class="sig-name descname"><span class="pre">dbTCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#dbTCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.dbTCR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><code class="xref py py-class docutils literal notranslate"><span class="pre">TCR</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.dbTCR.get_VB">
+<span class="sig-name descname"><span class="pre">get_VB</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#dbTCR.get_VB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.dbTCR.get_VB" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.dbTCR.get_VD">
+<span class="sig-name descname"><span class="pre">get_VD</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#dbTCR.get_VD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.dbTCR.get_VD" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.dbTCR.get_domain_assignment">
+<span class="sig-name descname"><span class="pre">get_domain_assignment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#dbTCR.get_domain_assignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.dbTCR.get_domain_assignment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.dbTCR.get_fragments">
+<span class="sig-name descname"><span class="pre">get_fragments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#dbTCR.get_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.dbTCR.get_fragments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.dbTCR.is_engineered">
+<span class="sig-name descname"><span class="pre">is_engineered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#dbTCR.is_engineered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.dbTCR.is_engineered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.gdTCR">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.TCR.</span></span><span class="sig-name descname"><span class="pre">gdTCR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#gdTCR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.gdTCR" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><code class="xref py py-class docutils literal notranslate"><span class="pre">TCR</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.gdTCR.get_VD">
+<span class="sig-name descname"><span class="pre">get_VD</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#gdTCR.get_VD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.gdTCR.get_VD" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.gdTCR.get_VG">
+<span class="sig-name descname"><span class="pre">get_VG</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#gdTCR.get_VG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.gdTCR.get_VG" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.gdTCR.get_domain_assignment">
+<span class="sig-name descname"><span class="pre">get_domain_assignment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#gdTCR.get_domain_assignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.gdTCR.get_domain_assignment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.gdTCR.get_fragments">
+<span class="sig-name descname"><span class="pre">get_fragments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#gdTCR.get_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.gdTCR.get_fragments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.gdTCR.is_engineered">
+<span class="sig-name descname"><span class="pre">is_engineered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCR.html#gdTCR.is_engineered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCR.gdTCR.is_engineered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.TCRIO">
+<span id="stcrpy-tcr-processing-tcrio-module"></span><h2>stcrpy.tcr_processing.TCRIO module<a class="headerlink" href="#module-stcrpy.tcr_processing.TCRIO" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRIO.TCRIO">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.TCRIO.</span></span><span class="sig-name descname"><span class="pre">TCRIO</span></span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRIO.html#TCRIO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRIO.TCRIO" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PDBIO</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRIO.TCRIO.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_as</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'pdb'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRIO.html#TCRIO.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRIO.TCRIO.save" title="Link to this definition"></a></dt>
+<dd><p>Save structure to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>string</em><em> or </em><em>filehandle</em>) – output file</p></li>
+<li><p><strong>select</strong> (<em>object</em>) – selects which entities will be written.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Typically select is a subclass of L{Select}, it should
+have the following methods:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>accept_model(model)</p></li>
+<li><p>accept_chain(chain)</p></li>
+<li><p>accept_residue(residue)</p></li>
+<li><p>accept_atom(atom)</p></li>
+</ul>
+</div></blockquote>
+<p>These methods should return 1 if the entity is to be
+written out, 0 otherwise.</p>
+<p>Typically select is a subclass of L{Select}.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.TCRParser">
+<span id="stcrpy-tcr-processing-tcrparser-module"></span><h2>stcrpy.tcr_processing.TCRParser module<a class="headerlink" href="#module-stcrpy.tcr_processing.TCRParser" title="Link to this heading"></a></h2>
+<p>Created on 3 April 2024
+&#64;author: Nele Quast, based on leem</p>
+<p>TCRParser object which is based on ABDB’s AntibodyParser and BioPython’s PDB parser.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRParser.TCRParser">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.TCRParser.</span></span><span class="sig-name descname"><span class="pre">TCRParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">PERMISSIVE</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QUIET</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRParser.html#TCRParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRParser.TCRParser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PDBParser</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MMCIFParser</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRParser.TCRParser.get_tcr_structure">
+<span class="sig-name descname"><span class="pre">get_tcr_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prenumbering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ali_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crystal_contacts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRParser.html#TCRParser.get_tcr_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRParser.TCRParser.get_tcr_structure" title="Link to this definition"></a></dt>
+<dd><p>Post processing of the TCRPDB.Bio.PDB structure object into a TCR context.</p>
+<p>id: a string to identify the structure
+file: the path to the .pdb file</p>
+<dl class="simple">
+<dt>optional:</dt><dd><p>prenumbering: prenumbering for the chains in the structure.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.TCRStructure">
+<span id="stcrpy-tcr-processing-tcrstructure-module"></span><h2>stcrpy.tcr_processing.TCRStructure module<a class="headerlink" href="#module-stcrpy.tcr_processing.TCRStructure" title="Link to this heading"></a></h2>
+<p>Created on 10 May 2017
+&#64;author: leem
+Based on the ABDB.AbPDB.AntibodyStructure class.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.TCRStructure.</span></span><span class="sig-name descname"><span class="pre">TCRStructure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_processing.Entity.Entity" title="stcrpy.tcr_processing.Entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
+<p>The TCRStructure class contains a collection of models</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_MHCs">
+<span class="sig-name descname"><span class="pre">get_MHCs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_MHCs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_MHCs" title="Link to this definition"></a></dt>
+<dd><p>Get any instance of the MHC object.
+Hierarchy:</p>
+<blockquote>
+<div><dl>
+<dt>TCRStructure</dt><dd><div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><a href="#id1"><span class="problematic" id="id2">|</span></a>______ TCR
+|
+<a href="#id3"><span class="problematic" id="id4">|</span></a>______ MHC</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_TCRchains">
+<span class="sig-name descname"><span class="pre">get_TCRchains</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_TCRchains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_TCRchains" title="Link to this definition"></a></dt>
+<dd><p>Gets all TCR chains</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_TCRs">
+<span class="sig-name descname"><span class="pre">get_TCRs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_TCRs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_TCRs" title="Link to this definition"></a></dt>
+<dd><p>Get any instance of the TCR object.
+Hierarchy:</p>
+<blockquote>
+<div><dl>
+<dt>TCRStructure</dt><dd><div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><a href="#id5"><span class="problematic" id="id6">|</span></a>______ TCR
+|
+<a href="#id7"><span class="problematic" id="id8">|</span></a>______ MHC</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_antigens">
+<span class="sig-name descname"><span class="pre">get_antigens</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_antigens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_antigens" title="Link to this definition"></a></dt>
+<dd><p>This gets the ‘antigen’ chains in the structure,
+that have been assigned to a TCR or an MHC.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_atoms">
+<span class="sig-name descname"><span class="pre">get_atoms</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_atoms" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_chains">
+<span class="sig-name descname"><span class="pre">get_chains</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_chains" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_header">
+<span class="sig-name descname"><span class="pre">get_header</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_header" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_holders">
+<span class="sig-name descname"><span class="pre">get_holders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_holders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_holders" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_models">
+<span class="sig-name descname"><span class="pre">get_models</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_models"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_models" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_residues">
+<span class="sig-name descname"><span class="pre">get_residues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_residues" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_seq">
+<span class="sig-name descname"><span class="pre">get_seq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_seq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_seq" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.get_unpaired_TCRchains">
+<span class="sig-name descname"><span class="pre">get_unpaired_TCRchains</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.get_unpaired_TCRchains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.get_unpaired_TCRchains" title="Link to this definition"></a></dt>
+<dd><p>This gets the TCR chains that are not paired</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRStructure.TCRStructure.set_header">
+<span class="sig-name descname"><span class="pre">set_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">header</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRStructure.html#TCRStructure.set_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRStructure.TCRStructure.set_header" title="Link to this definition"></a></dt>
+<dd><p>Set the header as the parsed header dictionary from biopython</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.TCRchain">
+<span id="stcrpy-tcr-processing-tcrchain-module"></span><h2>stcrpy.tcr_processing.TCRchain module<a class="headerlink" href="#module-stcrpy.tcr_processing.TCRchain" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.TCRchain.</span></span><span class="sig-name descname"><span class="pre">TCRchain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Chain</span></code>, <a class="reference internal" href="#stcrpy.tcr_processing.Entity.Entity" title="stcrpy.tcr_processing.Entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
+<p>A class to hold a TCR chain.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.add_unnumbered">
+<span class="sig-name descname"><span class="pre">add_unnumbered</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.add_unnumbered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.add_unnumbered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.analyse">
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chain_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.analyse" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.annotate_children">
+<span class="sig-name descname"><span class="pre">annotate_children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.annotate_children"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.annotate_children" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.get_CDRs">
+<span class="sig-name descname"><span class="pre">get_CDRs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.get_CDRs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.get_CDRs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.get_MHC">
+<span class="sig-name descname"><span class="pre">get_MHC</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.get_MHC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.get_MHC" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.get_antigen">
+<span class="sig-name descname"><span class="pre">get_antigen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.get_antigen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.get_antigen" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.get_fragments">
+<span class="sig-name descname"><span class="pre">get_fragments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.get_fragments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.get_fragments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.get_frameworks">
+<span class="sig-name descname"><span class="pre">get_frameworks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.get_frameworks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.get_frameworks" title="Link to this definition"></a></dt>
+<dd><p>Obtain framework regions from a TCRChain object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.get_germline_assignments">
+<span class="sig-name descname"><span class="pre">get_germline_assignments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.get_germline_assignments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.get_germline_assignments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.get_sequence">
+<span class="sig-name descname"><span class="pre">get_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type=&lt;class</span> <span class="pre">'dict'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.get_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.get_sequence" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.get_unnumbered">
+<span class="sig-name descname"><span class="pre">get_unnumbered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.get_unnumbered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.get_unnumbered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.is_bound">
+<span class="sig-name descname"><span class="pre">is_bound</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.is_bound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.is_bound" title="Link to this definition"></a></dt>
+<dd><p>Check whether there is an antigen bound to the TCR</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.is_engineered">
+<span class="sig-name descname"><span class="pre">is_engineered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.is_engineered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.is_engineered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.set_chain_type">
+<span class="sig-name descname"><span class="pre">set_chain_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chain_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.set_chain_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.set_chain_type" title="Link to this definition"></a></dt>
+<dd><p>Set the chain type to B, A, D, or G</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.set_engineered">
+<span class="sig-name descname"><span class="pre">set_engineered</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engineered</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.set_engineered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.set_engineered" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.TCRchain.TCRchain.set_sequence">
+<span class="sig-name descname"><span class="pre">set_sequence</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/TCRchain.html#TCRchain.set_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.TCRchain.TCRchain.set_sequence" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing.annotate">
+<span id="stcrpy-tcr-processing-annotate-module"></span><h2>stcrpy.tcr_processing.annotate module<a class="headerlink" href="#module-stcrpy.tcr_processing.annotate" title="Link to this heading"></a></h2>
+<p>Created on 10 May 2017
+&#64;author: leem</p>
+<p>Implementation to call anarci (built-in to STrDab) to annotate structures.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.align_numbering">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">align_numbering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numbering</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignment_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#align_numbering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.align_numbering" title="Link to this definition"></a></dt>
+<dd><p>Align the sequence that has been numbered to the sequence you input.
+The numbered sequence should be “in” the input sequence.
+If not, supply an alignment dictionary.(align sequences and use get_alignment_dict(ali1,ali2))</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.align_scTCR_numbering">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">align_scTCR_numbering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numbering</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#align_scTCR_numbering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.align_scTCR_numbering" title="Link to this definition"></a></dt>
+<dd><p>Align the sequence that has been numbered to a scTCR structure.
+&#64;param numbering:     numbered list of residues; this is usually a two-element list/tuple from TCRDB.anarci.number
+&#64;param sequence_list: list of residues (e.g. from a structure) in its original numbering
+&#64;param sequence_str:  string form of sequence_list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.annotate">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">annotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#annotate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.annotate" title="Link to this definition"></a></dt>
+<dd><p>Annotate the sequence of a chain object from TCRDB.TcrPDB
+# e.g. if you have chains B, A and X, you want to force the annotator to return the annotation
+# for B and A but not for X (the antigen)</p>
+<p>returns a dictionary which has the residue ids as key and the annotation as value or is False,
+and chain type which is B/A/G/D/MH1/GA/GB/B2M or False.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.call_anarci">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">call_anarci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'A',</span> <span class="pre">'B',</span> <span class="pre">'B2M',</span> <span class="pre">'D',</span> <span class="pre">'G',</span> <span class="pre">'GA',</span> <span class="pre">'GA1',</span> <span class="pre">'GA1L',</span> <span class="pre">'GA2',</span> <span class="pre">'GA2L',</span> <span class="pre">'GB',</span> <span class="pre">'MH1',</span> <span class="pre">'MR1',</span> <span class="pre">'MR2'}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#call_anarci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.call_anarci" title="Link to this definition"></a></dt>
+<dd><p>Use the ANARCI program to number the sequence.
+&#64;param seq: An amino acid sequence that you wish to number.
+&#64;type seq: C{str}</p>
+<p>&#64;return: numbering, chain type</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.cleanup_scTCR_numbering">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">cleanup_scTCR_numbering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numbering_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#cleanup_scTCR_numbering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.cleanup_scTCR_numbering" title="Link to this definition"></a></dt>
+<dd><p>The scTCR numbering method, while useful for sequences with two domains,
+can have gaps in between (e.g. CD1 molecule of 4lhu).
+This is to close the gaps in the numbering so that residues that were unnumbered by anarci don’t move around
+during structural parsing (when they’re probably just connections between domains).</p>
+<p>&#64;param numbering_dict: numbered dictionary from align_scTCR_numbering
+&#64;param sequence_list : sequence list from the structure for alignment.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.easy_alignment">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">easy_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#easy_alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.easy_alignment" title="Link to this definition"></a></dt>
+<dd><p>Function to align two sequences by checking if one is in the other.
+This function will conserve gaps.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.extract_sequence">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">extract_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_hets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backbone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#extract_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.extract_sequence" title="Link to this definition"></a></dt>
+<dd><p>Get the amino acid sequence of the chain.
+&#64;change:    Residues containing HETATOMs are skipped –&gt;  Residues containing HETATOMs are checked as an amino acid.</p>
+<p>Residues containing HETATOMs are checked  to be amino acids and the single letter returned.</p>
+<p>This works provided the residues in the chain are in the correct order.</p>
+<p>&#64;param selection: a selection object to select certain residues
+&#64;param return_warnings: Flag to return a list of warnings or not
+&#64;param backbone: Flag whether to only show residues with a complete backbone (in the structure) or not.
+&#64;return: The sequence in a resid:aa tuple list and the sequence as a string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.get_alignment_dict">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">get_alignment_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ali1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ali2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#get_alignment_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.get_alignment_dict" title="Link to this definition"></a></dt>
+<dd><p>Get a dictionary which tells you the index in sequence 2 that should align with the index in sequence 1 (key)</p>
+<p>ali1:  —-bcde-f—        seq1: bcdef
+ali2:  —abcd–f—        seq2: abcdf</p>
+<dl class="simple">
+<dt>alignment_dict={</dt><dd><p>0:1,
+1:2,
+2:3,
+4:4
+}</p>
+</dd>
+</dl>
+<p>If the index is aligned with a gap do not include in the dictionary.
+e.g  1 in alignment_dict  –&gt; True
+e.g  3 in alignment_dict  –&gt; False</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.interpret">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">interpret</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#interpret"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.interpret" title="Link to this definition"></a></dt>
+<dd><p>Function to interpret an annotation in the form H100A into the form ( 100, ‘A’ )</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.pairwise_alignment">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">pairwise_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#pairwise_alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.pairwise_alignment" title="Link to this definition"></a></dt>
+<dd><p>Function to do alignment of sequences between sequences using biopython.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_processing.annotate.validate_sequence">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.annotate.</span></span><span class="sig-name descname"><span class="pre">validate_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/annotate.html#validate_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.annotate.validate_sequence" title="Link to this definition"></a></dt>
+<dd><p>Check whether a sequence is a protein sequence or if someone has submitted something nasty.</p>
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_processing">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-stcrpy.tcr_processing" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="stcrpy.tcr_ml.html" class="btn btn-neutral float-left" title="stcrpy.tcr_ml package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="stcrpy.tcr_processing.utils.html" class="btn btn-neutral float-right" title="stcrpy.tcr_processing.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,431 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_geometry.TCRGeomFiltering &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_geometry.TCRGeomFiltering</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_geometry.TCRGeomFiltering</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">gamma</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.mixture</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianMixture</span>
+
+
+<span class="c1"># DEFAULT PARAMETERS FROM FIT TO STCRDAB (SAMPLED JULY 2024)</span>
+
+<span class="c1"># Scanning angle is fit with unimodel gaussian</span>
+<span class="n">SCANNING_ANGLE_MEAN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">67.92200037</span><span class="p">]])</span>
+<span class="n">SCANNING_ANGLE_VARIANCE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">202.11710875</span><span class="p">]])</span>
+
+<span class="c1"># Pitch angle is fit with gamma distribution</span>
+<span class="n">PITCH_ANGLE_ALPHA</span> <span class="o">=</span> <span class="mf">1.1993765213484138</span>
+<span class="n">PITCH_ANGLE_LOC</span> <span class="o">=</span> <span class="mf">0.036500005492399054</span>
+<span class="n">PITCH_ANGLE_SCALE</span> <span class="o">=</span> <span class="mf">5.781270719307026</span>
+
+<span class="c1"># Z distance of TCR CoM is fit with bimodal gaussian mixture</span>
+<span class="n">Z_DIST_WEIGHTS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.43420871</span><span class="p">,</span> <span class="mf">0.56579129</span><span class="p">])</span>
+<span class="n">Z_DIST_VARIANCE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mf">0.46845205</span><span class="p">]],</span> <span class="p">[[</span><span class="mf">0.90790909</span><span class="p">]]])</span>
+<span class="n">Z_DIST_MEAN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">27.04673494</span><span class="p">],</span> <span class="p">[</span><span class="mf">28.62071785</span><span class="p">]])</span>
+
+
+<div class="viewcode-block" id="DockingGeometryFilter">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DockingGeometryFilter</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scanning_angle_pdf</span> <span class="o">=</span> <span class="n">ScanningAnglePDF</span><span class="p">(</span>
+            <span class="n">mean</span><span class="o">=</span><span class="n">SCANNING_ANGLE_MEAN</span><span class="p">,</span> <span class="n">variance</span><span class="o">=</span><span class="n">SCANNING_ANGLE_VARIANCE</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pitch_angle_pdf</span> <span class="o">=</span> <span class="n">PitchAnglePDF</span><span class="p">(</span>
+            <span class="n">alpha</span><span class="o">=</span><span class="n">PITCH_ANGLE_ALPHA</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">PITCH_ANGLE_LOC</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">PITCH_ANGLE_SCALE</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_dist_pdf</span> <span class="o">=</span> <span class="n">ZDistPDF</span><span class="p">(</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">Z_DIST_WEIGHTS</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="n">Z_DIST_MEAN</span><span class="p">,</span> <span class="n">variance</span><span class="o">=</span><span class="n">Z_DIST_VARIANCE</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_docking_geometry</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DockingGeometryFilter.score_docking_geometry">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter.score_docking_geometry">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">score_docking_geometry</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">scanning_angles</span><span class="p">,</span> <span class="n">pitch_angles</span><span class="p">,</span> <span class="n">z_dists</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="p">):</span>
+        <span class="n">scanning_angle_log_probs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scanning_angle_pdf</span><span class="o">.</span><span class="n">log_probs</span><span class="p">(</span><span class="n">scanning_angles</span><span class="p">)</span>
+        <span class="n">pitch_angle_log_probs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pitch_angle_pdf</span><span class="o">.</span><span class="n">log_probs</span><span class="p">(</span><span class="n">pitch_angles</span><span class="p">)</span>
+        <span class="n">z_dist_log_probs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_dist_pdf</span><span class="o">.</span><span class="n">log_probs</span><span class="p">(</span><span class="n">z_dists</span><span class="p">)</span>
+
+        <span class="n">scores</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">scanning_angle_log_probs</span>
+            <span class="o">+</span> <span class="n">weights</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">pitch_angle_log_probs</span>
+            <span class="o">+</span> <span class="n">weights</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">z_dist_log_probs</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scores</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">scores</span></div>
+
+
+<div class="viewcode-block" id="DockingGeometryFilter.set_scanning_angle_pdf">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter.set_scanning_angle_pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_scanning_angle_pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_scanning_angle_pdf</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">new_scanning_angle_pdf</span><span class="p">,</span> <span class="n">DockingGeometryPDF</span>
+        <span class="p">),</span> <span class="s2">&quot;Bespoke scanning angle PDF must inherit from DockingGeometryPDF&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">log_probs</span> <span class="o">=</span> <span class="n">new_scanning_angle_pdf</span><span class="o">.</span><span class="n">log_probs</span><span class="p">(</span><span class="mf">47.2</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_probs</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">log_probs</span> <span class="o">&lt;</span> <span class="mf">0.0</span>
+            <span class="p">),</span> <span class="s2">&quot;Log probs returned by new PDF not correctly configured. Scanning angle PDF has not been set, using default.&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scanning_angle_pdf</span> <span class="o">=</span> <span class="n">new_scanning_angle_pdf</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Bespoke scanning angle PDF failed test with error </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">.  Scanning angle PDF has not been set, using default.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="DockingGeometryFilter.set_zdist_angle_pdf">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter.set_zdist_angle_pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_zdist_angle_pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_zdist_pdf</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">new_zdist_pdf</span><span class="p">,</span> <span class="n">DockingGeometryPDF</span>
+        <span class="p">),</span> <span class="s2">&quot;Bespoke Z distance PDF must inherit from DockingGeometryPDF&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">log_probs</span> <span class="o">=</span> <span class="n">new_zdist_pdf</span><span class="o">.</span><span class="n">log_probs</span><span class="p">(</span><span class="mf">29.3</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_probs</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">log_probs</span> <span class="o">&lt;</span> <span class="mf">0.0</span>
+            <span class="p">),</span> <span class="s2">&quot;Log probs returned by new PDF not correctly configured. Z distance PDF has not been set, using default.&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zdist_pdf</span> <span class="o">=</span> <span class="n">new_zdist_pdf</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Bespoke Z distance PDF failed test with error </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">.  Z distance PDF has not been set, using default.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="DockingGeometryFilter.set_pitch_angle_pdf">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryFilter.set_pitch_angle_pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_pitch_angle_pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_pitch_angle_pdf</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">new_pitch_angle_pdf</span><span class="p">,</span> <span class="n">DockingGeometryPDF</span>
+        <span class="p">),</span> <span class="s2">&quot;Bespoke pitch angle PDF must inherit from DockingGeometryPDF&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">log_probs</span> <span class="o">=</span> <span class="n">new_pitch_angle_pdf</span><span class="o">.</span><span class="n">log_probs</span><span class="p">(</span><span class="mf">12.3</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">log_probs</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">log_probs</span> <span class="o">&lt;</span> <span class="mf">0.0</span>
+            <span class="p">),</span> <span class="s2">&quot;Log probs returned by new PDF not correctly configured. Pitch angle PDF has not been set, using default.&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pitch_angle_pdf</span> <span class="o">=</span> <span class="n">new_pitch_angle_pdf</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Bespoke pitch angle PDF failed test with error </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">.  Pitch angle PDF has not been set, using default.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DockingGeometryPDF">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DockingGeometryPDF</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pdf_from_parameters</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">]):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;Some parameters have been provided alongside data. Using data to fit new parameters.&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pdf_from_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="DockingGeometryPDF.fit">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="DockingGeometryPDF.pdf">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF.pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DockingGeometryPDF.log_probs">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF.log_probs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_probs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="DockingGeometryPDF.plot">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.DockingGeometryPDF.plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">plot_max</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">data_range</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">plot_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">data_range</span><span class="p">)</span>
+            <span class="n">plot_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">data_range</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">plot_min</span><span class="p">,</span> <span class="n">plot_max</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">save_as</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PDF distribution plot saved to: </span><span class="si">{</span><span class="n">save_as</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GaussianMixturePDF">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GaussianMixturePDF">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GaussianMixturePDF</span><span class="p">(</span><span class="n">DockingGeometryPDF</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">means</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">covariances</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">means</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">covariances</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">):</span>  <span class="c1"># check if parameters are provided</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;Data and parameters provided for GMM. Default to fitting GMM from data&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_components</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;Nr of components for Gaussian Mixture Model is only set when fitting to data.</span>
+<span class="sd">                    When initialising the PDF from parameters the number of components is inferred from the parameters. &quot;&quot;&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># set weights of GMM if not provided</span>
+                <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">))])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">covariances</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">):</span>  <span class="c1"># if initialising from data number or components is defined, defaults to 1.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="n">n_components</span> <span class="k">if</span> <span class="n">n_components</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">means</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">covariances</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;GMM needs to be initialised form parameters or data. Check input arguments.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pdf_from_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">]</span>
+        <span class="p">),</span> <span class="s2">&quot;&quot;&quot;Weights, means and covariances must be provided to define PDF from parameters instead of fitting to data.</span>
+<span class="s2">        Please provide parameters or data to fit.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">means</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
+
+<div class="viewcode-block" id="GaussianMixturePDF.fit">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GaussianMixturePDF.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">means</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariances</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">weights_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">means_</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">covariances_</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GaussianMixturePDF.pdf">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GaussianMixturePDF.pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">pdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="o">*</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">means</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">covariances</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">pdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">pdf</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pdf</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GammaPDF">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GammaPDF">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GammaPDF</span><span class="p">(</span><span class="n">DockingGeometryPDF</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">gamma</span>  <span class="c1"># gamma from scipy.stats</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pdf_from_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">param</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">]</span>
+        <span class="p">),</span> <span class="s2">&quot;&quot;&quot;Alpha, location and scale must be provided to define PDF from parameters instead of fitting to data.</span>
+<span class="s2">        Please provide parameters or data to fit.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
+
+<div class="viewcode-block" id="GammaPDF.fit">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GammaPDF.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GammaPDF.pdf">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.GammaPDF.pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">pdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pdf</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ScanningAnglePDF">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.ScanningAnglePDF">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ScanningAnglePDF</span><span class="p">(</span><span class="n">GaussianMixturePDF</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">scanning_angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mean</span><span class="o">=</span><span class="n">SCANNING_ANGLE_MEAN</span><span class="p">,</span>
+        <span class="n">variance</span><span class="o">=</span><span class="n">SCANNING_ANGLE_VARIANCE</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">scanning_angles</span><span class="p">,</span> <span class="n">means</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">covariances</span><span class="o">=</span><span class="n">variance</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ZDistPDF">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.ZDistPDF">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ZDistPDF</span><span class="p">(</span><span class="n">GaussianMixturePDF</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">z_dists</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="n">Z_DIST_WEIGHTS</span><span class="p">,</span>
+        <span class="n">mean</span><span class="o">=</span><span class="n">Z_DIST_MEAN</span><span class="p">,</span>
+        <span class="n">variance</span><span class="o">=</span><span class="n">Z_DIST_VARIANCE</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">z_dists</span><span class="p">,</span>
+            <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
+            <span class="n">means</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span>
+            <span class="n">covariances</span><span class="o">=</span><span class="n">variance</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="PitchAnglePDF">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRGeomFiltering.PitchAnglePDF">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PitchAnglePDF</span><span class="p">(</span><span class="n">GammaPDF</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pitch_angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="n">PITCH_ANGLE_ALPHA</span><span class="p">,</span>
+        <span class="n">loc</span><span class="o">=</span><span class="n">PITCH_ANGLE_LOC</span><span class="p">,</span>
+        <span class="n">scale</span><span class="o">=</span><span class="n">PITCH_ANGLE_SCALE</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">pitch_angles</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

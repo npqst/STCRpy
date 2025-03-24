@@ -1,0 +1,243 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">plip.structure.preparation</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDBComplex</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:</span>
+<span class="sd">        \npip install plip --no-deps\n\n&quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">Bio</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">Bio.PDB.PDBParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDBParser</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing.TCRParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRParser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing.TCR</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCR</span>
+
+
+<div class="viewcode-block" id="TCRpMHC_PLIP_Model_Parser">
+<a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TCRpMHC_PLIP_Model_Parser</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmp_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">PDBParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcr_parser</span> <span class="o">=</span> <span class="n">TCRParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span> <span class="o">=</span> <span class="n">tmp_dir</span> <span class="k">if</span> <span class="n">tmp_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;./&quot;</span>
+
+<div class="viewcode-block" id="TCRpMHC_PLIP_Model_Parser.parse_tcr_pmhc_complex">
+<a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser.parse_tcr_pmhc_complex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_tcr_pmhc_complex</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tcr_pmhc_complex</span><span class="p">:</span> <span class="n">TCR</span><span class="p">,</span>
+        <span class="n">delete_tmp_files</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">renumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PDBComplex&quot;</span><span class="p">:</span>
+
+        <span class="c1"># tcr_pmhc_complex = copy.deepcopy(</span>
+        <span class="c1">#     tcr_pmhc_complex</span>
+        <span class="c1"># )  # copy the complex to prevent renumbering from persisting in TCR object</span>
+
+        <span class="n">ligand</span> <span class="o">=</span> <span class="n">PDB</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">peptide_chain</span> <span class="o">=</span> <span class="n">tcr_pmhc_complex</span><span class="o">.</span><span class="n">antigen</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">peptide_chain</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;More or less than one peptide chain found: </span><span class="si">{</span><span class="n">peptide_chain</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">ligand</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">peptide_chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+        <span class="n">tcr_and_mhc_chains</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">tcr_pmhc_complex</span><span class="o">.</span><span class="n">get_chains</span><span class="p">())</span>
+            <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">tcr_pmhc_complex</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_chains</span><span class="p">())</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">renumber</span><span class="p">:</span>
+            <span class="c1"># renumber each chain from one to N to avoid automated renumbering issues related to plip and openbabel</span>
+            <span class="n">renumbering</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">tcr_and_mhc_chains</span><span class="p">:</span>
+                <span class="n">renumbering</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">new_idx</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()):</span>
+                    <span class="n">new_id</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">new_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="n">renumbering</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="n">new_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">id</span>
+                    <span class="n">res</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">new_id</span>
+            <span class="n">domain_assignment</span> <span class="o">=</span> <span class="n">tcr_pmhc_complex</span><span class="o">.</span><span class="n">get_domain_assignment</span><span class="p">()</span>
+
+        <span class="n">TCR_MHC_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">,</span> <span class="s2">&quot;tcr_mhc.pdb&quot;</span><span class="p">)</span>
+        <span class="n">PEPTIDE_PDB_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">,</span> <span class="s2">&quot;peptide.pdb&quot;</span><span class="p">)</span>
+        <span class="n">PEPTIDE_SDF_FILE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmp_dir</span><span class="p">,</span> <span class="s2">&quot;peptide.sdf&quot;</span><span class="p">)</span>
+
+        <span class="n">io</span> <span class="o">=</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PDBIO</span><span class="p">()</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">set_structure</span><span class="p">(</span><span class="n">ligand</span><span class="p">)</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">PEPTIDE_PDB_FILE</span><span class="p">)</span>
+
+        <span class="n">tcr_mhc_struct</span> <span class="o">=</span> <span class="n">PDB</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># add TCR chains to protein structure</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">tcr_pmhc_complex</span><span class="o">.</span><span class="n">get_chains</span><span class="p">():</span>
+            <span class="n">tcr_mhc_struct</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+        <span class="c1"># add MHC chain to protein structure</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">tcr_pmhc_complex</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_chains</span><span class="p">():</span>
+            <span class="n">tcr_mhc_struct</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+        <span class="n">io</span> <span class="o">=</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PDBIO</span><span class="p">()</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">set_structure</span><span class="p">(</span><span class="n">tcr_mhc_struct</span><span class="p">)</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">TCR_MHC_FILE</span><span class="p">)</span>
+
+        <span class="n">rdkit_mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromPDBFile</span><span class="p">(</span><span class="n">PEPTIDE_PDB_FILE</span><span class="p">)</span>
+        <span class="n">Chem</span><span class="o">.</span><span class="n">MolToMolFile</span><span class="p">(</span><span class="n">rdkit_mol</span><span class="p">,</span> <span class="n">PEPTIDE_SDF_FILE</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">TCR_MHC_FILE</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">protein</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">protein</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">protein</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ATOM&quot;</span><span class="p">)]</span>
+        <span class="n">ligand</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromMolFile</span><span class="p">(</span><span class="n">PEPTIDE_SDF_FILE</span><span class="p">)</span>
+        <span class="n">ligand_pdb_block</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolToPDBBlock</span><span class="p">(</span><span class="n">ligand</span><span class="p">)</span>
+        <span class="n">complex_pdb_block</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">ligand_pdb_block</span>
+        <span class="nb">complex</span> <span class="o">=</span> <span class="n">PDBComplex</span><span class="p">()</span>
+        <span class="nb">complex</span><span class="o">.</span><span class="n">load_pdb</span><span class="p">(</span><span class="n">complex_pdb_block</span><span class="p">,</span> <span class="n">as_string</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">delete_tmp_files</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">TCR_MHC_FILE</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">PEPTIDE_PDB_FILE</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">PEPTIDE_SDF_FILE</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">renumber</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">renumbering</span><span class="p">,</span> <span class="n">domain_assignment</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">complex</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">renumber</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="nb">complex</span><span class="p">,</span>
+                    <span class="n">TCR_MHC_FILE</span><span class="p">,</span>
+                    <span class="n">PEPTIDE_PDB_FILE</span><span class="p">,</span>
+                    <span class="n">PEPTIDE_SDF_FILE</span><span class="p">,</span>
+                    <span class="n">renumbering</span><span class="p">,</span>
+                    <span class="n">domain_assignment</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">TCR_MHC_FILE</span><span class="p">,</span> <span class="n">PEPTIDE_PDB_FILE</span><span class="p">,</span> <span class="n">PEPTIDE_SDF_FILE</span></div>
+
+
+<div class="viewcode-block" id="TCRpMHC_PLIP_Model_Parser.map_amino_acids_to_ligands">
+<a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser.map_amino_acids_to_ligands">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">map_amino_acids_to_ligands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ligand_pdb</span><span class="p">,</span> <span class="n">ligand_sdf</span><span class="p">):</span>
+        <span class="n">ligand_structure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s2">&quot;tmp&quot;</span><span class="p">,</span> <span class="n">ligand_pdb</span><span class="p">)</span>
+        <span class="n">sdf_supplier</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">SDMolSupplier</span><span class="p">(</span><span class="n">ligand_sdf</span><span class="p">)</span>
+        <span class="n">mol</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sdf_supplier</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">sdf_coords</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetConformer</span><span class="p">()</span><span class="o">.</span><span class="n">GetPositions</span><span class="p">()</span>
+        <span class="n">coord_to_aa</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">sdf_coords</span><span class="p">:</span>
+            <span class="n">pdb_atom</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">a</span>
+                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ligand_structure</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">sum</span><span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">coord</span> <span class="o">-</span> <span class="n">coord</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0001</span>
+            <span class="p">]</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">pdb_atom</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="n">coord_to_aa</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">coord</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">pdb_atom</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span>
+                <span class="n">pdb_atom</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">coord_to_aa</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

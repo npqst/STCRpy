@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_geometry.TCRDock &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_geometry.TCRDock</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_geometry.TCRDock</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">__init__.py</span>
+<span class="sd">Description: 	Calculate the TCR/pMHC docking angle.</span>
+<span class="sd">                Based on the method by Rudolph, Stanfield, Wilson (Annu Revl Immmunol 2006, 24:419-466).</span>
+<span class="sd">                This method is preferred for cases when the antigen is not a peptide.</span>
+<span class="sd">                Formula uses SVD.</span>
+<span class="sd">Jun 12, 2017</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># from TCRDB.TcrPDB.TCR import TCR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCR</span><span class="p">,</span> <span class="n">MHC</span><span class="p">,</span> <span class="n">MHCchain</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils.error_stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">ErrorStream</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+
+<div class="viewcode-block" id="TCRDock">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRDock.TCRDock">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TCRDock</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">,</span> <span class="n">QUIET</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the docking angle between TCR and pMHC.</span>
+<span class="sd">        @param TCR: input a TCR object (abTCR or gdTCR or dbTCR).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span> <span class="o">=</span> <span class="n">ErrorStream</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">QUIET</span> <span class="o">=</span> <span class="n">QUIET</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span> <span class="o">=</span> <span class="n">tcr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="c1"># Get the MHC for the TCR.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span> <span class="o">=</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;The TCR structure does not have a detected MHC molecule. No docking angle will be calculated.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">abort</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">abort</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="p">,</span> <span class="n">TCR</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;The TCR structure is an unpaired TCR chain. No docking angle will be calculated.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">abort</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="p">,</span> <span class="n">MHC</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="p">,</span> <span class="n">MHC</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="p">,</span> <span class="n">MHCchain</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;MH1&quot;</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;CD1&quot;</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;MR1&quot;</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA1&quot;</span>
+            <span class="p">):</span>
+                <span class="n">acceptable_range</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">87</span><span class="p">))</span>
+                <span class="n">residues</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">r</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mi">1000</span> <span class="ow">in</span> <span class="n">acceptable_range</span>
+                <span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acceptable_range</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                        <span class="s2">&quot;Warning: detected an MHC chain of type </span><span class="si">%s</span><span class="s2">; doesn&#39;t seem to have an associated B2M molecule.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span>
+                    <span class="p">)</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                        <span class="s2">&quot;An MHC molecule was not found. No docking angle will be calculated.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">abort</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s2">&quot;An MHC molecule was not found. No docking angle will be calculated.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">abort</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">return</span>
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="p">,</span> <span class="n">MHC</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;An MHC molecule was not found. No docking angle will be calculated.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">abort</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Resolve the vectors for the TCR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_vectors</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># Get the vector between cysteine centroids.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_cysteine_vector</span><span class="p">()</span>
+
+        <span class="c1"># Get the vector of helices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_helix_vectors</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cysteine_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the centroids of the disulphide bridge and calculate a vector through it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get variable domains</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="o">.</span><span class="n">get_TCR_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;abTCR&quot;</span><span class="p">:</span>
+            <span class="n">vbg</span><span class="p">,</span> <span class="n">vda</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="o">.</span><span class="n">get_VB</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="o">.</span><span class="n">get_TCR_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;gdTCR&quot;</span><span class="p">:</span>
+            <span class="n">vbg</span><span class="p">,</span> <span class="n">vda</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="o">.</span><span class="n">get_VD</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="o">.</span><span class="n">get_VG</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="o">.</span><span class="n">get_TCR_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;dbTCR&quot;</span><span class="p">:</span>
+            <span class="n">vbg</span><span class="p">,</span> <span class="n">vda</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="o">.</span><span class="n">get_VB</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">TCR</span><span class="o">.</span><span class="n">get_VD</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Get sulphur atoms of each of the cysteines</span>
+            <span class="n">bg_23</span><span class="p">,</span> <span class="n">bg_104</span> <span class="o">=</span> <span class="n">vbg</span><span class="p">[</span><span class="mi">23</span><span class="p">][</span><span class="s2">&quot;SG&quot;</span><span class="p">],</span> <span class="n">vbg</span><span class="p">[</span><span class="mi">104</span><span class="p">][</span><span class="s2">&quot;SG&quot;</span><span class="p">]</span>
+            <span class="n">da_23</span><span class="p">,</span> <span class="n">da_104</span> <span class="o">=</span> <span class="n">vda</span><span class="p">[</span><span class="mi">23</span><span class="p">][</span><span class="s2">&quot;SG&quot;</span><span class="p">],</span> <span class="n">vda</span><span class="p">[</span><span class="mi">104</span><span class="p">][</span><span class="s2">&quot;SG&quot;</span><span class="p">]</span>
+            <span class="n">bg_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">bg_23</span><span class="o">.</span><span class="n">coord</span><span class="p">,</span> <span class="n">bg_104</span><span class="o">.</span><span class="n">coord</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">da_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">da_23</span><span class="o">.</span><span class="n">coord</span><span class="p">,</span> <span class="n">da_104</span><span class="o">.</span><span class="n">coord</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># Compute the vector between the centroids</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vec_centroid</span> <span class="o">=</span> <span class="n">bg_centroid</span> <span class="o">-</span> <span class="n">da_centroid</span>
+
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;Cysteine(s) or sulphur atom(s) not detected. Check for IMGT residues 23/104 in beta/alpha/delta/gamma chains.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">abort</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_helix_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the best fit vector for the CA atoms.</span>
+<span class="sd">        For MH1 and MH2, the atoms are based on the positions from Rudolph et al., 2006 with the IMGT numbering;</span>
+<span class="sd">        For CD1 and MR1, we use the same rules as MH1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_MHC_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;MH1&quot;</span><span class="p">:</span>
+
+                <span class="c1"># Get CA atoms of 50-86 and 1050-1086 (A140-A176 on Rudolph et al).</span>
+                <span class="c1"># Using the modulus operator helps to get the last 2 digits of the IMGT-numbered residue. https://stackoverflow.com/a/28570538</span>
+                <span class="n">acceptable_range</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">87</span><span class="p">))</span>
+                <span class="n">ca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">r</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">coord</span>
+                        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_alpha</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mi">1000</span> <span class="ow">in</span> <span class="n">acceptable_range</span> <span class="ow">and</span> <span class="s2">&quot;CA&quot;</span> <span class="ow">in</span> <span class="n">r</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_MHC_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;CD1&quot;</span><span class="p">:</span>
+                <span class="c1"># Get CA atoms of 50-86 and 1050-1086 (A140-A176 on Rudolph et al).</span>
+                <span class="c1"># Using the modulus operator helps to get the last 2 digits of the IMGT-numbered residue. https://stackoverflow.com/a/28570538</span>
+                <span class="n">acceptable_range</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">87</span><span class="p">))</span>
+                <span class="n">ca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">r</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">coord</span>
+                        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_CD1</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mi">1000</span> <span class="ow">in</span> <span class="n">acceptable_range</span> <span class="ow">and</span> <span class="s2">&quot;CA&quot;</span> <span class="ow">in</span> <span class="n">r</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_MHC_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;MR1&quot;</span><span class="p">:</span>
+                <span class="c1"># Get CA atoms of 50-86 and 1050-1086 (A140-A176 on Rudolph et al).</span>
+                <span class="c1"># Using the modulus operator helps to get the last 2 digits of the IMGT-numbered residue. https://stackoverflow.com/a/28570538</span>
+                <span class="n">acceptable_range</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">87</span><span class="p">))</span>
+                <span class="n">ca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">r</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">coord</span>
+                        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_MR1</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mi">1000</span> <span class="ow">in</span> <span class="n">acceptable_range</span> <span class="ow">and</span> <span class="s2">&quot;CA&quot;</span> <span class="ow">in</span> <span class="n">r</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_MHC_type</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;MH2&quot;</span><span class="p">:</span>
+                <span class="c1"># Get CA atoms of A and B52-87</span>
+                <span class="c1"># Using the modulus operator helps to get the last 2 digits of the IMGT-numbered residue. https://stackoverflow.com/a/28570538</span>
+                <span class="n">alpha_range</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">88</span><span class="p">))</span>
+                <span class="n">beta_range</span> <span class="o">=</span> <span class="n">alpha_range</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+                <span class="n">ca_atoms</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">r</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">coord</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_GA</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">alpha_range</span> <span class="ow">and</span> <span class="s2">&quot;CA&quot;</span> <span class="ow">in</span> <span class="n">r</span>
+                <span class="p">]</span>
+                <span class="n">ca_atoms</span> <span class="o">+=</span> <span class="p">[</span>
+                    <span class="n">r</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">coord</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_GB</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">beta_range</span> <span class="ow">and</span> <span class="s2">&quot;CA&quot;</span> <span class="ow">in</span> <span class="n">r</span>
+                <span class="p">]</span>
+                <span class="n">ca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ca_atoms</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;MH1&quot;</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;CD1&quot;</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;MR1&quot;</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA1&quot;</span>
+            <span class="p">):</span>
+                <span class="n">acceptable_range</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">87</span><span class="p">))</span>
+                <span class="n">ca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">r</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">coord</span>
+                        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mi">1000</span> <span class="ow">in</span> <span class="n">acceptable_range</span> <span class="ow">and</span> <span class="s2">&quot;CA&quot;</span> <span class="ow">in</span> <span class="n">r</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">abort</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ca</span> <span class="o">=</span> <span class="n">ca_atoms</span>
+
+<div class="viewcode-block" id="TCRDock.calculate_docking_angle">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRDock.TCRDock.calculate_docking_angle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_docking_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span>
+        <span class="k">elif</span> <span class="n">force</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_vectors</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">abort</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="c1"># Compute the mean and calculate the vector using SVD</span>
+        <span class="c1"># https://stackoverflow.com/a/2333251</span>
+        <span class="n">ca_centroid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">centred_dat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span> <span class="o">-</span> <span class="n">ca_centroid</span>
+        <span class="n">u</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">centred_dat</span><span class="p">)</span>
+
+        <span class="c1"># The first row of v is the 1st principal component.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">V</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">V</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vec_centroid</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">QUIET</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">log</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">log</span><span class="p">))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the angle between two vectors in degrees.</span>
+<span class="sd">        print an error message if the numerator is negative</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check the direction of the dot product; assert positive, as we know the angle should be between 0-90 deg.</span>
+        <span class="c1"># This is because the singular-value decomposition for finding the best fit might return a different sign than we require</span>
+        <span class="c1"># https://stackoverflow.com/questions/17682626/singular-value-decomposition-different-results-with-jama-pcolt-and-numpy</span>
+        <span class="c1"># https://math.stackexchange.com/questions/2359992/how-to-resolve-the-sign-issue-in-a-svd-problem</span>
+
+        <span class="n">numerator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
+        <span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">numerator</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">numerator</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">numerator</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">180.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">))</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

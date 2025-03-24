@@ -1,0 +1,471 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_processing.utils.constants &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_processing.utils.constants</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_processing.utils.constants</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">constants.py</span>
+<span class="sd">@author: leem</span>
+<span class="sd">@date:   9 May 2017</span>
+
+<span class="sd">Constant values that are useful. Based off of rotlib.constants.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+
+<div class="viewcode-block" id="tuplefy">
+<a class="viewcode-back" href="../../../../stcrpy.tcr_processing.utils.html#stcrpy.tcr_processing.utils.constants.tuplefy">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">tuplefy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interpretation for converting numbering (in string) into a tuple.</span>
+
+<span class="sd">    @param x: A string for the identifier of a numbered position. e.g &quot;H100A&quot;.</span>
+<span class="sd">    @return : A tuple of the chain tupe followed by a tuple of residue id and insertion code. eg. ( H, (100, &quot;A&quot;) )</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chain</span><span class="p">,</span> <span class="n">resi</span><span class="p">,</span> <span class="n">ins</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d+)&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">chain</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">],</span> <span class="s2">&quot;Not a recognised chain type.&quot;</span>
+    <span class="n">ins</span> <span class="o">=</span> <span class="n">ins</span> <span class="k">if</span> <span class="n">ins</span> <span class="k">else</span> <span class="s2">&quot; &quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">resi</span><span class="p">),</span> <span class="n">ins</span><span class="p">))</span></div>
+
+
+
+<span class="c1">#######</span>
+<span class="c1"># String constants</span>
+<span class="c1">#######</span>
+
+<span class="c1"># Basic string names for residues</span>
+<span class="n">RESIDUES</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;ALA&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;CYS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;ASP&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;D&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;GLU&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;E&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;PHE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;F&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;GLY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;G&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;HIS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;ILE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;I&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;LYS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;K&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;LEU&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;MET&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;M&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;ASN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;N&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;PRO&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;P&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;GLN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Q&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;ARG&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;R&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;SER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;S&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;THR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;VAL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;V&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;TRP&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;W&quot;</span>
+<span class="n">RESIDUES</span><span class="p">[</span><span class="s2">&quot;TYR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Y&quot;</span>
+<span class="n">RESIDUES_SINGLE</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">RESIDUES</span><span class="o">.</span><span class="n">items</span><span class="p">())])</span>
+<span class="n">RESIDUES_SINGLE_STRING</span> <span class="o">=</span> <span class="s2">&quot;ACDEFGHIKLMNPQRSTVWY&quot;</span>
+
+<span class="c1"># Atoms in the backbone/CB for doing checks on residues.</span>
+<span class="n">BACKBONE_ATOMS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;CA&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">]</span>
+<span class="n">BACKBONE_CB</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;CA&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;CB&quot;</span><span class="p">]</span>
+
+<span class="c1"># TCR chain types</span>
+<span class="n">TCR_CHAINS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">]</span>
+<span class="n">TCR_REGIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;fwb1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwb2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwb3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwb4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwa1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwa2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwa3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwa4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwg1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwg2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwg3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwg4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwd1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwd2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwd3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fwd4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrb1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrb2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrb3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrb4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdra1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdra2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdra3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdra4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrg1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrg2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrg3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrg4&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrd1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrd2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrd3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cdrd4&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c1"># MHC chain types and regions</span>
+<span class="n">MHC_CHAINS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GA1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">,</span> <span class="s2">&quot;GA&quot;</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">]</span>  <span class="c1"># G-alpha1,2, G-alpha,beta</span>
+<span class="n">MHC_REGIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Astrand&quot;</span><span class="p">,</span> <span class="s2">&quot;Bstrand&quot;</span><span class="p">,</span> <span class="s2">&quot;Cstrand&quot;</span><span class="p">,</span> <span class="s2">&quot;Dstrand&quot;</span><span class="p">,</span> <span class="s2">&quot;Helix&quot;</span><span class="p">,</span> <span class="s2">&quot;Turn&quot;</span><span class="p">]</span>
+
+<span class="c1"># Common names for species</span>
+<span class="n">COMMON_NAMES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;bos taurus&quot;</span><span class="p">:</span> <span class="s2">&quot;cattle&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;camelus dromedarius&quot;</span><span class="p">:</span> <span class="s2">&quot;arabian camel&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;canis lupus familiaris&quot;</span><span class="p">:</span> <span class="s2">&quot;domestic dog&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cerocebus atys&quot;</span><span class="p">:</span> <span class="s2">&quot;sooty mangabey&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;danio rerio&quot;</span><span class="p">:</span> <span class="s2">&quot;zebrafish&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;homo sapiens&quot;</span><span class="p">:</span> <span class="s2">&quot;human&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;macaca fascicularis&quot;</span><span class="p">:</span> <span class="s2">&quot;crab-eating macaque&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;macaca mulatta&quot;</span><span class="p">:</span> <span class="s2">&quot;rhesus macaque&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;macaca nemestrina&quot;</span><span class="p">:</span> <span class="s2">&quot;Southern pig-tailed macaque&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mus musculus&quot;</span><span class="p">:</span> <span class="s2">&quot;house mouse&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mus cookii&quot;</span><span class="p">:</span> <span class="s2">&quot;cook&#39;s mouse&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mus minutoides&quot;</span><span class="p">:</span> <span class="s2">&quot;African pygmy mouse&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mus pahari&quot;</span><span class="p">:</span> <span class="s2">&quot;Gairdner&#39;s shrewmouse&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mus saxicola&quot;</span><span class="p">:</span> <span class="s2">&quot;brown spiny mouse&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mus spretus&quot;</span><span class="p">:</span> <span class="s2">&quot;Algerian mouse&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;oncorhynchus mykiss&quot;</span><span class="p">:</span> <span class="s2">&quot;rainbow trout&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ornithorhynchus anatinus&quot;</span><span class="p">:</span> <span class="s2">&quot;platypus&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;oryctolagus cuniculus&quot;</span><span class="p">:</span> <span class="s2">&quot;rabbit&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ovis aries&quot;</span><span class="p">:</span> <span class="s2">&quot;sheep&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;papio anubis&quot;</span><span class="p">:</span> <span class="s2">&quot;olive baboon&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;staphylococcus aureus&quot;</span><span class="p">:</span> <span class="s2">&quot;S. aureus&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rattus norvegicus&quot;</span><span class="p">:</span> <span class="s2">&quot;norway rat&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rattus rattus&quot;</span><span class="p">:</span> <span class="s2">&quot;black rat&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sus scrofa&quot;</span><span class="p">:</span> <span class="s2">&quot;pig&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;vicugna pacos&quot;</span><span class="p">:</span> <span class="s2">&quot;alpaca&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Atoms in the backbone/CB for doing checks on residues.</span>
+<span class="n">BACKBONE_ATOMS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;CA&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">]</span>
+<span class="n">BACKBONE_CB</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;CA&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;CB&quot;</span><span class="p">]</span>
+
+<span class="n">SIDECHAIN_ATOMS</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">ALA</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">],</span>
+    <span class="n">ARG</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD&quot;</span><span class="p">,</span> <span class="s2">&quot;CZ&quot;</span><span class="p">,</span> <span class="s2">&quot;NE&quot;</span><span class="p">,</span> <span class="s2">&quot;NH1&quot;</span><span class="p">,</span> <span class="s2">&quot;NH2&quot;</span><span class="p">],</span>
+    <span class="n">ASN</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;ND2&quot;</span><span class="p">,</span> <span class="s2">&quot;OD1&quot;</span><span class="p">],</span>
+    <span class="n">ASP</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;OD1&quot;</span><span class="p">,</span> <span class="s2">&quot;OD2&quot;</span><span class="p">],</span>
+    <span class="n">CYS</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;SG&quot;</span><span class="p">],</span>
+    <span class="n">GLN</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD&quot;</span><span class="p">,</span> <span class="s2">&quot;NE2&quot;</span><span class="p">,</span> <span class="s2">&quot;OE1&quot;</span><span class="p">],</span>
+    <span class="n">GLU</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD&quot;</span><span class="p">,</span> <span class="s2">&quot;OE1&quot;</span><span class="p">,</span> <span class="s2">&quot;OE2&quot;</span><span class="p">],</span>
+    <span class="n">HIS</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD2&quot;</span><span class="p">,</span> <span class="s2">&quot;CE1&quot;</span><span class="p">,</span> <span class="s2">&quot;ND1&quot;</span><span class="p">,</span> <span class="s2">&quot;NE2&quot;</span><span class="p">],</span>
+    <span class="n">ILE</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG1&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">,</span> <span class="s2">&quot;CG2&quot;</span><span class="p">],</span>
+    <span class="n">LEU</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">,</span> <span class="s2">&quot;CD2&quot;</span><span class="p">],</span>
+    <span class="n">LYS</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD&quot;</span><span class="p">,</span> <span class="s2">&quot;CE&quot;</span><span class="p">,</span> <span class="s2">&quot;NZ&quot;</span><span class="p">],</span>
+    <span class="n">MET</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;SD&quot;</span><span class="p">,</span> <span class="s2">&quot;CE&quot;</span><span class="p">],</span>
+    <span class="n">PHE</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">,</span> <span class="s2">&quot;CD2&quot;</span><span class="p">,</span> <span class="s2">&quot;CE1&quot;</span><span class="p">,</span> <span class="s2">&quot;CE2&quot;</span><span class="p">,</span> <span class="s2">&quot;CZ&quot;</span><span class="p">],</span>
+    <span class="n">PRO</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD&quot;</span><span class="p">],</span>
+    <span class="n">SER</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;OG&quot;</span><span class="p">],</span>
+    <span class="n">THR</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG2&quot;</span><span class="p">,</span> <span class="s2">&quot;OG1&quot;</span><span class="p">],</span>
+    <span class="n">TRP</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">,</span> <span class="s2">&quot;CD2&quot;</span><span class="p">,</span> <span class="s2">&quot;CE2&quot;</span><span class="p">,</span> <span class="s2">&quot;CE3&quot;</span><span class="p">,</span> <span class="s2">&quot;CH2&quot;</span><span class="p">,</span> <span class="s2">&quot;CZ2&quot;</span><span class="p">,</span> <span class="s2">&quot;CZ3&quot;</span><span class="p">,</span> <span class="s2">&quot;NE1&quot;</span><span class="p">],</span>
+    <span class="n">TYR</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG&quot;</span><span class="p">,</span> <span class="s2">&quot;CD1&quot;</span><span class="p">,</span> <span class="s2">&quot;CD2&quot;</span><span class="p">,</span> <span class="s2">&quot;CE1&quot;</span><span class="p">,</span> <span class="s2">&quot;CE2&quot;</span><span class="p">,</span> <span class="s2">&quot;CZ&quot;</span><span class="p">,</span> <span class="s2">&quot;OH&quot;</span><span class="p">],</span>
+    <span class="n">VAL</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CB&quot;</span><span class="p">,</span> <span class="s2">&quot;CG1&quot;</span><span class="p">,</span> <span class="s2">&quot;CG2&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># BLOSUM62 matrix</span>
+<span class="n">BLOSUM62</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="mi">9</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">):</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">):</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;L&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">):</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">):</span> <span class="mi">7</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">):</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">):</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">):</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">):</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;W&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;V&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;W&quot;</span><span class="p">):</span> <span class="mi">11</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">):</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;G&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;L&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Q&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;W&quot;</span><span class="p">):</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">):</span> <span class="mi">7</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

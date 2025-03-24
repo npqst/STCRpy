@@ -1,0 +1,754 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_processing.TCR &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_processing.TCR</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_processing.TCR</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on 3rd April 2024</span>
+<span class="sd">@author: Nele Quast based on work by Dunbar and Leem </span>
+<span class="sd">The TCR class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.Entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">tcr_interactions</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;TCR interaction profiling could not be imported. Check PLIP installation&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TCR">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TCR</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TCR class. This is generic which is inherited later.</span>
+<span class="sd">    Holds paired TCR chains.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_antigen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antigen</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">antigen</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antigen</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_mhc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mhc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">mhc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mhc</span><span class="p">)</span>
+            <span class="c1"># If there are any het antigens that are in the MHC but not in close proximity of the TCR</span>
+            <span class="c1"># (e.g. 4x6c antigen) then add it to the TCR.</span>
+            <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">mhc</span><span class="o">.</span><span class="n">antigen</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antigen</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">mhc</span><span class="o">.</span><span class="n">antigen</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TCR.get_antigen">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_antigen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_antigen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of bound antigens.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_MHC">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_MHC">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_MHC</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span></div>
+
+
+<div class="viewcode-block" id="TCR.is_bound">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.is_bound">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check whether this TCR is bound to an antigen</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_antigen</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_chains">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_chains">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">c</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_residues">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_residues">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chains</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">r</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_atoms">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_atoms">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_residues</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">a</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_frameworks">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_frameworks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_frameworks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Obtain framework regions from a TCR structure object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fragments</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;fw&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_CDRs">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_CDRs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_CDRs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Obtain CDR loops from a TCR structure object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fragments</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;cdr&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_TCR_type">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_TCR_type">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_TCR_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the TCR type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;tcr_type&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcr_type</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VA&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcr_type</span> <span class="o">=</span> <span class="s2">&quot;abTCR&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcr_type</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VG&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcr_type</span> <span class="o">=</span> <span class="s2">&quot;gdTCR&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcr_type</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tcr_type</span> <span class="o">=</span> <span class="s2">&quot;dbTCR&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcr_type</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_germline_assignments">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_germline_assignments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_germline_assignments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">get_germline_assignments</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chains</span><span class="p">()}</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_MHC_allele_assignments">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_MHC_allele_assignments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_MHC_allele_assignments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">(</span>
+                <span class="n">mhc</span><span class="o">.</span><span class="n">get_allele_assignments</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">mhc</span><span class="o">.</span><span class="n">level</span>
+                <span class="o">!=</span> <span class="s2">&quot;C&quot;</span>  <span class="c1"># results in identical nesting structure for MHC and MHCchain types</span>
+                <span class="k">else</span> <span class="p">{</span><span class="n">mhc</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_allele_assignments</span><span class="p">()}</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">mhc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_germlines_and_alleles">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_germlines_and_alleles">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_germlines_and_alleles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_formats.tcr_formats</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_sequences</span>
+
+        <span class="n">germlines_and_alleles</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">germlines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_germline_assignments</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">tcr_domain</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_domain_assignment</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">germlines_and_alleles</span><span class="p">[</span><span class="n">tcr_domain</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">germlines</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="s2">&quot;v_gene&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">germlines</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="s2">&quot;j_gene&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="n">germlines_and_alleles</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr_domain</span><span class="si">}</span><span class="s2">_species&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                    <span class="nb">tuple</span><span class="p">(</span>
+                        <span class="nb">set</span><span class="p">(</span>
+                            <span class="p">(</span>
+                                <span class="n">germlines</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="s2">&quot;v_gene&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                                <span class="n">germlines</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="s2">&quot;j_gene&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">germlines_and_alleles</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;TCR_</span><span class="si">{</span><span class="n">tcr_domain</span><span class="si">}</span><span class="s2">_seq&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_sequences</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">c</span><span class="p">])[</span>
+                    <span class="n">c</span>
+                <span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">MHC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">alleles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_MHC_allele_assignments</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">germlines_and_alleles</span><span class="p">[</span><span class="s2">&quot;MHC_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">MHC</span><span class="o">.</span><span class="n">get_MHC_type</span><span class="p">()</span> <span class="k">if</span> <span class="n">MHC</span><span class="o">.</span><span class="n">level</span> <span class="o">!=</span> <span class="s2">&quot;C&quot;</span> <span class="k">else</span> <span class="n">MHC</span><span class="o">.</span><span class="n">chain_type</span>
+                <span class="p">)</span>
+                <span class="n">MHC_domains</span> <span class="o">=</span> <span class="p">{</span><span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">alleles</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">MHC_domains</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">germlines_and_alleles</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;MHC_</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alleles</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">d</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">germlines_and_alleles</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;MHC_</span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s2">_seq&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">get_sequences</span><span class="p">(</span><span class="n">MHC</span><span class="p">[</span><span class="n">c</span><span class="p">])[</span><span class="n">c</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">MHC</span><span class="o">.</span><span class="n">level</span> <span class="o">!=</span> <span class="s2">&quot;C&quot;</span>
+                        <span class="k">else</span> <span class="n">get_sequences</span><span class="p">(</span><span class="n">MHC</span><span class="p">)[</span><span class="n">c</span><span class="p">]</span>
+                    <span class="p">)</span>
+            <span class="n">germlines_and_alleles</span><span class="p">[</span><span class="s2">&quot;antigen&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">get_sequences</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antigen</span><span class="p">()[</span><span class="mi">0</span><span class="p">])[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antigen</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antigen</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Germline and allele retrieval failed for </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2"> with error </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">germlines_and_alleles</span></div>
+
+
+<div class="viewcode-block" id="TCR.save">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.save">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tcr_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pdb&quot;</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRIO</span>
+
+        <span class="n">tcrio</span> <span class="o">=</span> <span class="n">TCRIO</span><span class="o">.</span><span class="n">TCRIO</span><span class="p">()</span>
+        <span class="n">tcrio</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="n">save_as</span><span class="p">,</span> <span class="n">tcr_only</span><span class="o">=</span><span class="n">tcr_only</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_scanning_angle">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_scanning_angle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_scanning_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rudolph&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="n">mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calculate_docking_geometry</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_scanning_angle</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_pitch_angle">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_pitch_angle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pitch_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rudolph&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="n">mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calculate_docking_geometry</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_pitch_angle</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TCR.calculate_docking_geometry">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.calculate_docking_geometry">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_docking_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rudolph&quot;</span><span class="p">,</span> <span class="n">as_df</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No MHC found for TCR </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">. Docking geometry cannot be calcuated&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>  <span class="c1"># import here to avoid circular imports</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_geometry.TCRGeom</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRGeom</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;TCR geometry calculation could not be imported. Check installation&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">TCRGeom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">as_df</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TCR.score_docking_geometry">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.score_docking_geometry">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">score_docking_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_geometry.TCRGeomFiltering</span><span class="w"> </span><span class="kn">import</span> <span class="n">DockingGeometryFilter</span>
+
+        <span class="n">geom_filter</span> <span class="o">=</span> <span class="n">DockingGeometryFilter</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calculate_docking_geometry</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">geom_filter</span><span class="o">.</span><span class="n">score_docking_geometry</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_scanning_angle</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_pitch_angle</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">tcr_com</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>  <span class="c1"># z component of TCR centre of mass</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TCR.profile_peptide_interactions">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.profile_peptide_interactions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">profile_peptide_interactions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">renumber</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">save_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antigen</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No peptide antigen found for TCR </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">. Peptide interactions cannot be profiled&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="s2">&quot;PLIPParser&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">]:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;TCR interactions module was not imported. Check warning log and PLIP installation&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_interactions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRInteractionProfiler</span>
+
+        <span class="n">interaction_profiler</span> <span class="o">=</span> <span class="n">TCRInteractionProfiler</span><span class="o">.</span><span class="n">TCRInteractionProfiler</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">interactions</span> <span class="o">=</span> <span class="n">interaction_profiler</span><span class="o">.</span><span class="n">get_interactions</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="n">renumber</span><span class="p">,</span> <span class="n">save_as_csv</span><span class="o">=</span><span class="n">save_to</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">interactions</span></div>
+
+
+<div class="viewcode-block" id="TCR.get_interaction_heatmap">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_interaction_heatmap">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_interaction_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plotting_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">interaction_kwargs</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_interactions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRInteractionProfiler</span>
+
+        <span class="n">interaction_profiler</span> <span class="o">=</span> <span class="n">TCRInteractionProfiler</span><span class="o">.</span><span class="n">TCRInteractionProfiler</span><span class="p">(</span>
+            <span class="o">**</span><span class="n">interaction_kwargs</span>
+        <span class="p">)</span>
+        <span class="n">interaction_profiler</span><span class="o">.</span><span class="n">get_interaction_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TCR.profile_TCR_interactions">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.profile_TCR_interactions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">profile_TCR_interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="TCR.profile_MHC_interactions">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.profile_MHC_interactions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">profile_MHC_interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_interaction_visualiser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function called during TCR initialisation checks if pymol is installed and assigns a visualisation method accordingly.</span>
+<span class="sd">        If pymol is installed, method to generate interaction visualisations is returned.</span>
+<span class="sd">        If pymol is not installed, calling the visualisation</span>
+
+
+<span class="sd">        Returns:</span>
+<span class="sd">            callable: TCR bound method to visualise interactions of the TCR and MHC to the peptide.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">pymol</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">visualise_interactions</span><span class="p">(</span>
+                <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antigen_residues_to_highlight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">interaction_kwargs</span>
+            <span class="p">):</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_interactions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRInteractionProfiler</span>
+
+                <span class="n">interaction_profiler</span> <span class="o">=</span> <span class="n">TCRInteractionProfiler</span><span class="o">.</span><span class="n">TCRInteractionProfiler</span><span class="p">(</span>
+                    <span class="o">**</span><span class="n">interaction_kwargs</span>
+                <span class="p">)</span>
+                <span class="n">interaction_session_file</span> <span class="o">=</span> <span class="n">interaction_profiler</span><span class="o">.</span><span class="n">create_pymol_session</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span>
+                    <span class="n">save_as</span><span class="o">=</span><span class="n">save_as</span><span class="p">,</span>
+                    <span class="n">antigen_residues_to_highlight</span><span class="o">=</span><span class="n">antigen_residues_to_highlight</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">interaction_session_file</span>
+
+            <span class="k">return</span> <span class="n">visualise_interactions</span>
+
+        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">visualise_interactions</span><span class="p">(</span><span class="o">**</span><span class="n">interaction_kwargs</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;pymol was not imported. Interactions were not visualised.</span>
+<span class="s2">                    </span><span class="se">\n</span><span class="s2">To enable pymol visualisations please install pymol in a conda environment with:</span>
+<span class="s2">                    </span><span class="se">\n</span><span class="s2">conda install -c conda-forge -c schrodinger numpy pymol-bundle</span><span class="se">\n\n</span>
+<span class="s2">                    &quot;&quot;&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">visualise_interactions</span>
+
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">visualise_interactions</span><span class="p">(</span><span class="n">import_error</span><span class="o">=</span><span class="n">e</span><span class="p">,</span> <span class="o">**</span><span class="n">interaction_kwargs</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;pymol was not imported. Interactions were not visualised. This is due to an import error. Perhaps try reinstalling pymol? </span>
+<span class="s2">                    </span><span class="se">\n</span><span class="s2">The error trace was: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">import_error</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">                    &quot;&quot;&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">visualise_interactions</span></div>
+
+
+
+<div class="viewcode-block" id="abTCR">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">abTCR</span><span class="p">(</span><span class="n">TCR</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">c1</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+            <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">c2</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c2</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="c1"># The TCR is a Holder class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">chain_type</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>  <span class="c1"># make sure that the list goes B-&gt;A or G-&gt;D</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scTCR</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># This is rare but does happen</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">visualise_interactions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_interaction_visualiser</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;TCR </span><span class="si">%s%s</span><span class="s2"> beta=</span><span class="si">%s</span><span class="s2">; alpha=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VA</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">VB</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span> <span class="ow">or</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">VA</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="abTCR.get_VB">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_VB">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_VB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="abTCR.get_VA">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_VA">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_VA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VA&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VA</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="abTCR.get_domain_assignment">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_domain_assignment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_domain_assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VA&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VA</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VB&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VA&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VA&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VA</span><span class="p">}</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="abTCR.is_engineered">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.is_engineered">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_engineered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vb</span><span class="p">,</span> <span class="n">va</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VB</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">var_domain</span> <span class="ow">in</span> <span class="p">[</span><span class="n">vb</span><span class="p">,</span> <span class="n">va</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">var_domain</span> <span class="ow">and</span> <span class="n">var_domain</span><span class="o">.</span><span class="n">is_engineered</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="abTCR.get_fragments">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_fragments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vb</span><span class="p">,</span> <span class="n">va</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VB</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()</span>
+
+        <span class="c1"># If a variable domain exists</span>
+        <span class="k">for</span> <span class="n">var_domain</span> <span class="ow">in</span> <span class="p">[</span><span class="n">vb</span><span class="p">,</span> <span class="n">va</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">var_domain</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">frag</span> <span class="ow">in</span> <span class="n">var_domain</span><span class="o">.</span><span class="n">get_fragments</span><span class="p">():</span>
+                    <span class="k">yield</span> <span class="n">frag</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="gdTCR">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">gdTCR</span><span class="p">(</span><span class="n">TCR</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">c1</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span>
+            <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">c2</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c2</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="c1"># The TCR is a Holder class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">chain_type</span>
+        <span class="p">)</span>  <span class="c1"># make sure that the list goes B-&gt;A or D-&gt;G</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scTCR</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># This is rare but does happen</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">visualise_interactions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_interaction_visualiser</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;TCR </span><span class="si">%s%s</span><span class="s2"> delta=</span><span class="si">%s</span><span class="s2">; gamma=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VG</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VG</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">VD</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;G&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">VG</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="gdTCR.get_VD">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.get_VD">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_VD</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="gdTCR.get_VG">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.get_VG">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_VG</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VG&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VG</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="gdTCR.get_domain_assignment">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.get_domain_assignment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_domain_assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VG&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VG</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VD&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VG&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VG&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VG</span><span class="p">}</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="gdTCR.is_engineered">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.is_engineered">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_engineered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vd</span><span class="p">,</span> <span class="n">vg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VD</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VG</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">var_domain</span> <span class="ow">in</span> <span class="p">[</span><span class="n">vd</span><span class="p">,</span> <span class="n">vg</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">var_domain</span> <span class="ow">and</span> <span class="n">var_domain</span><span class="o">.</span><span class="n">is_engineered</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="gdTCR.get_fragments">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR.get_fragments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vd</span><span class="p">,</span> <span class="n">vg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VD</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VG</span><span class="p">()</span>
+
+        <span class="c1"># If a variable domain exists</span>
+        <span class="k">for</span> <span class="n">var_domain</span> <span class="ow">in</span> <span class="p">[</span><span class="n">vg</span><span class="p">,</span> <span class="n">vd</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">var_domain</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">frag</span> <span class="ow">in</span> <span class="n">var_domain</span><span class="o">.</span><span class="n">get_fragments</span><span class="p">():</span>
+                    <span class="k">yield</span> <span class="n">frag</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="dbTCR">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">dbTCR</span><span class="p">(</span><span class="n">TCR</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TCR</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">c1</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+            <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">c2</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c2</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="c1"># The TCR is a Holder class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">chain_type</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>  <span class="c1"># make sure that the list goes B-&gt;D</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scTCR</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># This is rare but does happen</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">visualise_interactions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_interaction_visualiser</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;TCR </span><span class="si">%s%s</span><span class="s2"> beta=</span><span class="si">%s</span><span class="s2">; delta=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">VB</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">VD</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="dbTCR.get_VB">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.get_VB">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_VB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="dbTCR.get_VD">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.get_VD">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_VD</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="dbTCR.get_domain_assignment">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.get_domain_assignment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_domain_assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VD&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">}</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VB&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VD&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VD</span><span class="p">}</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="dbTCR.is_engineered">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.is_engineered">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_engineered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vb</span><span class="p">,</span> <span class="n">vd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VB</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VD</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">var_domain</span> <span class="ow">in</span> <span class="p">[</span><span class="n">vb</span><span class="p">,</span> <span class="n">vd</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">var_domain</span> <span class="ow">and</span> <span class="n">var_domain</span><span class="o">.</span><span class="n">is_engineered</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="dbTCR.get_fragments">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.dbTCR.get_fragments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vb</span><span class="p">,</span> <span class="n">vd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VB</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VD</span><span class="p">()</span>
+
+        <span class="c1"># If a variable domain exists</span>
+        <span class="k">for</span> <span class="n">var_domain</span> <span class="ow">in</span> <span class="p">[</span><span class="n">vb</span><span class="p">,</span> <span class="n">vd</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">var_domain</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">frag</span> <span class="ow">in</span> <span class="n">var_domain</span><span class="o">.</span><span class="n">get_fragments</span><span class="p">():</span>
+                    <span class="k">yield</span> <span class="n">frag</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

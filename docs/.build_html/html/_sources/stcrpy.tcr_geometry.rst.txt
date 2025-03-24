@@ -1,0 +1,61 @@
+stcrpy.tcr\_geometry package
+============================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   stcrpy.tcr_geometry.reference_data
+
+Submodules
+----------
+
+stcrpy.tcr\_geometry.TCRAngle module
+------------------------------------
+
+.. automodule:: stcrpy.tcr_geometry.TCRAngle
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+stcrpy.tcr\_geometry.TCRCoM module
+----------------------------------
+
+.. automodule:: stcrpy.tcr_geometry.TCRCoM
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+stcrpy.tcr\_geometry.TCRDock module
+-----------------------------------
+
+.. automodule:: stcrpy.tcr_geometry.TCRDock
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+stcrpy.tcr\_geometry.TCRGeom module
+-----------------------------------
+
+.. automodule:: stcrpy.tcr_geometry.TCRGeom
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+stcrpy.tcr\_geometry.TCRGeomFiltering module
+--------------------------------------------
+
+.. automodule:: stcrpy.tcr_geometry.TCRGeomFiltering
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: stcrpy.tcr_geometry
+   :members:
+   :show-inheritance:
+   :undoc-members:

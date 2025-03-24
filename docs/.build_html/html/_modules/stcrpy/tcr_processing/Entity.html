@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_processing.Entity &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_processing.Entity</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_processing.Entity</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on 9 May 2017</span>
+<span class="sd">@author: leem</span>
+
+<span class="sd">A modified Entity class based on SAbDab&#39;s ABDB.AbPDB and Bio.PDB&#39;s entity</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">textwrap</span><span class="w"> </span><span class="kn">import</span> <span class="n">wrap</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">Bio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">Bio.PDB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">Bio.Data.IUPACData</span><span class="w"> </span><span class="kn">import</span> <span class="n">atom_weights</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.Select</span><span class="w"> </span><span class="kn">import</span> <span class="n">select_all</span>
+
+<span class="n">_ATOM_FORMAT_STRING</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">%s%5i</span><span class="s2"> </span><span class="si">%-4s%c%3s</span><span class="s2"> </span><span class="si">%c%4i%c</span><span class="s2">   </span><span class="si">%8.3f%8.3f%8.3f%6.2f%6.2f</span><span class="s2">      </span><span class="si">%4s%2s%2s</span><span class="se">\n</span><span class="s2">&quot;</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="Entity">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Entity.Entity">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Entity</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Entity</span><span class="o">.</span><span class="n">Entity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A modified entity object allows for direct writing of coordinates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_atom_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="n">atom_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">charge</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Modified from TCRDB.Bio.PDB.PDBIO</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hetfield</span><span class="p">,</span> <span class="n">resseq</span><span class="p">,</span> <span class="n">icode</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+        <span class="n">resname</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">get_resname</span><span class="p">()</span>
+        <span class="n">segid</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">get_segid</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">atom_number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atom_number</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">serial_number</span>
+
+        <span class="n">chain_id</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">hetfield</span> <span class="o">!=</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
+            <span class="n">record_type</span> <span class="o">=</span> <span class="s2">&quot;HETATM&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">record_type</span> <span class="o">=</span> <span class="s2">&quot;ATOM  &quot;</span>
+
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">atom_weights</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised element </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">element</span> <span class="o">=</span> <span class="s2">&quot;  &quot;</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_fullname</span><span class="p">()</span>
+        <span class="n">altloc</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_altloc</span><span class="p">()</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()</span>
+        <span class="n">bfactor</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_bfactor</span><span class="p">()</span>
+        <span class="n">occupancy</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_occupancy</span><span class="p">()</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">record_type</span><span class="p">,</span>
+            <span class="n">atom_number</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">,</span>
+            <span class="n">altloc</span><span class="p">,</span>
+            <span class="n">resname</span><span class="p">,</span>
+            <span class="n">chain_id</span><span class="p">,</span>
+            <span class="n">resseq</span><span class="p">,</span>
+            <span class="n">icode</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">y</span><span class="p">,</span>
+            <span class="n">z</span><span class="p">,</span>
+            <span class="n">occupancy</span><span class="p">,</span>
+            <span class="n">bfactor</span><span class="p">,</span>
+            <span class="n">segid</span><span class="p">,</span>
+            <span class="n">element</span><span class="p">,</span>
+            <span class="n">charge</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_ATOM_FORMAT_STRING</span> <span class="o">%</span> <span class="n">args</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_output_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to get the atom lines of the entity&#39;s children.</span>
+<span class="sd">        @param selection: Selector object from TcrPDB.Select or inherited class.</span>
+<span class="sd">        @param n: An integer value to number the current atom with.</span>
+<span class="sd">                  If this is False the original numbering is used from the pdb file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_list</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">selection</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">child</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span>
+                    <span class="n">output_string</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atom_line</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">atom_number</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">n</span><span class="p">:</span>
+                        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">output_string_add</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">_get_output_string</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+                    <span class="n">output_string</span> <span class="o">+=</span> <span class="n">output_string_add</span>
+        <span class="k">return</span> <span class="n">output_string</span><span class="p">,</span> <span class="n">n</span>
+
+        <span class="c1"># TODO</span>
+
+<div class="viewcode-block" id="Entity.save">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Entity.Entity.save">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remarks</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the coordinates of the entity</span>
+
+<span class="sd">        @param output: Where to write coordinates to. Should be an an open file, string or sys.stdout.</span>
+<span class="sd">                       By default the output is written to stdout</span>
+<span class="sd">        @param renumber: Flag whether to renumber the atoms to IMGT scheme</span>
+<span class="sd">                         Default is to renumber the atoms so that the first is 1 etc.</span>
+<span class="sd">                         Use renumber = False to retain the original atom numbering from the pdb file</span>
+
+<span class="sd">        @param selection: Provide a selector object to select which children of the entity should be outputted.</span>
+<span class="sd">                          Selection should be a selector object from TcrPDB.Select.</span>
+<span class="sd">                          Some basic selector classes are provided in the module. More complex classes can be created by inheriting from these.</span>
+<span class="sd">                          If selection = False (default) all atoms in the entity are output</span>
+
+<span class="sd">        @param remarks: Flag to print out remarks generated by TcrPDB. Default TRUE</span>
+<span class="sd">        Example:</span>
+<span class="sd">        entity.save(&quot;path/to/file/filename.pdb&quot;)</span>
+<span class="sd">        residue.save( &quot;residue1.pdb&quot; )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">ag_chain_and_type</span><span class="p">(</span><span class="n">ags</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">ags</span><span class="p">:</span>
+                <span class="n">chains</span><span class="p">,</span> <span class="n">types</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">ags</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ag</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>  <span class="c1"># peptide/protein/nucleic acid.</span>
+                        <span class="n">chains</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                        <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">ag</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>  <span class="c1"># hapten / single carb</span>
+                        <span class="n">chains</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                        <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">ag</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;F&quot;</span><span class="p">:</span>  <span class="c1"># carbs</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">chains</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">child_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                            <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                            <span class="n">chains</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;UNKNOWN&quot;</span><span class="p">)</span>
+                            <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;UNKNOWN&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">chains</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;UNKNOWN&quot;</span><span class="p">)</span>
+                        <span class="n">types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;UNKNOWN&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">chains</span><span class="p">),</span> <span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">types</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">renumber</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">selection</span><span class="p">:</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="n">select_all</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">!=</span> <span class="s2">&quot;TS&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;TS&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">output_string</span><span class="p">,</span> <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_output_string</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;TS&quot;</span><span class="p">:</span>
+            <span class="c1"># output method for NMR structures</span>
+            <span class="n">output_string</span><span class="p">,</span> <span class="n">n_atoms</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="c1"># sort models by model id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">:</span>
+                <span class="n">number</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">mod</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>  <span class="c1"># space by 9 for models</span>
+                <span class="n">output_string</span> <span class="o">+=</span> <span class="s2">&quot;MODEL</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">number</span>
+                <span class="n">string</span><span class="p">,</span> <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">_get_output_string</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">output_string</span> <span class="o">+=</span> <span class="n">string</span>
+                <span class="n">output_string</span> <span class="o">+=</span> <span class="s2">&quot;ENDMDL</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">n_atoms</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="n">remark_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">remarks</span><span class="p">:</span>
+            <span class="n">remark_string</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;REMARK   5 IMGT RENUMBERED STRUCTURE </span><span class="si">%s</span><span class="s2"> GENERATED BY STCRDAB</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="n">remark_string</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="s2">&quot;REMARK   5 TCR CHAINS ARE RENUMBERED IN THE VARIABLE REGIONS ONLY</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">remark_string</span> <span class="o">+=</span> <span class="s2">&quot;REMARK   5 MHC CHAINS ARE RENUMBERED IN THE G DOMAINS OR FOR B2M-GLOBULIN</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">remark_string</span> <span class="o">+=</span> <span class="s2">&quot;REMARK   5 NON-TCR and NON-MHC CHAINS ARE LEFT WITH RESIDUE IDS AS IN PDB</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">:</span>  <span class="c1"># only try and go up residue,chain, holder, model, structure</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s2">&quot;warnings&quot;</span><span class="p">):</span>
+                    <span class="c1"># the entity is the top structure</span>
+                    <span class="k">for</span> <span class="n">TCR</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">get_TCRs</span><span class="p">():</span>
+                        <span class="n">antigen_chain</span><span class="p">,</span> <span class="n">antigen_type</span> <span class="o">=</span> <span class="n">ag_chain_and_type</span><span class="p">(</span><span class="n">TCR</span><span class="o">.</span><span class="n">antigen</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">TCR</span><span class="o">.</span><span class="n">MHC</span><span class="p">:</span>
+                            <span class="n">mh_chains</span> <span class="o">=</span> <span class="n">TCR</span><span class="o">.</span><span class="n">MHC</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">mh_chains</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                        <span class="n">ch0</span><span class="p">,</span> <span class="n">ch1</span> <span class="o">=</span> <span class="p">[(</span><span class="n">c</span><span class="o">.</span><span class="n">chain_type</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">TCR</span><span class="o">.</span><span class="n">get_chains</span><span class="p">()]</span>
+                        <span class="n">remark_string</span> <span class="o">+=</span> <span class="p">(</span>
+                            <span class="s2">&quot;REMARK   5 PAIRED_</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">CHAIN=</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">CHAIN=</span><span class="si">%s</span><span class="s2"> MHCCHAINS=</span><span class="si">%s</span><span class="s2"> AGCHAIN=</span><span class="si">%s</span><span class="s2"> AGTYPE=</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">TCR</span><span class="o">.</span><span class="n">get_TCR_type</span><span class="p">(),</span>
+                                <span class="n">ch0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                <span class="n">ch0</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                <span class="n">ch1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                <span class="n">ch1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                <span class="n">mh_chains</span><span class="p">,</span>
+                                <span class="n">antigen_chain</span><span class="p">,</span>
+                                <span class="n">antigen_type</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">TR_chain</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">get_unpaired_TCRchains</span><span class="p">():</span>
+                        <span class="n">antigen_chain</span><span class="p">,</span> <span class="n">antigen_type</span> <span class="o">=</span> <span class="n">ag_chain_and_type</span><span class="p">(</span>
+                            <span class="n">TR_chain</span><span class="o">.</span><span class="n">antigen</span>
+                        <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">TR_chain</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">():</span>
+                            <span class="n">mh_chains</span> <span class="o">=</span> <span class="n">TR_chain</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">mh_chains</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                        <span class="n">remark_string</span> <span class="o">+=</span> <span class="p">(</span>
+                            <span class="s2">&quot;REMARK   5 SINGLE </span><span class="si">%s</span><span class="s2">CHAIN=</span><span class="si">%s</span><span class="s2"> MHCCHAINS=</span><span class="si">%s</span><span class="s2"> AGCHAIN=</span><span class="si">%s</span><span class="s2"> AGTYPE=</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="o">%</span> <span class="p">(</span>
+                                <span class="n">TR_chain</span><span class="o">.</span><span class="n">chain_type</span><span class="p">,</span>
+                                <span class="n">TR_chain</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                <span class="n">mh_chains</span><span class="p">,</span>
+                                <span class="n">antigen_chain</span><span class="p">,</span>
+                                <span class="n">antigen_type</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">warning</span><span class="p">:</span>
+                            <span class="n">remark_string</span> <span class="o">+=</span> <span class="p">(</span>
+                                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                                    <span class="p">[</span>
+                                        <span class="s2">&quot;REMARK   5 &quot;</span> <span class="o">+</span> <span class="n">w</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                                        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">wrap</span><span class="p">(</span><span class="n">warning</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+                                    <span class="p">]</span>
+                                <span class="p">)</span>
+                                <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">p</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">get_parent</span><span class="p">()</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">remark_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">break</span>
+
+        <span class="n">output_string</span> <span class="o">=</span> <span class="n">remark_string</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">output_string</span>
+
+        <span class="k">if</span> <span class="n">output</span> <span class="ow">is</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_string</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_string</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">):</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_string</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Entity.transform">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Entity.Entity.transform">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">tran</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply rotation and translation to the atomic coordinates.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">                &gt;&gt;&gt; rotation=rotmat(pi, Vector(1,0,0))</span>
+<span class="sd">                &gt;&gt;&gt; translation=array((0,0,1), &#39;f&#39;)</span>
+<span class="sd">                &gt;&gt;&gt; entity.transform(rotation, translation)</span>
+
+<span class="sd">        @param rot: A right multiplying rotation matrix</span>
+<span class="sd">        @type rot: 3x3 Numeric array</span>
+
+<span class="sd">        @param tran: the translation vector</span>
+<span class="sd">        @type tran: size 3 Numeric array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_list</span><span class="p">():</span>
+            <span class="n">o</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">rot</span><span class="p">,</span> <span class="n">tran</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Entity.copy">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Entity.Entity.copy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy has been played with a bit. For my purposes the version in 1.61 did not work as explicit copying of the child list</span>
+<span class="sd">        meant that the child objects became referenced to both self and shallow.</span>
+<span class="sd">        This may be due to overriding the residue and chain classes so may not be a bug in biopython.</span>
+
+<span class="sd">        When copying the child_list in the loop, I use the list to iterate over instead of the dictionary.</span>
+<span class="sd">        This preserves the ordering of the children.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">shallow</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">shallow</span><span class="o">.</span><span class="n">child_list</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[]</span>
+        <span class="p">)</span>  <span class="c1"># copy(self.child_list) # I have removed this explicit copy.</span>
+        <span class="n">shallow</span><span class="o">.</span><span class="n">child_dict</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># copy(self.child_dict)</span>
+        <span class="n">shallow</span><span class="o">.</span><span class="n">xtra</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xtra</span><span class="p">)</span>
+        <span class="n">shallow</span><span class="o">.</span><span class="n">detach_parent</span><span class="p">()</span>
+
+        <span class="c1"># Order preserving copy</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_list</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span>
+            <span class="p">),</span> <span class="s2">&quot;child id not in the child_dict keys: this is unexpected and bad :(&quot;</span>
+            <span class="n">shallow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">shallow</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

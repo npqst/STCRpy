@@ -1,0 +1,638 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_formats.tcr_haddock &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_formats.tcr_haddock</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_formats.tcr_haddock</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">Bio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">Bio.PDB.Superimposer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Superimposer</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">tcr_processing</span>
+
+
+<div class="viewcode-block" id="HADDOCKFormatter">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HADDOCKFormatter</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span> <span class="o">=</span> <span class="n">save_dir</span> <span class="k">if</span> <span class="n">save_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;.&quot;</span>
+
+<div class="viewcode-block" id="HADDOCKFormatter.tcr_to_haddock">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.tcr_to_haddock">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tcr_to_haddock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_TCR_pdb_file</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HADDOCKFormatter.pMHC_to_haddock">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.pMHC_to_haddock">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pMHC_to_haddock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mhc</span><span class="p">,</span> <span class="n">antigen</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_antigen_pdb_file</span><span class="p">(</span><span class="n">mhc</span><span class="p">,</span> <span class="n">antigen</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HADDOCKFormatter.write_TCR_pdb_file">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_TCR_pdb_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_TCR_pdb_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes TCR structure to a PDB file in a format HADDOCK can deal with.</span>
+<span class="sd">        Generates a PDB file, a mapping from the old to the new numbering,</span>
+<span class="sd">            and a list of active residues to restrain the HADDOCK simulation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcr: The TCR structure.</span>
+<span class="sd">            save_dir: The directory to save the files (default is current directory).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tcr_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">tcr</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">new_tcr_structure</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">residue_conversion</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chain</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tcr</span><span class="o">.</span><span class="n">get_chains</span><span class="p">()):</span>
+            <span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">new_chain</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">selected_residues</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">res</span>
+                <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Selection</span><span class="o">.</span><span class="n">unfold_entities</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">130</span><span class="p">))</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">selected_residues</span><span class="p">:</span>
+                <span class="c1"># handle insertion numbering for HADDOCK</span>
+                <span class="n">new_residue</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
+                    <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="mi">10</span> <span class="o">*</span> <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="o">+</span> <span class="p">(</span><span class="mi">200</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="n">imgt_insertion_char_to_int</span><span class="p">(</span><span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+                        <span class="s2">&quot; &quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">200</span> <span class="o">*</span> <span class="n">i</span><span class="p">),</span>
+                        <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">residue</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                    <span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="n">residue</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span>
+                <span class="n">new_chain</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_residue</span><span class="p">)</span>
+            <span class="n">new_tcr_structure</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_chain</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">tcr_id</span><span class="p">)):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">tcr_id</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">tcr_id</span><span class="si">}</span><span class="s2">_haddock_active_residues.txt&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># get cdr numbering</span>
+            <span class="n">active_residues</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_chains</span><span class="p">():</span>
+                <span class="n">cdrs</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">get_CDRs</span><span class="p">()</span>
+
+                <span class="n">res_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">cdr</span> <span class="ow">in</span> <span class="n">cdrs</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">cdr</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()]</span>
+                <span class="k">for</span> <span class="n">res_key</span> <span class="ow">in</span> <span class="n">res_list</span><span class="p">:</span>
+                    <span class="c1"># res_key = (&quot; &quot;, *res[0])</span>
+                    <span class="k">if</span> <span class="n">res_key</span> <span class="ow">in</span> <span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">]:</span>
+                        <span class="n">active_residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="n">res_key</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">active_residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res_key</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;TCR ACTIVE RESIDUES FOR HADDOCK</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">active_residues</span><span class="p">]))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">tcr_id</span><span class="si">}</span><span class="s2">_haddock_renumbering.txt&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;TCR RESIDUE RENUMBERING FOR HADDOCK</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">chain_id</span> <span class="ow">in</span> <span class="n">residue_conversion</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">res</span><span class="p">,</span> <span class="n">new_res</span> <span class="ow">in</span> <span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">r_as_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">chain_id</span><span class="si">}</span><span class="s2">,(</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">),(</span><span class="si">{</span><span class="n">new_res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">new_res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">new_res</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r_as_str</span><span class="p">)</span>
+
+        <span class="n">pdb_io</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBIO</span><span class="p">()</span>
+        <span class="n">pdb_io</span><span class="o">.</span><span class="n">set_structure</span><span class="p">(</span><span class="n">new_tcr_structure</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">tcr_id</span><span class="si">}</span><span class="s2">_tcr_for_docking.pdb&quot;</span><span class="p">)</span>
+        <span class="n">pdb_io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+
+<div class="viewcode-block" id="HADDOCKFormatter.write_antigen_pdb_file">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_antigen_pdb_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_antigen_pdb_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mhc</span><span class="p">,</span> <span class="n">antigen</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes the antigen PDB file for docking with HADDOCK.</span>
+<span class="sd">        Generates a PDB file, a file containing the renumbering mapping, and a list of active residues to restrict the simulation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mhc : MHC structure object.</span>
+<span class="sd">            antigen (list): List containing antigen chain. Should be length 1.</span>
+<span class="sd">            save_dir (str, optional): The directory to save the PDB file. Defaults to &quot;.&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The filename of the saved antigen PDB file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># structure = p.get_structure()</span>
+        <span class="c1"># chains = [i for i in structure.get_antigens() if i.id in antigen_chain_ids]</span>
+        <span class="n">mhc_chains</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_chains</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">!=</span> <span class="s2">&quot;B2M&quot;</span><span class="p">]</span>
+        <span class="n">antigen_chains</span> <span class="o">=</span> <span class="n">mhc_chains</span> <span class="o">+</span> <span class="n">antigen</span>
+        <span class="n">mhc_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mhc</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_MHC_</span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">antigen_chains</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">new_antigen_structure</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">residue_conversion</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chain</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">antigen_chains</span><span class="p">):</span>
+            <span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">new_chain</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">get_residues</span><span class="p">():</span>
+                <span class="c1"># handle insertion numbering for HADDOCK</span>
+                <span class="n">new_residue</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">500</span> <span class="o">*</span> <span class="n">i</span><span class="p">),</span>
+                    <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">residue</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+                    <span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="n">residue</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_residue</span><span class="o">.</span><span class="n">id</span>
+                <span class="n">new_chain</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_residue</span><span class="p">)</span>
+            <span class="n">new_antigen_structure</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_chain</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">mhc_id</span><span class="p">)):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">mhc_id</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mhc_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">mhc_id</span><span class="si">}</span><span class="s2">_haddock_active_residues.txt&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;a&quot;</span><span class="p">,</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># get peptide numbering and select as active</span>
+            <span class="n">active_residues</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">antigen</span><span class="p">:</span>
+                <span class="n">res_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">get_residues</span><span class="p">())</span>
+                <span class="k">for</span> <span class="n">res_key</span> <span class="ow">in</span> <span class="n">res_list</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">res_key</span> <span class="ow">in</span> <span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">]:</span>
+                        <span class="n">active_residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain</span><span class="o">.</span><span class="n">id</span><span class="p">][</span><span class="n">res_key</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">active_residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res_key</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;ANTIGEN ACTIVE RESIDUES FOR HADDOCK</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">active_residues</span><span class="p">]))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mhc_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">mhc_id</span><span class="si">}</span><span class="s2">_haddock_renumbering.txt&quot;</span><span class="p">),</span> <span class="s2">&quot;a&quot;</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;ANTIGEN RESIDUE RENUMBERING FOR HADDOCK</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">residue_conversion</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">res</span><span class="p">,</span> <span class="n">new_res</span> <span class="ow">in</span> <span class="n">residue_conversion</span><span class="p">[</span><span class="n">chain</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">r_as_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">chain</span><span class="si">}</span><span class="s2">,(</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">),(</span><span class="si">{</span><span class="n">new_res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">new_res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">new_res</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r_as_str</span><span class="p">)</span>
+
+        <span class="n">pdb_io</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBIO</span><span class="p">()</span>
+        <span class="n">pdb_io</span><span class="o">.</span><span class="n">set_structure</span><span class="p">(</span><span class="n">new_antigen_structure</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mhc_id</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">mhc_id</span><span class="si">}</span><span class="s2">_antigen_for_docking.pdb&quot;</span><span class="p">)</span>
+        <span class="n">pdb_io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filename</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="HADDOCKResultsParser">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HADDOCKResultsParser</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">haddock_results_dir</span><span class="p">,</span> <span class="n">tcr_renumbering_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pmhc_renumbering_file</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">haddock_results_dir</span> <span class="o">=</span> <span class="n">haddock_results_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcr_renumbering_file</span> <span class="o">=</span> <span class="n">tcr_renumbering_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pmhc_renumbering_file</span> <span class="o">=</span> <span class="n">pmhc_renumbering_file</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">haddock_results_dir</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.tgz&quot;</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;HADDOCK results are compressed. Decompress results before proceeding.&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="HADDOCKResultsParser.renumber_all_haddock_predictions">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.renumber_all_haddock_predictions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">renumber_all_haddock_predictions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Renumber all haddock predictions contained in results folder. Requires standard HADDOCK output directory format.&quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">haddock_results_dir</span><span class="p">,</span> <span class="s2">&quot;structures/it1/&quot;</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;complex_.*\.pdb&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">renumber_haddock_prediction</span><span class="p">(</span>
+                    <span class="n">file_path</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">tcr_renumbering_file</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pmhc_renumbering_file</span><span class="p">,</span>
+                <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HADDOCKResultsParser.renumber_haddock_prediction">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.renumber_haddock_prediction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">renumber_haddock_prediction</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">docked_prediction_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">haddock_renumbering_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">antigen_renumbering_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Model</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Renumber the HADDOCK prediction based on the renumbering files.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            docked_prediction_file (str): Path to the docked prediction file.</span>
+<span class="sd">            haddock_renumbering_file (str): Path to the HADDOCK renumbering file.</span>
+<span class="sd">            antigen_renumbering_file (str, optional): Path to the antigen renumbering file.</span>
+<span class="sd">                                                    Needed for TCR only PDBs with no antigen. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Bio.PDB.Model.Model: The renumbered HADDOCK prediction.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If the renumbering index is not found in the renumbering file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># initialise file parsers</span>
+        <span class="n">tcr_parser</span> <span class="o">=</span> <span class="n">tcr_processing</span><span class="o">.</span><span class="n">TCRParser</span><span class="o">.</span><span class="n">TCRParser</span><span class="p">()</span>
+        <span class="n">bio_parser</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBParser</span><span class="p">()</span>
+
+        <span class="c1"># find chain ID of TCR to distinguish TCR from antigen</span>
+        <span class="n">tcr_chain_id</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="n">tcr_parser</span><span class="o">.</span><span class="n">get_tcr_structure</span><span class="p">(</span><span class="s2">&quot;tmp&quot;</span><span class="p">,</span> <span class="n">docked_prediction_file</span><span class="p">)</span><span class="o">.</span><span class="n">get_TCRchains</span><span class="p">()</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+        <span class="n">docked_prediction</span> <span class="o">=</span> <span class="n">bio_parser</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s2">&quot;docked&quot;</span><span class="p">,</span> <span class="n">docked_prediction_file</span><span class="p">)</span>
+
+        <span class="c1"># get chains of HADDOCK dock</span>
+        <span class="n">merged_tcr_chain</span> <span class="o">=</span> <span class="n">docked_prediction</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">tcr_chain_id</span><span class="p">]</span>
+        <span class="n">merged_antigen_chain</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">chain</span>
+            <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">docked_prediction</span><span class="o">.</span><span class="n">get_chains</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">merged_tcr_chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># get renumbering</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">haddock_renumbering_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">antigen_renumbering_index</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
+                <span class="s2">&quot;ANTIGEN RESIDUE RENUMBERING FOR HADDOCK</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">antigen_renumber_indices</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">antigen_renumbering_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">antigen_renumbering_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">antigen_renumber_indices</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">tcr_renumber_indices</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">antigen_renumbering_index</span><span class="p">)</span>
+
+        <span class="c1"># if antigen renumbering file is provided, get antigen renumbering from there</span>
+        <span class="k">if</span> <span class="n">antigen_renumbering_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">lines</span><span class="p">[:</span> <span class="n">antigen_renumber_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">antigen_renumber_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">else</span> <span class="n">lines</span>
+            <span class="p">)</span>
+            <span class="n">tcr_renumber_indices</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">antigen_renumber_indices</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">antigen_renumbering_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">antigen_xtal_lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="n">antigen_renumbering_index</span> <span class="o">=</span> <span class="n">antigen_xtal_lines</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
+                <span class="s2">&quot;ANTIGEN RESIDUE RENUMBERING FOR HADDOCK</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">antigen_xtal_lines</span><span class="p">[</span><span class="n">antigen_renumbering_index</span><span class="p">:])</span>
+
+        <span class="c1"># renumber TCR by creating new PDB model and populating with residues</span>
+        <span class="n">tcr_parsed_lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span>
+                <span class="n">parse_renumbered_line</span><span class="p">,</span>
+                <span class="n">lines</span><span class="p">[</span><span class="n">tcr_renumber_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="n">tcr_renumber_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">changed_tcr_chain_ids</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">tcr_parsed_lines</span><span class="p">))</span>
+
+        <span class="n">tcr</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">changed_tcr_chain_ids</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">id_for_conserved_numbered_chain</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="nb">set</span><span class="p">(</span><span class="n">changed_tcr_chain_ids</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">changed_tcr_chain_ids</span><span class="o">.</span><span class="n">count</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">id_for_conserved_numbered_chain</span> <span class="o">=</span> <span class="n">merged_tcr_chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">tcr</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_for_conserved_numbered_chain</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tcr</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+                <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">changed_tcr_chain_ids</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">changed_tcr_chain_ids</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">second_tcr_chain_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBExceptions</span><span class="o">.</span><span class="n">PDBConstructionException</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">id_to_try</span> <span class="ow">in</span> <span class="s2">&quot;ABCDEFGH&quot;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">tcr</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_to_try</span><span class="p">))</span>
+                    <span class="n">second_tcr_chain_id</span> <span class="o">=</span> <span class="n">id_to_try</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBExceptions</span><span class="o">.</span><span class="n">PDBConstructionException</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+        <span class="n">renumbered_residues</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">renumbering</span> <span class="ow">in</span> <span class="n">tcr_parsed_lines</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">residue</span> <span class="o">=</span> <span class="n">merged_tcr_chain</span><span class="p">[</span><span class="n">renumbering</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">merged_tcr_chain</span><span class="o">.</span><span class="n">detach_child</span><span class="p">(</span><span class="n">renumbering</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">residue</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">renumbering</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">second_tcr_chain_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">renumbering</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">renumbered_residues</span><span class="p">:</span>
+                        <span class="n">renumbered_residues</span><span class="p">[</span><span class="n">renumbering</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">renumbered_residues</span><span class="p">[</span><span class="n">renumbering</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">second_tcr_chain_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">renumbered_residues</span><span class="p">:</span>
+                        <span class="n">renumbered_residues</span><span class="p">[</span><span class="n">second_tcr_chain_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">renumbered_residues</span><span class="p">[</span><span class="n">second_tcr_chain_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="p">)</span>
+                <span class="c1"># tcr[renumbering[0]].add(residue)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Renumbering </span><span class="si">{</span><span class="n">renumbering</span><span class="si">}</span><span class="s2"> failed with Key Error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">merged_tcr_chain</span><span class="o">.</span><span class="n">get_residues</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">id_for_conserved_numbered_chain</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">renumbered_residues</span><span class="p">:</span>
+                <span class="n">renumbered_residues</span><span class="p">[</span><span class="n">id_for_conserved_numbered_chain</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">renumbered_residues</span><span class="p">[</span><span class="n">id_for_conserved_numbered_chain</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residue</span><span class="p">)</span>
+            <span class="c1"># tcr[id_for_conserved_numbered_chain].add(residue)</span>
+
+        <span class="c1"># sort the residues</span>
+        <span class="k">for</span> <span class="n">chain_id</span> <span class="ow">in</span> <span class="n">renumbered_residues</span><span class="p">:</span>
+            <span class="n">sorted_residues</span> <span class="o">=</span> <span class="n">sort_residues_by_imgt_numbering</span><span class="p">(</span>
+                <span class="n">renumbered_residues</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">sorted_residues</span><span class="p">:</span>
+                <span class="n">tcr</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+        <span class="c1"># renumber antigen</span>
+        <span class="n">antigen_parsed_lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span>
+                <span class="n">parse_renumbered_line</span><span class="p">,</span>
+                <span class="n">lines</span><span class="p">[</span><span class="n">antigen_renumber_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:],</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">changed_antigen_chain_ids</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">antigen_parsed_lines</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tcr</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">merged_antigen_chain</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBExceptions</span><span class="o">.</span><span class="n">PDBConstructionException</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">id_to_try</span> <span class="ow">in</span> <span class="s2">&quot;ABCDEFGH&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">id_to_try</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">changed_antigen_chain_ids</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">():</span>
+                    <span class="k">continue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">tcr</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_to_try</span><span class="p">))</span>
+                    <span class="n">merged_antigen_chain</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">id_to_try</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBExceptions</span><span class="o">.</span><span class="n">PDBConstructionException</span><span class="p">:</span>
+                    <span class="k">continue</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">changed_antigen_chain_ids</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="p">),</span> <span class="s2">&quot;More than one chain renumbered in renumbering file&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tcr</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">changed_antigen_chain_ids</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">()))</span>
+            <span class="n">new_antigen_chain_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">except</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBExceptions</span><span class="o">.</span><span class="n">PDBConstructionException</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">id_to_try</span> <span class="ow">in</span> <span class="s2">&quot;ABCDEFGH&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">id_to_try</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">changed_antigen_chain_ids</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">():</span>
+                    <span class="k">continue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">tcr</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_to_try</span><span class="p">))</span>
+                    <span class="n">new_antigen_chain_id</span> <span class="o">=</span> <span class="n">id_to_try</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBExceptions</span><span class="o">.</span><span class="n">PDBConstructionException</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">renumbering</span> <span class="ow">in</span> <span class="n">antigen_parsed_lines</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">residue</span> <span class="o">=</span> <span class="n">merged_antigen_chain</span><span class="p">[</span><span class="n">renumbering</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">merged_antigen_chain</span><span class="o">.</span><span class="n">detach_child</span><span class="p">(</span><span class="n">renumbering</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">residue</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">renumbering</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">new_antigen_chain_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">tcr</span><span class="p">[</span><span class="n">renumbering</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">residue</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">tcr</span><span class="p">[</span><span class="n">new_antigen_chain_id</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">residue</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Renumbering </span><span class="si">{</span><span class="n">renumbering</span><span class="si">}</span><span class="s2"> failed with Key Error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">merged_antigen_chain</span><span class="o">.</span><span class="n">get_residues</span><span class="p">():</span>
+            <span class="n">tcr</span><span class="p">[</span><span class="n">merged_antigen_chain</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">residue</span><span class="p">)</span>
+
+        <span class="c1"># create structure object and save</span>
+        <span class="n">tcr_struct</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Structure</span><span class="o">.</span><span class="n">Structure</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">tcr_struct</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tcr</span><span class="p">)</span>
+
+        <span class="n">pdb_io</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PDBIO</span><span class="p">()</span>
+        <span class="n">pdb_io</span><span class="o">.</span><span class="n">set_structure</span><span class="p">(</span><span class="n">tcr_struct</span><span class="p">)</span>
+        <span class="n">save_to</span> <span class="o">=</span> <span class="s2">&quot;renumbered_&quot;</span> <span class="o">+</span> <span class="n">docked_prediction_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">docked_prediction_file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">save_to</span><span class="p">)</span>
+        <span class="n">pdb_io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HADDOCKResultsParser.get_haddock_scores">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.get_haddock_scores">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_haddock_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+        <span class="n">haddock_columns</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># &#39;idx&#39;,</span>
+            <span class="s2">&quot;haddock_score&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;interface_rmsd&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ligand_rmsd&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;frac_common_contacts&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E_vdw&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E_elec&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E_air&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;E_desolv&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ligand_rmsd_2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cluster_id&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">haddock_scores_file</span> <span class="o">=</span> <span class="s2">&quot;complex_HS_irmsd_lrmsd_fnat.list&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">haddock_results_dir</span><span class="p">,</span> <span class="n">haddock_scores_file</span><span class="p">),</span>
+                <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span>
+                <span class="n">names</span><span class="o">=</span><span class="n">haddock_columns</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">df</span>
+
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;File: complex_HS_irmsd_lrmsd_fnat.list containing HADDOCK docking metrics not found in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">haddock_results_dir</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="imgt_insertion_char_to_int">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.imgt_insertion_char_to_int">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">imgt_insertion_char_to_int</span><span class="p">(</span><span class="n">char</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts an IMGT insertion character to an integer.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        char (str): The IMGT insertion character.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: The corresponding integer value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+
+
+<div class="viewcode-block" id="parse_renumbered_line">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.parse_renumbered_line">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_renumbered_line</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses a renumbered line from a file and extracts the chain ID, original numbering, and HADDOCK numbering.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        line (str): The renumbered line to parse.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: A tuple containing the chain ID, original numbering, and HADDOCK numbering.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        line = &quot;(O,( ,3, ),( ,203, )&quot;</span>
+<span class="sd">        result = parse_renumbered_line(line)</span>
+<span class="sd">        # Output: (O)&#39;, (&#39;&#39;, &#39;3&#39;, &#39;&#39;), (&#39;&#39;, &#39;203&#39;, &#39;&#39;))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">chain_id</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\((.*?)\)&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+    <span class="n">original_numbering</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">haddock_numbering</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;,\s*&quot;</span><span class="p">,</span> <span class="n">content</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_empty_id</span><span class="p">(</span><span class="n">numbering</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="s2">&quot; &quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numbering</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">chain_id</span><span class="p">,</span> <span class="n">add_empty_id</span><span class="p">(</span><span class="n">original_numbering</span><span class="p">),</span> <span class="n">add_empty_id</span><span class="p">(</span><span class="n">haddock_numbering</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="sort_residues_by_imgt_numbering">
+<a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.sort_residues_by_imgt_numbering">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_residues_by_imgt_numbering</span><span class="p">(</span><span class="n">residues</span><span class="p">):</span>
+    <span class="n">sorted_residues</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">imgt_nr_112_subsequence</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sorted_residues</span><span class="p">)</span> <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">112</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">imgt_nr_112_subsequence</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">indices</span><span class="p">,</span> <span class="n">imgt_nr_112_subsequence</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">imgt_nr_112_subsequence</span><span class="p">))</span>
+        <span class="n">sorted_imgt_nr_112_subsequence</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="n">imgt_nr_112_subsequence</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+            <span class="n">sorted_residues</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">sorted_imgt_nr_112_subsequence</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">sorted_residues</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

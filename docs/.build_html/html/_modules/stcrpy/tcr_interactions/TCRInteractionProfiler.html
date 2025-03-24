@@ -1,0 +1,560 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_interactions.TCRInteractionProfiler &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_interactions.TCRInteractionProfiler</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_interactions.TCRInteractionProfiler</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">reload</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing.TCRParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRParser</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">plip</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:</span>
+<span class="sd">        \npip install plip --no-deps\n\n&quot;&quot;&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">plip_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.PLIPParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLIPParser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.TCRpMHC_PLIP_Model_Parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRpMHC_PLIP_Model_Parser</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">plip.basic.remote</span><span class="w"> </span><span class="kn">import</span> <span class="n">VisualizerData</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">plip.visualization.visualize</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_in_pymol</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;pymol&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;\nPymol package not found. \nInteraction profiler initialising without visualisation capabilitites. \nTo enable pymol visualisations, install pymol with:</span>
+<span class="sd">            \nconda install -c conda-forge -c schrodinger numpy pymol-bundle\n\n&quot;&quot;&quot;</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;plip&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:</span>
+<span class="sd">        \npip install plip --no-deps\n\n&quot;&quot;&quot;</span>
+        <span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">&quot;pymol&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;pymol was not imported. Interactions were not visualised. </span><span class="se">\n</span><span class="s2">This is due to an import error. Perhaps try reinstalling pymol? </span>
+<span class="s2">                    </span><span class="se">\n</span><span class="s2">The error trace was: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">                    &quot;&quot;&quot;</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;plip&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\n\n</span><span class="s2">PLIP was not imported. </span><span class="se">\n</span><span class="s2">Profiling interactions will not be possible </span>
+<span class="s2">            </span><span class="se">\n</span><span class="s2">This is due to an import error. Perhaps try reinstalling plip? </span>
+<span class="s2">            </span><span class="se">\n</span><span class="s2">The error trace was: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="TCRInteractionProfiler">
+<a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TCRInteractionProfiler</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcr_parser</span> <span class="o">=</span> <span class="n">TCRParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_parser</span> <span class="o">=</span> <span class="n">TCRpMHC_PLIP_Model_Parser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plip_parser</span> <span class="o">=</span> <span class="n">PLIPParser</span><span class="p">()</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">plip.basic</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="n">reload</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_interaction_parameters</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TCRInteractionProfiler.reset_parameters">
+<a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.reset_parameters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">plip.basic</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="n">reload</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="TCRInteractionProfiler.set_interaction_parameters">
+<a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.set_interaction_parameters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_interaction_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to set global PLIP detection parameters, ie. the stcrpy API for PLIP config parameters.</span>
+<span class="sd">        See https://github.com/pharmai/plip/blob/master/plip/plipcmd.py for how these are set in native PLIP</span>
+<span class="sd">        See https://github.com/pharmai/plip/blob/master/plip/basic/config.py for the default values</span>
+
+<span class="sd">        Default Parameters (from PLIP distribution):</span>
+<span class="sd">            BS_DIST = 7.5  # Determines maximum distance to include binding site residues</span>
+<span class="sd">            AROMATIC_PLANARITY = 5.0  # Determines allowed deviation from planarity in aromatic rings</span>
+<span class="sd">            MIN_DIST = 0.5  # Minimum distance for all distance thresholds</span>
+<span class="sd">            HYDROPH_DIST_MAX = 4.0  # Distance cutoff for detection of hydrophobic contacts</span>
+<span class="sd">            HBOND_DIST_MAX = 4.1  # Max. distance between hydrogen bond donor and acceptor (Hubbard &amp; Haider, 2001) + 0.6 A</span>
+<span class="sd">            HBOND_DON_ANGLE_MIN = 100  # Min. angle at the hydrogen bond donor (Hubbard &amp; Haider, 2001) + 10</span>
+<span class="sd">            PISTACK_DIST_MAX = 5.5  # Max. distance for parallel or offset pistacking (McGaughey, 1998)</span>
+<span class="sd">            PISTACK_ANG_DEV = 30  # Max. Deviation from parallel or perpendicular orientation (in degrees)</span>
+<span class="sd">            PISTACK_OFFSET_MAX = 2.0  # Maximum offset of the two rings (corresponds to the radius of benzene + 0.5 A)</span>
+<span class="sd">            PICATION_DIST_MAX = 6.0  # Max. distance between charged atom and aromatic ring center (Gallivan and Dougherty, 1999)</span>
+<span class="sd">            SALTBRIDGE_DIST_MAX = 5.5  # Max. distance between centers of charge for salt bridges (Barlow and Thornton, 1983) + 1.5</span>
+<span class="sd">            HALOGEN_DIST_MAX = 4.0  # Max. distance between oxy. and halogen (Halogen bonds in biological molecules., Auffinger)+0.5</span>
+<span class="sd">            HALOGEN_ACC_ANGLE = 120  # Optimal acceptor angle (Halogen bonds in biological molecules., Auffinger)</span>
+<span class="sd">            HALOGEN_DON_ANGLE = 165  # Optimal donor angle (Halogen bonds in biological molecules., Auffinger)</span>
+<span class="sd">            HALOGEN_ANGLE_DEV = 30  # Max. deviation from optimal angle</span>
+<span class="sd">            WATER_BRIDGE_MINDIST = 2.5  # Min. distance between water oxygen and polar atom (Jiang et al., 2005) -0.1</span>
+<span class="sd">            WATER_BRIDGE_MAXDIST = 4.1  # Max. distance between water oxygen and polar atom (Jiang et al., 2005) +0.5</span>
+<span class="sd">            WATER_BRIDGE_OMEGA_MIN = 71  # Min. angle between acceptor, water oxygen and donor hydrogen (Jiang et al., 2005) - 9</span>
+<span class="sd">            WATER_BRIDGE_OMEGA_MAX = 140  # Max. angle between acceptor, water oxygen and donor hydrogen (Jiang et al., 2005)</span>
+<span class="sd">            WATER_BRIDGE_THETA_MIN = 100  # Min. angle between water oxygen, donor hydrogen and donor atom (Jiang et al., 2005)</span>
+<span class="sd">            METAL_DIST_MAX = 3.0  # Max. distance between metal ion and interacting atom (Harding, 2001)</span>
+<span class="sd">            MAX_COMPOSITE_LENGTH = 200  # Filter out ligands with more than 200 fragments</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AttributeError: Raised if parameter being modified does not exist in config</span>
+<span class="sd">            ValueError: Raised if value being set is not permitted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_parameters</span><span class="p">()</span>  <span class="c1"># reset to ensure no leaks between configurations</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PLIP self.config has no parameter </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="s2">&quot;ANGLE&quot;</span> <span class="ow">in</span> <span class="n">param</span> <span class="ow">and</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">180</span>
+            <span class="p">):</span>  <span class="c1"># Check value for angle thresholds</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Threshold for angles need to have values within 0 and 180.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;DIST&quot;</span> <span class="ow">in</span> <span class="n">param</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>  <span class="c1"># Check value for distance thresholds</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Threshold for distances must not be larger than 10 Angstrom.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="n">value</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">BS_DIST</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="p">):</span>  <span class="c1"># Dynamically adapt the search space for binding site residues</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">BS_DIST</span> <span class="o">=</span> <span class="n">value</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="c1"># Check additional conditions for interdependent thresholds</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">HALOGEN_ACC_ANGLE</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">HALOGEN_ANGLE_DEV</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The halogen acceptor angle has to be larger than the halogen angle deviation.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">HALOGEN_DON_ANGLE</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">HALOGEN_ANGLE_DEV</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The halogen donor angle has to be larger than the halogen angle deviation.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">WATER_BRIDGE_MINDIST</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">WATER_BRIDGE_MAXDIST</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The water bridge minimum distance has to be smaller than the water bridge maximum distance.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">WATER_BRIDGE_OMEGA_MIN</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">WATER_BRIDGE_OMEGA_MAX</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The water bridge omega minimum angle has to be smaller than the water bridge omega maximum angle&quot;</span>
+            <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_visualize_interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">complex</span><span class="p">:</span> <span class="s2">&quot;plip.structure.preparation.PDBComplex&quot;</span><span class="p">):</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">plip.basic</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">PYMOL</span><span class="p">:</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">PYMOL</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">ligand</span> <span class="ow">in</span> <span class="nb">complex</span><span class="o">.</span><span class="n">ligands</span><span class="p">:</span>
+            <span class="nb">complex</span><span class="o">.</span><span class="n">characterize_complex</span><span class="p">(</span><span class="n">ligand</span><span class="p">)</span>
+            <span class="n">visualizer_complexes</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">VisualizerData</span><span class="p">(</span><span class="nb">complex</span><span class="p">,</span> <span class="n">site</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">complex</span><span class="o">.</span><span class="n">interaction_sets</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="nb">complex</span><span class="o">.</span><span class="n">interaction_sets</span><span class="p">[</span><span class="n">site</span><span class="p">]</span><span class="o">.</span><span class="n">interacting_res</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">visualize_in_pymol</span><span class="p">(</span><span class="n">visualizer_complexes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">NameError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Interactions could not be visualised. Raised error </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">.</span>
+<span class="s2">                </span><span class="se">\n</span><span class="s2">To enable pymol visualisations please install pymol in a conda environment with:</span>
+<span class="s2">                </span><span class="se">\n</span><span class="s2">conda install -c conda-forge -c schrodinger numpy pymol-bundle</span><span class="se">\n\n</span>
+<span class="s2">                &quot;&quot;&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span>
+
+<div class="viewcode-block" id="TCRInteractionProfiler.create_pymol_session">
+<a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.create_pymol_session">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_pymol_session</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tcr_pmhc</span><span class="p">:</span> <span class="s2">&quot;TCR&quot;</span><span class="p">,</span>
+        <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">antigen_residues_to_highlight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">pymol</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">pymol</span><span class="w"> </span><span class="kn">import</span> <span class="n">cmd</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;pymol could not be imported. Raised error: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span>
+<span class="s2">                </span><span class="se">\n</span><span class="s2">To enable pymol visualisations please install pymol in a conda environment with:</span>
+<span class="s2">                </span><span class="se">\n</span><span class="s2">conda install -c conda-forge -c schrodinger numpy pymol-bundle</span><span class="se">\n\n</span>
+<span class="s2">                &quot;&quot;&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+        <span class="n">pymol</span><span class="o">.</span><span class="n">finish_launching</span><span class="p">([</span><span class="s2">&quot;pymol&quot;</span><span class="p">,</span> <span class="s2">&quot;-qc&quot;</span><span class="p">])</span>
+
+        <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_parser</span><span class="o">.</span><span class="n">parse_tcr_pmhc_complex</span><span class="p">(</span>
+            <span class="n">tcr_pmhc</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">delete_tmp_files</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">mol</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">mol</span>
+        <span class="n">mol</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plip_parser</span><span class="o">.</span><span class="n">parse_complex</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_visualize_interactions</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span>
+            <span class="n">pymol</span><span class="o">.</span><span class="n">CmdException</span>
+        <span class="p">):</span>  <span class="c1"># for some reason sometimes this only works the second time? Probably to do with latency in pymol loading and object selection</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plip_parser</span><span class="o">.</span><span class="n">parse_complex</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_visualize_interactions</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+
+        <span class="n">pymol_session</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="n">f</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;^</span><span class="si">{</span><span class="n">mol</span><span class="o">.</span><span class="n">pymol_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">.*\.pse$&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pymol_session</span><span class="p">)</span>
+
+        <span class="c1"># create temporary file containing the TCR and its MHC and antigen.</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRIO</span>
+
+        <span class="n">tcrio</span> <span class="o">=</span> <span class="n">TCRIO</span><span class="o">.</span><span class="n">TCRIO</span><span class="p">()</span>
+        <span class="n">tmp_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tmp_for_vis_</span><span class="si">{</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.pdb&quot;</span>
+        <span class="n">tcrio</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">tcr_pmhc</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">antigen</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">antigen_chain</span> <span class="o">=</span> <span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">antigen</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;sticks&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;chain </span><span class="si">{</span><span class="n">antigen_chain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">hide</span><span class="p">(</span><span class="s2">&quot;cartoon&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;chain </span><span class="si">{</span><span class="n">antigen_chain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">antigen_residues_to_highlight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">antigen_residues_to_highlight</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">antigen_residues_to_highlight</span> <span class="o">=</span> <span class="p">[</span><span class="n">antigen_residues_to_highlight</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">res_nr</span> <span class="ow">in</span> <span class="n">antigen_residues_to_highlight</span><span class="p">:</span>
+                    <span class="n">cmd</span><span class="o">.</span><span class="n">color</span><span class="p">(</span>
+                        <span class="s2">&quot;red&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;chain </span><span class="si">{</span><span class="n">antigen_chain</span><span class="si">}</span><span class="s2"> and res </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">res_nr</span><span class="p">)</span><span class="si">}</span><span class="s2"> and elem C&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">antigen</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Could not highlight antigen, no antigen found for TCR </span><span class="si">{</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Could not highlight antigen, multiple antigen </span><span class="si">{</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">antigen</span><span class="si">}</span><span class="s2"> found for TCR </span><span class="si">{</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">save_as</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">tcr_pmhc</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_interactions.pse&quot;</span>
+
+        <span class="c1"># cmd.save(pymol_session)</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">save_as</span><span class="p">)</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+
+        <span class="c1"># clean up pymol environment and remove temporary files</span>
+        <span class="k">del</span> <span class="n">cmd</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pymol_session</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">save_as</span></div>
+
+
+<div class="viewcode-block" id="TCRInteractionProfiler.get_interactions">
+<a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.get_interactions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_as_csv</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_parser</span><span class="o">.</span><span class="n">parse_tcr_pmhc_complex</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="n">renumber</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">renumber</span><span class="p">:</span>
+            <span class="n">mol</span><span class="p">,</span> <span class="n">renumbering</span><span class="p">,</span> <span class="n">domains</span> <span class="o">=</span> <span class="n">mol</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">renumbering</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">domains</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">mol</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
+
+        <span class="n">interactions_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plip_parser</span><span class="o">.</span><span class="n">parse_complex</span><span class="p">(</span>
+            <span class="n">mol</span><span class="p">,</span> <span class="n">tcr</span><span class="p">,</span> <span class="n">renumbering</span><span class="o">=</span><span class="n">renumbering</span><span class="p">,</span> <span class="n">domain_assignment</span><span class="o">=</span><span class="n">domains</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">save_as_csv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">interactions_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">save_as_csv</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">interactions_df</span></div>
+
+
+<div class="viewcode-block" id="TCRInteractionProfiler.get_interaction_heatmap">
+<a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.get_interaction_heatmap">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_interaction_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">):</span>
+        <span class="n">interactions_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_interactions</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="n">renumber</span><span class="p">)</span>
+
+        <span class="n">heatmaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interaction_heatmap</span><span class="p">(</span>
+            <span class="n">interactions_df</span><span class="p">,</span>
+            <span class="n">tcr_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">tcr</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">peptide_length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">tcr</span><span class="o">.</span><span class="n">antigen</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="o">**</span><span class="n">plotting_kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">heatmaps</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_interaction_heatmap</span><span class="p">(</span>
+        <span class="n">interactions_df</span><span class="p">,</span>
+        <span class="n">tcr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">peptide_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">interaction_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">antigen_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mutation_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">interaction_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">interactions_df</span><span class="p">[</span><span class="n">interactions_df</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">interaction_type</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">interactions_df</span>
+
+        <span class="k">if</span> <span class="n">antigen_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">antigen_name</span> <span class="o">=</span> <span class="s2">&quot;peptide&quot;</span>
+
+        <span class="n">TCRA_interactions</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">domain</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;VA&quot;</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">])]</span>
+        <span class="n">TCRB_interactions</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;VB&quot;</span><span class="p">]</span>
+        <span class="n">TCRA_tuples</span> <span class="o">=</span> <span class="n">TCRA_interactions</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;protein_residue&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;protein_number&quot;</span><span class="p">]),</span>
+                <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;ligand_residue&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;ligand_number&quot;</span><span class="p">]),</span>
+            <span class="p">),</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">TCRB_tuples</span> <span class="o">=</span> <span class="n">TCRB_interactions</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;protein_residue&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;protein_number&quot;</span><span class="p">]),</span>
+                <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;ligand_residue&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;ligand_number&quot;</span><span class="p">]),</span>
+            <span class="p">),</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">heatmap_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">126</span><span class="p">,</span> <span class="n">peptide_length</span><span class="p">))</span>
+        <span class="n">heatmap_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">126</span><span class="p">,</span> <span class="n">peptide_length</span><span class="p">))</span>
+
+        <span class="c1"># check peptide numbering</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">interactions_df</span><span class="o">.</span><span class="n">ligand_number</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">peptide_length</span>
+        <span class="n">ligand_number_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">):</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">peptide_length</span><span class="p">)}</span>
+
+        <span class="k">if</span> <span class="s2">&quot;original_numbering&quot;</span> <span class="ow">in</span> <span class="n">interactions_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">tcr_a_mapping</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span>
+                    <span class="o">*</span><span class="nb">set</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="p">(</span>
+                                <span class="n">x</span><span class="o">.</span><span class="n">protein_number</span><span class="p">,</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">original_numbering</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">protein_residue</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">interactions_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">domain</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;VA&quot;</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">]</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">tcr_b_mapping</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span>
+                    <span class="o">*</span><span class="nb">set</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="p">(</span>
+                                <span class="n">x</span><span class="o">.</span><span class="n">protein_number</span><span class="p">,</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">original_numbering</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">protein_residue</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">interactions_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">domain</span> <span class="o">==</span> <span class="s2">&quot;VB&quot;</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">peptide_mapping</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span>
+                    <span class="o">*</span><span class="nb">set</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="p">(</span>
+                                <span class="n">x</span><span class="o">.</span><span class="n">ligand_number</span> <span class="o">-</span> <span class="n">offset</span><span class="p">,</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">ligand_number</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">ligand_residue</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="p">)</span>
+                            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">interactions_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">peptide_mapping_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">reversed</span><span class="p">(</span><span class="n">peptide_mapping</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="n">mutation_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mutation_index</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">mutation_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">mutation_index</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">plot_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">peptide_mapping_dict</span><span class="p">[</span><span class="n">m_idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">m_idx</span> <span class="ow">in</span> <span class="n">mutation_index</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">plot_index</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Mutation index could not be resolved. Peptide residues are: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">peptide_mapping_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plot_index</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">interaction_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">interaction_type</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax_alpha</span><span class="p">,</span> <span class="n">ax_beta</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">TCRA_tuples</span><span class="p">:</span>
+            <span class="n">heatmap_a</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">ligand_number_mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])]]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">heatmap_a</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">ligand_number_mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])]]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="p">)</span>
+
+        <span class="n">ax_alpha</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">heatmap_a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;PuRd&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">plot_index</span><span class="p">:</span>
+            <span class="n">ax_alpha</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">i</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ax_alpha</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax_alpha</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr_name</span><span class="si">}</span><span class="s2"> TCR alpha chain to </span><span class="si">{</span><span class="n">antigen_name</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">interaction_type</span><span class="si">}</span><span class="s2"> interactions&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tcr_a_mapping</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ax_alpha</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">tcr_a_mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tcr_a_mapping</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+            <span class="n">ax_alpha</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">peptide_mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peptide_mapping</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax_alpha</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+            <span class="n">ax_alpha</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([],</span> <span class="p">[])</span>
+
+        <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">TCRB_tuples</span><span class="p">:</span>
+            <span class="n">heatmap_b</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">ligand_number_mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])]]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">heatmap_b</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">ligand_number_mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])]]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="p">)</span>
+        <span class="n">ax_beta</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">heatmap_b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;PuRd&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">plot_index</span><span class="p">:</span>
+            <span class="n">ax_beta</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">i</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">ax_beta</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax_beta</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr_name</span><span class="si">}</span><span class="s2"> TCR beta chain to </span><span class="si">{</span><span class="n">antigen_name</span><span class="si">}</span><span class="s2">; </span><span class="si">{</span><span class="n">interaction_type</span><span class="si">}</span><span class="s2"> interactions&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tcr_b_mapping</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ax_beta</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">tcr_b_mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tcr_b_mapping</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+            <span class="n">ax_beta</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">peptide_mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peptide_mapping</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax_beta</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+            <span class="n">ax_beta</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([],</span> <span class="p">[])</span>
+
+        <span class="k">if</span> <span class="n">save_as</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">save_as</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="n">heatmap_a</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="n">heatmap_b</span><span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

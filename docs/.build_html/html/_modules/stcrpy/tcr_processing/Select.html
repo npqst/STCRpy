@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_processing.Select &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_processing.Select</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_processing.Select</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Select.py</span>
+<span class="sd">Created on 9 May 2017</span>
+<span class="sd">@author: leem</span>
+
+<span class="sd">These are selection classes for the save method of the TcrPDB entity</span>
+<span class="sd">They are based on the ABDB.AbPDB.Select and Bio.PDB.PDBIO Selection classes</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">BACKBONE_CB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils.common</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="select_all">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">select_all</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Default selection (everything) during writing - can be used as base class</span>
+<span class="sd">    to implement selective output. This selects which entities will be written out.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Select all&gt;&quot;</span>
+
+<div class="viewcode-block" id="select_all.accept">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ob</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ob</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_atom</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ob</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_residue</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ob</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_chain</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ob</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;F&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_fragment</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ob</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;H&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_holder</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ob</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;M&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept_model</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="select_all.accept_model">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_model">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overload this to reject models for output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="select_all.accept_holder">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_holder">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_holder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overload this to reject holders for output. (TCRs, TCRchains-holder, MHCchains-holder, AGchains-holder)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="select_all.accept_chain">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_chain">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overload this to reject chains for output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="select_all.accept_fragment">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_fragment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fragment</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overload this to reject residues for output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="select_all.accept_residue">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_residue">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residue</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overload this to reject residues for output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="select_all.accept_atom">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.select_all.accept_atom">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overload this to reject atoms for output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="variable_only">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.variable_only">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">variable_only</span><span class="p">(</span><span class="n">select_all</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select the variable region(s) of the structure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;variable_only&gt;&quot;</span>
+
+<div class="viewcode-block" id="variable_only.accept_holder">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.variable_only.accept_holder">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_holder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">holder</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overload this to reject holders for output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Accept an abTCR or a gdTCR</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">holder</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">holder</span><span class="p">,</span> <span class="s2">&quot;VA&quot;</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">holder</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">holder</span><span class="p">,</span> <span class="s2">&quot;VG&quot;</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">holder</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">holder</span><span class="p">,</span> <span class="s2">&quot;VD&quot;</span><span class="p">))</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="variable_only.accept_residue">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.variable_only.accept_residue">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residue</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overload this to reject residues for output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="s2">&quot;region&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">residue</span><span class="o">.</span><span class="n">region</span> <span class="o">!=</span> <span class="s2">&quot;?&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="cdr3">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.cdr3">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">cdr3</span><span class="p">(</span><span class="n">variable_only</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select only CDR3.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;CDR3&gt;&quot;</span>
+
+<div class="viewcode-block" id="cdr3.accept_residue">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.cdr3.accept_residue">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residue</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;cdr&quot;</span> <span class="ow">in</span> <span class="n">residue</span><span class="o">.</span><span class="n">region</span> <span class="ow">and</span> <span class="s2">&quot;3&quot;</span> <span class="ow">in</span> <span class="n">residue</span><span class="o">.</span><span class="n">region</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="backbone">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.backbone">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">backbone</span><span class="p">(</span><span class="n">select_all</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select only backbone (no side chains) atoms in the structure.</span>
+<span class="sd">    Backbone defined as &quot;C&quot;,&quot;CA&quot;,&quot;N&quot;,&quot;CB&quot; and &quot;O&quot; atom identifiers in amino acid (pdb notation)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;backbone&gt;&quot;</span>
+
+<div class="viewcode-block" id="backbone.accept_atom">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.backbone.accept_atom">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">accept_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">BACKBONE_CB</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="fv_only_backbone">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.Select.fv_only_backbone">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">fv_only_backbone</span><span class="p">(</span><span class="n">variable_only</span><span class="p">,</span> <span class="n">backbone</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select the backbone atoms of the variable region.</span>
+<span class="sd">    Example of combining selection classes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;variable only backbone&gt;&quot;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

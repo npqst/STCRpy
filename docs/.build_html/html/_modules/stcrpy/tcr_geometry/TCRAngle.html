@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_geometry.TCRAngle &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=34399df3"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stcrpy.html">stcrpy package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_geometry.TCRAngle</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for stcrpy.tcr_geometry.TCRAngle</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRParser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.reference_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">reference_data</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">Bio.SVDSuperimposer</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVDSuperimposer</span>
+
+
+<div class="viewcode-block" id="TCRAngle">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.TCRAngle">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TCRAngle</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for calculating the orientation angles between the variable domains of a TCR.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_TCR_chain_ids</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_reference_atoms</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_reference_vectors</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_TCR_chain_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;TCRAngle is a base class. Instantiate a descendent class, eg. abTCRAngle&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_reference_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">TCRParser</span><span class="o">.</span><span class="n">TCRParser</span><span class="p">(</span><span class="n">QUIET</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">reference_atoms</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">chain_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">:</span>
+            <span class="n">reference_pdb_file</span> <span class="o">=</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">reference_pdb_paths</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]</span>
+            <span class="n">reference_structure</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">get_tcr_structure</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;ref_</span><span class="si">{</span><span class="n">chain_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reference_pdb_file</span>
+            <span class="p">)</span>
+            <span class="n">reference_atoms</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">reference_structure</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">()</span>
+            <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_atoms</span> <span class="o">=</span> <span class="n">reference_atoms</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_reference_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read in the plane vectors precalculated on the reference structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_vectors</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">chain_id</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference_data</span><span class="o">.</span><span class="n">reference_positions</span><span class="p">[</span><span class="n">chain_id</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">chain_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plane_origin</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">chain_id</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position_vectors</span><span class="p">[</span><span class="n">chain_id</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reference_data</span><span class="o">.</span><span class="n">reference_origin_scaling</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]),</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">chain_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Define the plane vectors relative to &quot;plane_origin&quot;</span>
+        <span class="c1"># On VA domain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plane_1</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">chain_id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plane_origin</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]</span>
+            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position_vectors</span><span class="p">[</span><span class="n">chain_id</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">chain_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plane_2</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">chain_id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plane_origin</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]</span>
+            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position_vectors</span><span class="p">[</span><span class="n">chain_id</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">chain_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Normalise a vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TCRAngle.calculate_points">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.TCRAngle.calculate_points">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">,</span> <span class="n">chain_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to calculate the vector points for a TCR variable region.</span>
+<span class="sd">        Note that this uses bio.pdb superimposer to do the structural fitting.</span>
+<span class="sd">        @param tcr: A tcr structure object from TCRDB.TcrPDB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_chain</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="n">chain_id</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Retrieve chain by chain type from TCR structure object</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                tcr (TCR structure object): TCR structure object</span>
+<span class="sd">                chain_id (str): Chain identifier for TCR alpha, beta, gamma or delta chains.</span>
+<span class="sd">                Should be in set {A, B, G, D}</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                Chain structure object</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">chain_id</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">chain_id</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_VB</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">chain_id</span> <span class="o">==</span> <span class="s2">&quot;G&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_VG</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">chain_id</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_VG</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised TCR chain type </span><span class="si">{</span><span class="n">chain_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">tcr_atoms</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">res_id</span><span class="p">:</span> <span class="n">get_chain</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="n">chain_id</span><span class="p">)[</span><span class="n">res_id</span><span class="p">][</span><span class="s2">&quot;CA&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">res_id</span> <span class="ow">in</span> <span class="n">reference_data</span><span class="o">.</span><span class="n">reference_residues</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">res_id</span> <span class="ow">in</span> <span class="n">get_chain</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="n">chain_id</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()</span> <span class="k">for</span> <span class="n">res_id</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">tcr_atoms</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="p">)</span>
+
+        <span class="n">reference_coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">res_id</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_atoms</span><span class="p">[</span><span class="n">chain_id</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">res_id</span> <span class="ow">in</span> <span class="n">tcr_atoms</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">assert</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">reference_coordinates</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="n">superimposer</span> <span class="o">=</span> <span class="n">SVDSuperimposer</span><span class="p">()</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">superimpose</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">ref_coord</span><span class="p">):</span>
+            <span class="n">superimposer</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">ref_coord</span><span class="p">)</span>
+            <span class="n">superimposer</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">superimposer</span><span class="o">.</span><span class="n">get_rotran</span><span class="p">()</span>
+
+        <span class="n">rotation</span><span class="p">,</span> <span class="n">translation</span> <span class="o">=</span> <span class="n">superimpose</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">reference_coordinates</span><span class="p">)</span>
+
+        <span class="n">transformed_points</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plane_origin</span><span class="p">[</span><span class="n">chain_id</span><span class="p">],</span> <span class="n">rotation</span><span class="p">)</span> <span class="o">+</span> <span class="n">translation</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plane_1</span><span class="p">[</span><span class="n">chain_id</span><span class="p">],</span> <span class="n">rotation</span><span class="p">)</span> <span class="o">+</span> <span class="n">translation</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plane_2</span><span class="p">[</span><span class="n">chain_id</span><span class="p">],</span> <span class="n">rotation</span><span class="p">)</span> <span class="o">+</span> <span class="n">translation</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">transformed_points</span></div>
+
+
+<div class="viewcode-block" id="TCRAngle.calculate_angles">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.TCRAngle.calculate_angles">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to calculate the orientation angles for a TCR.</span>
+<span class="sd">        Note that this uses bio.pdb superimposer to do the structural fitting.</span>
+<span class="sd">        @param tcr: A tcr structure object from TCRDB.TcrPDB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">plane_origin</span><span class="p">,</span> <span class="n">plane_1</span><span class="p">,</span> <span class="n">plane_2</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">{},</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">chain_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">:</span>
+            <span class="n">plane_origin</span><span class="p">[</span><span class="n">chain_type</span><span class="p">],</span> <span class="n">plane_1</span><span class="p">[</span><span class="n">chain_type</span><span class="p">],</span> <span class="n">plane_2</span><span class="p">[</span><span class="n">chain_type</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calculate_points</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="n">chain_type</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Create vectors with which to calculate angles between.</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise</span><span class="p">(</span>
+            <span class="n">plane_origin</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">plane_origin</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="p">)</span>
+        <span class="n">Cminus</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">C</span><span class="p">]</span>
+        <span class="n">A1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise</span><span class="p">(</span>
+            <span class="n">plane_1</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">-</span> <span class="n">plane_origin</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="p">)</span>
+        <span class="n">A2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise</span><span class="p">(</span>
+            <span class="n">plane_2</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">-</span> <span class="n">plane_origin</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="p">)</span>
+        <span class="n">B1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise</span><span class="p">(</span>
+            <span class="n">plane_1</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">plane_origin</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="p">)</span>
+        <span class="n">B2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise</span><span class="p">(</span>
+            <span class="n">plane_2</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">plane_origin</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="p">)</span>
+        <span class="n">dc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">plane_origin</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="n">plane_origin</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                <span class="o">**</span> <span class="mi">2</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Projection of the A1 and B1 vectors onto the plane perpendicular to C.</span>
+        <span class="n">n_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">A1</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+        <span class="n">n_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">n_x</span><span class="p">)</span>
+
+        <span class="n">tmpA_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A1</span><span class="p">,</span> <span class="n">n_x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A1</span><span class="p">,</span> <span class="n">n_y</span><span class="p">)])</span>
+        <span class="n">tmpB_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalise</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B1</span><span class="p">,</span> <span class="n">n_x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B1</span><span class="p">,</span> <span class="n">n_y</span><span class="p">)])</span>
+
+        <span class="c1"># BA is the angle between the A1 and B1 vectors looking down C.</span>
+        <span class="n">BA</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tmpA_</span><span class="p">,</span> <span class="n">tmpB_</span><span class="p">))</span>
+        <span class="n">BA</span> <span class="o">=</span> <span class="n">BA</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="c1"># Find direction by computing cross products</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">tmpA_</span><span class="p">,</span> <span class="n">tmpB_</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">BA</span> <span class="o">=</span> <span class="o">-</span><span class="n">BA</span>
+
+        <span class="c1"># AC1 angle is the angle between the A1 and C vectors</span>
+        <span class="n">AC1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A1</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
+        <span class="n">AC1</span> <span class="o">=</span> <span class="n">AC1</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="c1"># BC1 angle is the angle between the B1 and C vectors</span>
+        <span class="n">BC1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B1</span><span class="p">,</span> <span class="n">Cminus</span><span class="p">))</span>
+        <span class="n">BC1</span> <span class="o">=</span> <span class="n">BC1</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="c1"># AC2 angle is the angle between the A2 and C vectors</span>
+        <span class="n">AC2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A2</span><span class="p">,</span> <span class="n">C</span><span class="p">))</span>
+        <span class="n">AC2</span> <span class="o">=</span> <span class="n">AC2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="c1"># BC2 angle is the angle between the B2 and C vectors</span>
+        <span class="n">BC2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B2</span><span class="p">,</span> <span class="n">Cminus</span><span class="p">))</span>
+        <span class="n">BC2</span> <span class="o">=</span> <span class="n">BC2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="c1"># Return the angles and the separation distance.</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">C1&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">C1&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">C2&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chain_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">C2&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;dist&quot;</span><span class="p">,</span>
+                    <span class="p">],</span>
+                    <span class="p">[</span><span class="n">BA</span><span class="p">,</span> <span class="n">BC1</span><span class="p">,</span> <span class="n">AC1</span><span class="p">,</span> <span class="n">BC2</span><span class="p">,</span> <span class="n">AC2</span><span class="p">,</span> <span class="n">dc</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TCRAngle.get_angles">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.TCRAngle.get_angles">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+        <span class="c1"># handle cases where multiple TCRs are passed as one TCR structure model</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">t</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_angles</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_TCRs</span><span class="p">()}</span>
+        <span class="c1"># else return angles for single TCR</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_angles</span><span class="p">(</span><span class="n">tcr</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="abTCRAngle">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.abTCRAngle">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">abTCRAngle</span><span class="p">(</span><span class="n">TCRAngle</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to calculate the orientation angles between the variable domains of an abTCR.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_TCR_chain_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="gdTCRAngle">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.gdTCRAngle">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">gdTCRAngle</span><span class="p">(</span><span class="n">TCRAngle</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to calculate the orientation angles between the variable domains of a gdTCR.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_TCR_chain_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="dbTCRAngle">
+<a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRAngle.dbTCRAngle">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">dbTCRAngle</span><span class="p">(</span><span class="n">TCRAngle</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to calculate the orientation angles between the variable domains of a dbTCR.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_TCR_chain_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

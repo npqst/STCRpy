@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stcrpy.tcr_interactions package &mdash; STCRpy 0.1.28 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=34399df3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="stcrpy.tcr_methods package" href="stcrpy.tcr_methods.html" />
+    <link rel="prev" title="stcrpy.tcr_geometry.reference_data package" href="stcrpy.tcr_geometry.reference_data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            STCRpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="stcrpy.html">stcrpy package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="stcrpy.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_datasets.html">stcrpy.tcr_datasets package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_formats.html">stcrpy.tcr_formats package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_geometry.html">stcrpy.tcr_geometry package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">stcrpy.tcr_interactions package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_interactions.PLIPParser">stcrpy.tcr_interactions.PLIPParser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_interactions.TCRInteractionProfiler">stcrpy.tcr_interactions.TCRInteractionProfiler module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser">stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_interactions.utils">stcrpy.tcr_interactions.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-stcrpy.tcr_interactions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_methods.html">stcrpy.tcr_methods package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_metrics.html">stcrpy.tcr_metrics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_ml.html">stcrpy.tcr_ml package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.tcr_processing.html">stcrpy.tcr_processing package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stcrpy.utils.html">stcrpy.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="stcrpy.html#module-stcrpy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">STCRpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="stcrpy.html">stcrpy package</a></li>
+      <li class="breadcrumb-item active">stcrpy.tcr_interactions package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/stcrpy.tcr_interactions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="stcrpy-tcr-interactions-package">
+<h1>stcrpy.tcr_interactions package<a class="headerlink" href="#stcrpy-tcr-interactions-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-stcrpy.tcr_interactions.PLIPParser">
+<span id="stcrpy-tcr-interactions-plipparser-module"></span><h2>stcrpy.tcr_interactions.PLIPParser module<a class="headerlink" href="#module-stcrpy.tcr_interactions.PLIPParser" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.PLIPParser.PLIPParser">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.PLIPParser.</span></span><span class="sig-name descname"><span class="pre">PLIPParser</span></span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/PLIPParser.html#PLIPParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.PLIPParser.PLIPParser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.PLIPParser.PLIPParser.parse_complex">
+<span class="sig-name descname"><span class="pre">parse_complex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">complex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">plip.structure.preparation.PDBComplex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_pmhc_complex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR" title="stcrpy.tcr_processing.TCR.gdTCR"><span class="pre">gdTCR</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renumbering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain_assignment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/PLIPParser.html#PLIPParser.parse_complex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.PLIPParser.PLIPParser.parse_complex" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_interactions.TCRInteractionProfiler">
+<span id="stcrpy-tcr-interactions-tcrinteractionprofiler-module"></span><h2>stcrpy.tcr_interactions.TCRInteractionProfiler module<a class="headerlink" href="#module-stcrpy.tcr_interactions.TCRInteractionProfiler" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.TCRInteractionProfiler.</span></span><span class="sig-name descname"><span class="pre">TCRInteractionProfiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/TCRInteractionProfiler.html#TCRInteractionProfiler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.create_pymol_session">
+<span class="sig-name descname"><span class="pre">create_pymol_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr_pmhc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antigen_residues_to_highlight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/TCRInteractionProfiler.html#TCRInteractionProfiler.create_pymol_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.create_pymol_session" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.get_interaction_heatmap">
+<span class="sig-name descname"><span class="pre">get_interaction_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plotting_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/TCRInteractionProfiler.html#TCRInteractionProfiler.get_interaction_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.get_interaction_heatmap" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.get_interactions">
+<span class="sig-name descname"><span class="pre">get_interactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_as_csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/TCRInteractionProfiler.html#TCRInteractionProfiler.get_interactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.get_interactions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.reset_parameters">
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/TCRInteractionProfiler.html#TCRInteractionProfiler.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.reset_parameters" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.set_interaction_parameters">
+<span class="sig-name descname"><span class="pre">set_interaction_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/TCRInteractionProfiler.html#TCRInteractionProfiler.set_interaction_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler.set_interaction_parameters" title="Link to this definition"></a></dt>
+<dd><p>Function to set global PLIP detection parameters, ie. the stcrpy API for PLIP config parameters.
+See <a class="reference external" href="https://github.com/pharmai/plip/blob/master/plip/plipcmd.py">https://github.com/pharmai/plip/blob/master/plip/plipcmd.py</a> for how these are set in native PLIP
+See <a class="reference external" href="https://github.com/pharmai/plip/blob/master/plip/basic/config.py">https://github.com/pharmai/plip/blob/master/plip/basic/config.py</a> for the default values</p>
+<dl class="simple">
+<dt>Default Parameters (from PLIP distribution):</dt><dd><p>BS_DIST = 7.5  # Determines maximum distance to include binding site residues
+AROMATIC_PLANARITY = 5.0  # Determines allowed deviation from planarity in aromatic rings
+MIN_DIST = 0.5  # Minimum distance for all distance thresholds
+HYDROPH_DIST_MAX = 4.0  # Distance cutoff for detection of hydrophobic contacts
+HBOND_DIST_MAX = 4.1  # Max. distance between hydrogen bond donor and acceptor (Hubbard &amp; Haider, 2001) + 0.6 A
+HBOND_DON_ANGLE_MIN = 100  # Min. angle at the hydrogen bond donor (Hubbard &amp; Haider, 2001) + 10
+PISTACK_DIST_MAX = 5.5  # Max. distance for parallel or offset pistacking (McGaughey, 1998)
+PISTACK_ANG_DEV = 30  # Max. Deviation from parallel or perpendicular orientation (in degrees)
+PISTACK_OFFSET_MAX = 2.0  # Maximum offset of the two rings (corresponds to the radius of benzene + 0.5 A)
+PICATION_DIST_MAX = 6.0  # Max. distance between charged atom and aromatic ring center (Gallivan and Dougherty, 1999)
+SALTBRIDGE_DIST_MAX = 5.5  # Max. distance between centers of charge for salt bridges (Barlow and Thornton, 1983) + 1.5
+HALOGEN_DIST_MAX = 4.0  # Max. distance between oxy. and halogen (Halogen bonds in biological molecules., Auffinger)+0.5
+HALOGEN_ACC_ANGLE = 120  # Optimal acceptor angle (Halogen bonds in biological molecules., Auffinger)
+HALOGEN_DON_ANGLE = 165  # Optimal donor angle (Halogen bonds in biological molecules., Auffinger)
+HALOGEN_ANGLE_DEV = 30  # Max. deviation from optimal angle
+WATER_BRIDGE_MINDIST = 2.5  # Min. distance between water oxygen and polar atom (Jiang et al., 2005) -0.1
+WATER_BRIDGE_MAXDIST = 4.1  # Max. distance between water oxygen and polar atom (Jiang et al., 2005) +0.5
+WATER_BRIDGE_OMEGA_MIN = 71  # Min. angle between acceptor, water oxygen and donor hydrogen (Jiang et al., 2005) - 9
+WATER_BRIDGE_OMEGA_MAX = 140  # Max. angle between acceptor, water oxygen and donor hydrogen (Jiang et al., 2005)
+WATER_BRIDGE_THETA_MIN = 100  # Min. angle between water oxygen, donor hydrogen and donor atom (Jiang et al., 2005)
+METAL_DIST_MAX = 3.0  # Max. distance between metal ion and interacting atom (Harding, 2001)
+MAX_COMPOSITE_LENGTH = 200  # Filter out ligands with more than 200 fragments</p>
+</dd>
+<dt>Raises:</dt><dd><p>AttributeError: Raised if parameter being modified does not exist in config
+ValueError: Raised if value being set is not permitted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser">
+<span id="stcrpy-tcr-interactions-tcrpmhc-plip-model-parser-module"></span><h2>stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser module<a class="headerlink" href="#module-stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.</span></span><span class="sig-name descname"><span class="pre">TCRpMHC_PLIP_Model_Parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tmp_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/TCRpMHC_PLIP_Model_Parser.html#TCRpMHC_PLIP_Model_Parser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser.map_amino_acids_to_ligands">
+<span class="sig-name descname"><span class="pre">map_amino_acids_to_ligands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ligand_pdb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligand_sdf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/TCRpMHC_PLIP_Model_Parser.html#TCRpMHC_PLIP_Model_Parser.map_amino_acids_to_ligands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser.map_amino_acids_to_ligands" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser.parse_tcr_pmhc_complex">
+<span class="sig-name descname"><span class="pre">parse_tcr_pmhc_complex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr_pmhc_complex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_tmp_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">PDBComplex</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/TCRpMHC_PLIP_Model_Parser.html#TCRpMHC_PLIP_Model_Parser.parse_tcr_pmhc_complex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.TCRpMHC_PLIP_Model_Parser.TCRpMHC_PLIP_Model_Parser.parse_tcr_pmhc_complex" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_interactions.utils">
+<span id="stcrpy-tcr-interactions-utils-module"></span><h2>stcrpy.tcr_interactions.utils module<a class="headerlink" href="#module-stcrpy.tcr_interactions.utils" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.utils.Interaction">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.utils.</span></span><span class="sig-name descname"><span class="pre">Interaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protein_atom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protein_chain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protein_residue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protein_number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligand_atom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plip_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/utils.html#Interaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.utils.Interaction" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.utils.Interaction.to_tuple">
+<span class="sig-name descname"><span class="pre">to_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/utils.html#Interaction.to_tuple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.utils.Interaction.to_tuple" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.utils.parse_interaction">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.utils.</span></span><span class="sig-name descname"><span class="pre">parse_interaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#stcrpy.tcr_interactions.utils.Interaction" title="stcrpy.tcr_interactions.utils.Interaction"><span class="pre">Interaction</span></a></span></span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/utils.html#parse_interaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.utils.parse_interaction" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.utils.process_hbond">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.utils.</span></span><span class="sig-name descname"><span class="pre">process_hbond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/utils.html#process_hbond"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.utils.process_hbond" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.utils.process_hydrophobic">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.utils.</span></span><span class="sig-name descname"><span class="pre">process_hydrophobic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/utils.html#process_hydrophobic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.utils.process_hydrophobic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.utils.process_pi_stack">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.utils.</span></span><span class="sig-name descname"><span class="pre">process_pi_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/utils.html#process_pi_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.utils.process_pi_stack" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.utils.process_saltbridge">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.utils.</span></span><span class="sig-name descname"><span class="pre">process_saltbridge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interaction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/utils.html#process_saltbridge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.utils.process_saltbridge" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="stcrpy.tcr_interactions.utils.return_interactions">
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.utils.</span></span><span class="sig-name descname"><span class="pre">return_interactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protein_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligand_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pymol_visualization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/utils.html#return_interactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.utils.return_interactions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-stcrpy.tcr_interactions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-stcrpy.tcr_interactions" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="stcrpy.tcr_geometry.reference_data.html" class="btn btn-neutral float-left" title="stcrpy.tcr_geometry.reference_data package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="stcrpy.tcr_methods.html" class="btn btn-neutral float-right" title="stcrpy.tcr_methods package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Nele P. Quast.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
