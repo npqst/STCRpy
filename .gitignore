@@ -2,6 +2,8 @@ __pycache__
 stcrpy.egg-info
 build
 dist
+docs/build
+docs/source
 test/test_files/out/*.pdb
 test/test_files/out/*.cif
 test/test_files/out/*.pse
