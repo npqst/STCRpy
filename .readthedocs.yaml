@@ -10,8 +10,11 @@ build:
   tools:
     python: "3.13"
   commands:
-    - mkdir --parents _readthedocs/html/
-    - cp -r docs/.build_html/* _readthedocs/html/
+    - mkdir -p $READTHEDOCS_OUTPUT/html/
+    - cp -r docs/.build_html/* $READTHEDOCS_OUTPUT/html/
+    - pwd
+    - echo $READTHEDOCS_OUTPUT
+    - ls $READTHEDOCS_OUTPUT/html/
 
 # # Build documentation in the "docs/" directory with Sphinx
 # sphinx:
