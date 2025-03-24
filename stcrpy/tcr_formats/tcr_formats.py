@@ -4,8 +4,36 @@ import os
 
 
 def to_AF3_json(
-    tcr, tcr_only=True, save=True, save_dir="", name=None, V_domain_only=False
-):
+    tcr: "TCR",
+    tcr_only: bool = True,
+    save: bool = True,
+    save_dir: str = "",
+    name: str = None,
+    V_domain_only: bool = False,
+) -> dict:
+    """Converts TCR object to dict in Alphafold 3 JSON input format, ie. amino acid sequences.
+    Eg:
+    {
+        "name": Job name,
+        "modelSeeds": [],
+        "sequences": [
+            {"proteinChain": {"sequence": AAAAAAAAAAAAAA, "count": 1}},
+            {"proteinChain": {"sequence": AAAAAAAAAAAAAA, "count": 1}},
+            {"proteinChain": {"sequence": AAAAAAAAAAAAAA, "count": 1}},
+        ],
+    }
+
+    Args:
+        tcr (TCR): TCR structure object
+        tcr_only (bool, optional): Whether to include TCR sequence only, excluding antigen and MHC. Defaults to True.
+        save (bool, optional): Whether to save dict as JSON file. Defaults to True.
+        save_dir (str, optional): Directory to save JSON files to. Defaults to "".
+        name (str, optional): TCR ID to use as name for AF3 job. Defaults to None.
+        V_domain_only (bool, optional): Include full TCR sequence or only the variable domain (1-128 IMGT numbering). Defaults to False.
+
+    Returns:
+        dict: Nested dictionary of AF3 sequence inputs.
+    """
     if V_domain_only:
         residue_nrs = list(range(128))
     else:
@@ -35,7 +63,24 @@ def to_AF3_json(
     return tcr_json
 
 
-def get_sequences(entity, amino_acids_only=True, residues_to_include=None):
+def get_sequences(
+    entity: "Bio.PDB.Entity",
+    amino_acids_only: bool = True,
+    residues_to_include: list = None,
+) -> dict:
+    """Extract seqeunces from strcuture objects as dictionary.
+
+    Args:
+        entity (Bio.PDB.Entity): Stucture object
+        amino_acids_only (bool, optional): Whether to remove non-amino acid 'X' from sequences. Defaults to True.
+        residues_to_include (list, optional): List of residue IDs to include in sequence. Defaults to None.
+
+    Raises:
+        e: AttributeError if entity has no attribute .get_chains(). The assuems entity is chain level and returns single sequence
+
+    Returns:
+        dict: Dictionary of amino acid sequences, keyed by chain ID in strcuctre entity.
+    """
 
     if residues_to_include is None:
 
