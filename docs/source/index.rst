@@ -16,11 +16,3 @@ documentation for details.
    :caption: Contents:
 
    stcrpy
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
