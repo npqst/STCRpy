@@ -10,27 +10,41 @@ from .. import tcr_processing
 
 
 class HADDOCKFormatter:
-    def __init__(self, save_dir=None):
+
+    def __init__(self, save_dir: str = None):
+        """Constructor HADDOCK formatting object.
+
+        Args:
+            save_dir (str, optional): Path to save formatted files to. Defaults to None.
+        """
         self.save_dir = save_dir if save_dir is not None else "."
 
-    def tcr_to_haddock(self, tcr):
+    def tcr_to_haddock(self, tcr: "TCR"):
+        """Bound reformatting of TCR structure object to HADDOCK compatible PDB file.
+
+        Args:
+            tcr (TCR): TCR structure object
+        """
         self.write_TCR_pdb_file(tcr, self.save_dir)
 
-    def pMHC_to_haddock(self, mhc, antigen):
+    def pMHC_to_haddock(self, mhc: "MHC", antigen: list["Antigen"]):
+        """Bound reformatting of MHC and antigen structures object to HADDOCK compatible PDB file.
+
+        Args:
+            mhc (MHC): MHC structure object
+            antigen (Antigen): Antigen structure object
+        """
         self.write_antigen_pdb_file(mhc, antigen, self.save_dir)
 
-    def write_TCR_pdb_file(self, tcr, save_dir):
+    def write_TCR_pdb_file(self, tcr: "TCR", save_dir: str):
         """
         Writes TCR structure to a PDB file in a format HADDOCK can deal with.
         Generates a PDB file, a mapping from the old to the new numbering,
             and a list of active residues to restrain the HADDOCK simulation.
 
         Args:
-            tcr: The TCR structure.
-            save_dir: The directory to save the files (default is current directory).
-
-        Returns:
-            None
+            tcr (TCR): The TCR structure.
+            save_dir (str): The directory to save the files (default is current directory).
         """
         tcr_id = f"{tcr.parent.parent.id}_{tcr.id}"
         new_tcr_structure = Bio.PDB.Model.Model(id=0)
@@ -101,14 +115,16 @@ class HADDOCKFormatter:
         pdb_io.save(filename)
         return filename
 
-    def write_antigen_pdb_file(self, mhc, antigen, save_dir):
+    def write_antigen_pdb_file(
+        self, mhc: "MHC", antigen: list["Antigen"], save_dir: str
+    ):
         """
         Writes the antigen PDB file for docking with HADDOCK.
         Generates a PDB file, a file containing the renumbering mapping, and a list of active residues to restrict the simulation.
 
         Args:
-            mhc : MHC structure object.
-            antigen (list): List containing antigen chain. Should be length 1.
+            mhc (MHC): MHC structure object.
+            antigen (list[Antigen]): List containing antigen chain. Should be length 1.
             save_dir (str, optional): The directory to save the PDB file. Defaults to ".".
 
         Returns:
@@ -175,9 +191,20 @@ class HADDOCKFormatter:
 
 
 class HADDOCKResultsParser:
+
     def __init__(
-        self, haddock_results_dir, tcr_renumbering_file=None, pmhc_renumbering_file=None
+        self,
+        haddock_results_dir: str,
+        tcr_renumbering_file: str = None,
+        pmhc_renumbering_file: str = None,
     ):
+        """Parser for results from HADDOCK simulations. Renumbers TCR, MHC and Antigen using renumbering files, and parses result metrics.
+
+        Args:
+            haddock_results_dir (str): path to HADDOCK simulation results.
+            tcr_renumbering_file (str, optional): path to text file containing TCR renumbering to restore from HADDOCK compatible numbering. Defaults to None.
+            pmhc_renumbering_file (str, optional): path to text file containing MHC and antigen renumbering to restore from HADDOCK compatible numbering. Defaults to None.
+        """
 
         self.haddock_results_dir = haddock_results_dir
         self.tcr_renumbering_file = tcr_renumbering_file
@@ -271,7 +298,7 @@ class HADDOCKResultsParser:
                 else lines
             )
             tcr_renumber_indices = (1, len(lines) - 1)
-
+            antigen_renumber_indices = (len(lines) + 1, -1)
             with open(antigen_renumbering_file, "r") as f:
                 antigen_xtal_lines = f.readlines()
             antigen_renumbering_index = antigen_xtal_lines.index(
@@ -409,7 +436,25 @@ class HADDOCKResultsParser:
         filename = os.path.join(*docked_prediction_file.split("/")[:-1], save_to)
         pdb_io.save(filename)
 
-    def get_haddock_scores(self):
+    def get_haddock_scores(self) -> "pandas.DataFrame":
+        """Retrieve HADDOCK energy scoes and RMSD evaluations from simulation output:
+            \nColumns:
+            \n    "haddock_score",
+            \n    "interface_rmsd",
+            \n    "ligand_rmsd",
+            \n    "frac_common_contacts",
+            \n    "E_vdw",
+            \n    "E_elec",
+            \n    "E_air",
+            \n    "E_desolv",
+            \n    "ligand_rmsd_2",
+            \n    "cluster_id",
+        Raises:
+            FileNotFoundError: HADDOCK file contianing scores not found.
+
+        Returns:
+            pandas.DataFrame: DataFrame with HADDOCK simulation metrics.
+        """
         import pandas as pd
         import os
 
@@ -486,7 +531,17 @@ def parse_renumbered_line(line: str) -> tuple:
     return chain_id, add_empty_id(original_numbering), add_empty_id(haddock_numbering)
 
 
-def sort_residues_by_imgt_numbering(residues):
+def sort_residues_by_imgt_numbering(
+    residues: "list[Bio.PDB.Residue]",
+) -> "list[Bio.PDB.Residue]":
+    """Sort residues in order by IMGT numbering.
+
+    Args:
+        residues (list[Bio.PDB.Residue]): List of IMGT numbered residues.
+
+    Returns:
+        list[Bio.PDB.Residue]: Sorted list of IMGT numbered residuess.
+    """
     sorted_residues = sorted(residues, key=lambda x: (x.id[1], x.id[2]))
     imgt_nr_112_subsequence = [
         (i, res) for i, res in enumerate(sorted_residues) if res.id[1] == 112
