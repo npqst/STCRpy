@@ -6,8 +6,23 @@ from .TCRCoM import MHCI_TCRCoM, MHCII_TCRCoM
 
 
 class TCRGeom:
+    """Class for TCR geometry calculations."""
 
-    def __init__(self, tcr, save_aligned_as=False, polarity_as_sign=True, mode="cys"):
+    def __init__(
+        self,
+        tcr: "TCR",
+        save_aligned_as: bool = False,
+        polarity_as_sign: bool = True,
+        mode: str = "cys",
+    ):
+        """Constructor for TCR geometry calculation class.
+
+        Args:
+            tcr (TCR): TCR structure object of which to calculate complex geometry. TCR must be in complex to MHC.
+            save_aligned_as (bool, optional): Save the alignment of the TCR:pMHC complex as PDB file for verification. Defaults to False.
+            polarity_as_sign (bool, optional): Use the sign of the angle to indicate non-canonical pose. ie reverse binding angles are assigned negative sign. Defaults to True.
+            mode (str, optional): Method to calculate geometry with, see STCRpy paper for details. Defaults to "cys". Options: 'rudolph', 'com', 'cys'.
+        """
         self.tcr_com = None
         self.mhc_com = None
         self.tcr_VA_com = None
@@ -53,14 +68,11 @@ class TCRGeom:
                 self.tcr_VA_cys_centroid, self.tcr_VB_cys_centroid
             )
 
-        self.polarity = self.get_polarity(self.tcr_vector)
-
         if self.mode == "rudolph":
             self.mhc_vector = self._get_mhc_helix_vectors(mhc)
             self.scanning_angle = self.calculate_rudolph_angle(
                 self.tcr_vector, self.mhc_vector
             )
-            self.polarity = 0 if self.scanning_angle < 120.0 else 1
 
         else:
             self.scanning_angle, self.tcr_pitch_angle = (
@@ -69,7 +81,14 @@ class TCRGeom:
                 )
             )
 
-    def __repr__(self):
+        self.polarity = self.get_polarity()
+
+    def __repr__(self) -> str:
+        """Print TCR:pMHC complex geometry.
+
+        Returns:
+            str: TCR:pMHC complex geometry metrics.
+        """
         def polarity_to_str(polarity):
             return "canonical" if polarity == 0 else "reverse"
 
@@ -93,7 +112,12 @@ class TCRGeom:
             + f"Geometry mode: {mode_to_str(self.mode)}"
         )
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
+        """Return TCR:pMHC complex geometry metrics as dictionary.
+
+        Returns:
+            dict: TCR:pMHC complex geometry.
+        """
         return {
             "tcr_com": [self.tcr_com],
             "mhc_com": [self.mhc_com],
@@ -107,24 +131,54 @@ class TCRGeom:
             "mode": self.mode,
         }
 
-    def to_df(self):
+    def to_df(self) -> "pandas.DataFrame":
+        """Return TCR:pMHC complex geometry metrics and pandas dataframe.
+
+        Returns:
+            pandas.DataFrame: TCR:pMHC complex geometry metrics
+        """
         import pandas as pd
 
         return pd.DataFrame.from_dict(self.to_dict())
 
-    def get_scanning_angle(self, rad=False):
+    def get_scanning_angle(self, rad: bool = False) -> float:
+        """Return TCR:pMHC complex scanning (aka crossing, incident angle) of TCR to MHC.
+
+        Args:
+            rad (bool, optional): Return angle in radians. Defaults to False.
+
+        Returns:
+            float: TCR:pMHC scanning angle.
+        """
         if rad:
             return self.scanning_angle
         else:
             return np.degrees(self.scanning_angle)
 
-    def get_pitch_angle(self, rad=False):
+    def get_pitch_angle(self, rad: bool = False) -> float:
+        """Return TCR:pMHC pitch angle, ie tilt of the TCR over the MHC.
+
+        Args:
+            rad (bool, optional): Return angle in radians. Defaults to False.
+
+        Returns:
+            float: TCR:pMHC pitch angle
+        """
         if rad:
             return self.tcr_pitch_angle
         else:
             return np.degrees(self.tcr_pitch_angle)
 
-    def _type_checks(self, tcr):
+    def _type_checks(self, tcr: "TCR"):
+        """Run checks on TCR structure object to ensure geometry can be calculated.
+        \nChecks if TCR is in complex with MHC and whether TCR is alpha/beta chain TCR.
+
+        Args:
+            tcr (TCR): TCR structure object.
+
+        Raises:
+            NotImplementedError: TCR:pMHC geometry calculations are compatible the alpha beta chain TCRs.
+        """
         if len(tcr.get_MHC()) == 0:
             warnings.warn(
                 f"No MHC associated with TCR {tcr.parent.parent.id}_{tcr.id}. Geometry cannot be calculated."
@@ -136,7 +190,16 @@ class TCRGeom:
                 f"TCR MHC geometry only implemented for abTCR types, not {type(tcr)}"
             )
 
-    def _set_mhc_reference(self, mhc):
+    def _set_mhc_reference(self, mhc: "MHC"):
+        """Sets the MHC structure reference to use for alignment.
+
+        Args:
+            mhc (MHC): MHC structure object
+
+        Raises:
+            NotImplementedError: MHC alignments are compatible with MHC class I and II. CD1 and MR1 types currently not supported.
+            ValueError: MHC unrecognised.
+        """
         if (isinstance(mhc, MHCchain) and mhc.chain_type not in ["GA", "GB"]) or (
             hasattr(mhc, "MHC_type") and mhc.MHC_type == "MH1"
         ):
@@ -148,19 +211,17 @@ class TCRGeom:
         else:
             if hasattr(mhc, "MHC_type") and mhc.get_MHC_type() in ["CD1", "MR1"]:
                 raise NotImplementedError(
-                    f"TCR geometry not yet implemented for CD1 and MR1 antigen."
+                    "TCR geometry not yet implemented for CD1 and MR1 antigen."
                 )
             else:
                 raise ValueError(f"MHC type of {mhc} not recognised.")
 
     def get_tcr_vector(self, tcr_VA_com: np.array, tcr_VB_com: np.array) -> np.array:
-        """
-        Calculates the vector from the VA centre of mass to the VB centre of mass,
-        translated such that the vector originates at the total TCR's centre of mass and truncated to unit length.
-
+        """Calculates the vector from the VA centre of mass to the VB centre of mass, translated such that the vector originates at the total TCR's centre of mass and truncated to unit length.
         Args:
             tcr_VA_com (np.array): TCR VA centre of mass
             tcr_VB_com (np.array): TCR VB center of mass
+
         Returns:
             np.array: Unit vector from TCR CoM in direction of VA CoM to VB CoM
         """
@@ -195,30 +256,42 @@ class TCRGeom:
         """
 
         xy_projection = tcr_vector[:2] / np.linalg.norm(tcr_vector[:2])
-        scanning_angle = np.arccos(np.dot(xy_projection, np.asarray([0.0, 1.0])))
+        self.scanning_angle = np.arccos(np.dot(xy_projection, np.asarray([0.0, 1.0])))
         phi = np.arccos(np.sqrt(1 - (tcr_vector[-1] ** 2)))
         if polarity_as_sign:
-            scanning_angle = scanning_angle * ((-1) ** self.polarity)
-        return scanning_angle, phi
+            self.scanning_angle = self.scanning_angle * ((-1) ** self.get_polarity())
+        return self.scanning_angle, phi
 
-    def get_polarity(self, tcr_vector: np.array) -> int:
+    def get_polarity(self) -> int:
         """
-        Return the polarity of the TCR based on the TCR vector pointing from the VA to the VB CoM.
+        Return the polarity of the TCR based on the TCR vector pointing from the VA to the VB CoM, or the scanning angle if using Rudolph et. al..
         If the x component is negative, ie the tcr_vector points from the alpha 2 chain to the
         alpha 1 chain of the MHC, the polarity is canonical (0). Otherwise the polarity is reverse (1).
-
-        Args:
-            tcr_vector (np.array): Unit vector pointing from VA CoM to VB CoM.
 
         Returns:
             int: 0 for canonical polarity, 1 for reverse polarity.
         """
-        if tcr_vector[0] <= 0:
-            return 0
-        else:
-            return 1
+        if self.mode in ["cys", "com"]:
+            if self.tcr_vector[0] <= 0:
+                return 0
+            else:
+                return 1
+        elif self.mode == "rudolph":
+            return 0 if np.abs(np.degrees(self.scanning_angle)) < 120.0 else 1
 
-    def _get_cys_centroids(self, tcr):
+    def _get_cys_centroids(self, tcr: "TCR") -> tuple[np.array, np.array]:
+        """Calculate the halfway coordintate bewtween the CYS residues of the V.
+
+        Args:
+            tcr (TCR): TCR structure object
+
+        Raises:
+            KeyError: Cys residue not found in V domain
+            KeyError: SG and CA atoms not found in Cys residue
+
+        Returns:
+            tuple[np.array, np.array]: (Cys centroid of VA/VG, Cys centroid of VB/VD)
+        """
         domain_order = {
             "VA": 0,
             "VB": 3,
@@ -257,7 +330,16 @@ class TCRGeom:
 
         return cys_centroids  # VA CYS centroid, VB CYS centroid
 
-    def _get_mhc_helix_vectors(self, mhc):
+    def _get_mhc_helix_vectors(self, mhc: "MHC") -> np.array:
+        """Calculate the vector pointing along the MHC using the MHC helices. Points approximately from N to C terminus of GA chain.
+        \nVector is calculated as principal component of SVD decomposition of point cloud of backbone carbon alpha atoms in the helices forming the peptide cleft.
+
+        Args:
+            mhc (MHC): MHC structure object
+
+        Returns:
+            np.array: Unit vector along the MHC
+        """
         helix_residue_ranges = {
             "MH1": ((50, 87), (140, 177)),
             "MH2": {"GA": ((50, 88),), "GB": ((54, 65), (67, 91))},
@@ -349,7 +431,18 @@ class TCRGeom:
         mhc_vector = mhc_vector / np.linalg.norm(mhc_vector)
         return mhc_vector
 
-    def calculate_rudolph_angle(self, tcr_vector, mhc_vector):
+    def calculate_rudolph_angle(
+        self, tcr_vector: np.array, mhc_vector: np.array
+    ) -> float:
+        """Calculate the scanning angle of TCR:pMHC complex according to Rudolph et. al.
+
+        Args:
+            tcr_vector (np.array): Vector pointing from VA Cys centroid to VB Cys centroid
+            mhc_vector (np.array): Vector pointing along MHC cleft
+
+        Returns:
+            float: scanning angle
+        """
         scanning_angle = np.arccos(
             np.dot(tcr_vector, mhc_vector)
             / (np.linalg.norm(tcr_vector) * np.linalg.norm(mhc_vector))
