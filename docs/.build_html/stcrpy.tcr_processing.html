@@ -183,45 +183,45 @@ Based on the ABDB.AbPDB.Chemical_components module by dunbar.</p>
 <p>These are the types of chemical components in the pdb: ( grep “_chem_comp.type” components.cif | cut -c 50-120 | sort | uniq )</p>
 <p>We will bin them into:</p>
 <dl class="simple">
-<dt>peptide:</dt><dd><p>“D-beta-peptide, C-gamma linking” 
-“D-gamma-peptide, C-delta linking” 
-“D-peptide linking” 
-“D-PEPTIDE LINKING” 
-“D-peptide NH3 amino terminus” 
-“D-PEPTIDE NH3 AMINO TERMINUS” 
-“L-beta-peptide, C-gamma linking” 
-“L-gamma-peptide, C-delta linking” 
-“L-peptide COOH carboxy terminus” 
-“L-PEPTIDE COOH CARBOXY TERMINUS” 
-“L-peptide linking” 
-“L-PEPTIDE LINKING” 
-“L-peptide NH3 amino terminus” 
-peptide-like 
-PEPTIDE-LIKE 
-“peptide linking” 
+<dt>peptide:</dt><dd><p>“D-beta-peptide, C-gamma linking”
+“D-gamma-peptide, C-delta linking”
+“D-peptide linking”
+“D-PEPTIDE LINKING”
+“D-peptide NH3 amino terminus”
+“D-PEPTIDE NH3 AMINO TERMINUS”
+“L-beta-peptide, C-gamma linking”
+“L-gamma-peptide, C-delta linking”
+“L-peptide COOH carboxy terminus”
+“L-PEPTIDE COOH CARBOXY TERMINUS”
+“L-peptide linking”
+“L-PEPTIDE LINKING”
+“L-peptide NH3 amino terminus”
+peptide-like
+PEPTIDE-LIKE
+“peptide linking”
 “PEPTIDE LINKING”</p>
 </dd>
-<dt>nucleic-acid:</dt><dd><p>“DNA linking” 
-“DNA LINKING” 
-“DNA OH 3 prime terminus” 
-“DNA OH 3 PRIME TERMINUS” 
+<dt>nucleic-acid:</dt><dd><p>“DNA linking”
+“DNA LINKING”
+“DNA OH 3 prime terminus”
+“DNA OH 3 PRIME TERMINUS”
 “L-DNA LINKING”
 “L-RNA LINKING”
-“RNA linking” 
-“RNA LINKING” 
+“RNA linking”
+“RNA LINKING”
 “RNA OH 3 prime terminus”</p>
 </dd>
-<dt>saccharide:</dt><dd><p>D-saccharide 
-D-SACCHARIDE 
-“D-saccharide 1,4 and 1,4 linking” 
-“D-SACCHARIDE 1,4 AND 1,4 LINKING” 
-L-saccharide 
-L-SACCHARIDE 
+<dt>saccharide:</dt><dd><p>D-saccharide
+D-SACCHARIDE
+“D-saccharide 1,4 and 1,4 linking”
+“D-SACCHARIDE 1,4 AND 1,4 LINKING”
+L-saccharide
+L-SACCHARIDE
 “L-SACCHARIDE 1,4 AND 1,4 LINKING”
-saccharide 
+saccharide
 SACCHARIDE</p>
 </dd>
-<dt>non-polymer:</dt><dd><p>non-polymer 
+<dt>non-polymer:</dt><dd><p>non-polymer
 NON-POLYMER</p>
 </dd>
 </dl>
@@ -248,7 +248,7 @@ Distribution of number of pdb codes with the chemical component found at:
 <p>Acknowledgement - JP for suggesting the method.
 The following have been removed from the list as they are either common sugar or peptides</p>
 <blockquote>
-<div><p>BGC saccharide  
+<div><p>BGC saccharide
 NAG saccharide
 XYP saccharide
 XYS saccharide
@@ -274,7 +274,7 @@ NDG saccharide</p>
 <p>I have updated method 1 list with method 2 list</p>
 <p>It is left as a dictionary of dictionaries if we decide to add annotations</p>
 <p>Functions provided are:</p>
-<p>is_aa 
+<p>is_aa
 is_common_buffer
 is_carbohydrate
 is_nucleic_acid
@@ -387,14 +387,12 @@ residue.save( “residue1.pdb” )</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_processing.Entity.Entity.transform">
 <span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tran</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/Entity.html#Entity.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.Entity.Entity.transform" title="Link to this definition"></a></dt>
 <dd><p>Apply rotation and translation to the atomic coordinates.</p>
-<dl>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rotation</span><span class="o">=</span><span class="n">rotmat</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">Vector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rotation</span><span class="o">=</span><span class="n">rotmat</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">Vector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">translation</span><span class="o">=</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;f&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">entity</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="n">translation</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 <p>&#64;param rot: A right multiplying rotation matrix
 &#64;type rot: 3x3 Numeric array</p>
 <p>&#64;param tran: the translation vector
@@ -877,7 +875,7 @@ to implement selective output. This selects which entities will be written out.<
 <section id="module-stcrpy.tcr_processing.TCR">
 <span id="stcrpy-tcr-processing-tcr-module"></span><h2>stcrpy.tcr_processing.TCR module<a class="headerlink" href="#module-stcrpy.tcr_processing.TCR" title="Link to this heading"></a></h2>
 <p>Created on 3rd April 2024
-&#64;author: Nele Quast based on work by Dunbar and Leem 
+&#64;author: Nele Quast based on work by Dunbar and Leem
 The TCR class.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="stcrpy.tcr_processing.TCR.TCR">

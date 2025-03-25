@@ -109,9 +109,6 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="stcrpy-tcr-geometry-tcrangle-module">
-<h2>stcrpy.tcr_geometry.TCRAngle module<a class="headerlink" href="#stcrpy-tcr-geometry-tcrangle-module" title="Link to this heading"></a></h2>
-</section>
 <section id="module-stcrpy.tcr_geometry.TCRCoM">
 <span id="stcrpy-tcr-geometry-tcrcom-module"></span><h2>stcrpy.tcr_geometry.TCRCoM module<a class="headerlink" href="#module-stcrpy.tcr_geometry.TCRCoM" title="Link to this heading"></a></h2>
 <dl class="py class">
@@ -122,10 +119,15 @@
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.get_filtered_MHC_residues">
 <span class="sig-name descname"><span class="pre">get_filtered_MHC_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list[&lt;module</span> <span class="pre">'Bio.PDB.Residue'</span> <span class="pre">from</span> <span class="pre">'/home/quast/miniconda3/envs/test-stcrpy/lib/python3.12/site-packages/Bio/PDB/Residue.py'&gt;]</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#MHCII_TCRCoM.get_filtered_MHC_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.get_filtered_MHC_residues" title="Link to this definition"></a></dt>
 <dd><p>Retrieve MHC residues from query TCR and filter out those whose counterpart is not found in reference.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object associated with MHC Class II.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tcr</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><em>TCR</em></a>) – TCR structure object associated with MHC Class II.</p>
 </dd>
-<dt>Returns:</dt><dd><p>list[Bio.PDB.Residue]: filtered_MHC_residues</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>filtered_MHC_residues</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Bio.PDB.Residue]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -152,10 +154,15 @@
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.get_filtered_MHC_residues">
 <span class="sig-name descname"><span class="pre">get_filtered_MHC_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list[&lt;module</span> <span class="pre">'Bio.PDB.Residue'</span> <span class="pre">from</span> <span class="pre">'/home/quast/miniconda3/envs/test-stcrpy/lib/python3.12/site-packages/Bio/PDB/Residue.py'&gt;]</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#MHCI_TCRCoM.get_filtered_MHC_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.get_filtered_MHC_residues" title="Link to this definition"></a></dt>
 <dd><p>Retrieve MHC residues from query TCR and filter out those whose counterpart is not found in reference.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object associated with MHC Class I.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tcr</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><em>TCR</em></a>) – TCR structure object associated with MHC Class I.</p>
 </dd>
-<dt>Returns:</dt><dd><p>list[Bio.PDB.Residue]: filtered_MHC_residues</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>filtered_MHC_residues</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Bio.PDB.Residue]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -182,14 +189,21 @@
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.add_com">
 <span class="sig-name descname"><span class="pre">add_com</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mhc_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VA_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VB_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.add_com"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.add_com" title="Link to this definition"></a></dt>
 <dd><p>Function to add pseudoatoms at MHC-CoM, TCR-CoM, and XYZ axis to the output PDB file</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>mhc_com (np.array): MHC centre of mass
-tcr_com (np.array): TCR centre of mass
-VA_com (np.array): Alpha chain centre of mass
-VB_com (np.array): Beta chain entre of mass
-tcr (TCR): TCR structure object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mhc_com</strong> (<em>np.array</em>) – MHC centre of mass</p></li>
+<li><p><strong>tcr_com</strong> (<em>np.array</em>) – TCR centre of mass</p></li>
+<li><p><strong>VA_com</strong> (<em>np.array</em>) – Alpha chain centre of mass</p></li>
+<li><p><strong>VB_com</strong> (<em>np.array</em>) – Beta chain entre of mass</p></li>
+<li><p><strong>tcr</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><em>TCR</em></a>) – TCR structure object</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>TCR: Copy of the original TCR strucutre object with added pseudo-atoms.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Copy of the original TCR strucutre object with added pseudo-atoms.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR">TCR</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -198,13 +212,21 @@ tcr (TCR): TCR structure object</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.calculate_centres_of_mass">
 <span class="sig-name descname"><span class="pre">calculate_centres_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_aligned_as</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">array</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.calculate_centres_of_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.calculate_centres_of_mass" title="Link to this definition"></a></dt>
 <dd><p>Calculate the TCR and MHC centres of mass of an stcrpy TCR structure object.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>tcr (abTCR): TCR structure object
-save_aligned_as (str): Path to same alignment to. If None or False alignment is not saved. Defaults to None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcr</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><em>abTCR</em></a>) – TCR structure object</p></li>
+<li><p><strong>save_aligned_as</strong> (<em>str</em>) – Path to same alignment to. If None or False alignment is not saved. Defaults to None.</p></li>
+</ul>
 </dd>
-<dt>Raises:</dt><dd><p>NotImplementedError: Alpha Beta TCR compatible only, Gamma Delta TCRs not implemented.</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – Alpha Beta TCR compatible only, Gamma Delta TCRs not implemented.</p>
 </dd>
-<dt>Returns:</dt><dd><p>tuple[np.array]: tcr_com, mhc_com, tcr_VA_com, tcr_VB_com</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tcr_com, mhc_com, tcr_VA_com, tcr_VB_com</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[np.array]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -213,14 +235,24 @@ save_aligned_as (str): Path to same alignment to. If None or False alignment is 
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.center_of_mass">
 <span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Entity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Atom</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.center_of_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.center_of_mass" title="Link to this definition"></a></dt>
 <dd><p>Calculate the mass weighted or purely geometric centre of mass of an entity or a list of atoms.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>entity (Union[Bio.PDB.Entity.Entity, list[Bio.PDB.Atom.Atom]]): Structure entity whose centre of mass will be calculated
-geometric (bool, optional): Whether to calculate geometric mean. Defaults to False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity</strong> (<em>Union</em><em>[</em><em>Bio.PDB.Entity.Entity</em><em>, </em><em>list</em><em>[</em><em>Bio.PDB.Atom.Atom</em><em>]</em><em>]</em>) – Structure entity whose centre of mass will be calculated</p></li>
+<li><p><strong>geometric</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate geometric mean. Defaults to False.</p></li>
+</ul>
 </dd>
-<dt>Raises:</dt><dd><p>ValueError: Checks input type to ensure atoms can be retrieved.
-ValueError: Unknown atoms.</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Checks input type to ensure atoms can be retrieved.</p></li>
+<li><p><strong>ValueError</strong> – Unknown atoms.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>np.array: centre of mass</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>centre of mass</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -229,10 +261,15 @@ ValueError: Unknown atoms.</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.get_filtered_TCR_residues">
 <span class="sig-name descname"><span class="pre">get_filtered_TCR_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Bio.PDB.Residue</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.get_filtered_TCR_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.get_filtered_TCR_residues" title="Link to this definition"></a></dt>
 <dd><p>Get variable domain residues of query TCR and filter out those without a counterpart in the reference TCR.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tcr</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><em>TCR</em></a>) – TCR structure object</p>
 </dd>
-<dt>Returns:</dt><dd><p>tuple[list[Bio.PDB.Residue]]: VA_residues, VB_residues.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>VA_residues, VB_residues.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[list[Bio.PDB.Residue]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -241,8 +278,9 @@ ValueError: Unknown atoms.</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_mhc_reference">
 <span class="sig-name descname"><span class="pre">set_mhc_reference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.set_mhc_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_mhc_reference" title="Link to this definition"></a></dt>
 <dd><p>Super method for setting MHC reference residues for superposition. Overwritten by MHC class sepcific methods.</p>
-<dl class="simple">
-<dt>Raises:</dt><dd><p>NotImplementedError</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>NotImplementedError</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -257,8 +295,9 @@ ValueError: Unknown atoms.</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reffile">
 <span class="sig-name descname"><span class="pre">set_reffile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.set_reffile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reffile" title="Link to this definition"></a></dt>
 <dd><p>Super method for setting MHC reference file.</p>
-<dl class="simple">
-<dt>Raises:</dt><dd><p>NotImplementedError</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>NotImplementedError</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -305,11 +344,18 @@ Formula uses SVD.</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.calculate_rudolph_angle">
 <span class="sig-name descname"><span class="pre">calculate_rudolph_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mhc_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.calculate_rudolph_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.calculate_rudolph_angle" title="Link to this definition"></a></dt>
 <dd><p>Calculate the scanning angle of TCR:pMHC complex according to Rudolph et. al.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>tcr_vector (np.array): Vector pointing from VA Cys centroid to VB Cys centroid
-mhc_vector (np.array): Vector pointing along MHC cleft</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcr_vector</strong> (<em>np.array</em>) – Vector pointing from VA Cys centroid to VB Cys centroid</p></li>
+<li><p><strong>mhc_vector</strong> (<em>np.array</em>) – Vector pointing along MHC cleft</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>float: scanning angle</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>scanning angle</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -327,15 +373,20 @@ and the projection of the TCR vector, which points from VA to VB, onto the x-y p
 to the TCR vector and passing through the TCR CoM. Specifically the angle of the vector from the
 z-axis intersection and the nearest projection of the z-axis onto the plane dividing the VA and VB
 TCR domains is calculated, which is defined as the pitch of the TCR.</p>
-<dl>
-<dt>Args:</dt><dd><p>tcr_vector (np.array): Unit vector in direction of VA CoM to VB CoM
-polarity (bool, optional): Set the polarity as the sign of the scanning angle</p>
-<blockquote>
-<div><p>ie negative if polarity is reversed (1),
-else positive if polarity is canonical (0). Defaults to True.</p>
-</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcr_vector</strong> (<em>np.array</em>) – Unit vector in direction of VA CoM to VB CoM</p></li>
+<li><p><strong>polarity</strong> (<em>bool</em><em>, </em><em>optional</em>) – Set the polarity as the sign of the scanning angle
+ie negative if polarity is reversed (1),
+else positive if polarity is canonical (0). Defaults to True.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>tuple[np.array]: Tuple containing the scanning angle and pitch angle of the TCR to the MHC</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple containing the scanning angle and pitch angle of the TCR to the MHC</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[np.array]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -344,10 +395,15 @@ else positive if polarity is canonical (0). Defaults to True.</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_pitch_angle">
 <span class="sig-name descname"><span class="pre">get_pitch_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_pitch_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_pitch_angle" title="Link to this definition"></a></dt>
 <dd><p>Return TCR:pMHC pitch angle, ie tilt of the TCR over the MHC.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>rad (bool, optional): Return angle in radians. Defaults to False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rad</strong> (<em>bool</em><em>, </em><em>optional</em>) – Return angle in radians. Defaults to False.</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: TCR:pMHC pitch angle</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>TCR:pMHC pitch angle</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -358,8 +414,12 @@ else positive if polarity is canonical (0). Defaults to True.</p>
 <dd><p>Return the polarity of the TCR based on the TCR vector pointing from the VA to the VB CoM, or the scanning angle if using Rudolph et. al..
 If the x component is negative, ie the tcr_vector points from the alpha 2 chain to the
 alpha 1 chain of the MHC, the polarity is canonical (0). Otherwise the polarity is reverse (1).</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>int: 0 for canonical polarity, 1 for reverse polarity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>0 for canonical polarity, 1 for reverse polarity.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -368,10 +428,15 @@ alpha 1 chain of the MHC, the polarity is canonical (0). Otherwise the polarity 
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_scanning_angle">
 <span class="sig-name descname"><span class="pre">get_scanning_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_scanning_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_scanning_angle" title="Link to this definition"></a></dt>
 <dd><p>Return TCR:pMHC complex scanning (aka crossing, incident angle) of TCR to MHC.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>rad (bool, optional): Return angle in radians. Defaults to False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rad</strong> (<em>bool</em><em>, </em><em>optional</em>) – Return angle in radians. Defaults to False.</p>
 </dd>
-<dt>Returns:</dt><dd><p>float: TCR:pMHC scanning angle.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>TCR:pMHC scanning angle.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -380,13 +445,16 @@ alpha 1 chain of the MHC, the polarity is canonical (0). Otherwise the polarity 
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_tcr_vector">
 <span class="sig-name descname"><span class="pre">get_tcr_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr_VA_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_VB_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_tcr_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_tcr_vector" title="Link to this definition"></a></dt>
 <dd><p>Calculates the vector from the VA centre of mass to the VB centre of mass, translated such that the vector originates at the total TCR’s centre of mass and truncated to unit length.
-Args:</p>
-<blockquote>
-<div><p>tcr_VA_com (np.array): TCR VA centre of mass
-tcr_VB_com (np.array): TCR VB center of mass</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>np.array: Unit vector from TCR CoM in direction of VA CoM to VB CoM</p>
+:param tcr_VA_com: TCR VA centre of mass
+:type tcr_VA_com: np.array
+:param tcr_VB_com: TCR VB center of mass
+:type tcr_VB_com: np.array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Unit vector from TCR CoM in direction of VA CoM to VB CoM</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -395,8 +463,12 @@ tcr_VB_com (np.array): TCR VB center of mass</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_df">
 <span class="sig-name descname"><span class="pre">to_df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.to_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_df" title="Link to this definition"></a></dt>
 <dd><p>Return TCR:pMHC complex geometry metrics and pandas dataframe.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>pandas.DataFrame: TCR:pMHC complex geometry metrics</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TCR:pMHC complex geometry metrics</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pandas.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -405,8 +477,12 @@ tcr_VB_com (np.array): TCR VB center of mass</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_dict">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_dict" title="Link to this definition"></a></dt>
 <dd><p>Return TCR:pMHC complex geometry metrics as dictionary.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>dict: TCR:pMHC complex geometry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TCR:pMHC complex geometry.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>

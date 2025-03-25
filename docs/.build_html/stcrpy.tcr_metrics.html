@@ -109,15 +109,17 @@
 <dt class="sig sig-object py" id="stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD.align_by_mhc">
 <span class="sig-name descname"><span class="pre">align_by_mhc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">chain_mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_metrics/tcr_interface_rmsd.html#InterfaceRMSD.align_by_mhc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD.align_by_mhc" title="Link to this definition"></a></dt>
 <dd><p>Aligns the docked TCR structure to the reference TCR structure by aligning the MHC.</p>
-<dl>
-<dt>Args:</dt><dd><p>dock (abTCR): The docked TCR structure.
-reference (abTCR): The reference TCR structure.
-chain_mapping (dict): A dictionary mapping the chain IDs of the docked TCR structure to the chain IDs of the</p>
-<blockquote>
-<div><p>reference TCR structure.</p>
-</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dock</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><em>abTCR</em></a>) – The docked TCR structure.</p></li>
+<li><p><strong>reference</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><em>abTCR</em></a>) – The reference TCR structure.</p></li>
+<li><p><strong>chain_mapping</strong> (<em>dict</em>) – A dictionary mapping the chain IDs of the docked TCR structure to the chain IDs of the
+reference TCR structure.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>None</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -131,14 +133,22 @@ chain_mapping (dict): A dictionary mapping the chain IDs of the docked TCR struc
 <dt class="sig sig-object py" id="stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD.get_interface_residues">
 <span class="sig-name descname"><span class="pre">get_interface_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">angstrom_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_metrics/tcr_interface_rmsd.html#InterfaceRMSD.get_interface_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD.get_interface_residues" title="Link to this definition"></a></dt>
 <dd><p>Retrieves the interface residues between a TCR and its antigen based on a distance cutoff.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>tcr (abTCR): The TCR object.
-angstrom_cutoff (float, optional): The distance cutoff in angstroms. Defaults to 8.0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcr</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><em>abTCR</em></a>) – The TCR object.</p></li>
+<li><p><strong>angstrom_cutoff</strong> (<em>float</em><em>, </em><em>optional</em>) – The distance cutoff in angstroms. Defaults to 8.0.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>tuple: A tuple containing two lists: the interface residues of the TCR and the</dt><dd><p>interface residues of the antigen.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A tuple containing two lists: the interface residues of the TCR and the</dt><dd><p>interface residues of the antigen.</p>
 </dd>
 </dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -148,14 +158,22 @@ angstrom_cutoff (float, optional): The distance cutoff in angstroms. Defaults to
 <span class="sig-name descname"><span class="pre">get_interface_rmsd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_metrics/tcr_interface_rmsd.html#InterfaceRMSD.get_interface_rmsd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_metrics.tcr_interface_rmsd.InterfaceRMSD.get_interface_rmsd" title="Link to this definition"></a></dt>
 <dd><p>Calculates the root-mean-square deviation (RMSD) between the interface residues of a
 docked TCR structure and a reference TCR structure.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>dock (abTCR): The docked TCR structure.
-reference (abTCR): The reference TCR structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dock</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><em>abTCR</em></a>) – The docked TCR structure.</p></li>
+<li><p><strong>reference</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><em>abTCR</em></a>) – The reference TCR structure.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>float: The RMSD value between the interface residues of the docked TCR structure and</dt><dd><p>the reference TCR structure.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>The RMSD value between the interface residues of the docked TCR structure and</dt><dd><p>the reference TCR structure.</p>
 </dd>
 </dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -178,16 +196,20 @@ reference (abTCR): The reference TCR structure.</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_metrics.tcr_rmsd.RMSD.rmsd_from_files">
 <span class="sig-name descname"><span class="pre">rmsd_from_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred_and_target_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_metrics/tcr_rmsd.html#RMSD.rmsd_from_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_metrics.tcr_rmsd.RMSD.rmsd_from_files" title="Link to this definition"></a></dt>
 <dd><p>Calculates the RMSD between TCR structures from a list of files.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>pred_and_target_files (list of tuples): List of tuples, where each tuple contains</dt><dd><p>the path to the predicticted PDB at index 0 and the path to the target PDB at index 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pred_and_target_files</strong> (<em>list</em><em> of </em><em>tuples</em>) – List of tuples, where each tuple contains
+the path to the predicticted PDB at index 0 and the path to the target PDB at index 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Pandas dataframe indexed by the TCR ID of the predicted structure, with columns</dt><dd><p>containing the RMSD of the whole alpha and beta chain, and all framework and CDR regions.</p>
 </dd>
 </dl>
+</p>
 </dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>pandas.Dataframe: Pandas dataframe indexed by the TCR ID of the predicted structure, with columns</dt><dd><p>containing the RMSD of the whole alpha and beta chain, and all framework and CDR regions.</p>
-</dd>
-</dl>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.Dataframe</p>
 </dd>
 </dl>
 </dd></dl>

@@ -174,28 +174,32 @@
 <p>The function first attempts to download a PDB file from the STCRDab database.
 If the PDB file is not found, it falls back to downloading a CIF file from RCSB PDB.
 The downloaded file is then parsed using <cite>TCRParser</cite> to extract TCR structures.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><p>pdb_id (str): The PDB identifier of the structure to be fetched.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pdb_id</strong> (<em>str</em>) – The PDB identifier of the structure to be fetched.</p>
 </dd>
-<dt>Returns:</dt><dd><ul class="simple">
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
 <li><p>A single TCR structure if exactly one is found.</p></li>
 <li><p>A list of TCR structures if multiple are found.</p></li>
 <li><p>None if no TCRs are identified (with a <cite>UserWarning</cite> issued).</p></li>
 </ul>
+</p>
 </dd>
-<dt>Raises:</dt><dd><ul class="simple">
-<li><p>A warning if no TCR structures are found in the downloaded file.</p></li>
-<li><p>Prints an error message if the file cannot be downloaded.</p></li>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>- A warning if no TCR structures are found in the downloaded file.</strong> – </p></li>
+<li><p><strong>- Prints an error message if the file cannot be downloaded.</strong> – </p></li>
 </ul>
 </dd>
-<dt>Notes:</dt><dd><ul class="simple">
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
 <li><p>STCRDab returns an error message if the requested PDB ID does not exist.</p></li>
 <li><p>The function temporarily saves the downloaded file and deletes it after parsing.</p></li>
 </ul>
-</dd>
-<dt>Example:</dt><dd><p>tcr = fetch_TCR(“6eqa”)</p>
-</dd>
-</dl>
+<p class="rubric">Example</p>
+<p>tcr = fetch_TCR(“6eqa”)</p>
 </dd></dl>
 
 <dl class="py function">

@@ -12,13 +12,6 @@ Subpackages
 Submodules
 ----------
 
-stcrpy.tcr\_geometry.TCRAngle module
-------------------------------------
-
-.. automodule:: stcrpy.tcr_geometry.TCRAngle
-   :members:
-   :show-inheritance:
-   :undoc-members:
 
 stcrpy.tcr\_geometry.TCRCoM module
 ----------------------------------

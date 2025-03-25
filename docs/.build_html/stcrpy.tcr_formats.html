@@ -102,14 +102,22 @@
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_formats.get_sequences">
 <span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_formats.</span></span><span class="sig-name descname"><span class="pre">get_sequences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Bio.PDB.Entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amino_acids_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residues_to_include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_formats.html#get_sequences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_formats.get_sequences" title="Link to this definition"></a></dt>
 <dd><p>Extract seqeunces from strcuture objects as dictionary.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>entity (Bio.PDB.Entity): Stucture object
-amino_acids_only (bool, optional): Whether to remove non-amino acid ‘X’ from sequences. Defaults to True.
-residues_to_include (list, optional): List of residue IDs to include in sequence. Defaults to None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity</strong> (<em>Bio.PDB.Entity</em>) – Stucture object</p></li>
+<li><p><strong>amino_acids_only</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to remove non-amino acid ‘X’ from sequences. Defaults to True.</p></li>
+<li><p><strong>residues_to_include</strong> (<em>list</em><em>, </em><em>optional</em>) – List of residue IDs to include in sequence. Defaults to None.</p></li>
+</ul>
 </dd>
-<dt>Raises:</dt><dd><p>e: AttributeError if entity has no attribute .get_chains(). The assuems entity is chain level and returns single sequence</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>e</strong> – AttributeError if entity has no attribute .get_chains(). The assuems entity is chain level and returns single sequence</p>
 </dd>
-<dt>Returns:</dt><dd><p>dict: Dictionary of amino acid sequences, keyed by chain ID in strcuctre entity.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary of amino acid sequences, keyed by chain ID in strcuctre entity.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -132,15 +140,22 @@ Eg:
 <p>],</p>
 </div></blockquote>
 <p>}</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object
-tcr_only (bool, optional): Whether to include TCR sequence only, excluding antigen and MHC. Defaults to True.
-save (bool, optional): Whether to save dict as JSON file. Defaults to True.
-save_dir (str, optional): Directory to save JSON files to. Defaults to “”.
-name (str, optional): TCR ID to use as name for AF3 job. Defaults to None.
-V_domain_only (bool, optional): Include full TCR sequence or only the variable domain (1-128 IMGT numbering). Defaults to False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcr</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><em>TCR</em></a>) – TCR structure object</p></li>
+<li><p><strong>tcr_only</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include TCR sequence only, excluding antigen and MHC. Defaults to True.</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save dict as JSON file. Defaults to True.</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory to save JSON files to. Defaults to “”.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – TCR ID to use as name for AF3 job. Defaults to None.</p></li>
+<li><p><strong>V_domain_only</strong> (<em>bool</em><em>, </em><em>optional</em>) – Include full TCR sequence or only the variable domain (1-128 IMGT numbering). Defaults to False.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>dict: Nested dictionary of AF3 sequence inputs.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Nested dictionary of AF3 sequence inputs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -156,9 +171,12 @@ V_domain_only (bool, optional): Include full TCR sequence or only the variable d
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.pMHC_to_haddock">
 <span class="sig-name descname"><span class="pre">pMHC_to_haddock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mhc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><span class="pre">MHC</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">antigen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Antigen</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.pMHC_to_haddock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.pMHC_to_haddock" title="Link to this definition"></a></dt>
 <dd><p>Bound reformatting of MHC and antigen structures object to HADDOCK compatible PDB file.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>mhc (MHC): MHC structure object
-antigen (Antigen): Antigen structure object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mhc</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><em>MHC</em></a>) – MHC structure object</p></li>
+<li><p><strong>antigen</strong> (<em>Antigen</em>) – Antigen structure object</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -167,8 +185,9 @@ antigen (Antigen): Antigen structure object</p>
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.tcr_to_haddock">
 <span class="sig-name descname"><span class="pre">tcr_to_haddock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.tcr_to_haddock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.tcr_to_haddock" title="Link to this definition"></a></dt>
 <dd><p>Bound reformatting of TCR structure object to HADDOCK compatible PDB file.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tcr</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><em>TCR</em></a>) – TCR structure object</p>
 </dd>
 </dl>
 </dd></dl>
@@ -181,9 +200,12 @@ Generates a PDB file, a mapping from the old to the new numbering,</p>
 <blockquote>
 <div><p>and a list of active residues to restrain the HADDOCK simulation.</p>
 </div></blockquote>
-<dl class="simple">
-<dt>Args:</dt><dd><p>tcr (TCR): The TCR structure.
-save_dir (str): The directory to save the files (default is current directory).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tcr</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><em>TCR</em></a>) – The TCR structure.</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em>) – The directory to save the files (default is current directory).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -193,12 +215,19 @@ save_dir (str): The directory to save the files (default is current directory).<
 <span class="sig-name descname"><span class="pre">write_antigen_pdb_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mhc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><span class="pre">MHC</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">antigen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Antigen</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.write_antigen_pdb_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_antigen_pdb_file" title="Link to this definition"></a></dt>
 <dd><p>Writes the antigen PDB file for docking with HADDOCK.
 Generates a PDB file, a file containing the renumbering mapping, and a list of active residues to restrict the simulation.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>mhc (MHC): MHC structure object.
-antigen (list[Antigen]): List containing antigen chain. Should be length 1.
-save_dir (str, optional): The directory to save the PDB file. Defaults to “.”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mhc</strong> (<a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><em>MHC</em></a>) – MHC structure object.</p></li>
+<li><p><strong>antigen</strong> (<em>list</em><em>[</em><em>Antigen</em><em>]</em>) – List containing antigen chain. Should be length 1.</p></li>
+<li><p><strong>save_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – The directory to save the PDB file. Defaults to “.”.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>str: The filename of the saved antigen PDB file.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The filename of the saved antigen PDB file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -246,17 +275,23 @@ save_dir (str, optional): The directory to save the PDB file. Defaults to “.�
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.renumber_haddock_prediction">
 <span class="sig-name descname"><span class="pre">renumber_haddock_prediction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docked_prediction_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">haddock_renumbering_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antigen_renumbering_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Model</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKResultsParser.renumber_haddock_prediction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.renumber_haddock_prediction" title="Link to this definition"></a></dt>
 <dd><p>Renumber the HADDOCK prediction based on the renumbering files.</p>
-<dl>
-<dt>Args:</dt><dd><p>docked_prediction_file (str): Path to the docked prediction file.
-haddock_renumbering_file (str): Path to the HADDOCK renumbering file.
-antigen_renumbering_file (str, optional): Path to the antigen renumbering file.</p>
-<blockquote>
-<div><p>Needed for TCR only PDBs with no antigen. Defaults to None.</p>
-</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>docked_prediction_file</strong> (<em>str</em>) – Path to the docked prediction file.</p></li>
+<li><p><strong>haddock_renumbering_file</strong> (<em>str</em>) – Path to the HADDOCK renumbering file.</p></li>
+<li><p><strong>antigen_renumbering_file</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to the antigen renumbering file.
+Needed for TCR only PDBs with no antigen. Defaults to None.</p></li>
+</ul>
 </dd>
-<dt>Returns:</dt><dd><p>Bio.PDB.Model.Model: The renumbered HADDOCK prediction.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The renumbered HADDOCK prediction.</p>
 </dd>
-<dt>Raises:</dt><dd><p>ValueError: If the renumbering index is not found in the renumbering file.</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bio.PDB.Model.Model</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the renumbering index is not found in the renumbering file.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -267,10 +302,15 @@ antigen_renumbering_file (str, optional): Path to the antigen renumbering file.<
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.imgt_insertion_char_to_int">
 <span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_haddock.</span></span><span class="sig-name descname"><span class="pre">imgt_insertion_char_to_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">char</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#imgt_insertion_char_to_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.imgt_insertion_char_to_int" title="Link to this definition"></a></dt>
 <dd><p>Converts an IMGT insertion character to an integer.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>char (str): The IMGT insertion character.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>char</strong> (<em>str</em>) – The IMGT insertion character.</p>
 </dd>
-<dt>Returns:</dt><dd><p>int: The corresponding integer value.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The corresponding integer value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -279,26 +319,36 @@ antigen_renumbering_file (str, optional): Path to the antigen renumbering file.<
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.parse_renumbered_line">
 <span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_haddock.</span></span><span class="sig-name descname"><span class="pre">parse_renumbered_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#parse_renumbered_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.parse_renumbered_line" title="Link to this definition"></a></dt>
 <dd><p>Parses a renumbered line from a file and extracts the chain ID, original numbering, and HADDOCK numbering.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>line (str): The renumbered line to parse.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>line</strong> (<em>str</em>) – The renumbered line to parse.</p>
 </dd>
-<dt>Returns:</dt><dd><p>tuple: A tuple containing the chain ID, original numbering, and HADDOCK numbering.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the chain ID, original numbering, and HADDOCK numbering.</p>
 </dd>
-<dt>Example:</dt><dd><p>line = “(O,( ,3, ),( ,203, )”
-result = parse_renumbered_line(line)
-# Output: (O)’, (‘’, ‘3’, ‘’), (‘’, ‘203’, ‘’))</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<p>line = “(O,( ,3, ),( ,203, )”
+result = parse_renumbered_line(line)
+# Output: (O)’, (‘’, ‘3’, ‘’), (‘’, ‘203’, ‘’))</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.sort_residues_by_imgt_numbering">
 <span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_haddock.</span></span><span class="sig-name descname"><span class="pre">sort_residues_by_imgt_numbering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">residues:</span> <span class="pre">list[&lt;module</span> <span class="pre">'Bio.PDB.Residue'</span> <span class="pre">from</span> <span class="pre">'/home/quast/miniconda3/envs/test-stcrpy/lib/python3.12/site-packages/Bio/PDB/Residue.py'&gt;]</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list[&lt;module</span> <span class="pre">'Bio.PDB.Residue'</span> <span class="pre">from</span> <span class="pre">'/home/quast/miniconda3/envs/test-stcrpy/lib/python3.12/site-packages/Bio/PDB/Residue.py'&gt;]</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#sort_residues_by_imgt_numbering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.sort_residues_by_imgt_numbering" title="Link to this definition"></a></dt>
 <dd><p>Sort residues in order by IMGT numbering.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>residues (list[Bio.PDB.Residue]): List of IMGT numbered residues.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>residues</strong> (<em>list</em><em>[</em><em>Bio.PDB.Residue</em><em>]</em>) – List of IMGT numbered residues.</p>
 </dd>
-<dt>Returns:</dt><dd><p>list[Bio.PDB.Residue]: Sorted list of IMGT numbered residuess.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sorted list of IMGT numbered residuess.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Bio.PDB.Residue]</p>
 </dd>
 </dl>
 </dd></dl>
