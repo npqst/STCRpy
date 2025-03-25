@@ -83,35 +83,49 @@
 <div class="viewcode-block" id="HADDOCKFormatter">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HADDOCKFormatter</span><span class="p">:</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor HADDOCK formatting object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            save_dir (str, optional): Path to save formatted files to. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span> <span class="o">=</span> <span class="n">save_dir</span> <span class="k">if</span> <span class="n">save_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;.&quot;</span>
 
 <div class="viewcode-block" id="HADDOCKFormatter.tcr_to_haddock">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.tcr_to_haddock">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">tcr_to_haddock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tcr_to_haddock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">:</span> <span class="s2">&quot;TCR&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bound reformatting of TCR structure object to HADDOCK compatible PDB file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcr (TCR): TCR structure object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_TCR_pdb_file</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="HADDOCKFormatter.pMHC_to_haddock">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.pMHC_to_haddock">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pMHC_to_haddock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mhc</span><span class="p">,</span> <span class="n">antigen</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pMHC_to_haddock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mhc</span><span class="p">:</span> <span class="s2">&quot;MHC&quot;</span><span class="p">,</span> <span class="n">antigen</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;Antigen&quot;</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bound reformatting of MHC and antigen structures object to HADDOCK compatible PDB file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mhc (MHC): MHC structure object</span>
+<span class="sd">            antigen (Antigen): Antigen structure object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_antigen_pdb_file</span><span class="p">(</span><span class="n">mhc</span><span class="p">,</span> <span class="n">antigen</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="HADDOCKFormatter.write_TCR_pdb_file">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_TCR_pdb_file">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">write_TCR_pdb_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_TCR_pdb_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">:</span> <span class="s2">&quot;TCR&quot;</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Writes TCR structure to a PDB file in a format HADDOCK can deal with.</span>
 <span class="sd">        Generates a PDB file, a mapping from the old to the new numbering,</span>
 <span class="sd">            and a list of active residues to restrain the HADDOCK simulation.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            tcr: The TCR structure.</span>
-<span class="sd">            save_dir: The directory to save the files (default is current directory).</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">            tcr (TCR): The TCR structure.</span>
+<span class="sd">            save_dir (str): The directory to save the files (default is current directory).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tcr_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tcr</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">tcr</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">new_tcr_structure</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -185,14 +199,16 @@
 
 <div class="viewcode-block" id="HADDOCKFormatter.write_antigen_pdb_file">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_antigen_pdb_file">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">write_antigen_pdb_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mhc</span><span class="p">,</span> <span class="n">antigen</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_antigen_pdb_file</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">mhc</span><span class="p">:</span> <span class="s2">&quot;MHC&quot;</span><span class="p">,</span> <span class="n">antigen</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;Antigen&quot;</span><span class="p">],</span> <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Writes the antigen PDB file for docking with HADDOCK.</span>
 <span class="sd">        Generates a PDB file, a file containing the renumbering mapping, and a list of active residues to restrict the simulation.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            mhc : MHC structure object.</span>
-<span class="sd">            antigen (list): List containing antigen chain. Should be length 1.</span>
+<span class="sd">            mhc (MHC): MHC structure object.</span>
+<span class="sd">            antigen (list[Antigen]): List containing antigen chain. Should be length 1.</span>
 <span class="sd">            save_dir (str, optional): The directory to save the PDB file. Defaults to &quot;.&quot;.</span>
 
 <span class="sd">        Returns:</span>
@@ -263,9 +279,20 @@
 <div class="viewcode-block" id="HADDOCKResultsParser">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HADDOCKResultsParser</span><span class="p">:</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">haddock_results_dir</span><span class="p">,</span> <span class="n">tcr_renumbering_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pmhc_renumbering_file</span><span class="o">=</span><span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">haddock_results_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tcr_renumbering_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pmhc_renumbering_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parser for results from HADDOCK simulations. Renumbers TCR, MHC and Antigen using renumbering files, and parses result metrics.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            haddock_results_dir (str): path to HADDOCK simulation results.</span>
+<span class="sd">            tcr_renumbering_file (str, optional): path to text file containing TCR renumbering to restore from HADDOCK compatible numbering. Defaults to None.</span>
+<span class="sd">            pmhc_renumbering_file (str, optional): path to text file containing MHC and antigen renumbering to restore from HADDOCK compatible numbering. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">haddock_results_dir</span> <span class="o">=</span> <span class="n">haddock_results_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tcr_renumbering_file</span> <span class="o">=</span> <span class="n">tcr_renumbering_file</span>
@@ -505,7 +532,25 @@
 
 <div class="viewcode-block" id="HADDOCKResultsParser.get_haddock_scores">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.get_haddock_scores">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_haddock_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_haddock_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve HADDOCK energy scoes and RMSD evaluations from simulation output:</span>
+<span class="sd">            \nColumns:</span>
+<span class="sd">            \n    &quot;haddock_score&quot;,</span>
+<span class="sd">            \n    &quot;interface_rmsd&quot;,</span>
+<span class="sd">            \n    &quot;ligand_rmsd&quot;,</span>
+<span class="sd">            \n    &quot;frac_common_contacts&quot;,</span>
+<span class="sd">            \n    &quot;E_vdw&quot;,</span>
+<span class="sd">            \n    &quot;E_elec&quot;,</span>
+<span class="sd">            \n    &quot;E_air&quot;,</span>
+<span class="sd">            \n    &quot;E_desolv&quot;,</span>
+<span class="sd">            \n    &quot;ligand_rmsd_2&quot;,</span>
+<span class="sd">            \n    &quot;cluster_id&quot;,</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: HADDOCK file contianing scores not found.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pandas.DataFrame: DataFrame with HADDOCK simulation metrics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
@@ -592,7 +637,17 @@
 
 <div class="viewcode-block" id="sort_residues_by_imgt_numbering">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_haddock.sort_residues_by_imgt_numbering">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">sort_residues_by_imgt_numbering</span><span class="p">(</span><span class="n">residues</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sort_residues_by_imgt_numbering</span><span class="p">(</span>
+    <span class="n">residues</span><span class="p">:</span> <span class="s2">&quot;list[Bio.PDB.Residue]&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;list[Bio.PDB.Residue]&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sort residues in order by IMGT numbering.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        residues (list[Bio.PDB.Residue]): List of IMGT numbered residues.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list[Bio.PDB.Residue]: Sorted list of IMGT numbered residuess.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sorted_residues</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
     <span class="n">imgt_nr_112_subsequence</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">res</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sorted_residues</span><span class="p">)</span> <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">112</span>

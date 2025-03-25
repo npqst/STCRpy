@@ -80,10 +80,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing</span><span class="w"> </span><span class="kn">import</span> <span class="n">abTCR</span><span class="p">,</span> <span class="n">MHCchain</span>
 
 
+<span class="c1"># Some of this code is adapted and refactored from https://github.com/EsamTolba/TCR-CoM/</span>
+<span class="c1"># Please see the TCRCoM_LICENSE for the license that applies to those code sections.</span>
+
 <div class="viewcode-block" id="TCRCoM">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TCRCoM</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Abstract class for calculating TCR centre of mass after aligning TCR:pMHC complex to reference MHC structure.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_reffile</span><span class="p">()</span>
 
         <span class="n">tcr_parser</span> <span class="o">=</span> <span class="n">TCRParser</span><span class="p">()</span>
@@ -95,6 +99,11 @@
 <div class="viewcode-block" id="TCRCoM.set_reffile">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reffile">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_reffile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Super method for setting MHC reference file.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="s2">&quot;TCRCom cannot be insantiated directly, instantiate its subclass&quot;</span>
         <span class="p">)</span></div>
@@ -103,6 +112,7 @@
 <div class="viewcode-block" id="TCRCoM.set_reference_residues">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reference_residues">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_reference_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set TCR and MHC reference residues.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_tcr_reference</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_mhc_reference</span><span class="p">()</span></div>
 
@@ -110,6 +120,7 @@
 <div class="viewcode-block" id="TCRCoM.set_tcr_reference">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_tcr_reference">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_tcr_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set TCR variable domain residues in reference model as residues numbered 1 to 121 for VA and 1 to 126 for VB.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reference_VA_residues</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">r</span>
             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_model</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span>
@@ -125,6 +136,11 @@
 <div class="viewcode-block" id="TCRCoM.set_mhc_reference">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_mhc_reference">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_mhc_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Super method for setting MHC reference residues for superposition. Overwritten by MHC class sepcific methods.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="s2">&quot;TCRCom cannot be insantiated directly, instantiate its subclass&quot;</span>
         <span class="p">)</span></div>
@@ -132,7 +148,15 @@
 
 <div class="viewcode-block" id="TCRCoM.get_filtered_TCR_residues">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.get_filtered_TCR_residues">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_TCR_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_TCR_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">:</span> <span class="s2">&quot;TCR&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;tuple[list[Bio.PDB.Residue]]&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get variable domain residues of query TCR and filter out those without a counterpart in the reference TCR.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcr (TCR): TCR structure object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[list[Bio.PDB.Residue]]: VA_residues, VB_residues.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tcr_A_residues</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">tcr</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()[</span><span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()]</span>
             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_VA_residues</span>
@@ -148,7 +172,24 @@
 
 <div class="viewcode-block" id="TCRCoM.center_of_mass">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.center_of_mass">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">center_of_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">geometric</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">center_of_mass</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Entity</span><span class="o">.</span><span class="n">Entity</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Atom</span><span class="o">.</span><span class="n">Atom</span><span class="p">]],</span>
+        <span class="n">geometric</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the mass weighted or purely geometric centre of mass of an entity or a list of atoms.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entity (Union[Bio.PDB.Entity.Entity, list[Bio.PDB.Atom.Atom]]): Structure entity whose centre of mass will be calculated</span>
+<span class="sd">            geometric (bool, optional): Whether to calculate geometric mean. Defaults to False.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Checks input type to ensure atoms can be retrieved.</span>
+<span class="sd">            ValueError: Unknown atoms.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.array: centre of mass</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Structure, Model, Chain, Residue</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Entity</span><span class="o">.</span><span class="n">Entity</span><span class="p">):</span>
             <span class="n">atom_list</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">()</span>
@@ -177,9 +218,26 @@
 
 <div class="viewcode-block" id="TCRCoM.add_com">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.TCRCoM.add_com">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_com</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mhc_com</span><span class="p">,</span> <span class="n">tcr_com</span><span class="p">,</span> <span class="n">VA_com</span><span class="p">,</span> <span class="n">VB_com</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_com</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mhc_com</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">tcr_com</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">VA_com</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">VB_com</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">tcr</span><span class="p">:</span> <span class="s2">&quot;TCR&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TCR&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to add pseudoatoms at MHC-CoM, TCR-CoM, and XYZ axis to the output PDB file</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mhc_com (np.array): MHC centre of mass</span>
+<span class="sd">            tcr_com (np.array): TCR centre of mass</span>
+<span class="sd">            VA_com (np.array): Alpha chain centre of mass</span>
+<span class="sd">            VB_com (np.array): Beta chain entre of mass</span>
+<span class="sd">            tcr (TCR): TCR structure object</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            TCR: Copy of the original TCR strucutre object with added pseudo-atoms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_structure</span> <span class="o">=</span> <span class="n">tcr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
@@ -224,8 +282,20 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_centres_of_mass</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">tcr</span><span class="p">:</span> <span class="n">abTCR</span><span class="p">,</span>
-        <span class="n">save_aligned_as</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">save_aligned_as</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the TCR and MHC centres of mass of an stcrpy TCR structure object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcr (abTCR): TCR structure object</span>
+<span class="sd">            save_aligned_as (str): Path to same alignment to. If None or False alignment is not saved. Defaults to None.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: Alpha Beta TCR compatible only, Gamma Delta TCRs not implemented.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[np.array]: tcr_com, mhc_com, tcr_VA_com, tcr_VB_com</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">tcr</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;No MHC associated with TCR&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tcr</span><span class="p">,</span> <span class="n">abTCR</span><span class="p">):</span>
@@ -282,6 +352,7 @@
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MHCI_TCRCoM</span><span class="p">(</span><span class="n">TCRCoM</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TCRCoM module for MHC Class I complexes.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MHCI_TCRCoM.set_reffile">
@@ -297,6 +368,7 @@
 <div class="viewcode-block" id="MHCI_TCRCoM.set_mhc_reference">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.set_mhc_reference">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_mhc_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set class I reference MHC residues&quot;&quot;&quot;</span>
         <span class="n">mhc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_model</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_MH1</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reference_MHC_residues</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_residues</span><span class="p">()</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">179</span>
@@ -305,7 +377,15 @@
 
 <div class="viewcode-block" id="MHCI_TCRCoM.get_filtered_MHC_residues">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.get_filtered_MHC_residues">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_MHC_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_MHC_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">:</span> <span class="s2">&quot;TCR&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Residue</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve MHC residues from query TCR and filter out those whose counterpart is not found in reference.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcr (TCR): TCR structure object associated with MHC Class I.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[Bio.PDB.Residue]: filtered_MHC_residues</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mhc</span> <span class="o">=</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mhc</span><span class="p">,</span> <span class="n">MHCchain</span><span class="p">):</span>  <span class="c1"># handle single MHC chain case</span>
             <span class="n">mhc</span> <span class="o">=</span> <span class="n">mhc</span><span class="o">.</span><span class="n">get_MH1</span><span class="p">()</span>
@@ -323,6 +403,7 @@
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MHCII_TCRCoM</span><span class="p">(</span><span class="n">TCRCoM</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;TCRCoM module for MHC Class II complexes.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MHCII_TCRCoM.set_reffile">
@@ -338,6 +419,7 @@
 <div class="viewcode-block" id="MHCII_TCRCoM.set_mhc_reference">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.set_mhc_reference">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_mhc_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set class II reference MHC residues&quot;&quot;&quot;</span>
         <span class="n">mhc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_model</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reference_MHC_residues</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">r</span>
@@ -355,7 +437,15 @@
 
 <div class="viewcode-block" id="MHCII_TCRCoM.get_filtered_MHC_residues">
 <a class="viewcode-back" href="../../../stcrpy.tcr_geometry.html#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.get_filtered_MHC_residues">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_MHC_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtered_MHC_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">:</span> <span class="s2">&quot;TCR&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Bio</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">Residue</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve MHC residues from query TCR and filter out those whose counterpart is not found in reference.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcr (TCR): TCR structure object associated with MHC Class II.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[Bio.PDB.Residue]: filtered_MHC_residues</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mhc</span> <span class="o">=</span> <span class="n">tcr</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mhc</span><span class="p">,</span> <span class="s2">&quot;get_GA&quot;</span><span class="p">):</span>
             <span class="n">filtered_MHC_residues</span> <span class="o">=</span> <span class="p">[</span>

@@ -109,57 +109,8 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="module-stcrpy.tcr_geometry.TCRAngle">
-<span id="stcrpy-tcr-geometry-tcrangle-module"></span><h2>stcrpy.tcr_geometry.TCRAngle module<a class="headerlink" href="#module-stcrpy.tcr_geometry.TCRAngle" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRAngle.TCRAngle">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_geometry.TCRAngle.</span></span><span class="sig-name descname"><span class="pre">TCRAngle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRAngle.html#TCRAngle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRAngle.TCRAngle" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Base class for calculating the orientation angles between the variable domains of a TCR.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRAngle.TCRAngle.calculate_angles">
-<span class="sig-name descname"><span class="pre">calculate_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRAngle.html#TCRAngle.calculate_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRAngle.TCRAngle.calculate_angles" title="Link to this definition"></a></dt>
-<dd><p>Method to calculate the orientation angles for a TCR.
-Note that this uses bio.pdb superimposer to do the structural fitting.
-&#64;param tcr: A tcr structure object from TCRDB.TcrPDB</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRAngle.TCRAngle.calculate_points">
-<span class="sig-name descname"><span class="pre">calculate_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chain_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRAngle.html#TCRAngle.calculate_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRAngle.TCRAngle.calculate_points" title="Link to this definition"></a></dt>
-<dd><p>Method to calculate the vector points for a TCR variable region.
-Note that this uses bio.pdb superimposer to do the structural fitting.
-&#64;param tcr: A tcr structure object from TCRDB.TcrPDB</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRAngle.TCRAngle.get_angles">
-<span class="sig-name descname"><span class="pre">get_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRAngle.html#TCRAngle.get_angles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRAngle.TCRAngle.get_angles" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRAngle.abTCRAngle">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_geometry.TCRAngle.</span></span><span class="sig-name descname"><span class="pre">abTCRAngle</span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRAngle.html#abTCRAngle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRAngle.abTCRAngle" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_geometry.TCRAngle.TCRAngle" title="stcrpy.tcr_geometry.TCRAngle.TCRAngle"><code class="xref py py-class docutils literal notranslate"><span class="pre">TCRAngle</span></code></a></p>
-<p>Class to calculate the orientation angles between the variable domains of an abTCR.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRAngle.dbTCRAngle">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_geometry.TCRAngle.</span></span><span class="sig-name descname"><span class="pre">dbTCRAngle</span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRAngle.html#dbTCRAngle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRAngle.dbTCRAngle" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_geometry.TCRAngle.TCRAngle" title="stcrpy.tcr_geometry.TCRAngle.TCRAngle"><code class="xref py py-class docutils literal notranslate"><span class="pre">TCRAngle</span></code></a></p>
-<p>Class to calculate the orientation angles between the variable domains of a dbTCR.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRAngle.gdTCRAngle">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_geometry.TCRAngle.</span></span><span class="sig-name descname"><span class="pre">gdTCRAngle</span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRAngle.html#gdTCRAngle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRAngle.gdTCRAngle" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_geometry.TCRAngle.TCRAngle" title="stcrpy.tcr_geometry.TCRAngle.TCRAngle"><code class="xref py py-class docutils literal notranslate"><span class="pre">TCRAngle</span></code></a></p>
-<p>Class to calculate the orientation angles between the variable domains of a gdTCR.</p>
-</dd></dl>
-
+<section id="stcrpy-tcr-geometry-tcrangle-module">
+<h2>stcrpy.tcr_geometry.TCRAngle module<a class="headerlink" href="#stcrpy-tcr-geometry-tcrangle-module" title="Link to this heading"></a></h2>
 </section>
 <section id="module-stcrpy.tcr_geometry.TCRCoM">
 <span id="stcrpy-tcr-geometry-tcrcom-module"></span><h2>stcrpy.tcr_geometry.TCRCoM module<a class="headerlink" href="#module-stcrpy.tcr_geometry.TCRCoM" title="Link to this heading"></a></h2>
@@ -169,13 +120,21 @@ Note that this uses bio.pdb superimposer to do the structural fitting.
 <dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM" title="stcrpy.tcr_geometry.TCRCoM.TCRCoM"><code class="xref py py-class docutils literal notranslate"><span class="pre">TCRCoM</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.get_filtered_MHC_residues">
-<span class="sig-name descname"><span class="pre">get_filtered_MHC_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#MHCII_TCRCoM.get_filtered_MHC_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.get_filtered_MHC_residues" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_filtered_MHC_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list[&lt;module</span> <span class="pre">'Bio.PDB.Residue'</span> <span class="pre">from</span> <span class="pre">'/home/quast/miniconda3/envs/test-stcrpy/lib/python3.12/site-packages/Bio/PDB/Residue.py'&gt;]</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#MHCII_TCRCoM.get_filtered_MHC_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.get_filtered_MHC_residues" title="Link to this definition"></a></dt>
+<dd><p>Retrieve MHC residues from query TCR and filter out those whose counterpart is not found in reference.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object associated with MHC Class II.</p>
+</dd>
+<dt>Returns:</dt><dd><p>list[Bio.PDB.Residue]: filtered_MHC_residues</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.set_mhc_reference">
 <span class="sig-name descname"><span class="pre">set_mhc_reference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#MHCII_TCRCoM.set_mhc_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.set_mhc_reference" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Set class II reference MHC residues</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.MHCII_TCRCoM.set_reffile">
@@ -191,13 +150,21 @@ Note that this uses bio.pdb superimposer to do the structural fitting.
 <dd><p>Bases: <a class="reference internal" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM" title="stcrpy.tcr_geometry.TCRCoM.TCRCoM"><code class="xref py py-class docutils literal notranslate"><span class="pre">TCRCoM</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.get_filtered_MHC_residues">
-<span class="sig-name descname"><span class="pre">get_filtered_MHC_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#MHCI_TCRCoM.get_filtered_MHC_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.get_filtered_MHC_residues" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_filtered_MHC_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list[&lt;module</span> <span class="pre">'Bio.PDB.Residue'</span> <span class="pre">from</span> <span class="pre">'/home/quast/miniconda3/envs/test-stcrpy/lib/python3.12/site-packages/Bio/PDB/Residue.py'&gt;]</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#MHCI_TCRCoM.get_filtered_MHC_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.get_filtered_MHC_residues" title="Link to this definition"></a></dt>
+<dd><p>Retrieve MHC residues from query TCR and filter out those whose counterpart is not found in reference.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object associated with MHC Class I.</p>
+</dd>
+<dt>Returns:</dt><dd><p>list[Bio.PDB.Residue]: filtered_MHC_residues</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.set_mhc_reference">
 <span class="sig-name descname"><span class="pre">set_mhc_reference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#MHCI_TCRCoM.set_mhc_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.set_mhc_reference" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Set class I reference MHC residues</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.MHCI_TCRCoM.set_reffile">
@@ -213,44 +180,94 @@ Note that this uses bio.pdb superimposer to do the structural fitting.
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.add_com">
-<span class="sig-name descname"><span class="pre">add_com</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mhc_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VA_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VB_com</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.add_com"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.add_com" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add_com</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mhc_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VA_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VB_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.add_com"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.add_com" title="Link to this definition"></a></dt>
 <dd><p>Function to add pseudoatoms at MHC-CoM, TCR-CoM, and XYZ axis to the output PDB file</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>mhc_com (np.array): MHC centre of mass
+tcr_com (np.array): TCR centre of mass
+VA_com (np.array): Alpha chain centre of mass
+VB_com (np.array): Beta chain entre of mass
+tcr (TCR): TCR structure object</p>
+</dd>
+<dt>Returns:</dt><dd><p>TCR: Copy of the original TCR strucutre object with added pseudo-atoms.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.calculate_centres_of_mass">
-<span class="sig-name descname"><span class="pre">calculate_centres_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_aligned_as</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.calculate_centres_of_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.calculate_centres_of_mass" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">calculate_centres_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_aligned_as</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">array</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.calculate_centres_of_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.calculate_centres_of_mass" title="Link to this definition"></a></dt>
+<dd><p>Calculate the TCR and MHC centres of mass of an stcrpy TCR structure object.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>tcr (abTCR): TCR structure object
+save_aligned_as (str): Path to same alignment to. If None or False alignment is not saved. Defaults to None.</p>
+</dd>
+<dt>Raises:</dt><dd><p>NotImplementedError: Alpha Beta TCR compatible only, Gamma Delta TCRs not implemented.</p>
+</dd>
+<dt>Returns:</dt><dd><p>tuple[np.array]: tcr_com, mhc_com, tcr_VA_com, tcr_VB_com</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.center_of_mass">
-<span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.center_of_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.center_of_mass" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Entity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Atom</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.center_of_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.center_of_mass" title="Link to this definition"></a></dt>
+<dd><p>Calculate the mass weighted or purely geometric centre of mass of an entity or a list of atoms.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>entity (Union[Bio.PDB.Entity.Entity, list[Bio.PDB.Atom.Atom]]): Structure entity whose centre of mass will be calculated
+geometric (bool, optional): Whether to calculate geometric mean. Defaults to False.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: Checks input type to ensure atoms can be retrieved.
+ValueError: Unknown atoms.</p>
+</dd>
+<dt>Returns:</dt><dd><p>np.array: centre of mass</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.get_filtered_TCR_residues">
-<span class="sig-name descname"><span class="pre">get_filtered_TCR_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.get_filtered_TCR_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.get_filtered_TCR_residues" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_filtered_TCR_residues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Bio.PDB.Residue</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.get_filtered_TCR_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.get_filtered_TCR_residues" title="Link to this definition"></a></dt>
+<dd><p>Get variable domain residues of query TCR and filter out those without a counterpart in the reference TCR.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object</p>
+</dd>
+<dt>Returns:</dt><dd><p>tuple[list[Bio.PDB.Residue]]: VA_residues, VB_residues.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_mhc_reference">
 <span class="sig-name descname"><span class="pre">set_mhc_reference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.set_mhc_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_mhc_reference" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Super method for setting MHC reference residues for superposition. Overwritten by MHC class sepcific methods.</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><p>NotImplementedError</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reference_residues">
 <span class="sig-name descname"><span class="pre">set_reference_residues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.set_reference_residues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reference_residues" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Set TCR and MHC reference residues.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reffile">
 <span class="sig-name descname"><span class="pre">set_reffile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.set_reffile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_reffile" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Super method for setting MHC reference file.</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><p>NotImplementedError</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_tcr_reference">
 <span class="sig-name descname"><span class="pre">set_tcr_reference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRCoM.html#TCRCoM.set_tcr_reference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRCoM.TCRCoM.set_tcr_reference" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Set TCR variable domain residues in reference model as residues numbered 1 to 121 for VA and 1 to 126 for VB.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -281,12 +298,21 @@ Formula uses SVD.</p>
 <span id="stcrpy-tcr-geometry-tcrgeom-module"></span><h2>stcrpy.tcr_geometry.TCRGeom module<a class="headerlink" href="#module-stcrpy.tcr_geometry.TCRGeom" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_geometry.TCRGeom.</span></span><span class="sig-name descname"><span class="pre">TCRGeom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_aligned_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polarity_as_sign</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cys'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_geometry.TCRGeom.</span></span><span class="sig-name descname"><span class="pre">TCRGeom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_aligned_as</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polarity_as_sign</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cys'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for TCR geometry calculations.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.calculate_rudolph_angle">
-<span class="sig-name descname"><span class="pre">calculate_rudolph_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr_vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mhc_vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.calculate_rudolph_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.calculate_rudolph_angle" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">calculate_rudolph_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mhc_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.calculate_rudolph_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.calculate_rudolph_angle" title="Link to this definition"></a></dt>
+<dd><p>Calculate the scanning angle of TCR:pMHC complex according to Rudolph et. al.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>tcr_vector (np.array): Vector pointing from VA Cys centroid to VB Cys centroid
+mhc_vector (np.array): Vector pointing along MHC cleft</p>
+</dd>
+<dt>Returns:</dt><dd><p>float: scanning angle</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.calculate_tcr_docking_angles">
@@ -316,18 +342,23 @@ else positive if polarity is canonical (0). Defaults to True.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_pitch_angle">
-<span class="sig-name descname"><span class="pre">get_pitch_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_pitch_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_pitch_angle" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_pitch_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_pitch_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_pitch_angle" title="Link to this definition"></a></dt>
+<dd><p>Return TCR:pMHC pitch angle, ie tilt of the TCR over the MHC.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>rad (bool, optional): Return angle in radians. Defaults to False.</p>
+</dd>
+<dt>Returns:</dt><dd><p>float: TCR:pMHC pitch angle</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_polarity">
-<span class="sig-name descname"><span class="pre">get_polarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr_vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_polarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_polarity" title="Link to this definition"></a></dt>
-<dd><p>Return the polarity of the TCR based on the TCR vector pointing from the VA to the VB CoM.
+<span class="sig-name descname"><span class="pre">get_polarity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_polarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_polarity" title="Link to this definition"></a></dt>
+<dd><p>Return the polarity of the TCR based on the TCR vector pointing from the VA to the VB CoM, or the scanning angle if using Rudolph et. al..
 If the x component is negative, ie the tcr_vector points from the alpha 2 chain to the
 alpha 1 chain of the MHC, the polarity is canonical (0). Otherwise the polarity is reverse (1).</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p>tcr_vector (np.array): Unit vector pointing from VA CoM to VB CoM.</p>
-</dd>
 <dt>Returns:</dt><dd><p>int: 0 for canonical polarity, 1 for reverse polarity.</p>
 </dd>
 </dl>
@@ -335,39 +366,50 @@ alpha 1 chain of the MHC, the polarity is canonical (0). Otherwise the polarity 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_scanning_angle">
-<span class="sig-name descname"><span class="pre">get_scanning_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_scanning_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_scanning_angle" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_scanning_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rad</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_scanning_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_scanning_angle" title="Link to this definition"></a></dt>
+<dd><p>Return TCR:pMHC complex scanning (aka crossing, incident angle) of TCR to MHC.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>rad (bool, optional): Return angle in radians. Defaults to False.</p>
+</dd>
+<dt>Returns:</dt><dd><p>float: TCR:pMHC scanning angle.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_tcr_vector">
 <span class="sig-name descname"><span class="pre">get_tcr_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr_VA_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_VB_com</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.get_tcr_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.get_tcr_vector" title="Link to this definition"></a></dt>
-<dd><p>Calculates the vector from the VA centre of mass to the VB centre of mass,
-translated such that the vector originates at the total TCR’s centre of mass and truncated to unit length.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tcr_VA_com</strong> (<em>np.array</em>) – TCR VA centre of mass</p></li>
-<li><p><strong>tcr_VB_com</strong> (<em>np.array</em>) – TCR VB center of mass</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Unit vector from TCR CoM in direction of VA CoM to VB CoM</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.array</p>
+<dd><p>Calculates the vector from the VA centre of mass to the VB centre of mass, translated such that the vector originates at the total TCR’s centre of mass and truncated to unit length.
+Args:</p>
+<blockquote>
+<div><p>tcr_VA_com (np.array): TCR VA centre of mass
+tcr_VB_com (np.array): TCR VB center of mass</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>np.array: Unit vector from TCR CoM in direction of VA CoM to VB CoM</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_df">
-<span class="sig-name descname"><span class="pre">to_df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.to_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_df" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">to_df</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.to_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_df" title="Link to this definition"></a></dt>
+<dd><p>Return TCR:pMHC complex geometry metrics and pandas dataframe.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>pandas.DataFrame: TCR:pMHC complex geometry metrics</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_dict" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_geometry/TCRGeom.html#TCRGeom.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_geometry.TCRGeom.TCRGeom.to_dict" title="Link to this definition"></a></dt>
+<dd><p>Return TCR:pMHC complex geometry metrics as dictionary.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>dict: TCR:pMHC complex geometry.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

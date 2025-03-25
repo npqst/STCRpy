@@ -100,56 +100,102 @@
 <span id="stcrpy-tcr-formats-tcr-formats-module"></span><h2>stcrpy.tcr_formats.tcr_formats module<a class="headerlink" href="#module-stcrpy.tcr_formats.tcr_formats" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_formats.get_sequences">
-<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_formats.</span></span><span class="sig-name descname"><span class="pre">get_sequences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amino_acids_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residues_to_include</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_formats.html#get_sequences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_formats.get_sequences" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_formats.</span></span><span class="sig-name descname"><span class="pre">get_sequences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Bio.PDB.Entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amino_acids_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residues_to_include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_formats.html#get_sequences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_formats.get_sequences" title="Link to this definition"></a></dt>
+<dd><p>Extract seqeunces from strcuture objects as dictionary.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>entity (Bio.PDB.Entity): Stucture object
+amino_acids_only (bool, optional): Whether to remove non-amino acid ‘X’ from sequences. Defaults to True.
+residues_to_include (list, optional): List of residue IDs to include in sequence. Defaults to None.</p>
+</dd>
+<dt>Raises:</dt><dd><p>e: AttributeError if entity has no attribute .get_chains(). The assuems entity is chain level and returns single sequence</p>
+</dd>
+<dt>Returns:</dt><dd><p>dict: Dictionary of amino acid sequences, keyed by chain ID in strcuctre entity.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_formats.to_AF3_json">
-<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_formats.</span></span><span class="sig-name descname"><span class="pre">to_AF3_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V_domain_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_formats.html#to_AF3_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_formats.to_AF3_json" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_formats.</span></span><span class="sig-name descname"><span class="pre">to_AF3_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V_domain_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_formats.html#to_AF3_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_formats.to_AF3_json" title="Link to this definition"></a></dt>
+<dd><p>Converts TCR object to dict in Alphafold 3 JSON input format, ie. amino acid sequences.
+Eg:
+{</p>
+<blockquote>
+<div><p>“name”: Job name,
+“modelSeeds”: [],
+“sequences”: [</p>
+<blockquote>
+<div><p>{“proteinChain”: {“sequence”: AAAAAAAAAAAAAA, “count”: 1}},
+{“proteinChain”: {“sequence”: AAAAAAAAAAAAAA, “count”: 1}},
+{“proteinChain”: {“sequence”: AAAAAAAAAAAAAA, “count”: 1}},</p>
+</div></blockquote>
+<p>],</p>
+</div></blockquote>
+<p>}</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object
+tcr_only (bool, optional): Whether to include TCR sequence only, excluding antigen and MHC. Defaults to True.
+save (bool, optional): Whether to save dict as JSON file. Defaults to True.
+save_dir (str, optional): Directory to save JSON files to. Defaults to “”.
+name (str, optional): TCR ID to use as name for AF3 job. Defaults to None.
+V_domain_only (bool, optional): Include full TCR sequence or only the variable domain (1-128 IMGT numbering). Defaults to False.</p>
+</dd>
+<dt>Returns:</dt><dd><p>dict: Nested dictionary of AF3 sequence inputs.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-stcrpy.tcr_formats.tcr_haddock">
 <span id="stcrpy-tcr-formats-tcr-haddock-module"></span><h2>stcrpy.tcr_formats.tcr_haddock module<a class="headerlink" href="#module-stcrpy.tcr_formats.tcr_haddock" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_haddock.</span></span><span class="sig-name descname"><span class="pre">HADDOCKFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_haddock.</span></span><span class="sig-name descname"><span class="pre">HADDOCKFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.pMHC_to_haddock">
-<span class="sig-name descname"><span class="pre">pMHC_to_haddock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mhc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antigen</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.pMHC_to_haddock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.pMHC_to_haddock" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">pMHC_to_haddock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mhc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><span class="pre">MHC</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">antigen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Antigen</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.pMHC_to_haddock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.pMHC_to_haddock" title="Link to this definition"></a></dt>
+<dd><p>Bound reformatting of MHC and antigen structures object to HADDOCK compatible PDB file.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>mhc (MHC): MHC structure object
+antigen (Antigen): Antigen structure object</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.tcr_to_haddock">
-<span class="sig-name descname"><span class="pre">tcr_to_haddock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.tcr_to_haddock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.tcr_to_haddock" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">tcr_to_haddock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.tcr_to_haddock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.tcr_to_haddock" title="Link to this definition"></a></dt>
+<dd><p>Bound reformatting of TCR structure object to HADDOCK compatible PDB file.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>tcr (TCR): TCR structure object</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_TCR_pdb_file">
-<span class="sig-name descname"><span class="pre">write_TCR_pdb_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.write_TCR_pdb_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_TCR_pdb_file" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_TCR_pdb_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tcr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR" title="stcrpy.tcr_processing.TCR.TCR"><span class="pre">TCR</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.write_TCR_pdb_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_TCR_pdb_file" title="Link to this definition"></a></dt>
 <dd><p>Writes TCR structure to a PDB file in a format HADDOCK can deal with.
 Generates a PDB file, a mapping from the old to the new numbering,</p>
 <blockquote>
 <div><p>and a list of active residues to restrain the HADDOCK simulation.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>Args:</dt><dd><p>tcr: The TCR structure.
-save_dir: The directory to save the files (default is current directory).</p>
-</dd>
-<dt>Returns:</dt><dd><p>None</p>
+<dt>Args:</dt><dd><p>tcr (TCR): The TCR structure.
+save_dir (str): The directory to save the files (default is current directory).</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_antigen_pdb_file">
-<span class="sig-name descname"><span class="pre">write_antigen_pdb_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mhc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antigen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.write_antigen_pdb_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_antigen_pdb_file" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_antigen_pdb_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mhc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.MHC" title="stcrpy.tcr_processing.MHC.MHC"><span class="pre">MHC</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">antigen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Antigen</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKFormatter.write_antigen_pdb_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKFormatter.write_antigen_pdb_file" title="Link to this definition"></a></dt>
 <dd><p>Writes the antigen PDB file for docking with HADDOCK.
 Generates a PDB file, a file containing the renumbering mapping, and a list of active residues to restrict the simulation.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p>mhc : MHC structure object.
-antigen (list): List containing antigen chain. Should be length 1.
+<dt>Args:</dt><dd><p>mhc (MHC): MHC structure object.
+antigen (list[Antigen]): List containing antigen chain. Should be length 1.
 save_dir (str, optional): The directory to save the PDB file. Defaults to “.”.</p>
 </dd>
 <dt>Returns:</dt><dd><p>str: The filename of the saved antigen PDB file.</p>
@@ -161,12 +207,34 @@ save_dir (str, optional): The directory to save the PDB file. Defaults to “.�
 
 <dl class="py class">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_haddock.</span></span><span class="sig-name descname"><span class="pre">HADDOCKResultsParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">haddock_results_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_renumbering_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmhc_renumbering_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKResultsParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_haddock.</span></span><span class="sig-name descname"><span class="pre">HADDOCKResultsParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">haddock_results_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_renumbering_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmhc_renumbering_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKResultsParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.get_haddock_scores">
-<span class="sig-name descname"><span class="pre">get_haddock_scores</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKResultsParser.get_haddock_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.get_haddock_scores" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_haddock_scores</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#HADDOCKResultsParser.get_haddock_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.get_haddock_scores" title="Link to this definition"></a></dt>
+<dd><p>Retrieve HADDOCK energy scoes and RMSD evaluations from simulation output:</p>
+<p>Columns:</p>
+<blockquote>
+<div><p>“haddock_score”,</p>
+<p>“interface_rmsd”,</p>
+<p>“ligand_rmsd”,</p>
+<p>“frac_common_contacts”,</p>
+<p>“E_vdw”,</p>
+<p>“E_elec”,</p>
+<p>“E_air”,</p>
+<p>“E_desolv”,</p>
+<p>“ligand_rmsd_2”,</p>
+<dl class="simple">
+<dt>“cluster_id”,</dt><dd><dl class="simple">
+<dt>Raises:</dt><dd><p>FileNotFoundError: HADDOCK file contianing scores not found.</p>
+</dd>
+<dt>Returns:</dt><dd><p>pandas.DataFrame: DataFrame with HADDOCK simulation metrics.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.HADDOCKResultsParser.renumber_all_haddock_predictions">
@@ -225,8 +293,15 @@ result = parse_renumbered_line(line)
 
 <dl class="py function">
 <dt class="sig sig-object py" id="stcrpy.tcr_formats.tcr_haddock.sort_residues_by_imgt_numbering">
-<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_haddock.</span></span><span class="sig-name descname"><span class="pre">sort_residues_by_imgt_numbering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residues</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#sort_residues_by_imgt_numbering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.sort_residues_by_imgt_numbering" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_formats.tcr_haddock.</span></span><span class="sig-name descname"><span class="pre">sort_residues_by_imgt_numbering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">residues:</span> <span class="pre">list[&lt;module</span> <span class="pre">'Bio.PDB.Residue'</span> <span class="pre">from</span> <span class="pre">'/home/quast/miniconda3/envs/test-stcrpy/lib/python3.12/site-packages/Bio/PDB/Residue.py'&gt;]</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list[&lt;module</span> <span class="pre">'Bio.PDB.Residue'</span> <span class="pre">from</span> <span class="pre">'/home/quast/miniconda3/envs/test-stcrpy/lib/python3.12/site-packages/Bio/PDB/Residue.py'&gt;]</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_formats/tcr_haddock.html#sort_residues_by_imgt_numbering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_formats.tcr_haddock.sort_residues_by_imgt_numbering" title="Link to this definition"></a></dt>
+<dd><p>Sort residues in order by IMGT numbering.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>residues (list[Bio.PDB.Residue]): List of IMGT numbered residues.</p>
+</dd>
+<dt>Returns:</dt><dd><p>list[Bio.PDB.Residue]: Sorted list of IMGT numbered residuess.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-stcrpy.tcr_formats">

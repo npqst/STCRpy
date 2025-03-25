@@ -77,8 +77,36 @@
 <div class="viewcode-block" id="to_AF3_json">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_formats.to_AF3_json">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">to_AF3_json</span><span class="p">(</span>
-    <span class="n">tcr</span><span class="p">,</span> <span class="n">tcr_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">V_domain_only</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">):</span>
+    <span class="n">tcr</span><span class="p">:</span> <span class="s2">&quot;TCR&quot;</span><span class="p">,</span>
+    <span class="n">tcr_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">V_domain_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts TCR object to dict in Alphafold 3 JSON input format, ie. amino acid sequences.</span>
+<span class="sd">    Eg:</span>
+<span class="sd">    {</span>
+<span class="sd">        &quot;name&quot;: Job name,</span>
+<span class="sd">        &quot;modelSeeds&quot;: [],</span>
+<span class="sd">        &quot;sequences&quot;: [</span>
+<span class="sd">            {&quot;proteinChain&quot;: {&quot;sequence&quot;: AAAAAAAAAAAAAA, &quot;count&quot;: 1}},</span>
+<span class="sd">            {&quot;proteinChain&quot;: {&quot;sequence&quot;: AAAAAAAAAAAAAA, &quot;count&quot;: 1}},</span>
+<span class="sd">            {&quot;proteinChain&quot;: {&quot;sequence&quot;: AAAAAAAAAAAAAA, &quot;count&quot;: 1}},</span>
+<span class="sd">        ],</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tcr (TCR): TCR structure object</span>
+<span class="sd">        tcr_only (bool, optional): Whether to include TCR sequence only, excluding antigen and MHC. Defaults to True.</span>
+<span class="sd">        save (bool, optional): Whether to save dict as JSON file. Defaults to True.</span>
+<span class="sd">        save_dir (str, optional): Directory to save JSON files to. Defaults to &quot;&quot;.</span>
+<span class="sd">        name (str, optional): TCR ID to use as name for AF3 job. Defaults to None.</span>
+<span class="sd">        V_domain_only (bool, optional): Include full TCR sequence or only the variable domain (1-128 IMGT numbering). Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Nested dictionary of AF3 sequence inputs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">V_domain_only</span><span class="p">:</span>
         <span class="n">residue_nrs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">128</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
@@ -111,7 +139,24 @@
 
 <div class="viewcode-block" id="get_sequences">
 <a class="viewcode-back" href="../../../stcrpy.tcr_formats.html#stcrpy.tcr_formats.tcr_formats.get_sequences">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_sequences</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">amino_acids_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">residues_to_include</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sequences</span><span class="p">(</span>
+    <span class="n">entity</span><span class="p">:</span> <span class="s2">&quot;Bio.PDB.Entity&quot;</span><span class="p">,</span>
+    <span class="n">amino_acids_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">residues_to_include</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract seqeunces from strcuture objects as dictionary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        entity (Bio.PDB.Entity): Stucture object</span>
+<span class="sd">        amino_acids_only (bool, optional): Whether to remove non-amino acid &#39;X&#39; from sequences. Defaults to True.</span>
+<span class="sd">        residues_to_include (list, optional): List of residue IDs to include in sequence. Defaults to None.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        e: AttributeError if entity has no attribute .get_chains(). The assuems entity is chain level and returns single sequence</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Dictionary of amino acid sequences, keyed by chain ID in strcuctre entity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">residues_to_include</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
