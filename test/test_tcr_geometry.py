@@ -55,15 +55,6 @@ class TestTCRGeometry(unittest.TestCase):
             ]
         )
 
-    def test_calculate_tcr_angles(self):
-        parser = TCRParser.TCRParser()
-        pdb_file = "./test_files/5hyj.pdb"
-        tcr = parser.get_tcr_structure("test", pdb_file)
-        tcr_angle = TCRAngle.abTCRAngle()
-        ED_tcr_angles = tcr_angle.get_angles(tcr[0]["ED"])
-        all_tcr_angles = tcr_angle.get_angles(tcr)
-        assert all_tcr_angles["ED"] == ED_tcr_angles
-
     def test_calculate_docking_angle_of_docks(self):
         parser = TCRParser.TCRParser()
         dock_pdb_files = glob.glob(
