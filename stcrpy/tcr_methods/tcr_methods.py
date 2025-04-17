@@ -6,6 +6,18 @@ from ..tcr_processing.TCRParser import TCRParser
 from .tcr_batch_operations import batch_load_TCRs, batch_yield_TCRs
 
 
+def load_TCR(tcr_structure_file, tcr_id=None):
+    tcr_parser = TCRParser()
+    if tcr_id is None:
+        tcr_id = tcr_structure_file.split("/")[-1].split(".")[0]
+    tcr_structure = list(
+        tcr_parser.get_tcr_structure(tcr_id, tcr_structure_file).get_TCRs()
+    )
+    if len(tcr_structure) == 1:
+        return tcr_structure[0]
+    return tcr_structure
+
+
 def load_TCRs(tcr_structure_files, tcr_ids=None):
     tcr_parser = TCRParser()
     if isinstance(tcr_structure_files, str):  # loading single file
