@@ -32,7 +32,7 @@ jobs:
         run: |
           conda create -n env python==${{ matrix.python-version }}
           conda activate env
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.30
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.31
           pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
@@ -54,4 +54,5 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate env
+          pip install plip
           python -c 'import stcrpy; x=stcrpy.fetch_TCR("7pb2"); print(x[0].profile_peptide_interactions())'
