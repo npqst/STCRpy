@@ -21,9 +21,8 @@ jobs:
       run: |
         python -c 'import sys; print(print(sys.executable))'
         pip install openbabel-wheel==3.1.1.21
-        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.29
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.30
         ANARCI --build_models
-        # conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
         conda install -c conda-forge pymol-open-source 
     - name: Test import
       run: |
@@ -50,9 +49,8 @@ jobs:
         pip install openbabel-wheel==3.1.1.21
         python -c 'import openbabel'
         pip install plip
-        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.29
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.30
         ANARCI --build_models
-        # conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
         conda install -c conda-forge pymol-open-source 
     - name: Test import
       run: |
@@ -79,9 +77,8 @@ jobs:
         pip install openbabel-wheel==3.1.1.21
         python -c 'import openbabel'
         pip install plip
-        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.29
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.30
         ANARCI --build_models
-        # conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
         conda install -c conda-forge pymol-open-source 
       shell: bash  # Use bash for conda compatibility
     - name: Test import

@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-13", "macos-latest"]
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: conda-incubator/setup-miniconda@v3
         with:
@@ -32,7 +32,7 @@ jobs:
         run: |
           conda create -n env python==${{ matrix.python-version }}
           conda activate env
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.29
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.30
           pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
@@ -44,16 +44,14 @@ jobs:
         run: |
           conda activate env
           conda install -c conda-forge pymol-open-source 
-          # conda install -c conda-forge -c schrodinger numpy pymol-bundle -y
           conda list
       - name: Test import
         shell: bash -el {0}
         run: |
           conda activate env
           python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
-      - name: Install PLIP and test
+      - name:  Test interaction profiling
         shell: bash -el {0}
         run: |
           conda activate env
-          pip install plip
           python -c 'import stcrpy; x=stcrpy.fetch_TCR("7pb2"); print(x[0].profile_peptide_interactions())'
