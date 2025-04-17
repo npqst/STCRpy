@@ -23,7 +23,8 @@ jobs:
         pip install openbabel-wheel==3.1.1.21
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.29
         ANARCI --build_models
-        conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
+        # conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
+        conda install -c conda-forge pymol-open-source 
     - name: Test import
       run: |
         python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
@@ -51,7 +52,8 @@ jobs:
         pip install plip
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.29
         ANARCI --build_models
-        conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
+        # conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
+        conda install -c conda-forge pymol-open-source 
     - name: Test import
       run: |
         python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
@@ -79,7 +81,8 @@ jobs:
         pip install plip
         pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.29
         ANARCI --build_models
-        conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
+        # conda install -c conda-forge -c schrodinger pymol-bundle numpy -y
+        conda install -c conda-forge pymol-open-source 
       shell: bash  # Use bash for conda compatibility
     - name: Test import
       run: |
