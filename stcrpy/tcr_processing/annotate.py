@@ -13,7 +13,6 @@ to_one_letter_code = dict(list(zip(aa3, aa1)))
 
 # Import TCRDB's constants and common functions.
 from .utils.constants import TCR_CHAINS
-from anarci import number as anarci_number
 
 
 def call_anarci(
@@ -44,6 +43,8 @@ def call_anarci(
 
     @return: numbering, chain type
     """
+    from anarci import number as anarci_number
+
     numbering, chain_type, germline_info = anarci_number(
         seq, allow=allow, assign_germline=True
     )

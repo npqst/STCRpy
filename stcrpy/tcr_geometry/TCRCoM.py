@@ -2,11 +2,7 @@ import os
 import Bio
 from typing import Union
 import warnings
-
-with warnings.catch_warnings():
-    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
-    warnings.filterwarnings("ignore", category=UserWarning)
-    import numpy as np
+import numpy as np
 
 from ..tcr_processing.TCRParser import TCRParser
 from ..tcr_processing.TCRIO import TCRIO

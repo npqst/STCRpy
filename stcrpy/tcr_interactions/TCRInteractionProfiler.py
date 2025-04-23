@@ -1,29 +1,12 @@
 import warnings
 import matplotlib.pyplot as plt
 from importlib import reload
-
-with warnings.catch_warnings():
-    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
-    warnings.filterwarnings("ignore", category=UserWarning)
-    import numpy as np
+import numpy as np
 
 from ..tcr_processing.TCRParser import TCRParser
 
 try:
     import plip
-except ModuleNotFoundError:
-    warnings.warn(
-        """\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:
-        \npip install plip --no-deps\n\n"""
-    )
-
-
-from . import utils as plip_utils
-from .PLIPParser import PLIPParser
-from .TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
-
-
-try:
     from plip.basic.remote import VisualizerData
     from plip.visualization.visualize import visualize_in_pymol
 except ModuleNotFoundError as e:
@@ -50,6 +33,12 @@ except ImportError as e:
             \nThis is due to an import error. Perhaps try reinstalling plip? 
             \nThe error trace was: {str(e)}"""
         )
+
+
+from . import utils as plip_utils
+from .PLIPParser import PLIPParser
+from .TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
+
 
 class TCRInteractionProfiler:
 

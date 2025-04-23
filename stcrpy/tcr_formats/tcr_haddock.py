@@ -1,14 +1,10 @@
 import os
 import re
 import warnings
+import numpy as np
 
 import Bio
 from Bio.PDB.Superimposer import Superimposer
-
-with warnings.catch_warnings():
-    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
-    warnings.filterwarnings("ignore", category=UserWarning)
-    import numpy as np
 
 from .. import tcr_processing
 

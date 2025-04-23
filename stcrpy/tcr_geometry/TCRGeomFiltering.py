@@ -1,11 +1,7 @@
 import warnings
 from scipy.stats import norm, gamma
 from sklearn.mixture import GaussianMixture
-
-with warnings.catch_warnings():
-    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
-    warnings.filterwarnings("ignore", category=UserWarning)
-    import numpy as np
+import numpy as np
 
 
 # DEFAULT PARAMETERS FROM FIT TO STCRDAB (SAMPLED JULY 2024)

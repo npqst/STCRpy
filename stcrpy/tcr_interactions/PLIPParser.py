@@ -1,15 +1,14 @@
 import typing
-import pandas as pd
 import warnings
 import os
+import pandas as pd
 
 
 from . import utils as plip_utils
 from .TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
 
-
 class PLIPParser:
-
+    """This class is used to parse the interactions of a TCR-pMHC complex using PLIP."""
     def parse_complex(
         self,
         complex: "plip.structure.preparation.PDBComplex",
@@ -17,6 +16,18 @@ class PLIPParser:
         renumbering=None,
         domain_assignment=None,
     ) -> pd.DataFrame:
+        """
+        Parses PLIP profiled interactions and maps them back onto a syctpy TCR object.
+
+        Args:
+            complex (plip.structure.preparation.PDBComplex):
+            tcr_pmhc_complex (typing.Union[&quot;abTCR&quot;, &quot;gdTCR&quot;], optional): _description_. Defaults to None.
+            renumbering (_type_, optional): _description_. Defaults to None.
+            domain_assignment (_type_, optional): _description_. Defaults to None.
+
+        Returns:
+            pd.DataFrame: _description_
+        """
         all_interactions = []
         for _, interaction_set in complex.interaction_sets.items():
             for interaction in interaction_set.all_itypes:
