@@ -1,8 +1,11 @@
 import warnings
-import numpy as np
 import Bio
 from Bio.PDB.Superimposer import Superimposer
 
+with warnings.catch_warnings():
+    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
+    warnings.filterwarnings("ignore", category=UserWarning)
+    import numpy as np
 
 class InterfaceRMSD:
     def __init__(self):
@@ -217,16 +220,19 @@ class InterfaceRMSD:
             reference_mhc_chain.add(reference.get_MHC()[0].get_GA())
             reference_mhc_chain.add(reference.get_MHC()[0].get_GB())
 
+        mutual_residue_ids = set(
+            [r.id for r in reference_mhc_chain.get_residues()]
+        ).intersection(set([r.id for r in mhc_chain.get_residues()]))
         reference_atoms = [
             a
-            for res in mhc_chain.get_residues()
-            for a in reference_mhc_chain[res.id].get_atoms()
+            for res in mutual_residue_ids
+            for a in reference_mhc_chain[res].get_atoms()
             if a.id in ["N", "C", "O", "CA"]
         ]
         docked_atoms = [
             a
-            for res in mhc_chain.get_residues()
-            for a in mhc_chain[res.id].get_atoms()
+            for res in mutual_residue_ids
+            for a in mhc_chain[res].get_atoms()
             if a.id in ["N", "C", "O", "CA"]
         ]
 

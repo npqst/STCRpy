@@ -1,8 +1,11 @@
 import warnings
 import matplotlib.pyplot as plt
-import numpy as np
 from importlib import reload
 
+with warnings.catch_warnings():
+    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
+    warnings.filterwarnings("ignore", category=UserWarning)
+    import numpy as np
 
 from ..tcr_processing.TCRParser import TCRParser
 
@@ -34,7 +37,19 @@ except ModuleNotFoundError as e:
             """\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:
         \npip install plip --no-deps\n\n"""
         )
-
+except ImportError as e:
+    if "pymol" in str(e):
+        warnings.warn(
+            f"""pymol was not imported. Interactions were not visualised. \nThis is due to an import error. Perhaps try reinstalling pymol? 
+                    \nThe error trace was: {str(e)}
+                    """
+        )
+    elif "plip" in str(e):
+        warnings.warn(
+            f"""\n\nPLIP was not imported. \nProfiling interactions will not be possible 
+            \nThis is due to an import error. Perhaps try reinstalling plip? 
+            \nThe error trace was: {str(e)}"""
+        )
 
 class TCRInteractionProfiler:
 

@@ -12,8 +12,13 @@ Jun 12, 2017
 from ..tcr_processing import TCR, MHC, MHCchain
 from ..utils.error_stream import ErrorStream
 
-import numpy as np
 import sys
+import warnings
+
+with warnings.catch_warnings():
+    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
+    warnings.filterwarnings("ignore", category=UserWarning)
+    import numpy as np
 
 
 class TCRDock(object):

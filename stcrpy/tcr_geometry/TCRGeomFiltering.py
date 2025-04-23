@@ -1,7 +1,11 @@
 import warnings
-import numpy as np
 from scipy.stats import norm, gamma
 from sklearn.mixture import GaussianMixture
+
+with warnings.catch_warnings():
+    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
+    warnings.filterwarnings("ignore", category=UserWarning)
+    import numpy as np
 
 
 # DEFAULT PARAMETERS FROM FIT TO STCRDAB (SAMPLED JULY 2024)
@@ -17,8 +21,8 @@ PITCH_ANGLE_SCALE = 5.781270719307026
 
 # Z distance of TCR CoM is fit with bimodal gaussian mixture
 Z_DIST_WEIGHTS = np.array([0.43420871, 0.56579129])
-Z_DIST_MEAN = np.array([[[0.46845205]], [[0.90790909]]])
-Z_DIST_VARIANCE = np.array([[27.04673494], [28.62071785]])
+Z_DIST_VARIANCE = np.array([[[0.46845205]], [[0.90790909]]])
+Z_DIST_MEAN = np.array([[27.04673494], [28.62071785]])
 
 
 class DockingGeometryFilter:

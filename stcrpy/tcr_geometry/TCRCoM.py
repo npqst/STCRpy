@@ -1,16 +1,24 @@
 import os
-import numpy as np
 import Bio
 from typing import Union
 import warnings
+
+with warnings.catch_warnings():
+    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
+    warnings.filterwarnings("ignore", category=UserWarning)
+    import numpy as np
 
 from ..tcr_processing.TCRParser import TCRParser
 from ..tcr_processing.TCRIO import TCRIO
 from ..tcr_processing import abTCR, MHCchain
 
 
+# Some of this code is adapted and refactored from https://github.com/EsamTolba/TCR-CoM/
+# Please see the TCRCoM_LICENSE for the license that applies to those code sections.
+
 class TCRCoM:
     def __init__(self):
+        """Abstract class for calculating TCR centre of mass after aligning TCR:pMHC complex to reference MHC structure."""
         self.set_reffile()
 
         tcr_parser = TCRParser()
@@ -20,15 +28,22 @@ class TCRCoM:
         self.set_reference_residues()
 
     def set_reffile(self):
+        """Super method for setting MHC reference file.
+
+        Raises:
+            NotImplementedError
+        """
         raise NotImplementedError(
             "TCRCom cannot be insantiated directly, instantiate its subclass"
         )
 
     def set_reference_residues(self):
+        """Set TCR and MHC reference residues."""
         self.set_tcr_reference()
         self.set_mhc_reference()
 
     def set_tcr_reference(self):
+        """Set TCR variable domain residues in reference model as residues numbered 1 to 121 for VA and 1 to 126 for VB."""
         self.reference_VA_residues = [
             r
             for r in self.ref_model.get_VA().get_residues()
@@ -41,11 +56,24 @@ class TCRCoM:
         ]
 
     def set_mhc_reference(self):
+        """Super method for setting MHC reference residues for superposition. Overwritten by MHC class sepcific methods.
+
+        Raises:
+            NotImplementedError
+        """
         raise NotImplementedError(
             "TCRCom cannot be insantiated directly, instantiate its subclass"
         )
 
-    def get_filtered_TCR_residues(self, tcr):
+    def get_filtered_TCR_residues(self, tcr: "TCR") -> "tuple[list[Bio.PDB.Residue]]":
+        """Get variable domain residues of query TCR and filter out those without a counterpart in the reference TCR.
+
+        Args:
+            tcr (TCR): TCR structure object
+
+        Returns:
+            tuple[list[Bio.PDB.Residue]]: VA_residues, VB_residues.
+        """
         tcr_A_residues = [
             tcr.get_VA()[r.get_id()]
             for r in self.reference_VA_residues
@@ -58,7 +86,24 @@ class TCRCoM:
         ]
         return tcr_A_residues, tcr_B_residues
 
-    def center_of_mass(self, entity, geometric=False):
+    def center_of_mass(
+        self,
+        entity: "Union[Bio.PDB.Entity.Entity, list[Bio.PDB.Atom.Atom]]",
+        geometric: bool = False,
+    ) -> np.array:
+        """Calculate the mass weighted or purely geometric centre of mass of an entity or a list of atoms.
+
+        Args:
+            entity (Union[Bio.PDB.Entity.Entity, list[Bio.PDB.Atom.Atom]]): Structure entity whose centre of mass will be calculated
+            geometric (bool, optional): Whether to calculate geometric mean. Defaults to False.
+
+        Raises:
+            ValueError: Checks input type to ensure atoms can be retrieved.
+            ValueError: Unknown atoms.
+
+        Returns:
+            np.array: centre of mass
+        """
         # Structure, Model, Chain, Residue
         if isinstance(entity, Bio.PDB.Entity.Entity):
             atom_list = entity.get_atoms()
@@ -84,9 +129,26 @@ class TCRCoM:
         else:
             return np.matmul(np.asarray(masses), positions) / len(atom_list)
 
-    def add_com(self, mhc_com, tcr_com, VA_com, VB_com, tcr):
+    def add_com(
+        self,
+        mhc_com: np.array,
+        tcr_com: np.array,
+        VA_com: np.array,
+        VB_com: np.array,
+        tcr: "TCR",
+    ) -> "TCR":
         """
         Function to add pseudoatoms at MHC-CoM, TCR-CoM, and XYZ axis to the output PDB file
+
+        Args:
+            mhc_com (np.array): MHC centre of mass
+            tcr_com (np.array): TCR centre of mass
+            VA_com (np.array): Alpha chain centre of mass
+            VB_com (np.array): Beta chain entre of mass
+            tcr (TCR): TCR structure object
+
+        Returns:
+            TCR: Copy of the original TCR strucutre object with added pseudo-atoms.
         """
         new_structure = tcr.copy()
 
@@ -128,8 +190,20 @@ class TCRCoM:
     def calculate_centres_of_mass(
         self,
         tcr: abTCR,
-        save_aligned_as: Union[str, bool] = None,
-    ):
+        save_aligned_as: str = None,
+    ) -> tuple[np.array]:
+        """Calculate the TCR and MHC centres of mass of an stcrpy TCR structure object.
+
+        Args:
+            tcr (abTCR): TCR structure object
+            save_aligned_as (str): Path to same alignment to. If None or False alignment is not saved. Defaults to None.
+
+        Raises:
+            NotImplementedError: Alpha Beta TCR compatible only, Gamma Delta TCRs not implemented.
+
+        Returns:
+            tuple[np.array]: tcr_com, mhc_com, tcr_VA_com, tcr_VB_com
+        """
 
         assert len(tcr.get_MHC()) > 0, "No MHC associated with TCR"
         if not isinstance(tcr, abTCR):
@@ -182,6 +256,7 @@ class TCRCoM:
 
 class MHCI_TCRCoM(TCRCoM):
     def __init__(self):
+        """TCRCoM module for MHC Class I complexes."""
         super().__init__()
 
     def set_reffile(self):
@@ -192,12 +267,21 @@ class MHCI_TCRCoM(TCRCoM):
         )
 
     def set_mhc_reference(self):
+        """Set class I reference MHC residues"""
         mhc = self.ref_model.get_MHC()[0].get_MH1()
         self.reference_MHC_residues = [
             r for r in mhc.get_residues() if r.get_id()[1] >= 1 and r.get_id()[1] <= 179
         ]
 
-    def get_filtered_MHC_residues(self, tcr):
+    def get_filtered_MHC_residues(self, tcr: "TCR") -> list[Bio.PDB.Residue]:
+        """Retrieve MHC residues from query TCR and filter out those whose counterpart is not found in reference.
+
+        Args:
+            tcr (TCR): TCR structure object associated with MHC Class I.
+
+        Returns:
+            list[Bio.PDB.Residue]: filtered_MHC_residues
+        """
         mhc = tcr.get_MHC()[0]
         if not isinstance(mhc, MHCchain):  # handle single MHC chain case
             mhc = mhc.get_MH1()
@@ -211,6 +295,7 @@ class MHCI_TCRCoM(TCRCoM):
 
 class MHCII_TCRCoM(TCRCoM):
     def __init__(self):
+        """TCRCoM module for MHC Class II complexes."""
         super().__init__()
 
     def set_reffile(self):
@@ -221,6 +306,7 @@ class MHCII_TCRCoM(TCRCoM):
         )
 
     def set_mhc_reference(self):
+        """Set class II reference MHC residues"""
         mhc = self.ref_model.get_MHC()[0]
         self.reference_MHC_residues = [
             r
@@ -235,7 +321,15 @@ class MHCII_TCRCoM(TCRCoM):
             ]
         )
 
-    def get_filtered_MHC_residues(self, tcr):
+    def get_filtered_MHC_residues(self, tcr: "TCR") -> list[Bio.PDB.Residue]:
+        """Retrieve MHC residues from query TCR and filter out those whose counterpart is not found in reference.
+
+        Args:
+            tcr (TCR): TCR structure object associated with MHC Class II.
+
+        Returns:
+            list[Bio.PDB.Residue]: filtered_MHC_residues
+        """
         mhc = tcr.get_MHC()[0]
         if hasattr(mhc, "get_GA"):
             filtered_MHC_residues = [
