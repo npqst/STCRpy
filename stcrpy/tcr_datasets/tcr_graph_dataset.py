@@ -1,18 +1,29 @@
 import warnings
-import numpy as np
 import itertools
 import os
+import pandas as pd
 
-from torch_geometric.data import Data, Dataset
-import torch
-import torch.nn.functional as F
+
+with warnings.catch_warnings():
+    # Suppresses warning related to this: https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html. This is likely a deeply nested dependency.
+    warnings.filterwarnings("ignore", category=UserWarning)
+    import numpy as np
+
 
 from ..tcr_processing import TCR, TCRParser
 from . import utils
 
+try:
+    from torch_geometric.data import Data, Dataset
+    import torch
+    import torch.nn.functional as F
+except ImportError:
+    pass
+
 
 class TCRGraphConstructor:
-    def __init__(self, config=None):
+
+    def __init__(self, config=None, **kwargs):
         if config is None:
             config = {
                 "node_level": "residue",
@@ -24,6 +35,9 @@ class TCRGraphConstructor:
                 "include_mhc": True,
                 "mhc_distance_threshold": 15.0,
             }
+
+        for kw in kwargs:
+            config[kw] = kwargs[kw]
 
         # assert that minimum amount of configuration is set
         assert (
@@ -232,7 +246,7 @@ class TCRGraphConstructor:
         if self.config["edge_features"] == "distance":
             import scipy
 
-            def distance_edges(nodes, distance_cutoff=15.0):
+            def distance_edges(nodes, distance_cutoff=15.0, **kwargs):
                 dist_mat = np.triu(np.zeros((len(nodes), len(nodes))))
                 coords = np.asarray([a.get_coord() for a in nodes])
                 dist_mat[np.arange(len(nodes))[:, None] < np.arange(len(nodes))] = (
@@ -246,6 +260,60 @@ class TCRGraphConstructor:
                 return torch.from_numpy(edges), torch.from_numpy(edge_features), None
 
             return distance_edges
+
+        if self.config["edge_features"] == "fully_connected":
+
+            def fully_connected(nodes, **kwargs):
+                edges = np.argwhere(np.ones((len(nodes), len(nodes)), dtype=np.bool))
+                return torch.from_numpy(edges), None, None
+
+            return fully_connected
+
+        if self.config["edge_features"] == "interactions":
+
+            def get_interactions(nodes, tcr, **kwargs):
+                edges = {}
+                interactions_dict = {
+                    "hydrophobic": 0,
+                    "hbond": 1,
+                    "pistack": 2,
+                    "saltbridge": 3,
+                }
+                interactions_df = tcr.profile_peptide_interactions()
+                for i, r in interactions_df.iterrows():
+                    if r.ligand_residue == "HOH":
+                        # print(f"Skipping row nr {i}: {r}")
+                        continue
+                    n1 = tcr.parent[r.protein_chain][(" ", r.protein_number, " ")]
+                    assert n1.resname == r.protein_residue
+                    n2 = tcr.get_antigen()[0][(" ", r.ligand_number, " ")]
+
+                    try:
+                        edge_index = (
+                            [
+                                i
+                                for i, n_i in enumerate(nodes)
+                                if (n1["CA"].get_coord() == n_i.get_coord()).all()
+                            ][0],
+                            [
+                                j
+                                for j, n_j in enumerate(nodes)
+                                if (n2["CA"].get_coord() == n_j.get_coord()).all()
+                            ][0],
+                        )
+                    except IndexError:
+                        # print(f"Skipping row nr {i}: {r}")
+                        continue
+                    edges[edge_index] = interactions_dict[r.type]
+
+                edge_indices = torch.tensor(list(edges.keys()))
+                edge_features = F.one_hot(
+                    torch.tensor(list(edges.values())), num_classes=4
+                )
+                assert len(edge_indices) == len(edge_features)
+                return edge_indices, edge_features, None
+
+            return get_interactions
 
         else:
             raise NotImplementedError("Edge featurisation method not recognised")
@@ -322,9 +390,12 @@ class TCRGraphConstructor:
             warnings.warn(
                 f"{len(indices_to_remove)} nodes removed from original node list of TCR {tcr.parent.parent.id}_{tcr.id}"
             )
+        node_features = torch.stack(node_features)  # from list of tensors to tensor
         assert len(nodes) == len(node_features)
 
-        edge_index, edge_features, edge_weight = self.edge_featuriser(nodes)
+        edge_index, edge_features, edge_weight = self.edge_featuriser(nodes, tcr=tcr)
+
+        assert len(node_features) == len(coordinates)
 
         graph = Data(
             x=node_features,
@@ -339,21 +410,26 @@ class TCRGraphConstructor:
 
 
 class TCRGraphDataset(Dataset):
-    def __init__(self, root=None, graph_config=None, *args, **kwargs):
 
-        self.graph_constructor = TCRGraphConstructor(config=graph_config)
+    def __init__(self, data_paths, root, graph_config=None, *args, **kwargs):
 
-        if isinstance(root, str):
-            self.root = root
-            self._raw_file_names = [
-                os.path.join(root, "raw_files", f)
-                for f in os.listdir(os.path.join(root, "raw_files"))
-                if f.endswith(".pdb") or f.endswith(".cif")
+        self.graph_constructor = TCRGraphConstructor(
+            config=graph_config, *args, **kwargs
+        )
+
+        data_files = pd.read_csv(data_paths)
+
+        self._ids, self._raw_file_names = zip(
+            *[
+                (data.name, data.path)
+                for _, data in data_files.iterrows()
+                if (data.path.endswith(".pdb") or data.path.endswith(".cif"))
             ]
+        )
 
         self._processed_file_names = []
 
-        super(TCRGraphDataset, self).__init__(root=root, *args, **kwargs)
+        super(TCRGraphDataset, self).__init__(root=root)
 
     @property
     def raw_file_names(self):
@@ -371,22 +447,43 @@ class TCRGraphDataset(Dataset):
 
     def process(self):
         tcr_parser = TCRParser.TCRParser()
-        for tcr_object in self._tcr_generator(tcr_parser, self.raw_file_names):
-            for tcr in tcr_object:
-                try:
-                    tcr_graph = self.graph_constructor.build_graph(tcr)
-                    processed_file_path = os.path.join(
-                        self.root, "processed", f"{tcr_graph.tcr_id}.pt"
-                    )
+        try:
+            for tcr_object in self._tcr_generator(tcr_parser, self.raw_file_names):
+                for tcr in tcr_object:
+                    try:
+                        tcr_graph = self.graph_constructor.build_graph(tcr)
+                        processed_file_path = os.path.join(
+                            self.root, "processed", f"{tcr_graph.tcr_id}.pt"
+                        )
 
-                    torch.save(tcr_graph, processed_file_path)
-                    self._processed_file_names.append(processed_file_path)
-                except Exception as e:
-                    warnings.warn(f"Dataset parsing error: {str(e)} for TCR: {tcr}")
+                        torch.save(tcr_graph, processed_file_path)
+                        self._processed_file_names.append(processed_file_path)
+                    except Exception as e:
+                        warnings.warn(f"Dataset parsing error: {str(e)} for TCR: {tcr}")
+        except Exception as e:
+            warnings.warn(f"Dataset parsing error: {str(e)}")
 
     def len(self):
         return len(self._processed_file_names)
 
     def get(self, idx):
-        graph = torch.load(self._processed_file_names[idx])
+        graph = torch.load(self._processed_file_names[idx], weights_only=False)
         return graph
+
+    def pop(self, idx):
+        graph = torch.load(self._processed_file_names.pop(idx), weights_only=False)
+        return graph
+
+    def set_y(self, idx, label):
+        processed_path = self._processed_file_names[idx]
+        graph = torch.load(processed_path, weights_only=False)
+        new_graph = Data(
+            x=graph.x,
+            edge_index=graph.edge_index,
+            edge_attr=graph.edge_attr,
+            edge_weight=graph.edge_weight,
+            pos=graph.pos,
+            y=label,
+            tcr_id=graph.tcr_id,
+        )
+        torch.save(new_graph, processed_path)
