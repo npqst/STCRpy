@@ -3,7 +3,7 @@ name: stcrpy installation and tests conda workflow
 on: [push]
 
 jobs:
-  conda-pypi-install:
+  unittests:
     name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
