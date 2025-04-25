@@ -1,0 +1,2 @@
+#Cluster rmsd sd
+file.nam_clust1    1.189    0.388 

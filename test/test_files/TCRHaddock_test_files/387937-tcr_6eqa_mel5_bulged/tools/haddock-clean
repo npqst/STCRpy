@@ -1,0 +1,52 @@
+#!/bin/csh -f
+#
+echo "Only files for structure #1 will be kept..."
+
+foreach i (2 3 4 5 6 7 8 9)
+  \rm *it0*_$i*.inp >&/dev/null
+  \rm *it0*_$i*.job >&/dev/null
+  \rm *it0*_$i*.job.e* >&/dev/null
+  \rm *it0*_$i*.job.o* >&/dev/null
+  \rm *it0*_$i*.out.gz >&/dev/null
+  \rm *it0*_$i*.out >&/dev/null
+  \rm *it1*_$i*.inp >&/dev/null
+  \rm *it1*_$i*.job >&/dev/null
+  \rm *it1*_$i*.job.e* >&/dev/null
+  \rm *it1*_$i*.job.o* >&/dev/null
+  \rm *it1*_$i*.err* >&/dev/null
+  \rm *it1*_$i*.out.gz >&/dev/null
+  \rm *it1*_$i*.out >&/dev/null
+  \rm *_$i*w.inp >&/dev/null
+  \rm *_$i*backup.inp >&/dev/null
+  \rm *_$i*w.job >&/dev/null
+  \rm *_$i*w.job.e* >&/dev/null
+  \rm *_$i*w.job.o* >&/dev/null
+  \rm *_$i*w.out.gz >&/dev/null
+  \rm *_$i*w.out >&/dev/null
+  \rm slurm*$i.out >&/dev/null
+end
+
+foreach i (0 1 2 3 4 5 6 7 8 9)
+  \rm *it0*_1$i*.inp >&/dev/null
+  \rm *it0*_1$i*.job >&/dev/null
+  \rm *it0*_1$i*.job.o* >&/dev/null
+  \rm *it0*_1$i*.job.e* >&/dev/null
+  \rm *it0*_1$i*.out.gz >&/dev/null
+  \rm *it0*_1$i*.out >&/dev/null
+  \rm *it1*_1$i*.inp >&/dev/null
+  \rm *it1*_1$i*.job >&/dev/null
+  \rm *it1*_1$i*.job.e* >&/dev/null
+  \rm *it1*_1$i*.job.o* >&/dev/null
+  \rm *it1*_1$i*.out.gz >&/dev/null
+  \rm *it1*_$i*.out >&/dev/null
+  \rm *_1$i*w.inp >&/dev/null
+  \rm *_$i*backup.inp >&/dev/null
+  \rm *_1$i*w.job >&/dev/null
+  \rm *_1$i*w.job.e* >&/dev/null
+  \rm *_1$i*w.job.o* >&/dev/null
+  \rm *_1$i*w.out.gz >&/dev/null
+  \rm *_1$i*w.out >&/dev/null
+  \rm slurm*$i.out >&/dev/null
+end
+
+\rm *.job.* >&/dev/null

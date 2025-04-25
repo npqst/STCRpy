@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+export CURRIT=0
+export NEWIT
+export PREVIT
+export RUN=./
+export BEGIN=./begin/
+export TEMPTRASH=$RUN
+protocols/cns1 < /trinity/rascar/enmr/csb_webserver/data/runs/haddock24/userrun00387937/run1/complex_run1_generate_2.inp >& /trinity/rascar/enmr/csb_webserver/data/runs/haddock24/userrun00387937/run1/begin/generate_2.out

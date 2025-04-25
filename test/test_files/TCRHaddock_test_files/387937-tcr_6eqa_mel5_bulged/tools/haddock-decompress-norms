@@ -1,0 +1,111 @@
+#!/bin/csh
+
+set compdir = it0
+if ($# > 0) then 
+  set compdir = $1
+endif
+echo 'HADDOCK rigid body decompressor' | awk '{print $0 > "/dev/stderr"}'
+echo 'author: Sjoerd de Vries' | awk '{print $0 > "/dev/stderr"}'
+echo 'This script will restore all structures from /structures/'$compdir'/file.compress' | awk '{print $0 > "/dev/stderr"}'
+echo 'Use haddock-compress to compress' | awk '{print $0 > "/dev/stderr"}'
+echo 'If file already exists, a check is made instead' | awk '{print $0 > "/dev/stderr"}'
+echo 'DO NOT USE WITH MORE THAN TWO COMPONENTS' | awk '{print $0 > "/dev/stderr"}'
+
+
+if (!(`which profit | awk 'NF == 1'` != "")) then
+  echo 'ERROR: ProFit not found' | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+if (!(-e run.cns)) then
+  echo 'ERROR: run.cns not found' | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+set template1 = begin/`grep 'prot_root_A=' run.cns | awk '{p1 = index($0,"\""); x=substr($0,p1+1); p2 = index(x,"\""); print substr($0,p1+1,p2-1) ".pdb"}'`
+set seg1 = `grep 'prot_segid_A=' run.cns | awk '{p1 = index($2,"="); x=substr($2,p1+1); p2 = index(x,";"); print substr($2,p1+1,p2-1)}'`
+set template2 = begin/`grep 'prot_root_B=' run.cns | awk '{p1 = index($0,"\""); x=substr($0,p1+1); p2 = index(x,"\""); print substr($0,p1+1,p2-1) ".pdb"}'`
+set seg2 = `grep 'prot_segid_B=' run.cns | awk '{p1 = index($2,"="); x=substr($2,p1+1); p2 = index(x,";"); print substr($2,p1+1,p2-1)}'`
+
+if (!(-e $template1 && -e $template2)) then
+  echo 'ERROR: starting structures '$template1 'and/or' $template2' in begin directory not found' | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+set nrtemplate1 = `ls -1 {$template1:r}_[0-9]*.pdb | wc -l`
+set nrtemplate2 = `ls -1 {$template2:r}_[0-9]*.pdb | wc -l`
+
+if ($nrtemplate1 == 0) then
+  echo 'ERROR: zero starting structures for' $template1 | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+
+if ($nrtemplate2 == 0) then
+  echo 'ERROR: zero starting structures for' $template2 | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+
+echo $nrtemplate1 'starting structure(s) found for first chain and' $nrtemplate2 'for second chain'
+if (!(-e structures/$compdir)) then
+  echo 'ERROR: directory 'structures/$compdir 'not found' | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+if (!(-e structures/$compdir/file.nam)) then
+  echo 'ERROR: file.nam in '$compdir 'not found' | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+if (!(-e begin/file.nam)) then
+  echo 'ERROR: file.nam in begin directory not found' | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+if (`awk 'NF > 0' structures/$compdir/file.nam | wc -l` > `awk 'NF > 0' begin/file.nam | wc -l`) then
+  echo 'ERROR: file.nam in' $compdir 'and begin do not match' | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+if (!(-e structures/$compdir/file.compress)) then
+  echo 'ERROR: file.compress does not exist' | awk '{print $0 > "/dev/stderr"}'
+  exit
+endif
+
+set counter = 0
+set tempstruc1 = `mktemp tmpXXX`
+set tempstruc2 = `mktemp tmpXXX`
+set tempstruc3 = `mktemp tmpXXX`
+set tempstruc4 = `mktemp tmpXXX`
+touch $tempstruc4
+foreach i(`cat structures/$compdir/file.nam | awk 'NF > 0'`) 
+  if (-e structures/$compdir/$i) continue
+  set inr0 = `echo $i:r | awk '{x=length($0); while (substr($0,x,1) != "_") x--; print substr($0,x+1)}'`
+  set inr = `awk 'NR == '$inr0 begin/file.nam | awk '{x=length($0); while (substr($0,x,1) != "_") x--; print substr($0,x+1)}'`
+  set tempnr1 = `echo $inr | awk -v n1=$nrtemplate1 -v n2=$nrtemplate2  '{x = ($1-1) % (n1*n2); print int(x/n2)+1}'`  
+  set tempnr2 = `echo $inr | awk -v n1=$nrtemplate1 -v n2=$nrtemplate2  '{x = ($1-1) % (n1*n2); print x % n2 + 1}'`  
+  set tmptemplate1 = {$template1:r}_{$tempnr1}.pdb
+  set tmptemplate2 = {$template2:r}_{$tempnr2}.pdb
+  
+  awk -v skip=$counter 'BEGIN{rem=0;skipped=0} {curr_rem = ($1 == "REMARK")} curr_rem != rem {rem = curr_rem; if (curr_rem == 1) skipped++} skipped == skip + 1 {print $0}' structures/$compdir/file.compress > $tempstruc1
+  if (`cat $tempstruc1 | wc -l` == 0) then
+    echo "ERROR:" $i 'not present in file.compress' | awk '{print $0 > "/dev/stderr"}'
+    rm -f $tempstruc1 $tempstruc2 $tempstruc3 $tempstruc4
+    exit
+  endif
+  awk '$1 == "REMARK"' $tempstruc1 > $tempstruc3
+  awk '$1 != "REMARK"' $tempstruc1 | head -5 > $tempstruc2
+  $HADDOCKTOOLS/haddock-decompress-fastfunc $tempstruc2 $tmptemplate1 >> $tempstruc3
+  awk '$1 != "REMARK"' $tempstruc1 | tail -5 > $tempstruc2
+  $HADDOCKTOOLS/haddock-decompress-fastfunc $tempstruc2 $tmptemplate2 >> $tempstruc3    
+  if (-e structures/$compdir/$i) then
+    echo $i ': structure already exists'
+#    profit structures/$compdir/$i $tempstruc3 << _Eod_ | grep RMS | tail -1 > $tempstruc4
+#      fit
+#      quit
+#_Eod_
+#    set checkresult = `cat $tempstruc4`        
+#    if (`cat $tempstruc4 | wc -l` == 0) then
+#      set checkresult = 'FAILED'  
+#    endif
+#    echo $i ': structure already exists, performing check:' $checkresult 
+  else
+    echo $i 
+    cp $tempstruc3 structures/$compdir/$i
+  endif  
+  @ counter += 1
+end
+rm -f $tempstruc1 $tempstruc2 $tempstruc3 $tempstruc4
+

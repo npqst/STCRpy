@@ -1,0 +1,7 @@
+module(seed;npart)
+define (
+currentseed = 12838;
+currentpart = 1;
+)
+evaluate (&seed=&currentseed)
+evaluate (&npart=&currentpart)

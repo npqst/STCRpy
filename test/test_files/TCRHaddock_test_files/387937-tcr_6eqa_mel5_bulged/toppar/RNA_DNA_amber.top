@@ -1,0 +1,1295 @@
+!RNA_DNA_amber.top
+!This file is the parameter file that goes with RNA_DNA_amber.top.
+!It was developed from the topology file of Parkinson et al. (1).  The principle
+!change is that all paths for all dihedral angles are explictly identified.  Thus
+!torsional energies are computed as the sums of all of their components.  In this
+!respect, thse files conform to AMBER usage (Cornell et al. (2)).
+!Created 9/97 by Jason P. Rife and Peter B. Moore.
+!
+!1. Parkinson et al. (1996) Acta Cryst. D52, 57-64
+!2. Cornell et al. (1995) JACS 117, 5197-5197
+!
+!Changed charges on O1P adn O2P per pbm's instructions from -0.3887 to
+!-0.6260. 12/31/97
+!
+! This file must be used in conjunction with RNA_DNA_maber.par
+! 
+!
+REMARK RNA_DNA_amber.top
+
+set echo=on end
+set message=on end
+
+AUTOGENERATE  ANGLES=TRUE  END
+{*==========================*}
+
+{* DNA/RNA default masses *}
+
+MASS   P     30.97400! phosphorus
+MASS   O1P   15.99940! O in phosphate
+MASS   O2P   15.99940! O in phosphate
+MASS   O5R   15.99940! ester -P-O-C-
+MASS   C5R   12.011! corresp. to CH2E
+MASS   C4R   12.011! corresp. to CH1E
+MASS   C3R   12.011! corresp. to CH1E
+MASS   C2R   12.011! corresp. to CH1E
+MASS   C1R   12.011! corresp. to CH1E
+MASS   O4R   15.99940! ester -P-O-C-
+MASS   O3R   15.99940! ester -P-O-C-
+MASS   O2R   15.99940! ester -P-O-C-
+MASS   OH    15.99940! corresp. to OH1
+
+!DEOXY SUGAR
+MASS   C5D   14.02700! corresp. to CH2E
+MASS   C4D   13.01900! corresp. to CH1E
+MASS   C3D   13.01900! corresp. to CH1E
+MASS   C2D   13.01900! corresp. to CH1E
+MASS   C1D   13.01900! corresp. to CH1E
+MASS   O4D   15.99940! ester -P-O-C-
+MASS   O5D   15.99940! 
+MASS   O3D   15.99940!  
+
+! Insert Bases
+! Generic
+
+MASS   N2    14.00670! nitrogen in -NH2
+MASS   NNA   14.00670! corresp. to NH1
+MASS   ON    15.99940! corresp. to O
+MASS   NC    14.00670! corresp. to NR
+MASS   NS    14.00670! nitrogen in ring >N-
+
+! Insert 4 Bases
+!  GUA
+MASS   N9G    14.00670! nitrogen in ring >N-
+MASS   C2G    12.011! (prev CE)
+MASS   N3G    14.00670! (prev NC)
+MASS   C4G    12.01100! (prev CB)
+MASS   C5G    12.01100! (prev CB)
+MASS   C6G    12.01100! (prev CN)
+MASS   N7G    14.00670! (prev NB)
+MASS   C8G    12.011! (prev CE)
+MASS   O6G    15.99940! (prev CE)
+MASS   N2G    14.00670! nitrogen in -NH2
+!  ADE
+MASS   N9A    14.00670! nitrogen in ring >N-
+MASS   C2A    12.011! (prev CE)
+MASS   N3A    14.00670! (prev NC)
+MASS   C4A    12.01100! (prev CB)
+MASS   C5A    12.01100! (prev CB)
+MASS   C6A    12.01100! (prev CA)
+MASS   N7A    14.00670! (prev NB)
+MASS   C8A    12.011! (prev CE)
+MASS   N6A    14.00670! nitrogen in -NH2
+
+!  CYT
+MASS   N1C    14.00670! nitrogen in ring >N-
+MASS   C2C    12.01100! (prev CN)
+MASS   C4C    12.01100! (prev CA)
+MASS   C5C    12.011! (prev CF)
+MASS   C6C    12.011! (prev CF)
+MASS   N4C    14.00670! nitrogen in -NH2
+
+!  THY
+MASS   N1T    14.00670! nitrogen in ring >N-
+MASS   N3T    14.00670! nitrogen in ring >N-
+MASS   C2T    12.01100! (prev CN)
+MASS   C4T    12.01100! (prev CN)
+MASS   C5T    12.011! (prev CS)
+MASS   C6T    12.011! (prev CF)
+MASS   CC3E   12.01100! (prev CF)
+
+! END
+
+MASS   H      1.00800! non-exchangeable Hydrogens
+MASS   HN     1.00800! corresp. to H
+MASS   H2     1.00800! hydrogen in -NH2
+MASS   HO     1.00800! hydroxy hydrogen
+
+!  URI
+MASS   N1U    14.00670! nitrogen in ring >N-
+MASS   C2U    12.01100! (prev CN)
+MASS   C4U    12.01100! (prev CA)
+MASS   C5U    12.011! (prev CF)
+MASS   C6U    12.011! (prev CF)
+MASS   N3U    14.00670! 
+
+
+RESIdue GUA
+  GROUp
+  ATOM P    TYPE=P     CHARGE=1.1662    END
+  ATOM O1P  TYPE=O1P   CHARGE=-0.6260   END
+  ATOM O2P  TYPE=O2P   CHARGE=-0.6260   END
+  ATOM O5'  TYPE=O5R   CHARGE=-0.4989   END
+ GROUp
+  ATOM C5'  TYPE=C5R   CHARGE=0.0558  END
+  ATOM H5'  TYPE=H     CHARGE=0.0679   END !JPR
+  ATOM H5'' TYPE=H     CHARGE=0.0679   END
+  ATOM C4'  TYPE=C4R   CHARGE=0.1065  END
+  ATOM H4'  TYPE=H     CHARGE=0.1174   END !JPR
+  ATOM O4'  TYPE=O4R   CHARGE=-0.3548   END
+  ATOM C1'  TYPE=C1R   CHARGE=0.0191  END !JPR
+  ATOM H1'  TYPE=H     CHARGE=0.2006   END !JPR
+
+! Insert Base
+ GROUp
+  ATOM N9   TYPE=N9G   CHARGE=0.0492   END
+  ATOM C4   TYPE=C4G   CHARGE=0.122    EXCLusion=( N1 )   END
+ GROUp
+  ATOM N3   TYPE=N3G   CHARGE=-0.6323   EXCLusion=( C6 )   END    
+  ATOM C2   TYPE=C2G   CHARGE=0.7657    EXCLusion=( C5 )   END    
+ GROUp
+  ATOM N2   TYPE=N2G   CHARGE=-0.9672   END    
+  ATOM H21  TYPE=H2    CHARGE=0.4364    END    
+  ATOM H22  TYPE=H2    CHARGE=0.4364    END    
+ GROUp
+  ATOM N1   TYPE=NNA   CHARGE=-0.4787   END    
+  ATOM H1   TYPE=HN    CHARGE=0.3424    END    
+ GROUp
+  ATOM C6   TYPE=C6G   CHARGE=0.4770    END    
+  ATOM O6   TYPE=O6G   CHARGE=-0.5597   END    
+ GROUp
+  ATOM C5   TYPE=C5G   CHARGE=0.1744    END
+  ATOM N7   TYPE=N7G   CHARGE=-0.7509   END
+  ATOM C8   TYPE=C8G   CHARGE=0.1374   END 
+  ATOM H8   TYPE=H     CHARGE=0.1640   END 
+
+!
+
+ GROUP
+  ATOM C2'  TYPE=C2R   CHARGE=0.0670   END
+  ATOM H2'  TYPE=H     CHARGE=0.0972   END  
+  ATOM O2'  TYPE=O2R   CHARGE=-0.6139   END    
+  ATOM HO2' TYPE=HO    CHARGE=0.4186    END 
+ GROUP
+  ATOM C3'  TYPE=C3R    CHARGE=0.2022 END
+  ATOM H3'  TYPE=H      CHARGE=0.0615  END 
+ GROUP
+  ATOM O3'  TYPE=O3R   CHARGE=-0.5246   END
+
+ BOND P    O1P         BOND P    O2P           BOND P    O5'    
+
+ BOND O5'  C5'         BOND C5'  C4'           BOND C4'  O4'
+ BOND C4'  C3'         BOND O4'  C1'           BOND C1'  N9
+ BOND C1'  C2'         BOND N9   C4            BOND N9   C8
+ BOND C4   N3          BOND C4   C5            BOND N3   C2
+ BOND C2   N2          BOND C2   N1            BOND N2   H21 
+
+ BOND N2   H22         BOND N1   H1            BOND N1   C6
+ BOND C6   O6          BOND C6   C5            BOND C5   N7
+ BOND N7   C8          BOND C2'  C3'           BOND C3'  O3'
+ BOND C2'  O2'         BOND C8   H8
+ 
+ BOND O2'  HO2' 
+ BOND C5'  H5'         BOND C5'  H5''          BOND C4'  H4'
+ BOND C3'  H3'         BOND C2'  H2'           BOND C1'  H1'
+
+!this is a test
+!X-N9-C8-X
+DIHE    C1'  N9  C8  N7
+DIHE	C1'  N9  C8  H8
+DIHE	C4   N9  C8  N7
+DIHE    C4   N9  C8  H8
+
+!X-C8-N7-X
+DIHE    H8   C8  N7  C5
+DIHE    N9   C8  N7  C5
+
+!X-N7-C5-X
+DIHE   C8   N7  C5  C4
+DIHE   C8   N7  C5  C6
+
+!X-C5-C4-X
+DIHE  N7   C5  C4  N9
+DIHE  N7   C5  C4  N3
+DIHE  C6   C5  C4  N9
+DIHE  C6   C5  C4  N3
+
+!X-C4-N3-X
+DIHE  C5  C4  N3  C2
+DIHE  N9  C4  N3  C2
+
+!X-N3-C2-X
+DIHE  C4  N3  C2  N1
+DIHE  C4  N3  C2  N2
+
+!X-C2-N2-X
+DIHE  N3  C2  N2  H21
+DIHE  N3  C2  N2  H22
+DIHE  N1  C2  N2  H21
+DIHE  N1  C2  N2  H22
+
+!X-C2-N1-X
+DIHE  N3  C2  N1  H1
+DIHE  N3  C2  N1  C6
+DIHE  N2  C2  N1  H1
+DIHE  N2  C2  N1  C6
+
+!X-N1-C6-X
+DIHE  H1  N1  C6  O6
+DIHE  H1  N1  C6  C5
+DIHE  C2  N1  C6  O6
+DIHE  C2  N1  C6  C5
+
+
+!X-C6-C5-X
+DIHE  N1  C6  C5  C4
+DIHE  N1  C6  C5  N7
+DIHE  O6  C6  C5  C4
+DIHE  O6  C6  C5  N7
+
+!X-C4-N9-X
+DIHE  C5  C4  N9  C1'
+DIHE  C5  C4  N9  C8
+DIHE  N3  C4  N9  C1'
+DIHE  N3  C4  N9  C8
+ 
+
+ !GUA
+DIHE	C8  N9  C1'  H1'	
+DIHE	C8  N9  C1'  C2'	
+DIHE 	C8  N9  C1'  O4'	
+DIHE	C4  N9  C1'  H1'	
+DIHE    C4  N9  C1'  C2'	
+DIHE    C4  N9  C1'  O4'
+
+!RES
+!X-05R-C5R-X
+DIHE	P    O5'  C5'  H5'
+DIHE	P    O5'  C5'  H5''	
+DIHE	P    O5'  C5'  C4'
+!X-P-O5'-X
+DIHE	O1P  P    O5'  C5'
+DIHE	O2P  P    O5'  C5'
+!X-C5'-C4'-X
+DIHE	O5'  C5'  C4'  H4'	
+DIHE	H5'  C5'  C4'  H4'
+DIHE	H5''  C5'  C4'  H4'   
+DIHE	O5'  C5'  C4'  O4' 
+DIHE	H5'  C5'  C4'  O4'
+DIHE	H5''  C5'  C4'  O4'
+DIHE	O5'  C5'  C4'  C3'
+DIHE	H5'   C5'  C4'  C3'
+DIHE	H5''  C5'  C4'  C3'
+
+!Nu's
+!X-O4R-C1R-X
+DIHE	C4'  O4'  C1'  H1'		
+DIHE	C4'  O4'  C1'  N9	
+DIHE	C4'  O4'  C1'  C2'
+
+!X-C1R-C2R-X
+DIHE	O4'  C1'  C2'  H2'	
+DIHE	H1'  C1'  C2'  H2'	
+DIHE	N9  C1'  C2'  H2'
+DIHE	O4'  C1'  C2'  O2'      
+DIHE    H1'  C1'  C2'  O2'	
+DIHE	N9  C1'  C2'  O2'	
+DIHE	O4'  C1'  C2'  C3'	
+DIHE	H1'  C1'  C2'  C3'	
+DIHE	N9  C1'  C2'  C3'	
+
+!X-C2R-C3R-X
+DIHE	C1'  C2'  C3'  H3'	
+DIHE	H2'  C2'  C3'  H3'	
+DIHE	O2'  C2'  C3'  H3'	
+DIHE 	C1'  C2'  C3'  O3'	
+DIHE	H2'  C2'  C3'  O3'	
+DIHE	O2'  C2'  C3'  O3'		
+DIHE	C1'  C2'  C3'  C4'	
+DIHE	H2'  C2'  C3'  C4'	
+DIHE    O2'  C2'  C3'  C4'	
+
+!X-C3R-C2R-X
+DIHE	C2'  C3'  C4'  H4'	
+DIHE	O3'  C3'  C4'  H4'	
+DIHE	H3'  C3'  C4'  H4'	
+DIHE    C2'  C3'  C4'  O4'	
+DIHE	O3'  C3'  C4'  O4'	
+DIHE 	H3'  C3'  C4'  O4'	
+DIHE	C2'  C3'  C4'  C5'	
+DIHE	O3'  C3'  C4'  C5'	
+DIHE    H3'  C3'  C4'  C5'	
+
+!X-C4R-O4R-C1R
+DIHE	H4'  C4'  O4'  C1'	
+DIHE	C5'  C4'  O4'  C1'	
+DIHE    C3'  C4'  O4'  C1'										
+
+
+
+!	These impropers are commented out so that they can be replaced
+!	with the AMBER set.  They should be removed if AMBER works 11/4/97 
+! 
+! IMPRoper N3   C2   N2   H21         IMPRoper C1'  C4   C8   N9
+! IMPRoper N9   C4   C5   N7          IMPRoper C4   C5   N7   C8
+! IMPRoper C5   N7   C8   N9          IMPRoper N7   C8   N9   C4
+! IMPRoper C8   N9   C4   C5          IMPRoper N2   N3   N1   C2  
+
+! IMPRoper H1   C2   C6   N1          IMPRoper O6   N1   C5   C6
+! IMPRoper C4   N3   C2   N1          IMPRoper N3   C2   N1   C6
+! IMPRoper C2   N1   C6   C5          IMPRoper N1   C6   C5   C4  
+
+! IMPRoper C6   C5   C4   N3          IMPRoper C5   C4   N3   C2
+! IMPRoper H22  H21  C2   N2          
+! IMPRoper H8   N7   N9   C8 
+
+!IMPRoper to keep the two purine rings parallel:
+! IMPRoper C8   C4   C5   N1          IMPRoper C8   C5   C4   C2
+! IMPRoper N3   C4   C5   N7          IMPRoper C6   C5   C4   N9
+
+!	AMBER Impropers
+  IMPRoper C2   N1   N3   N2
+  IMPRoper C6   N1   C5   O6
+  IMPRoper C8   N9   N7   H8
+  IMPRoper N1   C2   C6   H1
+  IMPRoper N2   C2   H21  H22
+  IMPRoper N9   C4   C8   C1'
+
+
+
+!RIBOSE IMPROPERS
+IMPRoper     H1'  C2'  O4'  N9  !C1'
+IMPRoper     H2'  C3'  C1'  O2' !C2'
+IMPRoper     H3'  C4'  C2'  O3' !C3'
+IMPRoper     H4'  C5'  C3'  O4' !C4'
+IMPRoper     H5'  O5'  H5'' C4' !C5'
+
+ DONOr H21  N2         
+ DONOr H22  N2            
+ DONOr H1   N1   
+ DONOr H2'  O2'
+
+ ACCEptor O6   C6      
+ ACCEptor N3  " "         
+ ACCEptor O1P  P
+ ACCEptor O2P  P
+ ACCEptor O2'  " " 
+
+ END {GUA}
+
+! ---------------------------------------------------------------------
+
+! ---------------------------------------------------------------------
+
+RESIdue ADE
+ GROUp
+  ATOM P    TYPE=P     CHARGE=1.1662    END
+  ATOM O1P  TYPE=O1P   CHARGE=-0.6260   END
+  ATOM O2P  TYPE=O2P   CHARGE=-0.6260   END
+  ATOM O5'  TYPE=O5R   CHARGE=-0.4989   END
+ GROUp
+  ATOM C5'  TYPE=C5R   CHARGE=0.0558  END
+  ATOM H5'  TYPE=H     CHARGE=0.0679   END !JPR
+  ATOM H5'' TYPE=H     CHARGE=0.0679  END
+  ATOM C4'  TYPE=C4R   CHARGE=0.1065  END
+  ATOM H4'  TYPE=H     CHARGE=0.1174   END !JPR
+  ATOM O4'  TYPE=O4R   CHARGE=-0.3548   END
+  ATOM C1'  TYPE=C1R   CHARGE=0.0394   END 
+  ATOM H1'  TYPE=H     CHARGE=0.2007  END 
+
+! Insert Base
+ GROUp
+  ATOM N9    TYPE=N9A   CHARGE=-0.0251   END
+  ATOM C4    TYPE=C4A   CHARGE=0.3053    EXCLusion=( N1 )  END
+ GROUp
+  ATOM N3    TYPE=N3A   CHARGE=-0.6997   EXCLusion=( C6 )  END     
+  ATOM C2    TYPE=C2A   CHARGE=0.5875   EXCLusion=( C5 )  END      
+  ATOM H2    TYPE=H     CHARGE=0.0473   END 
+ GROUp
+  ATOM N1    TYPE=NC    CHARGE=-0.7615   END     
+  ATOM C6    TYPE=C6A   CHARGE=0.7009    END     
+ GROUp
+  ATOM N6    TYPE=N6A   CHARGE=-0.9019   END     
+  ATOM H61   TYPE=H2    CHARGE=0.4115    END     
+  ATOM H62   TYPE=H2    CHARGE=0.4115    END     
+ GROUp
+  ATOM C5    TYPE=C5A   CHARGE=0.0515    END
+  ATOM N7    TYPE=N7A   CHARGE=-0.6073   END
+  ATOM C8    TYPE=C8A   CHARGE=0.2006   END 
+  ATOM H8    TYPE=H     CHARGE=0.1553   END 
+! END
+
+ GROUP
+  ATOM C2'  TYPE=C2R   CHARGE=0.0670   END
+  ATOM H2'  TYPE=H     CHARGE=0.0972   END  
+  ATOM O2'  TYPE=O2R   CHARGE=-0.6139   END    
+  ATOM HO2' TYPE=HO    CHARGE=0.4186    END 
+ GROUP
+  ATOM C3'  TYPE=C3R    CHARGE=0.2022 END
+  ATOM H3'  TYPE=H      CHARGE=0.0615  END 
+ GROUP
+  ATOM O3'  TYPE=O3R   CHARGE=-0.5246   END
+
+ BOND P    O1P              BOND P    O2P              BOND P    O5'
+ BOND O5'  C5'              BOND C5'  C4'              BOND C4'  O4'
+ BOND C4'  C3'              BOND O4'  C1'              BOND C1'  N9
+ BOND C1'  C2'              BOND N9   C4               BOND N9   C8
+ BOND C4   N3               BOND C4   C5               BOND N3   C2
+ BOND C2   N1               BOND N1   C6               BOND C6   N6  
+
+ BOND N6   H61              BOND N6   H62              BOND C6   C5   
+
+ BOND C5   N7               BOND N7   C8               BOND C2'  C3'
+ BOND C2'  O2'              BOND C3'  O3'
+ BOND C8   H8               BOND C2   H2 
+ BOND O2'  HO2'
+ BOND C5'  H5'         BOND C5'  H5''          BOND C4'  H4'
+ BOND C3'  H3'         BOND C2'  H2'           BOND C1'  H1'
+
+!this is a test
+!X-N9-C8-X
+DIHE    C1'  N9  C8  N7
+DIHE	C1'  N9  C8  H8
+DIHE	C4   N9  C8  N7
+DIHE    C4   N9  C8  H8
+
+!X-C8-N7-X
+DIHE    H8   C8  N7  C5
+DIHE    N9   C8  N7  C5
+
+!X-N7-C5-X
+DIHE   C8   N7  C5  C4
+DIHE   C8   N7  C5  C6
+
+!X-C5-C4-X
+DIHE  N7   C5  C4  N9
+DIHE  N7   C5  C4  N3
+DIHE  C6   C5  C4  N9
+DIHE  C6   C5  C4  N3
+
+!X-C4-N3-X
+DIHE  C5  C4  N3  C2
+DIHE  N9  C4  N3  C2
+
+!X-N3-C2-X
+DIHE  C4  N3  C2  N1
+DIHE  C4  N3  C2  H2
+
+!X-C2-NC-X
+DIHE  N3  C2  N1  C6
+DIHE  H2  C2  N1  C6
+
+!X-NC-C6-X
+DIHE  C2  N1  C6  N6
+DIHE  C2  N1  C6  C5  
+
+!X-C6-N6-X
+DIHE  N1  C6  N6  H61
+DIHE  N1  C6  N6  H62
+DIHE  C5  C6  N6  H61
+DIHE  C5  C6  N6  H62
+
+!X-C6-C5-X
+DIHE  N1  C6  C5  C4
+DIHE  N1  C6  C5  N7
+DIHE  N6  C6  C5  C4
+DIHE  N6  C6  C5  N7
+
+!X-C4-N9-X
+DIHE  C5  C4  N9  C1'
+DIHE  C5  C4  N9  C8
+DIHE  N3  C4  N9  C1'
+DIHE  N3  C4  N9  C8
+ 
+
+
+!ADE
+DIHE	C8  N9  C1'  H1'	
+DIHE	C8  N9  C1'  C2'	
+DIHE 	C8  N9  C1'  O4'	
+DIHE	C4  N9  C1'  H1'	
+DIHE    C4  N9  C1'  C2'	
+DIHE    C4  N9  C1'  O4'
+
+!RES
+!X-05R-C5R-X
+DIHE	P    O5'  C5'  H5'
+DIHE	P    O5'  C5'  H5''	
+DIHE	P    O5'  C5'  C4'
+!X-P-O5'-X
+DIHE	O1P  P    O5'  C5'
+DIHE	O2P  P    O5'  C5'
+!X-C5'-C4'-X
+DIHE	O5'  C5'  C4'  H4'	
+DIHE	H5'  C5'  C4'  H4'
+DIHE	H5''  C5'  C4'  H4'   
+DIHE	O5'  C5'  C4'  O4' 
+DIHE	H5'  C5'  C4'  O4'
+DIHE	H5''  C5'  C4'  O4'
+DIHE	O5'  C5'  C4'  C3'
+DIHE	H5'   C5'  C4'  C3'
+DIHE	H5''  C5'  C4'  C3'
+
+!Nu's
+!X-O4R-C1R-X
+DIHE	C4'  O4'  C1'  H1'		
+DIHE	C4'  O4'  C1'  N9	
+DIHE	C4'  O4'  C1'  C2'
+
+!X-C1R-C2R-X
+DIHE	O4'  C1'  C2'  H2'	
+DIHE	H1'  C1'  C2'  H2'	
+DIHE	N9  C1'  C2'  H2'
+DIHE	O4'  C1'  C2'  O2'      
+DIHE    H1'  C1'  C2'  O2'	
+DIHE	N9  C1'  C2'  O2'	
+DIHE	O4'  C1'  C2'  C3'	
+DIHE	H1'  C1'  C2'  C3'	
+DIHE	N9  C1'  C2'  C3'	
+
+!X-C2R-C3R-X
+DIHE	C1'  C2'  C3'  H3'	
+DIHE	H2'  C2'  C3'  H3'	
+DIHE	O2'  C2'  C3'  H3'	
+DIHE 	C1'  C2'  C3'  O3'	
+DIHE	H2'  C2'  C3'  O3'	
+DIHE	O2'  C2'  C3'  O3'		
+DIHE	C1'  C2'  C3'  C4'	
+DIHE	H2'  C2'  C3'  C4'	
+DIHE    O2'  C2'  C3'  C4'	
+
+!X-C3R-C2R-X
+DIHE	C2'  C3'  C4'  H4'	
+DIHE	O3'  C3'  C4'  H4'	
+DIHE	H3'  C3'  C4'  H4'	
+DIHE    C2'  C3'  C4'  O4'	
+DIHE	O3'  C3'  C4'  O4'	
+DIHE 	H3'  C3'  C4'  O4'	
+DIHE	C2'  C3'  C4'  C5'	
+DIHE	O3'  C3'  C4'  C5'	
+DIHE    H3'  C3'  C4'  C5'	
+
+!X-C4R-O4R-C1R
+DIHE	H4'  C4'  O4'  C1'	
+DIHE	C5'  C4'  O4'  C1'	
+DIHE    C3'  C4'  O4'  C1' 
+
+
+!	AMBER
+IMPRoper  C2   N3   N1  H2
+IMPRoper  C6   C5   N1  N6
+IMPRoper  C8   N9   N7   H8
+IMPRoper  N6   C6   H61  H62
+IMPRoper  N9   C4   C8   C1' 
+ 
+
+
+ !
+ !IMPRoper C5   C6   N6   H61             IMPRoper C1'  C4   C8   N9
+ !IMPRoper N9   C4   C5   N7              IMPRoper C4   C5   N7   C8  
+ !IMPRoper C5   N7   C8   N9              IMPRoper N7   C8   N9   C4 
+ !IMPRoper C8   N9   C4   C5              IMPRoper N6   N1   C5   C6  
+ !IMPRoper H62  C6   H61  N6              IMPRoper C4   N3   C2   N1      
+ !IMPRoper N3   C2   N1   C6              IMPRoper C2   N1   C6   C5
+ !IMPRoper N1   C6   C5   C4              IMPRoper C6   C5   C4   N3
+ !IMPRoper C5   C4   N3   C2              
+ !IMPRoper H2   N1   N3   C2              IMPRoper H8   N7   N9   C8
+ ! IMPRoper to keep the two purine rings parallel:
+ !IMPRoper C8   C4   C5   N1              IMPRoper C8   C5   C4   C2
+ !IMPRoper N3   C4   C5   N7              IMPRoper C6   C5   C4   N9
+ 
+
+!RIBOSE IMPROPERS
+IMPRoper     H1'  C2'  O4'  N9  !C1'
+IMPRoper     H2'  C3'  C1'  O2' !C2'
+IMPRoper     H3'  C4'  C2'  O3' !C3'
+IMPRoper     H4'  C5'  C3'  O4' !C4'
+IMPRoper     H5'  O5'  H5'' C4' !C5'
+
+ DONOr H61  N6             
+ DONOr H62  N6             
+ DONOr H2'  O2'
+
+ ACCEptor N3 " "           
+ ACCEptor N1 " "
+ ACCEptor O1P  P           
+ ACCEptor O2P  P
+ ACCEptor O2' " "
+
+ END {ADE}
+
+! ---------------------------------------------------------------------
+
+! ---------------------------------------------------------------------
+
+RESIdue CYT
+ GROUp
+  ATOM P    TYPE=P     CHARGE=1.1662    END
+  ATOM O1P  TYPE=O1P   CHARGE=-0.6260   END
+  ATOM O2P  TYPE=O2P   CHARGE=-0.6260 END
+  ATOM O5'  TYPE=O5R   CHARGE=-0.4989   END
+ GROUp
+  ATOM C5'  TYPE=C5R   CHARGE=0.0558  END
+  ATOM H5'  TYPE=H     CHARGE=0.0679   END !JPR
+  ATOM H5'' TYPE=H     CHARGE=0.0679   END
+  ATOM C4'  TYPE=C4R   CHARGE=0.1065  END
+  ATOM H4'  TYPE=H     CHARGE=0.1174   END !JPR
+  ATOM O4'  TYPE=O4R   CHARGE=-0.3548   END
+  ATOM C1'  TYPE=C1R   CHARGE=0.0066   END 
+  ATOM H1'  TYPE=H     CHARGE=0.2029   END 
+
+! Insert Base
+
+ GROUp
+  ATOM N1    TYPE=N1C   CHARGE=-0.0484  EXCLUSION=( C4 )  END
+  ATOM C6    TYPE=C6C   CHARGE=0.0053  EXCLUSION=( N3 )  END 
+  ATOM H6    TYPE=H     CHARGE=0.1958  END 
+ GROUp
+  ATOM C2    TYPE=C2C   CHARGE=0.7538    EXCLUSION=( C5 )  END     
+  ATOM O2    TYPE=ON    CHARGE=-0.6252   END                       
+ GROUp
+  ATOM N3    TYPE=NC    CHARGE=-0.7584   END     
+  ATOM C4    TYPE=C4C   CHARGE=0.8185    END     
+ GROUp
+  ATOM N4    TYPE=N4C   CHARGE=-0.9530   END     
+  ATOM H41   TYPE=H2    CHARGE=0.4234    END     
+  ATOM H42   TYPE=H2    CHARGE=0.4234    END     
+ GROUp
+  ATOM C5    TYPE=C5C   CHARGE=-0.5215  END !CHRG 
+  ATOM H5    TYPE=H     CHARGE=0.1928   END 
+ GROUp
+
+! END
+
+
+ GROUP
+  ATOM C2'  TYPE=C2R   CHARGE=0.0670   END
+  ATOM H2'  TYPE=H     CHARGE=0.0972   END  
+  ATOM O2'  TYPE=O2R   CHARGE=-0.6139   END    
+  ATOM HO2' TYPE=HO    CHARGE=0.4186    END 
+ GROUP
+  ATOM C3'  TYPE=C3R    CHARGE=0.2022 END
+  ATOM H3'  TYPE=H      CHARGE=0.0615  END 
+ GROUP
+  ATOM O3'  TYPE=O3R   CHARGE=-0.5246 END
+
+ BOND P    O1P             BOND P    O2P             BOND P    O5'
+ BOND O5'  C5'             BOND C5'  C4'             BOND C4'  O4'
+ BOND C4'  C3'             BOND O4'  C1'             BOND C1'  N1
+ BOND C1'  C2'             BOND N1   C2              BOND N1   C6
+                           BOND C2   N3              BOND N3   C4
+ BOND C4   N4              BOND N4   H41             BOND N4   H42 
+ BOND C2   O2
+ BOND C4   C5              BOND C5   C6              BOND C2'  C3'
+ BOND C3'  O3'             BOND C2'  O2'             
+ BOND C6   H6              BOND C5   H5
+ BOND O2'  HO2' 
+ BOND C5'  H5'         BOND C5'  H5''          BOND C4'  H4'
+ BOND C3'  H3'         BOND C2'  H2'           BOND C1'  H1'
+
+
+!X-N1-C6-X
+DIHE  C1'  N1  C6  C5
+DIHE  C1'  N1  C6  H6
+DIHE  C2   N1  C6  C5
+DIHE  C2   N1  C6  H6
+
+!X-C6-C5-X
+DIHE  H6  C6  C5  H5
+DIHE  H6  C6  C5  C4
+DIHE  N1  C6  C5  H5
+DIHE  N1  C6  C5  C4
+
+!X-C5-C4-X
+DIHE  H5  C5  C4  N4
+DIHE  H5  C5  C4  N3
+DIHE  C6  C5  C4  N4
+DIHE  C6  C5  C4  N3
+
+!X-C4-N4-X
+DIHE  C5  C4  N4  H41
+DIHE  C5  C4  N4  H42
+DIHE  N3  C4  N4  H41 
+DIHE  N3  C4  N4  H42
+
+!X-C4-N3-X
+DIHE  C5  C4  N3  C2
+DIHE  N4  C4  N3  C2
+
+!X-N3-C2-X
+DIHE  C4  N3  C2  O2
+DIHE  C4  N3  C2  N1
+
+!X-C2-N1-X
+DIHE  N3  C2  N1  C6
+DIHE  N3  C2  N1  C1'
+DIHE  O2  C2  N1  C6
+DIHE  O2  C2  N1  C1'
+
+
+!CYT
+DIHE	C6  N1  C1'  H1'	
+DIHE	C6  N1  C1'  C2'	
+DIHE 	C6  N1  C1'  O4'	
+DIHE	C2  N1  C1'  H1'
+DIHE    C2  N1  C1'  C2'	
+DIHE    C2  N1  C1'  O4'
+
+
+
+!RES
+!X-05R-C5R-X
+DIHE	P    O5'  C5'  H5'
+DIHE	P    O5'  C5'  H5''	
+DIHE	P    O5'  C5'  C4'
+!X-P-O5'-X
+DIHE	O1P  P    O5'  C5'
+DIHE	O2P  P    O5'  C5'
+!X-C5'-C4'-X
+DIHE	O5'  C5'  C4'  H4'	
+DIHE	H5'  C5'  C4'  H4'
+DIHE	H5''  C5'  C4'  H4'   
+DIHE	O5'  C5'  C4'  O4' 
+DIHE	H5'  C5'  C4'  O4'
+DIHE	H5''  C5'  C4'  O4'
+DIHE	O5'  C5'  C4'  C3'
+DIHE	H5'   C5'  C4'  C3'
+DIHE	H5''  C5'  C4'  C3'
+
+!Nu's
+!X-O4R-C1R-X
+DIHE	C4'  O4'  C1'  H1'		
+DIHE	C4'  O4'  C1'  N1	
+DIHE	C4'  O4'  C1'  C2'
+
+!X-C1R-C2R-X
+DIHE	O4'  C1'  C2'  H2'	
+DIHE	H1'  C1'  C2'  H2'	
+DIHE	N1  C1'  C2'  H2'
+DIHE	O4'  C1'  C2'  O2'      
+DIHE    H1'  C1'  C2'  O2'	
+DIHE	N1  C1'  C2'  O2'	
+DIHE	O4'  C1'  C2'  C3'	
+DIHE	H1'  C1'  C2'  C3'	
+DIHE	N1  C1'  C2'  C3'	
+
+!X-C2R-C3R-X
+DIHE	C1'  C2'  C3'  H3'	
+DIHE	H2'  C2'  C3'  H3'	
+DIHE	O2'  C2'  C3'  H3'	
+DIHE 	C1'  C2'  C3'  O3'	
+DIHE	H2'  C2'  C3'  O3'	
+DIHE	O2'  C2'  C3'  O3'		
+DIHE	C1'  C2'  C3'  C4'	
+DIHE	H2'  C2'  C3'  C4'	
+DIHE    O2'  C2'  C3'  C4'	
+
+!X-C3R-C2R-X
+DIHE	C2'  C3'  C4'  H4'	
+DIHE	O3'  C3'  C4'  H4'	
+DIHE	H3'  C3'  C4'  H4'	
+DIHE    C2'  C3'  C4'  O4'	
+DIHE	O3'  C3'  C4'  O4'	
+DIHE 	H3'  C3'  C4'  O4'	
+DIHE	C2'  C3'  C4'  C5'	
+DIHE	O3'  C3'  C4'  C5'	
+DIHE    H3'  C3'  C4'  C5'	
+
+!X-C4R-O4R-C1R
+DIHE	H4'  C4'  O4'  C1'	
+DIHE	C5'  C4'  O4'  C1'	
+DIHE    C3'  C4'  O4'  C1'
+
+!	AMBER
+IMPRoper  C2   N1   N3   O2
+IMPRoper  C4   N4   C5   N3
+IMPRoper  C5   C4   C5   H5
+IMPRoper  C6   N1   C5   H6
+IMPRoper  N1   C2   C6   C1'
+IMPRoper  N4   C4   H41  H42
+
+
+! IMPRoper C5   C4   N4   H41               IMPRoper C1'  C2   C6   N1
+! IMPRoper O2   N1   N3   C2                IMPRoper N4   N3   C5   C4
+! IMPRoper N1   C2   N3   C4                IMPRoper C2   N3   C4   C5
+! IMPRoper N3   C4   C5   C6                IMPRoper C4   C5   C6   N1
+! IMPRoper C5   C6   N1   C2                IMPRoper C6   N1   C2   N3
+! IMPRoper H42  C4   H41  N4               
+! IMPRoper H5  C4  C6   C5                  IMPRoper  H6   N1   C5   C6
+ 
+!RIBOSE IMPROPERS
+IMPRoper     H1'  C2'  O4'  N1  !C1'
+IMPRoper     H2'  C3'  C1'  O2' !C2'
+IMPRoper     H3'  C4'  C2'  O3' !C3'
+IMPRoper     H4'  C5'  C3'  O4' !C4'
+IMPRoper     H5'  O5'  H5'' C4' !C5'
+
+ DONOr H42  N4              
+ DONOr H2'  O2'                
+ DONOr H41  N4
+
+ ACCEptor O2   C2           
+ ACCEptor N3   " "
+ ACCEptor O1P  P            
+ ACCEptor O2P  P
+ ACCEptor O2' " "  ! added, ATB, 8-9-84
+
+ END {CYT}
+
+!------------------------------------------------------------------
+
+! ---------------------------------------------------------------------
+
+! ---------------------------------------------------------------------
+
+RESIdue THY
+ GROUp
+  ATOM P    TYPE=P     CHARGE=1.20    END
+  ATOM O1P  TYPE=O1P   CHARGE=-0.40   END
+  ATOM O2P  TYPE=O2P   CHARGE=-0.40   END
+  ATOM O5'  TYPE=O5R   CHARGE=-0.36   END
+ GROUp
+  ATOM C5'  TYPE=C5R   CHARGE=-0.070  END
+  ATOM H5'  TYPE=H     CHARGE=0.035   END
+  ATOM H5''  TYPE=H     CHARGE=0.035  END
+ GROUp
+  ATOM C4'  TYPE=C4R   CHARGE=0.065   END
+  ATOM H4'  TYPE=H     CHARGE=0.035   END
+  ATOM O4'  TYPE=O4R   CHARGE=-0.30   END
+  ATOM C1'  TYPE=C1R   CHARGE=0.20    END
+  ATOM H1'  TYPE=H     CHARGE=0.165   END
+
+! Insert Base
+ GROUp
+  ATOM N1    TYPE=N1T   CHARGE=-0.19  EXCLUSION=( C4 )  END
+  ATOM C6    TYPE=C6T   CHARGE=0.155  EXCLUSION=( N3 )  END
+  ATOM H6    TYPE=H     CHARGE=0.035  END
+ GROUp
+  ATOM C2    TYPE=C2T   CHARGE=0.35   EXCLUSION=( C5 )  END     
+  ATOM O2    TYPE=ON    CHARGE=-0.35  END                       
+ GROUp
+  ATOM N3    TYPE=N3T   CHARGE=-0.26  END      
+  ATOM H3    TYPE=HN    CHARGE=0.26   END      
+ GROUp
+  ATOM C4    TYPE=C4T   CHARGE=0.30   END      
+  ATOM O4    TYPE=ON    CHARGE=-0.30  END      
+ GROUp
+  ATOM C5    TYPE=C5T   CHARGE=-0.035 END
+  ATOM C7    TYPE=CC3E  CHARGE=-0.070 END ! name per IUPAC-IUB recomm.
+  ATOM H71   TYPE=H     CHARGE=0.035  END ! name per IUPAC-IUB recomm.
+  ATOM H72   TYPE=H     CHARGE=0.035  END ! name per IUPAC-IUB recomm.
+  ATOM H73   TYPE=H     CHARGE=0.035  END ! name per IUPAC-IUB recomm.
+
+ GROUp
+
+! END 
+
+
+ GROUP
+  ATOM C2'  TYPE=C2R   CHARGE=0.115    END
+  ATOM H2'  TYPE=H     CHARGE=0.035    END    
+  ATOM O2'  TYPE=O2R   CHARGE=-0.40    END    
+  ATOM HO2' TYPE=HO    CHARGE=0.25     END    
+ GROUP
+  ATOM C3'  TYPE=C3R   CHARGE=-0.035   END
+  ATOM H3'  TYPE=H     CHARGE=0.035    END
+ 
+ GROUP
+  ATOM O3'  TYPE=O3R   CHARGE=-0.36   END
+
+
+ BOND P    O1P               BOND P    O2P               BOND P    O5'
+ BOND O5'  C5'               BOND C5'  C4'               BOND C4'  O4'
+ BOND C4'  C3'               BOND O4'  C1'               BOND C1'  N1
+ BOND C1'  C2'               BOND N1   C2                BOND N1   C6
+ BOND C2   O2                BOND C2   N3                BOND N3   H3
+ BOND N3   C4                BOND C4   O4                BOND C4   C5
+ BOND C5   C7                BOND C5   C6                BOND C2'  C3'
+ BOND C3'  O3'               BOND C2'  O2'               BOND O2'  H2'
+ BOND O2'  HO2'		     BOND C5'  H5'               BOND C5'  H5'' 
+ BOND C3'  H3'		     BOND C2'  H2'               BOND C1'  H1' 
+ BOND C4'  H4'               BOND C7   H71               BOND C7   H72
+ BOND C7   H73               BOND C6   H6
+
+ DIHEdral P   O5'  C5'  C4'              DIHEdral O5'  C5'  C4'  O4'
+ DIHEdral O5'  C5'  C4'  C3'  
+
+ DIHEdral C3'  C4'  O4'  C1'
+ DIHEdral C4'  O4'  C1'  C2'             DIHEdral O4'  C1'  C2'  C3' 
+
+ DIHEdral C1'  C2'  C3'  C4'             DIHEdral O4'  C4'  C3'  O3'
+ DIHEdral C5'  C4'  C3'  C2'             DIHEdral O2'  C2'  C3'  O3'
+ DIHEdral O4'  C1'  N1   C2              
+ DIHEdral C3'  C2'  O2'  H2'
+ 
+
+ ! New dihedrals
+ DIHEdral  C5'  C4'  C3'  O3'            DIHEdral  C4'  O4'  C1'  N1
+
+
+!	AMBER
+IMPRoper  C2   N1   N3   O2
+IMPRoper  C4   N3   C5   O4
+IMPRoper  C5   C6   C4   C7
+IMPRoper  C6   N1   C5   H6
+IMPRoper  N1   C2   C6   C1'
+IMPRoper  N3   C2   C4   H3
+
+! IMPRoper O4   N3   C5   C4                IMPRoper C1'  C2   C6   N1
+! IMPRoper O2   N1   N3   C2                IMPRoper C4   C5   C6   N1
+! IMPRoper N1   C2   N3   C4                IMPRoper C2   N3   C4   C5
+!                                           IMPRoper N3   C4   C5   C6
+! IMPRoper C5   C6   N1   C2                IMPRoper C6   N1   C2   N3
+! IMPRoper H3   C2   C4   N3               
+! IMPRoper C7   C4   C6   C5                IMPRoper  H6   N1   C5   C6
+ 
+!RIBOSE IMPROPERS
+IMPRoper     H1'  C2'  O4'  N1 ! C1'
+IMPRoper     H2'  C3'  C1'  O2' !C2'
+IMPRoper     H3'  C4'  C2'  O3' !C3'
+IMPRoper     H4'  C5'  C3'  O4' !C4'
+IMPRoper     H5'  O5'  H5'' C4' !C5'
+
+ DONOr H3   N3                
+ DONOr HO2' O2'
+
+ ACCEptor O2   C2              
+ ACCEptor O4   C4
+ ACCEptor O1P  P               
+ ACCEptor O2P  P       
+ ACCEptor O2'  " " ! added, ATB, 8-9-84
+
+ END {THY}
+
+
+!------------------------------------------------------------------
+
+RESIdue URI
+ GROUp
+  ATOM P    TYPE=P     CHARGE=1.1662    END
+  ATOM O1P  TYPE=O1P   CHARGE=-0.6260   END
+  ATOM O2P  TYPE=O2P   CHARGE=-0.6260   END
+  ATOM O5'  TYPE=O5R   CHARGE=-0.4989   END
+ GROUp
+  ATOM C5'  TYPE=C5R   CHARGE=0.0558  END
+  ATOM H5'  TYPE=H     CHARGE=0.0679   END !JPR
+  ATOM H5'' TYPE=H     CHARGE=0.0679   END
+  ATOM C4'  TYPE=C4R   CHARGE=0.1065  END
+  ATOM H4'  TYPE=H     CHARGE=0.1174   END !JPR
+  ATOM O4'  TYPE=O4R   CHARGE=-0.3548   END
+  ATOM C1'  TYPE=C1R   CHARGE=0.0674   END 
+  ATOM H1'  TYPE=H     CHARGE=0.1824   END 
+
+
+ GROUp
+  ATOM N1    TYPE=N1U   CHARGE=0.0418  EXCLUSION=( C4 )  END
+  ATOM C6    TYPE=C6U   CHARGE=-0.1226  EXCLUSION=( N3 )  END 
+  ATOM H6    TYPE=H     CHARGE=0.2188  END 
+ GROUp
+  ATOM C2    TYPE=C2U   CHARGE=0.4687   EXCLUSION=( C5 )  END     
+  ATOM O2    TYPE=ON    CHARGE=-0.5477  END                      
+ GROUp
+  ATOM N3    TYPE=N3U   CHARGE=-0.3549  END     
+  ATOM H3    TYPE=HN    CHARGE=0.3154   END      
+ GROUp
+  ATOM C4    TYPE=C4U   CHARGE=0.5952   END     
+  ATOM O4    TYPE=ON    CHARGE=-0.5761  END       
+ GROUp
+  ATOM C5    TYPE=C5U   CHARGE=-0.3635 END !JPR
+  ATOM H5    TYPE=H     CHARGE=0.1811  END !JPR
+
+ GROUP
+  ATOM C2'  TYPE=C2R   CHARGE=0.0670   END
+  ATOM H2'  TYPE=H     CHARGE=0.0972   END  
+  ATOM O2'  TYPE=O2R   CHARGE=-0.6139   END    
+  ATOM HO2' TYPE=HO    CHARGE=0.4186    END 
+ GROUP
+  ATOM C3'  TYPE=C3R    CHARGE=0.2022 END
+  ATOM H3'  TYPE=H      CHARGE=0.0615  END 
+ GROUP
+  ATOM O3'  TYPE=O3R   CHARGE=-0.5246   END
+
+ BOND P    O1P                BOND P    O2P              BOND P    O5'
+ BOND O5'  C5'                BOND C5'  C4'              BOND C4'  O4'
+ BOND C4'  C3'                BOND O4'  C1'              BOND C1'  N1
+ BOND C1'  C2'                BOND N1   C2               BOND N1   C6
+ BOND C2   O2                 BOND C2   N3               BOND N3   H3
+ BOND N3   C4                 BOND C4   O4               BOND C4   C5  
+
+ BOND C5   C6                 BOND C2'  C3'              BOND C3'  O3'
+ BOND C2'  O2'                
+ BOND C5  H5                  BOND C6   H6
+ 
+ BOND O2'  HO2' 
+ BOND C5'  H5'         BOND C5'  H5''          BOND C4'  H4'
+ BOND C3'  H3'         BOND C2'  H2'           BOND C1'  H1'
+
+!X-N1-C6-X
+DIHE  C1'  N1  C6  C5
+DIHE  C1'  N1  C6  H6
+DIHE  C2   N1  C6  C5
+DIHE  C2   N1  C6  H6
+
+!X-C6-C5-X
+DIHE  H6  C6  C5  H5
+DIHE  H6  C6  C5  C4
+DIHE  N1  C6  C5  H5
+DIHE  N1  C6  C5  C4
+
+!X-C5-C4-X
+DIHE  H5  C5  C4  O4
+DIHE  H5  C5  C4  N3
+DIHE  C6  C5  C4  O4
+DIHE  C6  C5  C4  N3
+
+
+!X-C4-N3-X
+DIHE  C5  C4  N3  C2
+DIHE  O4  C4  N3  C2
+DIHE  C5  C4  N3  H3
+DIHE  O4  C4  N3  H3
+
+!X-N3-C2-X
+DIHE  C4  N3  C2  O2
+DIHE  C4  N3  C2  N1
+DIHE  H3  N3  C2  O2
+DIHE  H3  N3  C2  N1
+
+!X-C2-N1-X
+DIHE  N3  C2  N1  C6
+DIHE  N3  C2  N1  C1'
+DIHE  O2  C2  N1  C6
+DIHE  O2  C2  N1  C1'
+
+!URI
+DIHE	C6  N1  C1'  H1'	
+DIHE	C6  N1  C1'  C2'	
+DIHE 	C6  N1  C1'  O4'	
+DIHE	C2  N1  C1'  H1'
+DIHE    C2  N1  C1'  C2'	
+DIHE    C2  N1  C1'  O4'
+
+
+
+!RES
+!X-05R-C5R-X
+DIHE	P    O5'  C5'  H5'
+DIHE	P    O5'  C5'  H5''	
+DIHE	P    O5'  C5'  C4'
+!X-P-O5'-X
+DIHE	O1P  P    O5'  C5'
+DIHE	O2P  P    O5'  C5'
+!X-C5'-C4'-X
+DIHE	O5'  C5'  C4'  H4'	
+DIHE	H5'  C5'  C4'  H4'
+DIHE	H5''  C5'  C4'  H4'   
+DIHE	O5'  C5'  C4'  O4' 
+DIHE	H5'  C5'  C4'  O4'
+DIHE	H5''  C5'  C4'  O4'
+DIHE	O5'  C5'  C4'  C3'
+DIHE	H5'   C5'  C4'  C3'
+DIHE	H5''  C5'  C4'  C3'
+
+!Nu's
+!X-O4R-C1R-X
+DIHE	C4'  O4'  C1'  H1'		
+DIHE	C4'  O4'  C1'  N1	
+DIHE	C4'  O4'  C1'  C2'
+
+!X-C1R-C2R-X
+DIHE	O4'  C1'  C2'  H2'	
+DIHE	H1'  C1'  C2'  H2'	
+DIHE	N1  C1'  C2'  H2'
+DIHE	O4'  C1'  C2'  O2'      
+DIHE    H1'  C1'  C2'  O2'	
+DIHE	N1  C1'  C2'  O2'	
+DIHE	O4'  C1'  C2'  C3'	
+DIHE	H1'  C1'  C2'  C3'	
+DIHE	N1  C1'  C2'  C3'	
+
+!X-C2R-C3R-X
+DIHE	C1'  C2'  C3'  H3'	
+DIHE	H2'  C2'  C3'  H3'	
+DIHE	O2'  C2'  C3'  H3'	
+DIHE 	C1'  C2'  C3'  O3'	
+DIHE	H2'  C2'  C3'  O3'	
+DIHE	O2'  C2'  C3'  O3'		
+DIHE	C1'  C2'  C3'  C4'	
+DIHE	H2'  C2'  C3'  C4'	
+DIHE    O2'  C2'  C3'  C4'	
+
+!X-C3R-C2R-X
+DIHE	C2'  C3'  C4'  H4'	
+DIHE	O3'  C3'  C4'  H4'	
+DIHE	H3'  C3'  C4'  H4'	
+DIHE    C2'  C3'  C4'  O4'	
+DIHE	O3'  C3'  C4'  O4'	
+DIHE 	H3'  C3'  C4'  O4'	
+DIHE	C2'  C3'  C4'  C5'	
+DIHE	O3'  C3'  C4'  C5'	
+DIHE    H3'  C3'  C4'  C5'	
+
+!X-C4R-O4R-C1R
+DIHE	H4'  C4'  O4'  C1'	
+DIHE	C5'  C4'  O4'  C1'	
+DIHE    C3'  C4'  O4'  C1'
+ 
+
+!	AMBER
+IMPRoper  C2   N1   N3   O2
+IMPRoper  C4   N3   C5   O4
+IMPRoper  C5   C6   C4   H5
+IMPRoper  C6   N1   C5   H6
+IMPRoper  N1   C2   C6   C1'
+IMPRoper  N3   C2   C4   H3
+
+
+
+!                                            IMPRoper C1'  C2   C6   N1
+! IMPRoper O2   N1   N3   C2                 IMPRoper H3   C2   C4   N3
+! IMPRoper O4   N3   C5   C4                 IMPRoper N1   C2   N3   C4
+! IMPRoper C2   N3   C4   C5                 IMPRoper N3   C4   C5   C6
+! IMPRoper C4   C5   C6   N1                 IMPRoper C5   C6   N1   C2
+! IMPRoper C6   N1   C2   N3                 
+! IMPRoper H5   C4   C6   C5                 IMPRoper H6   N1   C5   C6
+
+ !GENERAL RIBOSE IMPROPERS
+IMPRoper     H1'  C2'  O4'  N1  !C1'
+IMPRoper     H2'  C3'  C1'  O2' !C2'
+IMPRoper     H3'  C4'  C2'  O3' !C3'
+IMPRoper     H4'  C5'  C3'  O4' !C4'
+IMPRoper     H5'  O5'  H5'' C4' !C5'
+
+ DONOr H3   N3                    
+ DONOr H2'  O2'
+
+ ACCEptor O2   C2                
+ ACCEptor O4   C4
+ ACCEptor O1P  P                 
+ ACCEptor O2P  P
+ ACCEptor O2' " " 
+
+ 
+
+END {URI}
+
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!note: O3' and O5' will remain O3R and O5R for DNA molecules
+!this is consistent with values in parameter files
+
+PRESidue DEOX    ! Patch to make DEOXYribose of the ribose
+ DELETE ATOM O2'   END
+ DELETE ATOM HO2'   END
+GROUP
+ MODIFY  ATOM C2'  TYPE=C2D   CHARGE=-0.07    END
+ MODIFY  ATOM C5'  TYPE=C5D   CHARGE=-0.07    END
+ MODIFY  ATOM C4'  TYPE=C4D   CHARGE=0.065    END
+ MODIFY  ATOM O4'  TYPE=O4D   CHARGE=-0.30    END
+ MODIFY  ATOM C1'  TYPE=C1D   CHARGE=0.165    END
+ MODIFY  ATOM C3'  TYPE=C3D   CHARGE=-0.035   END
+ ADD     ATOM H2'' TYPE=H     CHARGE=0.035    END
+ 
+ ADD BOND   C2'  H2''
+ ADD ANGLE  C1'  C2'  H2'
+ ADD ANGLE  C3'  C2'  H2''
+ ADD ANGLE  H2'  C2'  H2''
+ ADD IMPRoper   H2'  C3'  H2'' C1'! C2' chirality term
+END {DEOX}
+
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+
+
+PRESidue 5PHO           ! 5-terminus (with phosphate)
+ !                      ! should be used as "FIRST  5PHO  TAIL + * END"
+ GROUp                  ! i.e. to be patched to the first RNA residue
+  ADD ATOM +H5T   TYPE=HO    CHARGE=0.15    END
+  ADD ATOM +O5T   TYPE=OH    CHARGE=-0.15   END
+        
+  ADD BOND +H5T  +O5T
+  ADD BOND +O5T  +P
+  ADD ANGLe +H5T  +O5T  +P
+  ADD ANGLe +O5'  +P  +O5T
+  ADD ANGLe +O5T  +P  +O1P
+  ADD ANGLe +O5T  +P  +O2P 
+
+!NEW 
+ADD DIHE	+O1P  +P    +O5'  +C5'
+ADD DIHE	+O2P  +P    +O5'  +C5'
+
+  ADD DIHEdral +O5'  +P   +O5T   +H5T
+  ADD DIHEdral +C5'  +O5'  +P    +O5T
+  ADD DONOr +H5T  +O5T
+END {5PHO}
+
+!------------------------------------------------------------------
+
+
+PRESidue 3TER               ! 3-terminus (without phosphate)
+                            ! should be used as "LAST 3TER  HEAD - * END"
+ GROUp                      ! i.e. to be patched to the last RNA residue
+  MODIFY ATOM -C3'    TYPE=C3R    CHARGE=0.2022    END       
+  MODIFY ATOM -O3'    TYPE=OH     CHARGE=-0.6541   END       
+  ADD ATOM -H3T  TYPE=HO     CHARGE=0.4376        END       
+ !
+ ADD BOND -O3'  -H3T
+ ADD ANGLe -C3'  -O3'  -H3T
+ ADD DIHEdral -C4'  -C3'  -O3'  -H3T
+ ADD DONOr -H3T  -O3'
+END {3TER}
+
+!------------------------------------------------------------------
+
+
+PRESidue 5TER        ! 5-terminus (without phosphate)
+ !                   ! should be used as "FIRST  5TER  TAIL + * END"
+ GROUp               ! i.e. to be patched to the first RNA residue
+  ADD ATOM +H5T  TYPE=HO    CHARGE=0.4295    END      
+  MODIFY ATOM +O5'  TYPE=OH  CHARGE=-0.6223  END      
+  MODIFY ATOM +C5'  TYPE=C5R  CHARGE=0.0558  END      
+  DELETE ATOM +P   END
+  DELETE ATOM +O1P END
+  DELETE ATOM +O2P END
+ !
+ ADD BOND +H5T   +O5'
+ ADD ANGLe +H5T   +O5'  +C5'
+ ADD DIHEdral +H5T   +O5'  +C5'  +C4'
+ ADD DONOr +H5T   +O5'
+END {5TER}
+
+! ---------------------------------------------------------------------
+!------------------------------------------------------------------
+
+PRESidue NUC         ! patch for nucleic acid backbone
+                     ! should be used as "LINK NUC  HEAD - *  TAIL + *  END"
+                     ! i.e. it links the previous RNA residue (-) with
+                     ! the current one (+)
+ GROUp               
+
+  MODIFY ATOM -O3' END   !
+  MODIFY ATOM +P   END   !
+  MODIFY ATOM +O1P END   ! this should correctly define the electrostatic 
+
+  MODIFY ATOM +O2P END   ! group boundary 
+
+  MODIFY ATOM +O5' END   !
+ ADD BOND -O3' +P
+ ADD ANGLE -C3' -O3' +P
+ ADD ANGLE -O3' +P  +O1P
+ ADD ANGLE -O3' +P  +O2P
+ ADD ANGLE -O3' +P  +O5'
+
+
+ 
+!NEW: 
+!NUC
+ADD DIHE	-O3'  +P    +O5'  +C5'	
+!X-C3R-O3R-X
+ADD DIHE 	-C4'  -C3'  -O3'  +P
+ADD DIHE	-H3'  -C3'  -O3'  +P
+ADD DIHE  	-C2'  -C3'  -O3'  +P
+!X-O3R-P-X
+ADD DIHE	-C3'  -O3'  +P    +O1P
+ADD DIHE	-C3'  -O3'  +P    +O2P
+ADD DIHE	-C3'  -O3'  +P    +O5'
+
+ADD IMPROper +O1P -O3' +O2P +O5'
+
+END {NUC}
+
+!------------------------------------------------------------------
+
+set echo=true end
+
+

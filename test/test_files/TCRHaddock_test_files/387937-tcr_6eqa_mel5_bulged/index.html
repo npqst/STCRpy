@@ -1,0 +1,277 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+  <title>HADDOCK webserver</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="description" content="The HADDOCK webserver brings the power of biomolecular docking to your desktop"/>
+  <meta name="author" content="NMR Spectroscopy Deaprtment, Utrecht University"/>
+  <meta name="keywords" content="NMR department Utrecht, HADDOCK, Whiskey, 3DDART, biomolecular docking, NMR"/>
+  <link rel="stylesheet" type="text/css" media="screen, projection" href="https://milou.science.uu.nl/Main/mainstyle-CSB.css"/>
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://milou.science.uu.nl/Main/haddock.rss" />
+  <link rel="home" href="https://milou.science.uu.nl/" title="Home" />
+  <link rel="Shortcut icon" href="https://milou.science.uu.nl/Images/favicon.ico" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Page specific modification to the general CSS style -->
+  <style type="text/css">
+    .blue body { background-image:url("https://milou.science.uu.nl/Images/body-background.gif"); }
+	.blue #path { background-image:url("https://milou.science.uu.nl/Images/path-blue.png"); }
+	.blue #header { height:150px; background-image:url("https://milou.science.uu.nl/Images/header-CSB.jpg"); }
+	.blue #navbar { background-image:url("https://milou.science.uu.nl/Images/navbar-blue.png"); }
+	.blue #navbar a:hover { background-image:url("https://milou.science.uu.nl/Images/navbarshadow-blue.png"); }
+	.blue #navbar .current a {background-image:url("https://milou.science.uu.nl/Images/navbarshadow-blue2.png"); }
+	.blue #subheader { background-image:url("https://milou.science.uu.nl/Images/subheader-blue.png"); }
+	.blue #footer { background:#d9e6f2; }
+	.blue .container { background:#FFFFFF; }
+    .blue {color: #FFFFFF}
+    .rating{
+      cursor: pointer;
+      vertical-align: bottom;
+    }
+    .rating:hover{
+      color: #888888;
+    }
+    #rated{
+      display: none;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('body').on('click','.rating',    function (e){
+        e.stopImmediatePropagation();
+        $(".rating").hide();
+        $.ajax({
+          url: "https://milou.science.uu.nl/cgi-bin/satisfaction.cgi",
+          type: 'GET',
+          data:{rating:e.target.id.substring(6)},
+          async:true,
+          }).done(function (data) {
+                  $("#rated").show();
+          }).fail(function () {
+                  $(".rating").show();
+          });
+      });
+    });
+    function createCORSRequest(method, url){
+      var xhr = new XMLHttpRequest();
+      if ("withCredentials" in xhr) {
+        // Check if the XMLHttpRequest object has a "withCredentials" property.
+        // "withCredentials" only exists on XMLHTTPRequest2 objects.
+        xhr.open(method, url, true);
+      } else if (typeof XDomainRequest != "undefined") {
+        // Otherwise, check if XDomainRequest.
+        // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+        xhr = new XDomainRequest();
+        xhr.open(method, url);
+      } else {
+        // Otherwise, CORS is not supported by the browser.
+        xhr = null;
+      }
+      return xhr;
+    }
+    function makeCorsRequest(url, callback, src) {
+      // This is a sample server that supports CORS.
+      var xhr = createCORSRequest('GET', url);
+      if (!xhr) {
+        alert('CORS not supported');
+        return;
+      }
+      // Response handlers.
+      xhr.onload = function() {
+        var text = xhr.responseText;
+        //alert('Response from CORS request to ' + url + ': ' + text);
+        callback(text, src);
+      };
+
+      xhr.onerror = function() {
+        alert('Woops, there was an error making the request. Ready state: '+xhr.readyState+" Status: "+xhr.status+" Response: "+xhr.responseText);
+      };
+      xhr.send();
+      return xhr;
+    }
+    function printResponse(response, src){
+        var parsed = JSON.parse(response);
+        console.log(parsed);
+        console.log(src);
+        src.parent().parent().append('<td><a href="https://3dbionotes.cnb.csic.es/programmatic/get/'+parsed.id+'" target="_blank"><b>id: '+parsed.id+'</b></a></td>');
+    }
+
+    $(function() {
+      $(".3dbionotes").click( function() {
+        console.log(this.id);
+        var pdb = this.id;
+        var src = $(this);
+	console.log("https://3dbionotes.cnb.csic.es/programmatic/fetch?url=https://<?php $url=$_SERVER['REQUEST_URI'] ; echo $_SERVER['SERVER_NAME'].$url ?>/"+pdb+"&title="+pdb);
+        response = makeCorsRequest("https://3dbionotes.cnb.csic.es/programmatic/fetch?url=https://<?php $url=$_SERVER['REQUEST_URI'] ; echo $_SERVER['SERVER_NAME'].$url ?>/"+pdb+"&title="+pdb, printResponse, src);
+        });
+    });
+  </script>
+ </head>
+ 
+ <body class="blue">
+  <div id="col1" class="container">
+   <div id="path">
+    <ul>
+     <li><a href="https://milou.science.uu.nl/index.html">home &gt;&gt;</a></li>
+     <li><a href="https://milou.science.uu.nl/services/HADDOCK2.2">HADDOCK2.2 &gt;&gt;</a></li>
+     <li class="current"><a href="./">HADDOCK results</a></li>
+    </ul> 
+   </div>
+   <div id="header">
+    <div style="padding-top:40px; padding-left:30px; color:white; font-size:350%; font-weight:bold; z-index:2">HADDOCK2.2</div>
+    <div style="padding-top:20px; padding-left:30px; color:white; font-size:200%; z-index:2">@BonvinLab</div>
+   </div>
+   <div id="navbar">
+    <ul>
+     <li><a href="https://milou.science.uu.nl">Home</a></li>
+     <li><a href="https://milou.science.uu.nl/services/HADDOCK2.2">HADDOCK2.2</a></li>
+     <li><a href="https://milou.science.uu.nl/services/CPORT">CPORT</a><li>
+     <li><a href="https://milou.science.uu.nl/services/3DDART">3D-DART</a><li>
+     <li><a href="http://www.bonvinlab.org/software/haddock2.2/manual">HADDOCK2.2 manual</a><li>
+     <li><a href="http://bonvinlab.org/publications">Publications</a></li>
+    </ul>
+   </div>
+   <div id="subheader">
+    <ul>
+     <li><span>Welcome to the Utrecht Biomolecular Interaction web portal &gt;&gt;</span></li>
+    </ul>
+   </div>
+   <div id="content">
+      
+     <!-- Import run specific docking results here -->
+     <dl class="intro">
+      <dd style="text-align:center; font-size:120%"><strong>HADDOCK server status for docking run /1416063397/387937-tcr_6eqa_mel5_bulged</strong></dd>
+      <dd><strong>Status: FINISHED</strong></dd>
+	  <dd>Your HADDOCK run has successfully completed. The complete run can be downloaded as a gzipped tar file <a href=
+       https://rascar.science.uu.nl/haddock2.4/run/1416063397/387937-tcr_6eqa_mel5_bulged.tgz><b>here</b></a>. The file containing your docking parameters is <a href=
+       ./job_params.json><b>here</b></a>. 
+       <dd> Please cite the following paper in your work: <br>
+       G.C.P van Zundert, J.P.G.L.M. Rodrigues, M. Trellet, C. Schmitz, P.L. Kastritis, E. Karaca, A.S.J. Melquiond, M. van Dijk, S.J. de Vries and A.M.J.J. Bonvin (2016).
+       "<a href="http://dx.doi.org/doi:10.1016/j.jmb.2015.09.014">The HADDOCK2.2 webserver: User-friendly integrative modeling of biomolecular complexes</a>."<br>
+       <em>J. Mol. Biol.</em>, <strong>428</strong>, 720-725 (2015).
+       </dd>
+	<dd ><b style="padding-right: 15px;" >How would you rate your experience with our portal? </b>
+                <i id="rating1" class="rating material-icons">sentiment_very_dissatisfied</i>
+                <i id="rating2" class="rating material-icons">sentiment_dissatisfied</i>
+                <i id="rating3" class="rating material-icons">sentiment_neutral</i>
+                <i id="rating4" class="rating material-icons">sentiment_satisfied</i>
+                <i id="rating5" class="rating material-icons">sentiment_very_satisfied</i>
+                <span id="rated"> Thank you!<i class="material-icons" style="vertical-align: bottom;">done</i></span>
+       </dd>
+       <dd><strong>Questions / feedback ? </strong><a href="http://ask.bioexcel.eu"> ask.bioexcel.eu</a></dd>
+       <dd><strong>Please also consider giving us some feedback by filling our <a href="http://goo.gl/0qE0xl">online survey</a>.</dd>
+       <dd><strong>Summary</strong></dd>
+       <dd>HADDOCK clustered<b> 197 </b>structures in<b> 1 </b>cluster(s), which represents<b> 98.5 &#37; </b>of the water-refined models HADDOCK generated. Note that currently the maximum number of models considered for clustering is 200.</dd>
+       <?php $min_size = 4;
+       if(strcmp($min_size, "3") == 0 || strcmp($min_size, "2") == 0 || strcmp($min_size, "1") == 0) : ?>
+       <dd><b> WARNING</b>: Clustering with default parameters did not produce any cluster, cluster minimum size went from <b>4</b> to <b><?php echo $min_size; ?></b></dd>
+       <?php endif; ?> 
+       <dd>The statistics of the top 10 clusters are shown below. The top cluster is the most reliable according to HADDOCK. 
+           Its Z-score indicates how many standard deviations from the average this cluster is located in terms of score 
+           (the more negative the better).
+       </dd> 
+       <dd>A <a href="#graphics">graphical representation</a> of the results is also provided at the bottom of the page.
+        </dd>
+      </dl>
+
+    <dl class="textblock">
+	  <dt>Cluster 1</dt>
+      <br />
+      <table border="0">
+       <tr>
+         <td width="60%">HADDOCK score</td>
+         <td width="40%">-125.7 +/- 2.6</td>
+       </tr>
+       <tr>
+         <td>Cluster size</td>
+         <td>196</td>
+       </tr>
+       <tr>
+         <td>RMSD from the overall lowest-energy structure</td>
+         <td>0.7 +/- 0.4</td>
+       </tr>
+       <tr>
+         <td>Van der Waals energy</td>
+         <td>-92.6 +/- 2.5</td>
+       </tr>
+       <tr>
+         <td>Electrostatic energy</td>
+         <td>-263.0 +/- 13.1</td>
+       </tr>
+       <tr>
+         <td>Desolvation energy</td>
+         <td>3.9 +/- 2.5</td>
+       </tr>
+       <tr>
+         <td>Restraints violation energy</td>
+         <td>157.0 +/- 41.69</td>
+       </tr>
+       <tr>
+         <td>Buried Surface Area</td>
+         <td>2346.9 +/- 80.7</td>
+       </tr>
+       <tr>
+         <td>Z-Score</td>
+         <td>0.0 </td>
+       </tr>       
+      </table>
+     <br /> 
+     <table border="0">
+      <tr>
+        <td>Nr 1 best structure</td>
+        <td><a href="./cluster1_1.pdb">Download structure</a></td>
+	<td><a href="javascript:void(0)" id="cluster1_1.pdb" class="3dbionotes"><img height=30 src="https://milou.science.uu.nl/Images/3DBionotes-WestLife-logo.jpg"></img></a></td>
+      </tr>
+      <?php $filename = "cluster1_2.pdb"; 
+      if(!empty($filename)) : ?>
+      <tr>
+        <td>Nr 2 best structure</td>
+        <td><a href="./cluster1_2.pdb">Download structure</a></td>
+      </tr>
+      <?php endif; ?>
+      <?php $filename = "cluster1_3.pdb"; 
+      if(!empty($filename)) : ?>
+      <tr>
+        <td>Nr 3 best structure</td>
+        <td><a href="./cluster1_3.pdb">Download structure</a></td>
+      </tr>
+      <?php endif; ?>
+      <?php $filename = "cluster1_4.pdb";
+      if(!empty($filename)) : ?>
+      <tr>
+        <td>Nr 4 best structure</td>
+        <td><a href="./cluster1_4.pdb">Download structure</a></td>
+      </tr>
+      <?php endif; ?>
+     </table>
+	 </dl>
+
+/trinity/rascar/enmr/csb_webserver/data/results/haddock24/1416063397/387937-tcr_6eqa_mel5_bulged/structures/it1/water
+
+Processing done
+/trinity/rascar/enmr/csb_webserver/data/results/haddock24/1416063397/387937-tcr_6eqa_mel5_bulged/structures/it1/water/analysis
+	 <dd style="text-align:center"><strong>Note that HADDOCK results are deleted after one week.</strong></dd>
+    <!-- end results import -->
+    <hr />
+   </div>
+   <div id="navbar">
+    <ul>
+     <li><a href="http://haddock.science.uu.nl">Home</a></li>
+     <li><a href="http://haddock.science.uu.nl/services/HADDOCK2.2">HADDOCK2.2</a></li>
+     <li><a href="http://milou.science.uu.nl/services/CPORT">CPORT</a><li>
+     <li><a href="http://milou.science.uu.nl/services/3DDART">3D-DART</a><li>
+     <li><a href="http://www.bonvinlab.org/software/haddock2.2/manual">HADDOCK2.2 manual</a><li>
+     <li><a href="http://bonvinlab.org/publications">Publications</a></li>
+    </ul>
+   </div>
+   <div id="footer">
+    <p>2008-2017 &copy; <a href="http://www.bonvinlab.org">Computational Strucural Biology</a> group. All rights reserved. Original webdesign by Marc van Dijk<br />
+     <a href="http://validator.w3.org/check/referer" title="Validate this page as XHTML 1.0 Strict." rel="external">XHTML | </a>
+     <a href="http://jigsaw.w3.org/css-validator/check/referer?warning=no&amp;profile=css2" title="Validate the CSS used on this page." rel="external" >CSS</a></p>
+   </div>
+  </div>
+</body>
+</html>
+

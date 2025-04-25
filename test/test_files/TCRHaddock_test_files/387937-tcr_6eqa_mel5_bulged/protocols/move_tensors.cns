@@ -1,0 +1,49 @@
+! move_tensors.cns
+!
+!    Move the SANI and DANI tensors close to complex to avoid numerical problems
+!
+! ***********************************************************************
+! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           *
+! * Originally adapted from Aria 1.2 from Nilges and Linge, EMBL.       *
+! * All rights reserved.                                                *
+! * This code is part of the HADDOCK software and governed by its       *
+! * license. Please see the LICENSE file that should have been included *
+! * as part of this package.                                            *
+! ***********************************************************************
+!
+
+for $id in id ( (resn ANI or resn DAN) and name OO ) loop tensors
+
+  show (segid) (id $id)
+  evaluate ($segtens=$result)
+  show (resid) (id $id)
+  evaluate ($restens=$result)
+
+  {* Move SANI and DANI tensors to origin to avoid numerical problems *}
+  show (x) (id $id)
+  evaluate ($xcent=$result)
+  show (y) (id $id)
+  evaluate ($ycent=$result)
+  show (z) (id $id)
+  evaluate ($zcent=$result)
+  do (x=x-$xcent) (segid $segtens and resid $restens)
+  do (y=y-$ycent) (segid $segtens and resid $restens)
+  do (z=z-$zcent) (segid $segtens and resid $restens)
+
+end loop tensors
+
+! move tensors 50A aways from center of molecule
+show ave (x) (name CA or name BB or name C1')
+evaluate ($xcent=$result+50)
+show ave (y) (name CA or name BB or name C1')
+evaluate ($ycent=$result+50)
+show ave (z) (name CA or name BB or name C1')
+evaluate ($zcent=$result+50)
+
+do (x=x+$xcent) (resn ANI)
+do (y=y+$ycent) (resn ANI)
+do (z=z+$zcent) (resn ANI)
+
+do (x=x+$xcent) (resn DAN)
+do (y=y+$ycent) (resn DAN)
+do (z=z+$zcent) (resn DAN)

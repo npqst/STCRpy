@@ -14,8 +14,8 @@ class TestTCRMetrics(unittest.TestCase):
     def test_tcr_rmsd(self):
         true_tcr, pred_tcr = stcrpy.load_TCRs(
             {
-                "true_7su9": "/home/quast/Projects/ImmuneBuilder/data/independent_test_set_no_cdr3_filter/7su9_0_ED.pdb",
-                "pred_7su9": "/home/quast/Projects/ImmuneBuilder/structure_predictions/all_ab/independent_test_data_no_cdr_filter/7su9.pdb",
+                "true_7su9": "./test_files/TCRRMSD_test_files/true_7su9_0_ED.pdb",
+                "pred_7su9": "./test_files/TCRRMSD_test_files/pred_7su9.pdb",
             }
         ).values()
 
@@ -38,9 +38,9 @@ class TestTCRMetrics(unittest.TestCase):
         assert all([abs(correct_rmsd[k] - rmsds[k]) < 0.00001 for k in rmsds])
 
     def test_tcr_rmsd_from_file_list(self):
-        target_file_path = "/home/quast/Projects/ImmuneBuilder/data/independent_test_set_no_cdr3_filter/"
+        target_file_path = "./test_files/TCRRMSD_test_files/true_structures"
         target_files = os.listdir(target_file_path)
-        prediction_file_path = "/home/quast/Projects/ImmuneBuilder/structure_predictions/all_ab/independent_test_data_no_cdr_filter/"
+        prediction_file_path = "./test_files/TCRRMSD_test_files/pred_structures/"
         prediction_files = os.listdir(prediction_file_path)
 
         target_files.sort()
@@ -59,7 +59,7 @@ class TestTCRMetrics(unittest.TestCase):
         assert len(rmsd_df) == 46
 
         correct_rmsd = pd.read_csv(
-            "/home/quast/Projects/ImmuneBuilder/rmsd_testing.csv",
+            "test_files/TCRRMSD_test_files/rmsd_testing.csv",
             index_col="Unnamed: 0",
         )
         map_column_names = lambda c: c.lower() if len(c) > 1 else c

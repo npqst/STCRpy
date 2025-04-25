@@ -1,0 +1,2 @@
+#Cluster Nstruc Einter sd Enb sd Evdw+0.1Eelec sd Evdw sd Eelec sd Eair sd Ecdih sd Ecoup sd Esani sd Evean sd Edani sd
+file.nam_clust1   196   -85.81    55.65  -307.24    31.05  -102.33     8.20   -79.56     7.77  -227.68    30.48   221.44    46.74     0.00     0.00     0.00     0.00     0.00     0.00     0.00     0.00    0.000    0.000 

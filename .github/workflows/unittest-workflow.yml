@@ -1,0 +1,63 @@
+name: stcrpy installation and tests conda workflow
+
+on: [push]
+
+jobs:
+  conda-pypi-install:
+    name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: "ubuntu-latest"
+        python-version: "3.12"
+    steps:
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge,schrodinger
+          channel-priority: flexible
+          show-channel-urls: true
+      - name: Conda info
+        shell: bash -el {0}
+        run: |
+          conda info
+          conda config --show-sources
+      - name: Conda list
+        shell: pwsh
+        run: conda list
+      - name: Install dependencies
+        shell: bash -el {0}
+        run: |
+          conda create -n env python==${{ matrix.python-version }}
+          conda activate env
+          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.33
+          pip list
+      - name: Build ANARCI Models
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          ANARCI --build_models
+      - name: Install pymol
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          conda install -c conda-forge pymol-open-source 
+          conda list
+      - name: Test import
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
+      - name:  Test interaction profiling
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          pip install plip
+          python -c 'import stcrpy; x=stcrpy.fetch_TCR("7pb2"); print(x[0].profile_peptide_interactions())'
+      - name:  Run unittests
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          python -m unittest discover test "test_*.py"

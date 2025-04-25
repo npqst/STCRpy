@@ -32,54 +32,30 @@ class TestTCRParser(unittest.TestCase):
         assert set(["".join(sorted(x.id)) for x in tcr.get_antigens()]) == set(["C"])
 
     def test_all_stcrdab(self):
-        import glob
+        from tqdm import tqdm
 
-        parser = TCRParser.TCRParser()
-        stcrdab_pdb_files = glob.glob(
-            "/home/quast/Projects/STCRDab/Data/entries/*/structure/imgt/*.pdb"
-        )
-        stcrdab_pdb_files.sort()
+        with open("./test_files/tcr_pdb_codes.txt") as f:
+            pdb_codes = f.readlines()
+        pdb_codes = [x.strip() for x in pdb_codes]
         badly_parsed_pdb = []
         errors = {}
         pdb_types = {}
-        for pdb_file in stcrdab_pdb_files:
-            pdb_id = pdb_file.split("/")[-1].split(".")[0]
+        for pdb_code in tqdm(pdb_codes):
+            # pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
-                tcr = parser.get_tcr_structure(pdb_id, pdb_file)
+                tcr = stcrpy.fetch_TCR(pdb_code)
+                # tcr = parser.get_tcr_structure(pdb_id, pdb_file)
                 if len(list(tcr.get_TCRs())) == 0:
-                    badly_parsed_pdb.append(pdb_id)
+                    badly_parsed_pdb.append(pdb_code)
                 else:
-                    pdb_types[pdb_id] = (
+                    pdb_types[pdb_code] = (
                         type(list(tcr.get_TCRs())[0]),
                         list([str(x) for x in tcr.get_TCRs()]),
                     )
             except Exception as e:
-                errors[pdb_id] = e
-        print(badly_parsed_pdb)
-        print(len(badly_parsed_pdb))
-
-    def test_docked_tcr(self):
-        import glob
-
-        parser = TCRParser.TCRParser()
-        dock_pdb_files = glob.glob(
-            "/home/quast/Collaborations/SamuelsLab_Weizmann/docking/results/N17.2/310569-N17-2_NRAS_rank_0/structures/it1/renumbered_complex_*.pdb"
-        )
-        dock_pdb_files.sort()
-        badly_parsed_pdb = []
-        for pdb_file in dock_pdb_files:
-            pdb_id = pdb_file.split("/")[-1].split(".")[0]
-            tcr = parser.get_tcr_structure(pdb_id, pdb_file)
-            if len(list(tcr.get_TCRs())) == 0:
-                badly_parsed_pdb.append(pdb_id)
-        print(badly_parsed_pdb)
-        print(len(badly_parsed_pdb))
-
-    def test_antigen_only(self):
-        parser = TCRParser.TCRParser()
-        pdb_file = "/home/quast/Collaborations/SamuelsLab_Weizmann/data/antigen_xtal_structures/7mle_1_aligned.cif"
-        tcr = parser.get_tcr_structure("7mle", pdb_file)
-        print(tcr)
+                errors[pdb_code] = e
+        print(errors)
+        assert len(badly_parsed_pdb) == 0
 
     def test_delta_beta_tcr_parsed_as_abTCR(self):
         parser = TCRParser.TCRParser()
@@ -123,21 +99,18 @@ class TestTCRParser(unittest.TestCase):
                 assert isinstance(tcr, TCR)
 
     def test_MHC_single_chain_handling(self):
-        import glob
+        with open("./test_files/tcr_pdb_codes.txt") as f:
+            pdb_codes = f.readlines()
+        pdb_codes = [x.strip() for x in pdb_codes]
 
-        parser = TCRParser.TCRParser()
-        stcrdab_pdb_files = glob.glob(
-            "/home/quast/Projects/STCRDab/Data/entries/*/structure/imgt/*.pdb"
-        )
-        stcrdab_pdb_files.sort()
         badly_parsed_pdb = []
         errors = {}
         single_chain_MHC = {}
         apo_TCRs = {}
-        for pdb_file in stcrdab_pdb_files:
+        for pdb_file in pdb_codes:
             pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
-                tcr = parser.get_tcr_structure(pdb_id, pdb_file)
+                tcr = stcrpy.fetch_TCR(pdb_id)
                 if len(list(tcr.get_TCRs())) == 0:
                     badly_parsed_pdb.append(pdb_id)
                 else:
@@ -157,13 +130,10 @@ class TestTCRParser(unittest.TestCase):
         print(single_chain_MHC)
 
     def test_MHC_association(self):
-        import glob
+        with open("./test_files/tcr_pdb_codes.txt") as f:
+            pdb_codes = f.readlines()
+        pdb_codes = [x.strip() for x in pdb_codes]
 
-        parser = TCRParser.TCRParser()
-        stcrdab_pdb_files = glob.glob(
-            "/home/quast/Projects/STCRDab/Data/entries/*/structure/imgt/*.pdb"
-        )
-        stcrdab_pdb_files.sort()
         badly_parsed_pdb = []
         errors = {}
         apo_TCRs = {}
@@ -182,10 +152,10 @@ class TestTCRParser(unittest.TestCase):
             "2eyt",
             "2ial",
         ]
-        for pdb_file in stcrdab_pdb_files:
+        for pdb_file in pdb_codes:
             pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
-                tcr = parser.get_tcr_structure(pdb_id, pdb_file)
+                tcr = stcrpy.fetch_TCR(pdb_id)
                 if len(list(tcr.get_TCRs())) == 0:
                     badly_parsed_pdb.append(pdb_id)
                 else:

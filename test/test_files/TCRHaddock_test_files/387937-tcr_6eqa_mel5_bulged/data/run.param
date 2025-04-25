@@ -1,0 +1,12 @@
+AMBIG_TBL=ambig.tbl
+UNAMBIG_TBL=unambig.tbl
+HADDOCK_DIR=/trinity/rascar/enmr/software/haddock2.5
+N_COMP=2
+PDB_FILE1=protein1.pdb
+PROT_SEGID_1=A
+PDB_FILE2=protein2.pdb
+PROT_SEGID_2=B
+PROJECT_DIR=./
+RUN_NUMBER=1
+
+

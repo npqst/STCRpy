@@ -1,0 +1,4050 @@
+          ============================================================
+          |                                                          |
+          |            Crystallography & NMR System (CNS)            |
+          |                         CNSsolve                         |
+          |                                                          |
+          ============================================================
+           Version: 1.3 at patch level U
+           Status: Special UU release with Rg, paramagnetic
+                   and Z-restraints (A. Bonvin, UU 2013)
+          ============================================================
+           Written by: A.T.Brunger, P.D.Adams, G.M.Clore, W.L.DeLano,
+                       P.Gros, R.W.Grosse-Kunstleve,J.-S.Jiang,J.M.Krahn,
+                       J.Kuszewski, M.Nilges, N.S.Pannu, R.J.Read,
+                       L.M.Rice, G.F.Schroeder, T.Simonson, G.L.Warren.
+           Copyright (c) 1997-2010 Yale University
+          ============================================================
+           Running on machine: rascar.external (x86_64/Linux,64-bit)
+           Program started by: enmr
+           Program started at: 19:38:09 on 13-Sep-2024
+          ============================================================
+
+ FFT3C: Using FFTPACK4.1
+
+ CNSsolve>! generate_complex.inp 
+ CNSsolve>!    Merge the coordinates and topologies of the various components of the complex 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve>! 
+ CNSsolve>{- begin block parameter definition -} define( 
+ DEFINE> 
+ DEFINE>{================== parameter files ===================} 
+ DEFINE> 
+ DEFINE>{* protein parameter file *} 
+ DEFINE>{===>} prot_parameter_infile="RUN:toppar/protein-allhdg5-4.param"; 
+ DEFINE> 
+ DEFINE>{* nucleic acid parameter file *} 
+ DEFINE>{===>} nucl_parameter_infile="RUN:/toppar/dna-rna-allatom-hj-opls-1.3.param"; 
+ DEFINE> 
+ DEFINE>{* carbohydrate parameter file *} 
+ DEFINE>{===>} carbo_parameter_infile="RUN:/toppar/carbohydrate.param"; 
+ DEFINE> 
+ DEFINE>{* solvent parameter file *} 
+ DEFINE>{===>} solv_parameter_infile="RUN:/toppar/water-allhdg5-4.param"; 
+ DEFINE> 
+ DEFINE>{* co-factor parameter file *} 
+ DEFINE>{===>} cofac_parameter_infile="RUN:/toppar/ligand.param"; 
+ DEFINE> 
+ DEFINE>{* ligands parameter file *} 
+ DEFINE>{===>} ligands_parameter_infile="RUN:/toppar/fragment_probes.param"; 
+ DEFINE> 
+ DEFINE>{* ion parameter file *} 
+ DEFINE>{===>} ion_parameter_infile="RUN:/toppar/ion.param"; 
+ DEFINE> 
+ DEFINE>{* heme parameter file *} 
+ DEFINE>{===>} heme_parameter_infile="RUN:/toppar/hemes-allhdg.param"; 
+ DEFINE> 
+ DEFINE> ) {- end block parameter definition -} 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>@RUN:protocols/initialize.cns(iteration=$iteration;) 
+ ASSFIL: file initialize.cns opened.
+ CNSsolve>! initialize.cns 
+ CNSsolve>!    Iteration initialization 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * Originally adapted from Aria 1.2 from Nilges and Linge, EMBL.       * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve> 
+ CNSsolve>module (iteration;) 
+ &_2_ITERATION set to $_1_ITERATION 
+ CNSsolve>evaluate (&iteration = "") 
+ EVALUATE: symbol $_1_ITERATION set to "" (string)
+ CNSsolve> 
+ CNSsolve>@RUN:begin/iteration.cns(iteration=$iteration;) 
+ ASSFIL: file iteration.cns opened.
+ CNSsolve>module ( iteration ) 
+ &_2_ITERATION set to $_1_ITERATION 
+ CNSsolve>evaluate (&iteration=0) 
+ EVALUATE: symbol $_1_ITERATION set to    0.00000     (real)
+ CNSsolve>@RUN:run.cns( 
+ ASSFIL: file run.cns opened.
+ CNSsolve>! run.cns 
+ CNSsolve>!    The file containing all parameters for HADDOCK 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * Originally adapted from Aria 1.2 from Nilges and Linge, EMBL.       * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve>module( 
+ MODULE-DECLARATION>iteration; 
+ MODULE-DECLARATION>filenames; 
+ MODULE-DECLARATION>data; 
+ MODULE-DECLARATION>iterations; 
+ MODULE-DECLARATION>saprotocol; 
+ MODULE-DECLARATION>refine; 
+ MODULE-DECLARATION>toppar; 
+ MODULE-DECLARATION>analysis; 
+ MODULE-DECLARATION>) 
+ MODULE-INVOCATION>iteration =$iteration; 
+ &_2_ITERATION set to $_1_ITERATION 
+ MODULE-INVOCATION>filenames =$filenames; 
+ &_2_FILENAMES set to $_1_FILENAMES 
+ MODULE-INVOCATION>Data      =$Data; 
+ &_2_DATA set to $_1_DATA 
+ MODULE-INVOCATION>iterations=$iterations; 
+ &_2_ITERATIONS set to $_1_ITERATIONS 
+ MODULE-INVOCATION>saprotocol=$saprotocol; 
+ &_2_SAPROTOCOL set to $_1_SAPROTOCOL 
+ MODULE-INVOCATION>refine    =$refine; 
+ &_2_REFINE set to $_1_REFINE 
+ MODULE-INVOCATION>toppar    =$toppar; 
+ &_2_TOPPAR set to $_1_TOPPAR 
+ MODULE-INVOCATION>analysis  =$analysis;) 
+ &_2_ANALYSIS set to $_1_ANALYSIS 
+ CNSsolve> 
+ CNSsolve>{+ File: run.cns +} 
+ CNSsolve>{+ Description: this file contains all necessary information to run HADDOCK. +} 
+ CNSsolve> 
+ CNSsolve>{+ Authors: Ezgi Karaca, Joao Rodrigues, Mikael Trellet, Alexandre Bonvin<br> 
+ CNSsolve>Adapted from HADOOCK version 2.4 <br><br> 
+ CNSsolve>Initially adapted from ARIA of Nilges and Linge +} 
+ CNSsolve> 
+ CNSsolve>{+ Please cite the following references when using this protocol: +} 
+ CNSsolve>{+ reference: Cyril Dominguez, Rolf Boelens and Alexandre M.J.J. Bonvin (2003).  HADDOCK: a protein-protein docking approach 
+ CNSsolve>based on biochemical and/or biophysical information. <i>J. Am. Chem. Soc.</i> <b>125</b>, 1731-1737. 
+ CNSsolve><p> 
+ CNSsolve><b>When using <i>residual dipolar couplings</i> in HADDOCK cite in addition:</b><p> 
+ CNSsolve><LI>A.D.J. van Dijk, D. Fushman and A.M.J.J. Bonvin (2005). Various strategies of using residual dipolar 
+ CNSsolve>couplings in NMR-driven protein docking: Application to Lys48-linked di-ubiquitin and validation against 
+ CNSsolve>15N-relaxation data. <EM>Proteins: Struc. Funct. & Bioinformatics</EM>, <STRONG>60</STRONG>, 367-381.</li> 
+ CNSsolve><p> 
+ CNSsolve><b>When using <i>diffusion anisotropy data</i> in HADDOCK cite in addition:</b><p> 
+ CNSsolve><li>A.D.J. van Dijk, R. Kaptein, R. Boelens and A.M.J.J. Bonvin (2006). Combining NMR relaxation with 
+ CNSsolve>chemical shift perturbation data to drive protein-protein docking. <EM>J. Biomol. NMR</EM>, 
+ CNSsolve><STRONG>34</STRONG>, 237-244.</li> 
+ CNSsolve><p> 
+ CNSsolve><b>When using <i>solvated docking</i> in HADDOCK cite in addition:</b><p> 
+ CNSsolve><li>A.D.J. van Dijk and A.M.J.J. Bonvin (2006). Solvated docking: introducing water into the modelling 
+ CNSsolve>of biomolecular complexes. <EM>Bioinformatics</EM>,  <STRONG>22</STRONG> 2340-2347. 
+ CNSsolve><p> 
+ CNSsolve><b>When performing <i>flexible protein-DNA docking</i> using HADDOCK cite in addition:</b><p> 
+ CNSsolve><li>M. van Dijk, A.D.J. van Dijk, V. Hsu, R. Boelens and  A.M.J.J. Bonvin (2006). 
+ CNSsolve>Information-driven Protein-DNA Docking using HADDOCK: it is a matter of flexibility. 
+ CNSsolve><EM>Nucl. Acids Res.</EM>, <STRONG>34</STRONG> 3317-3325.</li> 
+ CNSsolve><p> 
+ CNSsolve><b>When performing the Nmolecule integrative modelling protocol please cite:</b><p> 
+ CNSsolve><li>Ezgi Karaca, Joao P.G.L.M. Rodrigues, Andrea Graziadei, Alexandre M.J.J. Bonvin, Teresa Carlomagno (2017). 
+ CNSsolve>An Integrative Framework for Structure Determination of Molecular Machines. 
+ CNSsolve><EM>Nature Methods</EM>, Advanced Online Publication.</li> 
+ CNSsolve>+} 
+ CNSsolve> 
+ CNSsolve>{- Guidelines for using this file: 
+ CNSsolve>   - all strings must be quoted by double-quotes 
+ CNSsolve>   - logical variables (true/false) are not quoted 
+ CNSsolve>   - do not remove any evaluate statements from the file 
+ CNSsolve>   - pathnames should not exceed 80 characters -} 
+ CNSsolve>{- begin block parameter definition -} define( 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{======== number of molecules for docking ==================} 
+ DEFINE>{* number of components *} 
+ DEFINE> 
+ DEFINE>{===>} ncomponents=2; 
+ DEFINE> 
+ DEFINE>{======================= filenames =========================} 
+ DEFINE>{*  the name of your current project *} 
+ DEFINE>{*  this will be used as name for the generated structures *} 
+ DEFINE>{===>} fileroot="complex"; 
+ DEFINE> 
+ DEFINE>{* RUN directory *} 
+ DEFINE>{*  the absolute path of your current run, e.g. /home/haddock/run1*} 
+ DEFINE>{===>} run_dir="/tmp/csbportal__go9qat8/run1"; 
+ DEFINE> 
+ DEFINE>{* PDB file of molecule 1 *} 
+ DEFINE>{===>} prot_coor_mol1="protein1.pdb"; 
+ DEFINE>{* PSF file of molecule 1 *} 
+ DEFINE>{===>} prot_psf_mol1="protein1.psf"; 
+ DEFINE>{* segid of molecule 1 *} 
+ DEFINE>{===>} prot_segid_mol1="A"; 
+ DEFINE>{* fileroot of molecule 1 *} 
+ DEFINE>{===>} prot_root_mol1="protein1"; 
+ DEFINE>{* Fix Molecule at Origin during it0 *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} fix_origin_mol1=false; 
+ DEFINE>{* Is molecule 1 DNA? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} dna_mol1=false; 
+ DEFINE>{* Is molecule 1 a cyclic peptide? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} cyclicpept_mol1=false; 
+ DEFINE>{* Is molecule 1 a shape? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} shape_mol1=false; 
+ DEFINE>{* Coarse grained molecule? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} cg_mol1=false; 
+ DEFINE>{* PDB file of molecule 2 *} 
+ DEFINE>{===>} prot_coor_mol2="protein2.pdb"; 
+ DEFINE>{* PSF file of molecule 2 *} 
+ DEFINE>{===>} prot_psf_mol2="protein2.psf"; 
+ DEFINE>{* segid of molecule 2 *} 
+ DEFINE>{===>} prot_segid_mol2="B"; 
+ DEFINE>{* fileroot of molecule 2 *} 
+ DEFINE>{===>} prot_root_mol2="protein2"; 
+ DEFINE>{* Fix Molecule at Origin during it0 *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} fix_origin_mol2=false; 
+ DEFINE>{* Is molecule 2 DNA? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} dna_mol2=false; 
+ DEFINE>{* Is molecule 2 a cyclic peptide? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} cyclicpept_mol2=false; 
+ DEFINE>{* Is molecule 2 a shape? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} shape_mol2=false; 
+ DEFINE>{* Coarse grained molecule? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} cg_mol2=false; 
+ DEFINE> 
+ DEFINE>{* Remove non-polar hydrogens? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} delenph=true; 
+ DEFINE> 
+ DEFINE>{* HADDOCK directory *} 
+ DEFINE>{*  the absolute path of the HADDOCK program files *} 
+ DEFINE>{===>} haddock_dir=/trinity/rascar/enmr/software/haddock2.5; 
+ DEFINE> 
+ DEFINE>{* Logfile directory *} 
+ DEFINE>{* specify a directory for the large CNS log files *} 
+ DEFINE>{===>} temptrash_dir=/tmp/csbportal__go9qat8/run1; 
+ DEFINE> 
+ DEFINE>{==================== histidine patches =====================} 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{==================== histidine patches =====================} 
+ DEFINE>{* Automatically define histidine protonation state based on energetics *} 
+ DEFINE>{===>} autohis=false; 
+ DEFINE> 
+ DEFINE>{* Patch to change doubly protonated HIS to singly protonated histidine (HD1) *} 
+ DEFINE>{* just give the residue number of the histidines for the HISD patch, set them to zero if you don't want them *} 
+ DEFINE>{* Number of HISD for molecule 1 *} 
+ DEFINE>numhisd_1=0; 
+ DEFINE>{* Number of HISD for molecule 2 *} 
+ DEFINE>numhisd_2=4; 
+ DEFINE>{===>} hisd_2_1=3; 
+ DEFINE> 
+ DEFINE>{===>} hisd_2_2=70; 
+ DEFINE> 
+ DEFINE>{===>} hisd_2_3=74; 
+ DEFINE> 
+ DEFINE>{===>} hisd_2_4=114; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{* Patch to change doubly protonated HIS to singly protonated histidine (HE2) *} 
+ DEFINE>{* just give the residue number of the histidines for the HISE patch, set them to zero if you don't want them *} 
+ DEFINE>{* Number of HISE for molecule 1 *} 
+ DEFINE>numhise_1=1; 
+ DEFINE>{===>} hise_1_1=5; 
+ DEFINE> 
+ DEFINE>{* Number of HISE for molecule 2 *} 
+ DEFINE>numhise_2=9; 
+ DEFINE>{===>} hise_2_1=93; 
+ DEFINE> 
+ DEFINE>{===>} hise_2_2=145; 
+ DEFINE> 
+ DEFINE>{===>} hise_2_3=151; 
+ DEFINE> 
+ DEFINE>{===>} hise_2_4=188; 
+ DEFINE> 
+ DEFINE>{===>} hise_2_5=191; 
+ DEFINE> 
+ DEFINE>{===>} hise_2_6=192; 
+ DEFINE> 
+ DEFINE>{===>} hise_2_7=197; 
+ DEFINE> 
+ DEFINE>{===>} hise_2_8=260; 
+ DEFINE> 
+ DEFINE>{===>} hise_2_9=263; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{========= Definition of semi-flexible interface ============} 
+ DEFINE>{* Define the interface of each molecule.*} 
+ DEFINE>{* Side-chains and backbone of these residues will be allowed to move during semi-flexible refinement*} 
+ DEFINE>{* Distance cutoff in A for the automatic definition of flexible segments based on intermolecular residues contacts *} 
+ DEFINE>{===>} flcut_nb=5.0; 
+ DEFINE>{* number of semi-flexible segments for molecule  1 (-1 for automated mode) *} 
+ DEFINE>{* Note that current max is 10 (edit the run.cns to add more segments) *} 
+ DEFINE>{===>} nseg_1=-1; 
+ DEFINE> 
+ DEFINE>{* Residues of molecule  1 at interface *} 
+ DEFINE>{+ table: rows=10 "segment 1" "segment 2" "segment 3" "segment 4" "segment 5" "segment 6" "segment 7" "segment 8" "segment 9" "segment 10" cols=2 "Start residue" "End residue" +} 
+ DEFINE>{* number of semi-flexible segments for molecule  2 (-1 for automated mode) *} 
+ DEFINE>{* Note that current max is 10 (edit the run.cns to add more segments) *} 
+ DEFINE>{===>} nseg_2=-1; 
+ DEFINE> 
+ DEFINE>{* Residues of molecule  2 at interface *} 
+ DEFINE>{+ table: rows=10 "segment 1" "segment 2" "segment 3" "segment 4" "segment 5" "segment 6" "segment 7" "segment 8" "segment 9" "segment 10" cols=2 "Start residue" "End residue" +} 
+ DEFINE> 
+ DEFINE>{=========== Definition of fully flexible segments ==========} 
+ DEFINE>{* Define the fully flexible segment of each molecule.*} 
+ DEFINE>{* These segments will be allowed to move at all stages of it1 *} 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{* Number of fully flexible segments for molecule  1            *} 
+ DEFINE>{* Note that current max is 5 (edit the run.cns to add more segments     *} 
+ DEFINE>{===>} nfle_1=0; 
+ DEFINE>{* Number of fully flexible segments for molecule  2            *} 
+ DEFINE>{* Note that current max is 5 (edit the run.cns to add more segments     *} 
+ DEFINE>{===>} nfle_2=0; 
+ DEFINE> 
+ DEFINE>{==================== membrane positioning restraints  ==================} 
+ DEFINE>{* Do you want to use membrane positioning restraints ? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} zres_on=false; 
+ DEFINE> 
+ DEFINE>{* Number of membrane positioning restrained segments *} 
+ DEFINE>{===>} numzres=0; 
+ DEFINE> 
+ DEFINE>{====================== NCS restraints  =====================} 
+ DEFINE>{* Do you want to use NCS restraints? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} ncs_on=false; 
+ DEFINE> 
+ DEFINE>{* Number of NCS pairs *} 
+ DEFINE>{===>} numncs=0; 
+ DEFINE> 
+ DEFINE>{==================== Symmetry restraints  ==================} 
+ DEFINE>{* Do you want to use symmetry restraints ? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} sym_on=false; 
+ DEFINE> 
+ DEFINE>{* Force constant for symmetry restraints ? *} 
+ DEFINE>{===>} ksym=10.0; 
+ DEFINE>{* Number of C2 symmetry pairs *} 
+ DEFINE>{===>} numc2sym=0; 
+ DEFINE>{* Number of C3 symmetry triples*} 
+ DEFINE>{===>} numc3sym=0; 
+ DEFINE>{* Number of S3 symmetry triples*} 
+ DEFINE>{===>} nums3sym=0; 
+ DEFINE>{* Number of C4 symmetry quadruples *} 
+ DEFINE>{===>} numc4sym=0; 
+ DEFINE>{* Number of C5 symmetry *} 
+ DEFINE>{===>} numc5sym=0; 
+ DEFINE> 
+ DEFINE>{* Number of c6 symmetry *} 
+ DEFINE>{===>} numc6sym=0; 
+ DEFINE> 
+ DEFINE>{=========================== Distance restraints  ========================} 
+ DEFINE>{* Turn on/off and energy constants for distance restraints *} 
+ DEFINE>{+ table: rows=3 "distances" "AIR (ambig)" "hbonds" cols=6 "firstIteration" "lastIteration" "hot" "cool1" "cool2" "cool3"+} 
+ DEFINE> 
+ DEFINE>{===>} unamb_firstit=0; 
+ DEFINE>{===>} unamb_lastit=2; 
+ DEFINE>{===>} unamb_hot=10.0; 
+ DEFINE>{===>} unamb_cool1=10.0; 
+ DEFINE>{===>} unamb_cool2=50.0; 
+ DEFINE>{===>} unamb_cool3=50.0; 
+ DEFINE>{===>} amb_firstit=0; 
+ DEFINE>{===>} amb_lastit=2; 
+ DEFINE>{===>} amb_hot=10.0; 
+ DEFINE>{===>} amb_cool1=10.0; 
+ DEFINE>{===>} amb_cool2=50.0; 
+ DEFINE>{===>} amb_cool3=50.0; 
+ DEFINE>{===>} hbond_firstit=0; 
+ DEFINE>{===>} hbond_lastit=2; 
+ DEFINE>{===>} hbond_hot=10.0; 
+ DEFINE>{===>} hbond_cool1=10.0; 
+ DEFINE>{===>} hbond_cool2=50.0; 
+ DEFINE>{===>} hbond_cool3=50.0; 
+ DEFINE> 
+ DEFINE>{* Do you want to randomly exclude a fraction of the ambiguous restraints (AIRs)? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} noecv=true; 
+ DEFINE> 
+ DEFINE>{* Number of partitions for random exclusion (%excluded=100/number of partitions)? *} 
+ DEFINE>{===>} ncvpart=2.0; 
+ DEFINE> 
+ DEFINE>{* Do you want to use hydrogen bond restraints? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} hbonds_on=false; 
+ DEFINE> 
+ DEFINE>{* Do you want to define randomly ambiguous interaction restraints from accessible residues? *} 
+ DEFINE>{* Only residues in the defined flexible segments will be considered *} 
+ DEFINE>{* Note that this option is exclusive with any other distance restraints and only for it0    *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} ranair=false; 
+ DEFINE> 
+ DEFINE>{* Do you want to define center of mass restraints to enforce contact between the molecules? *} 
+ DEFINE>{* Note that these are only active during it0 and it1 *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} cmrest=false; 
+ DEFINE> 
+ DEFINE>{* Define tight CM restraints? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} cmtight=false; 
+ DEFINE> 
+ DEFINE>{* Force constant for center of mass restraints *} 
+ DEFINE>{===>} kcont=1.0; 
+ DEFINE> 
+ DEFINE>{* Do you want to define surface contact restraints to enforce contact between the molecules? *} 
+ DEFINE>{* Note that these are only active during it0 and it1 *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} surfrest=false; 
+ DEFINE> 
+ DEFINE>{* Force constant for surface contact restraints *} 
+ DEFINE>{===>} ksurf=1.0; 
+ DEFINE> 
+ DEFINE>{ Use automated distance restraints weighting } 
+ DEFINE>{ choice: true false } 
+ DEFINE>air_scaling=false; 
+ DEFINE>{ Define the number of distance restraints for automated weighting } 
+ DEFINE>tot_unamb=25; 
+ DEFINE>{ Define the number of AIR restraints for automated weighting } 
+ DEFINE>tot_amb=0; 
+ DEFINE>{ potential shape } 
+ DEFINE>mrswi_hot=0.5; 
+ DEFINE>mrswi_cool1=0.5; 
+ DEFINE>mrswi_cool2=0.5; 
+ DEFINE>mrswi_cool3=0.5; 
+ DEFINE>rswi_hot=0.5; 
+ DEFINE>rswi_cool1=0.5; 
+ DEFINE>rswi_cool2=0.5; 
+ DEFINE>rswi_cool3=0.5; 
+ DEFINE>masy_hot=-1.0; 
+ DEFINE>masy_cool1=-1.0; 
+ DEFINE>masy_cool2=-0.1; 
+ DEFINE>masy_cool3=-0.1; 
+ DEFINE>asy_hot=1.0; 
+ DEFINE>asy_cool1=1.0; 
+ DEFINE>asy_cool2=0.1; 
+ DEFINE>asy_cool3=0.1; 
+ DEFINE> 
+ DEFINE>{=========================== radius of gyration restraint  ============} 
+ DEFINE>{* Turn on/off and energy constants for Rg restraints *} 
+ DEFINE>{* Do you want to define a radius of gyration restraint (e.g. from SAXS)? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} rgrest=false; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{======================DNA-RNA restraints ============================} 
+ DEFINE>{* Use DNA/RNA restraints (dna-rna_restraints.def in data/sequence)? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} dnarest_on=false; 
+ DEFINE> 
+ DEFINE>{=========================== dihedrals restraints ====================} 
+ DEFINE>{* energy constants *} 
+ DEFINE>{+ table: rows=1 "dihedrals" cols=5 "use?" "hot" "cool1" "cool2" "cool3" +} 
+ DEFINE> 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} dihedrals_on=false; 
+ DEFINE>{===>} dihedrals_hot=5.0; 
+ DEFINE>{===>} dihedrals_cool1=5.0; 
+ DEFINE>{===>} dihedrals_cool2=50.0; 
+ DEFINE>{===>} dihedrals_cool3=200.0; 
+ DEFINE> 
+ DEFINE>{* Automatically define backbone dihedral angle restraints from structure? *} 
+ DEFINE>{+ choice: none all alpha alphabeta +} 
+ DEFINE>{===>} ssdihed=none; 
+ DEFINE>{===>} error_dih=10; 
+ DEFINE> 
+ DEFINE>{=========================== residual dipolar couplings ======================} 
+ DEFINE> 
+ DEFINE>{* Parameters *} 
+ DEFINE>{+ table: rows=5 "class1" "class2" "class3" "class4" "class5" 
+ DEFINE>          cols=25 "type" "firstIt" "lastIt" "Ksani<br>(hot)" "Ksani<br>(cool1)" "Ksani<br>(cool2)" "Ksani<br>(cool3)" "R" "D" 
+ DEFINE> "Kvean<br>(ini_bor_hot)" "Kvean<br>(fin_bor_hot)" 
+ DEFINE> "Kvean<br>(ini_bor_cool1)" "Kvean<br>(fin_bor_cool1)" 
+ DEFINE> "Kvean<br>(ini_bor_cool2)" "Kvean<br>(fin_bor_cool2)" 
+ DEFINE> "Kvean<br>(ini_bor_cool3)" "Kvean<br>(fin_bor_cool3)" 
+ DEFINE> "Kvean<br>(ini_cen_hot)" "Kvean<br>(fin_cen_hot)" 
+ DEFINE> "Kvean<br>(ini_cen_cool1)" "Kvean<br>(fin_cen_cool1)" 
+ DEFINE> "Kvean<br>(ini_cen_cool2)" "Kvean<br>(fin_cen_cool2)" 
+ DEFINE> "Kvean<br>(ini_cen_cool3)" "Kvean<br>(fin_cen_cool3)"+} 
+ DEFINE>{+ choice: "NO" "SANI" "XRDC" "VANGLE" +} 
+ DEFINE>{===>} numrdc = 0; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{=========================== pseudo contact shifts ===========================} 
+ DEFINE> 
+ DEFINE>{* Parameters *} 
+ DEFINE>{+ table: rows=10 "class1" "class2" "class3" "class4" "class5" "class6" "class7" "class8" "class9" "class10" 
+ DEFINE>          cols=9 "type" "firstIt" "lastIt" "Kpcs<br>(hot)" "Kpcs<br>(cool1)" "Kpcs<br>(cool2)" "Kpcs<br>(cool3)" "R" "D" +} 
+ DEFINE>{+ choice: "NO" "XPCS" +} 
+ DEFINE>{===>} numpcs = 0; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{=========================== relaxation data ======================} 
+ DEFINE>{* Parameters *} 
+ DEFINE>{+ table: rows=5 "class1" "class2" "class3" "class4" "class5" 
+ DEFINE>          cols=12 "type" "firstIt" "lastIt" "Kdani(hot)" "Kdani(cool1)" "Kdani(cool2)" "Kdani(cool3)" "Correlation time" "D" "R" "H frequency" "N frequency" +} 
+ DEFINE>{+ choice: "NO" "DANI" +} 
+ DEFINE>{===>} numdani = 0; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{========================== Cryo-EM parameters ============================} 
+ DEFINE> 
+ DEFINE>{* Centroid definitions *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} centroid_rest=false; 
+ DEFINE>{===>} centroid_kscale=50; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{* Density/XREF restraints *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} em_rest=false; 
+ DEFINE>{===>} em_kscale=15000; 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} em_it0=false; 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} em_it1=false; 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} em_itw=false; 
+ DEFINE> 
+ DEFINE>{* Resolution of data in angstrom *} 
+ DEFINE>{===>} em_resolution=None; 
+ DEFINE> 
+ DEFINE>{* Density parameters *} 
+ DEFINE>{* Number of voxels in each dimension *} 
+ DEFINE>{===>} nx=32; 
+ DEFINE>{===>} ny=32; 
+ DEFINE>{===>} nz=32; 
+ DEFINE> 
+ DEFINE>{* Length of each dimension in angstrom *} 
+ DEFINE>{===>} xlength=80.0; 
+ DEFINE>{===>} ylength=80.0; 
+ DEFINE>{===>} zlength=80.0; 
+ DEFINE> 
+ DEFINE>{* Cryo-EM scoring weights *} 
+ DEFINE>{===>} w_lcc_0=-400.0; 
+ DEFINE>{===>} w_lcc_1=-10000.0; 
+ DEFINE>{===>} w_lcc_2=-10000.0; 
+ DEFINE> 
+ DEFINE>{===================== topology and parameter files ======================} 
+ DEFINE> 
+ DEFINE>{* topology file for molecule  1 *} 
+ DEFINE>{===>} prot_top_mol1="protein-allhdg5-4.top"; 
+ DEFINE>{* linkage file for molecule  1 *} 
+ DEFINE>{===>} prot_link_mol1="protein-allhdg5-4-noter.link"; 
+ DEFINE>{* energy parameter file for molecule  1 *} 
+ DEFINE>{===>} prot_par_mol1="protein-allhdg5-4.param"; 
+ DEFINE>{* topology file for molecule  2 *} 
+ DEFINE>{===>} prot_top_mol2="protein-allhdg5-4.top"; 
+ DEFINE>{* linkage file for molecule  2 *} 
+ DEFINE>{===>} prot_link_mol2="protein-allhdg5-4-noter.link"; 
+ DEFINE>{* energy parameter file for molecule  2 *} 
+ DEFINE>{===>} prot_par_mol2="protein-allhdg5-4.param"; 
+ DEFINE> 
+ DEFINE>{* type of non-bonded parameters *} 
+ DEFINE>{* specify the type of non-bonded interaction *} 
+ DEFINE>{+ choice: "PROLSQ" "PARMALLH6" "PARALLHDG" "OPLSX" +} 
+ DEFINE>{===>} par_nonbonded="OPLSX"; 
+ DEFINE> 
+ DEFINE>{============coarse graining topology and parameter files ==================} 
+ DEFINE> 
+ DEFINE>{* topology file for molecule  1 *} 
+ DEFINE>{===>} prot_cg_top_mol1="protein-CG-Martini-2-2.top"; 
+ DEFINE>{* linkage file for molecule  1 *} 
+ DEFINE>{===>} prot_cg_link_mol1="protein-CG-Martini-2-2.link"; 
+ DEFINE>{* energy parameter file for molecule  1 *} 
+ DEFINE>{===>} prot_cg_par_mol1="protein-CG-Martini-2-2.param"; 
+ DEFINE>{* topology file for molecule  2 *} 
+ DEFINE>{===>} prot_cg_top_mol2="protein-CG-Martini-2-2.top"; 
+ DEFINE>{* linkage file for molecule  2 *} 
+ DEFINE>{===>} prot_cg_link_mol2="protein-CG-Martini-2-2.link"; 
+ DEFINE>{* energy parameter file for molecule  2 *} 
+ DEFINE>{===>} prot_cg_par_mol2="protein-CG-Martini-2-2.param"; 
+ DEFINE> 
+ DEFINE>{===================== energy and interaction parameters ==================} 
+ DEFINE> 
+ DEFINE>{ Do you want to include dihedral angle energy terms? } 
+ DEFINE>{ choice: true false } 
+ DEFINE>dihedflag=true; 
+ DEFINE> 
+ DEFINE>{* Do you want to include the electrostatic energy term for docking? *} 
+ DEFINE>{* Note that it will be automatically included in the solvent refinement *} 
+ DEFINE> 
+ DEFINE>{* Include electrostatic during rigid body docking (it0)? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} elecflag_0=true; 
+ DEFINE>{* Include electrostatic during semi-flexible SA (it1)? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} elecflag_1=true; 
+ DEFINE> 
+ DEFINE>{* Give the epsilon constant for the electrostatic energy term in it0 *} 
+ DEFINE>{* Note that for explicit solvent refinement cdie with epsilon=1 is used *} 
+ DEFINE>{===>} epsilon_0=10.0; 
+ DEFINE> 
+ DEFINE>{* Give the epsilon constant for the electrostatic energy term in it1 *} 
+ DEFINE>{* Note that for explicit solvent refinement cdie with epsilon=1 is used *} 
+ DEFINE>{===>} epsilon_1=1.0; 
+ DEFINE> 
+ DEFINE>{* Use constant (cdie) or distance-dependent (rdie) dielectric in it0? *} 
+ DEFINE>{+ choice: cdie rdie +} 
+ DEFINE>{===>} dielec_0=rdie; 
+ DEFINE> 
+ DEFINE>{* Use constant (cdie) or distance-dependent (rdie) dielectric in it1? *} 
+ DEFINE>{+ choice: cdie rdie +} 
+ DEFINE>{===>} dielec_1=rdie; 
+ DEFINE> 
+ DEFINE>{* Scaling of intermolecular interactions for rigid body EM*} 
+ DEFINE>{===>} inter_rigid=1.0; 
+ DEFINE> 
+ DEFINE>{* Scaling of intermolecular interactions for semi-flexible SA*} 
+ DEFINE>{+ table: rows=3 "Rigid body dynamic " "SA with flexible side-chains (cool2)" "SA with flexible backbone and side-chains (cool3)" 
+ DEFINE>          cols=2 "Init value" "Final value" +} 
+ DEFINE>{===>} init_rigid=0.001; 
+ DEFINE>{===>} fin_rigid=0.001; 
+ DEFINE>{===>} init_cool2=0.001; 
+ DEFINE>{===>} fin_cool2=1.0; 
+ DEFINE>{===>} init_cool3=0.05; 
+ DEFINE>{===>} fin_cool3=1.0; 
+ DEFINE> 
+ DEFINE>{* Interaction matrix for non-bonded interactions*} 
+ DEFINE>{+ table: rows=6 "Mol 1" "Mol 2" "Mol 3" "Mol 4" "Mol 5" "Mol 6" "Mol 7" "Mol 8" "Mol 9" Mol 10" "Mol 11" Mol 12" "Mol 13" "Mol 14" "Mol 15" "Mol 16" "Mol 17" "Mol 18" "Mol 19" "Mol 20" 
+ DEFINE>          cols=6 "Mol 1" "Mol 2" "Mol 3" "Mol 4" "Mol 5" "Mol 6" "Mol 7" "Mol 8" "Mol 9" Mol 10" "Mol 11" Mol 12" "Mol 13" "Mol 14" "Mol 15" "Mol 16" "Mol 17" "Mol 18" "Mol 19" "Mol 20" +} 
+ DEFINE>{===>} int_1_1=1.0; 
+ DEFINE>{===>} int_1_2=1.0; 
+ DEFINE>{===>} int_1_3=1.0; 
+ DEFINE>{===>} int_1_4=1.0; 
+ DEFINE>{===>} int_1_5=1.0; 
+ DEFINE>{===>} int_1_6=1.0; 
+ DEFINE>{===>} int_1_7=1.0; 
+ DEFINE>{===>} int_1_8=1.0; 
+ DEFINE>{===>} int_1_9=1.0; 
+ DEFINE>{===>} int_1_10=1.0; 
+ DEFINE>{===>} int_1_11=1.0; 
+ DEFINE>{===>} int_1_12=1.0; 
+ DEFINE>{===>} int_1_13=1.0; 
+ DEFINE>{===>} int_1_14=1.0; 
+ DEFINE>{===>} int_1_15=1.0; 
+ DEFINE>{===>} int_1_16=1.0; 
+ DEFINE>{===>} int_1_17=1.0; 
+ DEFINE>{===>} int_1_18=1.0; 
+ DEFINE>{===>} int_1_19=1.0; 
+ DEFINE>{===>} int_1_20=1.0; 
+ DEFINE>{===>} int_2_1="N.A."; 
+ DEFINE>{===>} int_2_2=1.0; 
+ DEFINE>{===>} int_2_3=1.0; 
+ DEFINE>{===>} int_2_4=1.0; 
+ DEFINE>{===>} int_2_5=1.0; 
+ DEFINE>{===>} int_2_6=1.0; 
+ DEFINE>{===>} int_2_7=1.0; 
+ DEFINE>{===>} int_2_8=1.0; 
+ DEFINE>{===>} int_2_9=1.0; 
+ DEFINE>{===>} int_2_10=1.0; 
+ DEFINE>{===>} int_2_11=1.0; 
+ DEFINE>{===>} int_2_12=1.0; 
+ DEFINE>{===>} int_2_13=1.0; 
+ DEFINE>{===>} int_2_14=1.0; 
+ DEFINE>{===>} int_2_15=1.0; 
+ DEFINE>{===>} int_2_16=1.0; 
+ DEFINE>{===>} int_2_17=1.0; 
+ DEFINE>{===>} int_2_18=1.0; 
+ DEFINE>{===>} int_2_19=1.0; 
+ DEFINE>{===>} int_2_20=1.0; 
+ DEFINE>{===>} int_3_1="N.A."; 
+ DEFINE>{===>} int_3_2="N.A."; 
+ DEFINE>{===>} int_3_3=1.0; 
+ DEFINE>{===>} int_3_4=1.0; 
+ DEFINE>{===>} int_3_5=1.0; 
+ DEFINE>{===>} int_3_6=1.0; 
+ DEFINE>{===>} int_3_7=1.0; 
+ DEFINE>{===>} int_3_8=1.0; 
+ DEFINE>{===>} int_3_9=1.0; 
+ DEFINE>{===>} int_3_10=1.0; 
+ DEFINE>{===>} int_3_11=1.0; 
+ DEFINE>{===>} int_3_12=1.0; 
+ DEFINE>{===>} int_3_13=1.0; 
+ DEFINE>{===>} int_3_14=1.0; 
+ DEFINE>{===>} int_3_15=1.0; 
+ DEFINE>{===>} int_3_16=1.0; 
+ DEFINE>{===>} int_3_17=1.0; 
+ DEFINE>{===>} int_3_18=1.0; 
+ DEFINE>{===>} int_3_19=1.0; 
+ DEFINE>{===>} int_3_20=1.0; 
+ DEFINE>{===>} int_4_1="N.A."; 
+ DEFINE>{===>} int_4_2="N.A."; 
+ DEFINE>{===>} int_4_3="N.A."; 
+ DEFINE>{===>} int_4_4=1.0; 
+ DEFINE>{===>} int_4_5=1.0; 
+ DEFINE>{===>} int_4_6=1.0; 
+ DEFINE>{===>} int_4_7=1.0; 
+ DEFINE>{===>} int_4_8=1.0; 
+ DEFINE>{===>} int_4_9=1.0; 
+ DEFINE>{===>} int_4_10=1.0; 
+ DEFINE>{===>} int_4_11=1.0; 
+ DEFINE>{===>} int_4_12=1.0; 
+ DEFINE>{===>} int_4_13=1.0; 
+ DEFINE>{===>} int_4_14=1.0; 
+ DEFINE>{===>} int_4_15=1.0; 
+ DEFINE>{===>} int_4_16=1.0; 
+ DEFINE>{===>} int_4_17=1.0; 
+ DEFINE>{===>} int_4_18=1.0; 
+ DEFINE>{===>} int_4_19=1.0; 
+ DEFINE>{===>} int_4_20=1.0; 
+ DEFINE>{===>} int_5_1="N.A."; 
+ DEFINE>{===>} int_5_2="N.A."; 
+ DEFINE>{===>} int_5_3="N.A."; 
+ DEFINE>{===>} int_5_4="N.A."; 
+ DEFINE>{===>} int_5_5=1.0; 
+ DEFINE>{===>} int_5_6=1.0; 
+ DEFINE>{===>} int_5_7=1.0; 
+ DEFINE>{===>} int_5_8=1.0; 
+ DEFINE>{===>} int_5_9=1.0; 
+ DEFINE>{===>} int_5_10=1.0; 
+ DEFINE>{===>} int_5_11=1.0; 
+ DEFINE>{===>} int_5_12=1.0; 
+ DEFINE>{===>} int_5_13=1.0; 
+ DEFINE>{===>} int_5_14=1.0; 
+ DEFINE>{===>} int_5_15=1.0; 
+ DEFINE>{===>} int_5_16=1.0; 
+ DEFINE>{===>} int_5_17=1.0; 
+ DEFINE>{===>} int_5_18=1.0; 
+ DEFINE>{===>} int_5_19=1.0; 
+ DEFINE>{===>} int_5_20=1.0; 
+ DEFINE>{===>} int_6_1="N.A."; 
+ DEFINE>{===>} int_6_2="N.A."; 
+ DEFINE>{===>} int_6_3="N.A."; 
+ DEFINE>{===>} int_6_4="N.A."; 
+ DEFINE>{===>} int_6_5="N.A."; 
+ DEFINE>{===>} int_6_6=1.0; 
+ DEFINE>{===>} int_6_7=1.0; 
+ DEFINE>{===>} int_6_8=1.0; 
+ DEFINE>{===>} int_6_9=1.0; 
+ DEFINE>{===>} int_6_10=1.0; 
+ DEFINE>{===>} int_6_11=1.0; 
+ DEFINE>{===>} int_6_12=1.0; 
+ DEFINE>{===>} int_6_13=1.0; 
+ DEFINE>{===>} int_6_14=1.0; 
+ DEFINE>{===>} int_6_15=1.0; 
+ DEFINE>{===>} int_6_16=1.0; 
+ DEFINE>{===>} int_6_17=1.0; 
+ DEFINE>{===>} int_6_18=1.0; 
+ DEFINE>{===>} int_6_19=1.0; 
+ DEFINE>{===>} int_6_20=1.0; 
+ DEFINE>{===>} int_7_1="N.A."; 
+ DEFINE>{===>} int_7_2="N.A."; 
+ DEFINE>{===>} int_7_3="N.A."; 
+ DEFINE>{===>} int_7_4="N.A."; 
+ DEFINE>{===>} int_7_5="N.A."; 
+ DEFINE>{===>} int_7_6="N.A."; 
+ DEFINE>{===>} int_7_7=1.0; 
+ DEFINE>{===>} int_7_8=1.0; 
+ DEFINE>{===>} int_7_9=1.0; 
+ DEFINE>{===>} int_7_10=1.0; 
+ DEFINE>{===>} int_7_11=1.0; 
+ DEFINE>{===>} int_7_12=1.0; 
+ DEFINE>{===>} int_7_13=1.0; 
+ DEFINE>{===>} int_7_14=1.0; 
+ DEFINE>{===>} int_7_15=1.0; 
+ DEFINE>{===>} int_7_16=1.0; 
+ DEFINE>{===>} int_7_17=1.0; 
+ DEFINE>{===>} int_7_18=1.0; 
+ DEFINE>{===>} int_7_19=1.0; 
+ DEFINE>{===>} int_7_20=1.0; 
+ DEFINE>{===>} int_8_1="N.A."; 
+ DEFINE>{===>} int_8_2="N.A."; 
+ DEFINE>{===>} int_8_3="N.A."; 
+ DEFINE>{===>} int_8_4="N.A."; 
+ DEFINE>{===>} int_8_5="N.A."; 
+ DEFINE>{===>} int_8_6="N.A."; 
+ DEFINE>{===>} int_8_7="N.A."; 
+ DEFINE>{===>} int_8_8=1.0; 
+ DEFINE>{===>} int_8_9=1.0; 
+ DEFINE>{===>} int_8_10=1.0; 
+ DEFINE>{===>} int_8_11=1.0; 
+ DEFINE>{===>} int_8_12=1.0; 
+ DEFINE>{===>} int_8_13=1.0; 
+ DEFINE>{===>} int_8_14=1.0; 
+ DEFINE>{===>} int_8_15=1.0; 
+ DEFINE>{===>} int_8_16=1.0; 
+ DEFINE>{===>} int_8_17=1.0; 
+ DEFINE>{===>} int_8_18=1.0; 
+ DEFINE>{===>} int_8_19=1.0; 
+ DEFINE>{===>} int_8_20=1.0; 
+ DEFINE>{===>} int_9_1="N.A."; 
+ DEFINE>{===>} int_9_2="N.A."; 
+ DEFINE>{===>} int_9_3="N.A."; 
+ DEFINE>{===>} int_9_4="N.A."; 
+ DEFINE>{===>} int_9_5="N.A."; 
+ DEFINE>{===>} int_9_6="N.A."; 
+ DEFINE>{===>} int_9_7="N.A."; 
+ DEFINE>{===>} int_9_8="N.A."; 
+ DEFINE>{===>} int_9_9=1.0; 
+ DEFINE>{===>} int_9_10=1.0; 
+ DEFINE>{===>} int_9_11=1.0; 
+ DEFINE>{===>} int_9_12=1.0; 
+ DEFINE>{===>} int_9_13=1.0; 
+ DEFINE>{===>} int_9_14=1.0; 
+ DEFINE>{===>} int_9_15=1.0; 
+ DEFINE>{===>} int_9_16=1.0; 
+ DEFINE>{===>} int_9_17=1.0; 
+ DEFINE>{===>} int_9_18=1.0; 
+ DEFINE>{===>} int_9_19=1.0; 
+ DEFINE>{===>} int_9_20=1.0; 
+ DEFINE>{===>} int_10_1="N.A."; 
+ DEFINE>{===>} int_10_2="N.A."; 
+ DEFINE>{===>} int_10_3="N.A."; 
+ DEFINE>{===>} int_10_4="N.A."; 
+ DEFINE>{===>} int_10_5="N.A."; 
+ DEFINE>{===>} int_10_6="N.A."; 
+ DEFINE>{===>} int_10_7="N.A."; 
+ DEFINE>{===>} int_10_8="N.A."; 
+ DEFINE>{===>} int_10_9="N.A."; 
+ DEFINE>{===>} int_10_10=1.0; 
+ DEFINE>{===>} int_10_11=1.0; 
+ DEFINE>{===>} int_10_12=1.0; 
+ DEFINE>{===>} int_10_13=1.0; 
+ DEFINE>{===>} int_10_14=1.0; 
+ DEFINE>{===>} int_10_15=1.0; 
+ DEFINE>{===>} int_10_16=1.0; 
+ DEFINE>{===>} int_10_17=1.0; 
+ DEFINE>{===>} int_10_18=1.0; 
+ DEFINE>{===>} int_10_19=1.0; 
+ DEFINE>{===>} int_10_20=1.0; 
+ DEFINE>{===>} int_11_1="N.A."; 
+ DEFINE>{===>} int_11_2="N.A."; 
+ DEFINE>{===>} int_11_3="N.A."; 
+ DEFINE>{===>} int_11_4="N.A."; 
+ DEFINE>{===>} int_11_5="N.A."; 
+ DEFINE>{===>} int_11_6="N.A."; 
+ DEFINE>{===>} int_11_7="N.A."; 
+ DEFINE>{===>} int_11_8="N.A."; 
+ DEFINE>{===>} int_11_9="N.A."; 
+ DEFINE>{===>} int_11_10="N.A."; 
+ DEFINE>{===>} int_11_11=1.0; 
+ DEFINE>{===>} int_11_12=1.0; 
+ DEFINE>{===>} int_11_13=1.0; 
+ DEFINE>{===>} int_11_14=1.0; 
+ DEFINE>{===>} int_11_15=1.0; 
+ DEFINE>{===>} int_11_16=1.0; 
+ DEFINE>{===>} int_11_17=1.0; 
+ DEFINE>{===>} int_11_18=1.0; 
+ DEFINE>{===>} int_11_19=1.0; 
+ DEFINE>{===>} int_11_20=1.0; 
+ DEFINE>{===>} int_12_1="N.A."; 
+ DEFINE>{===>} int_12_2="N.A."; 
+ DEFINE>{===>} int_12_3="N.A."; 
+ DEFINE>{===>} int_12_4="N.A."; 
+ DEFINE>{===>} int_12_5="N.A."; 
+ DEFINE>{===>} int_12_6="N.A."; 
+ DEFINE>{===>} int_12_7="N.A."; 
+ DEFINE>{===>} int_12_8="N.A."; 
+ DEFINE>{===>} int_12_9="N.A."; 
+ DEFINE>{===>} int_12_10="N.A."; 
+ DEFINE>{===>} int_12_11="N.A."; 
+ DEFINE>{===>} int_12_12=1.0; 
+ DEFINE>{===>} int_12_13=1.0; 
+ DEFINE>{===>} int_12_14=1.0; 
+ DEFINE>{===>} int_12_15=1.0; 
+ DEFINE>{===>} int_12_16=1.0; 
+ DEFINE>{===>} int_12_17=1.0; 
+ DEFINE>{===>} int_12_18=1.0; 
+ DEFINE>{===>} int_12_19=1.0; 
+ DEFINE>{===>} int_12_20=1.0; 
+ DEFINE>{===>} int_13_1="N.A."; 
+ DEFINE>{===>} int_13_2="N.A."; 
+ DEFINE>{===>} int_13_3="N.A."; 
+ DEFINE>{===>} int_13_4="N.A."; 
+ DEFINE>{===>} int_13_5="N.A."; 
+ DEFINE>{===>} int_13_6="N.A."; 
+ DEFINE>{===>} int_13_7="N.A."; 
+ DEFINE>{===>} int_13_8="N.A."; 
+ DEFINE>{===>} int_13_9="N.A."; 
+ DEFINE>{===>} int_13_10="N.A."; 
+ DEFINE>{===>} int_13_11="N.A."; 
+ DEFINE>{===>} int_13_12="N.A."; 
+ DEFINE>{===>} int_13_13=1.0; 
+ DEFINE>{===>} int_13_14=1.0; 
+ DEFINE>{===>} int_13_15=1.0; 
+ DEFINE>{===>} int_13_16=1.0; 
+ DEFINE>{===>} int_13_17=1.0; 
+ DEFINE>{===>} int_13_18=1.0; 
+ DEFINE>{===>} int_13_19=1.0; 
+ DEFINE>{===>} int_13_20=1.0; 
+ DEFINE>{===>} int_14_1="N.A."; 
+ DEFINE>{===>} int_14_2="N.A."; 
+ DEFINE>{===>} int_14_3="N.A."; 
+ DEFINE>{===>} int_14_4="N.A."; 
+ DEFINE>{===>} int_14_5="N.A."; 
+ DEFINE>{===>} int_14_6="N.A."; 
+ DEFINE>{===>} int_14_7="N.A."; 
+ DEFINE>{===>} int_14_8="N.A."; 
+ DEFINE>{===>} int_14_9="N.A."; 
+ DEFINE>{===>} int_14_10="N.A."; 
+ DEFINE>{===>} int_14_11="N.A."; 
+ DEFINE>{===>} int_14_12="N.A."; 
+ DEFINE>{===>} int_14_13="N.A."; 
+ DEFINE>{===>} int_14_14=1.0; 
+ DEFINE>{===>} int_14_15=1.0; 
+ DEFINE>{===>} int_14_16=1.0; 
+ DEFINE>{===>} int_14_17=1.0; 
+ DEFINE>{===>} int_14_18=1.0; 
+ DEFINE>{===>} int_14_19=1.0; 
+ DEFINE>{===>} int_14_20=1.0; 
+ DEFINE>{===>} int_15_1="N.A."; 
+ DEFINE>{===>} int_15_2="N.A."; 
+ DEFINE>{===>} int_15_3="N.A."; 
+ DEFINE>{===>} int_15_4="N.A."; 
+ DEFINE>{===>} int_15_5="N.A."; 
+ DEFINE>{===>} int_15_6="N.A."; 
+ DEFINE>{===>} int_15_7="N.A."; 
+ DEFINE>{===>} int_15_8="N.A."; 
+ DEFINE>{===>} int_15_9="N.A."; 
+ DEFINE>{===>} int_15_10="N.A."; 
+ DEFINE>{===>} int_15_11="N.A."; 
+ DEFINE>{===>} int_15_12="N.A."; 
+ DEFINE>{===>} int_15_13="N.A."; 
+ DEFINE>{===>} int_15_14="N.A."; 
+ DEFINE>{===>} int_15_15=1.0; 
+ DEFINE>{===>} int_15_16=1.0; 
+ DEFINE>{===>} int_15_17=1.0; 
+ DEFINE>{===>} int_15_18=1.0; 
+ DEFINE>{===>} int_15_19=1.0; 
+ DEFINE>{===>} int_15_20=1.0; 
+ DEFINE>{===>} int_16_1="N.A."; 
+ DEFINE>{===>} int_16_2="N.A."; 
+ DEFINE>{===>} int_16_3="N.A."; 
+ DEFINE>{===>} int_16_4="N.A."; 
+ DEFINE>{===>} int_16_5="N.A."; 
+ DEFINE>{===>} int_16_6="N.A."; 
+ DEFINE>{===>} int_16_7="N.A."; 
+ DEFINE>{===>} int_16_8="N.A."; 
+ DEFINE>{===>} int_16_9="N.A."; 
+ DEFINE>{===>} int_16_10="N.A."; 
+ DEFINE>{===>} int_16_11="N.A."; 
+ DEFINE>{===>} int_16_12="N.A."; 
+ DEFINE>{===>} int_16_13="N.A."; 
+ DEFINE>{===>} int_16_14="N.A."; 
+ DEFINE>{===>} int_16_15="N.A."; 
+ DEFINE>{===>} int_16_16=1.0; 
+ DEFINE>{===>} int_16_17=1.0; 
+ DEFINE>{===>} int_16_18=1.0; 
+ DEFINE>{===>} int_16_19=1.0; 
+ DEFINE>{===>} int_16_20=1.0; 
+ DEFINE>{===>} int_17_1="N.A."; 
+ DEFINE>{===>} int_17_2="N.A."; 
+ DEFINE>{===>} int_17_3="N.A."; 
+ DEFINE>{===>} int_17_4="N.A."; 
+ DEFINE>{===>} int_17_5="N.A."; 
+ DEFINE>{===>} int_17_6="N.A."; 
+ DEFINE>{===>} int_17_7="N.A."; 
+ DEFINE>{===>} int_17_8="N.A."; 
+ DEFINE>{===>} int_17_9="N.A."; 
+ DEFINE>{===>} int_17_10="N.A."; 
+ DEFINE>{===>} int_17_11="N.A."; 
+ DEFINE>{===>} int_17_12="N.A."; 
+ DEFINE>{===>} int_17_13="N.A."; 
+ DEFINE>{===>} int_17_14="N.A."; 
+ DEFINE>{===>} int_17_15="N.A."; 
+ DEFINE>{===>} int_17_16="N.A."; 
+ DEFINE>{===>} int_17_17=1.0; 
+ DEFINE>{===>} int_17_18=1.0; 
+ DEFINE>{===>} int_17_19=1.0; 
+ DEFINE>{===>} int_17_20=1.0; 
+ DEFINE>{===>} int_18_1="N.A."; 
+ DEFINE>{===>} int_18_2="N.A."; 
+ DEFINE>{===>} int_18_3="N.A."; 
+ DEFINE>{===>} int_18_4="N.A."; 
+ DEFINE>{===>} int_18_5="N.A."; 
+ DEFINE>{===>} int_18_6="N.A."; 
+ DEFINE>{===>} int_18_7="N.A."; 
+ DEFINE>{===>} int_18_8="N.A."; 
+ DEFINE>{===>} int_18_9="N.A."; 
+ DEFINE>{===>} int_18_10="N.A."; 
+ DEFINE>{===>} int_18_11="N.A."; 
+ DEFINE>{===>} int_18_12="N.A."; 
+ DEFINE>{===>} int_18_13="N.A."; 
+ DEFINE>{===>} int_18_14="N.A."; 
+ DEFINE>{===>} int_18_15="N.A."; 
+ DEFINE>{===>} int_18_16="N.A."; 
+ DEFINE>{===>} int_18_17="N.A."; 
+ DEFINE>{===>} int_18_18=1.0; 
+ DEFINE>{===>} int_18_19=1.0; 
+ DEFINE>{===>} int_18_20=1.0; 
+ DEFINE>{===>} int_19_1="N.A."; 
+ DEFINE>{===>} int_19_2="N.A."; 
+ DEFINE>{===>} int_19_3="N.A."; 
+ DEFINE>{===>} int_19_4="N.A."; 
+ DEFINE>{===>} int_19_5="N.A."; 
+ DEFINE>{===>} int_19_6="N.A."; 
+ DEFINE>{===>} int_19_7="N.A."; 
+ DEFINE>{===>} int_19_8="N.A."; 
+ DEFINE>{===>} int_19_9="N.A."; 
+ DEFINE>{===>} int_19_10="N.A."; 
+ DEFINE>{===>} int_19_11="N.A."; 
+ DEFINE>{===>} int_19_12="N.A."; 
+ DEFINE>{===>} int_19_13="N.A."; 
+ DEFINE>{===>} int_19_14="N.A."; 
+ DEFINE>{===>} int_19_15="N.A."; 
+ DEFINE>{===>} int_19_16="N.A."; 
+ DEFINE>{===>} int_19_17="N.A."; 
+ DEFINE>{===>} int_19_18="N.A."; 
+ DEFINE>{===>} int_19_19=1.0; 
+ DEFINE>{===>} int_19_20=1.0; 
+ DEFINE>{===>} int_20_1="N.A."; 
+ DEFINE>{===>} int_20_2="N.A."; 
+ DEFINE>{===>} int_20_3="N.A."; 
+ DEFINE>{===>} int_20_4="N.A."; 
+ DEFINE>{===>} int_20_5="N.A."; 
+ DEFINE>{===>} int_20_6="N.A."; 
+ DEFINE>{===>} int_20_7="N.A."; 
+ DEFINE>{===>} int_20_8="N.A."; 
+ DEFINE>{===>} int_20_9="N.A."; 
+ DEFINE>{===>} int_20_10="N.A."; 
+ DEFINE>{===>} int_20_11="N.A."; 
+ DEFINE>{===>} int_20_12="N.A."; 
+ DEFINE>{===>} int_20_13="N.A."; 
+ DEFINE>{===>} int_20_14="N.A."; 
+ DEFINE>{===>} int_20_15="N.A."; 
+ DEFINE>{===>} int_20_16="N.A."; 
+ DEFINE>{===>} int_20_17="N.A."; 
+ DEFINE>{===>} int_20_18="N.A."; 
+ DEFINE>{===>} int_20_19="N.A."; 
+ DEFINE>{===>} int_20_20=1.0; 
+ DEFINE> 
+ DEFINE>{===================== Number of structures to dock =======================} 
+ DEFINE>{* Setting for the rigid-body (it0) and semi-flexible refinement (it1) *} 
+ DEFINE> 
+ DEFINE>{* number of structures for rigid body docking *} 
+ DEFINE>{===>} structures_0=1000; 
+ DEFINE>       keepstruct_0=&structures_0; 
+ DEFINE>{* number of structures for refinement *} 
+ DEFINE>{===>} structures_1=200; 
+ DEFINE>       keepstruct_1=&structures_1; 
+ DEFINE>       keepstruct_2=&structures_1; 
+ DEFINE>{* number of structures to be analysed*} 
+ DEFINE>{===>} anastruc_1=200; 
+ DEFINE>       anastruc_0=&anastruc_1; 
+ DEFINE>       anastruc_2=&anastruc_1; 
+ DEFINE> 
+ DEFINE>{* - *} 
+ DEFINE> 
+ DEFINE>{* Sampling of symmetry related solutions                       *} 
+ DEFINE> 
+ DEFINE>{* Sample 180 degrees rotated solutions during rigid body EM?   *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} rotate180_it0=true; 
+ DEFINE> 
+ DEFINE>{* Sample 180 degrees rotated solutions during semi-flexible SA?*} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} rotate180_it1=false; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{=========================== DOCKING protocol =============================} 
+ DEFINE>{* Cross-dock all combinations in the ensembles of starting structures? *} 
+ DEFINE>{* Turn off this option if you only want to dock structure 1 of ensemble A *} 
+ DEFINE>{*   to structure 1 of ensemble B, structure 2 to structure 2, etc. *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} crossdock=true; 
+ DEFINE> 
+ DEFINE>{* Randomize starting orientations? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} randorien=true; 
+ DEFINE> 
+ DEFINE>{* Expand starting orientations? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} expand=false; 
+ DEFINE> 
+ DEFINE>{* Expansion percentage *} 
+ DEFINE>{===>} expansion=0.4; 
+ DEFINE> 
+ DEFINE>{* Random rotation angle *} 
+ DEFINE>{===>} randangle=6; 
+ DEFINE> 
+ DEFINE>{* Rebuild missing atoms in the context of the complex? (refinement mode) *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} rebuildcplx=false; 
+ DEFINE> 
+ DEFINE>{* Perform initial rigid body minimisation? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} rigidmini=true; 
+ DEFINE> 
+ DEFINE>{* Allow translation in rigid body minimisation? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} rigidtrans=true; 
+ DEFINE> 
+ DEFINE>{* Number of trials for rigid body minimisation? *} 
+ DEFINE>{===>} ntrials=5; 
+ DEFINE> 
+ DEFINE>{* initial seed for random number generator *} 
+ DEFINE>{* change to get different initial velocities *} 
+ DEFINE>{===>} iniseed=917; 
+ DEFINE> 
+ DEFINE>{* temperature for rigid body high temperature TAD *} 
+ DEFINE>{===>} tadhigh_t=2000; 
+ DEFINE> 
+ DEFINE>{* initial temperature for rigid body first TAD cooling step *} 
+ DEFINE>{===>} tadinit1_t=2000; 
+ DEFINE> 
+ DEFINE>{* final temperature after first cooling step *} 
+ DEFINE>{===>} tadfinal1_t=500; 
+ DEFINE> 
+ DEFINE>{* initial temperature for second TAD cooling step with flexible side-chain at the inferface *} 
+ DEFINE>{===>} tadinit2_t=1000; 
+ DEFINE> 
+ DEFINE>{* finale temperature after second cooling step *} 
+ DEFINE>{===>} tadfinal2_t=50; 
+ DEFINE> 
+ DEFINE>{* initial temperature for third TAD cooling step with fully flexible interface *} 
+ DEFINE>{===>} tadinit3_t=1000; 
+ DEFINE> 
+ DEFINE>{* finale temperature after third cooling step *} 
+ DEFINE>{===>} tadfinal3_t=50; 
+ DEFINE> 
+ DEFINE>{* time step *} 
+ DEFINE>{===>} timestep=0.002; 
+ DEFINE>{* factor for timestep in TAD *} 
+ DEFINE>{===>} tadfactor=8; 
+ DEFINE> 
+ DEFINE>{* Number of EM steps for translational minimisation? *} 
+ DEFINE>{===>} emstepstrans=1000; 
+ DEFINE> 
+ DEFINE>{* number of MD steps for rigid body high temperature TAD *} 
+ DEFINE>{===>} initiosteps=500; 
+ DEFINE> 
+ DEFINE>{* number of MD steps during first rigid body cooling stage *} 
+ DEFINE>{===>} cool1_steps=500; 
+ DEFINE> 
+ DEFINE>{* number of MD steps during second cooling stage with flexible side-chains at interface *} 
+ DEFINE>{===>} cool2_steps=1000; 
+ DEFINE> 
+ DEFINE>{* number of MD steps during third cooling stage with fully flexible interface *} 
+ DEFINE>{===>} cool3_steps=1000; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{======================= Solvated rigid body docking=======================} 
+ DEFINE>{* perform solvated docking ? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} waterdock=false; 
+ DEFINE> 
+ DEFINE>{* which method to use for solvating? *} 
+ DEFINE>{* db: database-based (recommended), restraints: for restrained solvating to amino-acid most often forming 
+ DEFINE>water mediated contacts and blank (""): for uniform waterlayer *} 
+ DEFINE>{+ choice: "db" "restraints" "" +} 
+ DEFINE>{===>} solvate_method="db"; 
+ DEFINE> 
+ DEFINE>{* which propensity database to use? *} 
+ DEFINE>{* statistical: based on an analysis of water-mediated contacts in the PDB, kyte-doolittle: based on the Kyte-Doolittle hydrophobicity scalte *} 
+ DEFINE>{+ choice: "statistical" "kytedoolittle" +} 
+ DEFINE>{===>} db_method="kytedoolittle"; 
+ DEFINE> 
+ DEFINE>{* initial cutoff for restraints solvating method *} 
+ DEFINE>{* all waters further away from a highly occuring water solvated residue will be removed in the generation 
+ DEFINE>of the initial solvation shell *} 
+ DEFINE>{===>} water_restraint_initial=5.0; 
+ DEFINE> 
+ DEFINE>{* cutoff for restraints solvating method *} 
+ DEFINE>{* upper distance limit for defining distance restraints between water and amino-acids often found to be 
+ DEFINE>involved in water-mediated contacts *} 
+ DEFINE>{===>} water_restraint_cutoff=5.0; 
+ DEFINE> 
+ DEFINE>{* force constant for restrainted solvating method *} 
+ DEFINE>{===>} water_restraint_scale=25.0; 
+ DEFINE> 
+ DEFINE>{* fraction of water to keep *} 
+ DEFINE>{* this is the fraction of all interface water after the initial rigid body docking that will be kept 
+ DEFINE>(note that more waters might be removed if the interaction energy is unfavorable  *} 
+ DEFINE>{===>} water_tokeep=0.5; 
+ DEFINE> 
+ DEFINE>{* fraction of water around DNA to keep *} 
+ DEFINE>{* this is the fraction of interface water involving DNA phoshpates after the initial rigid body docking that will be kept 
+ DEFINE>(note that more waters might be removed if the interaction energy is unfavorable  *} 
+ DEFINE>{===>} dnap_water_tokeep=0.75; 
+ DEFINE> 
+ DEFINE>{* random fraction to be added to the fraction of water to keep *} 
+ DEFINE>{===>} water_randfrac=0.0; 
+ DEFINE> 
+ DEFINE>{* water-protein surface-cutoff *} 
+ DEFINE>{* waters further away than this cutoff distance from any component of the complex will be removed *} 
+ DEFINE>{===>} water_surfcutoff=8.0; 
+ DEFINE> 
+ DEFINE>{* do some water analysis *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} water_analysis=false; 
+ DEFINE> 
+ DEFINE>{* allows translation of water molecules during rigid-body docking, true or false: *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} transwater=true; 
+ DEFINE> 
+ DEFINE>{* number of different initial solvation shells to generate *} 
+ DEFINE>{===>} waterensemble=1; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{==================== final explicit solvent refinement  ==================} 
+ DEFINE>{* Do you want to refine your docking models in explicit solvent? *} 
+ DEFINE>{+ choice: "yes" "no" +} 
+ DEFINE>{===>} firstwater="yes"; 
+ DEFINE> 
+ DEFINE>{* Build explicit solvent shell? (Can be turned off the large molecules or when morphing CG to AA models) *} 
+ DEFINE>{* Only EM will then be performed                                                                         *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} solvshell=false; 
+ DEFINE> 
+ DEFINE>{* Which solvent do you want to use? *} 
+ DEFINE>{+ choice: "water" "dmso" +} 
+ DEFINE>{===>} solvent="water"; 
+ DEFINE> 
+ DEFINE>{* number of structures for the explicit solvent refinement *} 
+ DEFINE>{* the n best structures will be refined                    *} 
+ DEFINE>{===>} waterrefine=200; 
+ DEFINE>       structures_2=&waterrefine; 
+ DEFINE> 
+ DEFINE>{* number of steps for heating phase (100, 200, 300K)?      *} 
+ DEFINE>{===>} waterheatsteps=100; 
+ DEFINE> 
+ DEFINE>{* number of steps for 300K sampling phase?                 *} 
+ DEFINE>{===>} watersteps=1250; 
+ DEFINE> 
+ DEFINE>{* number of steps for cooling phase (300, 200, 100K)?      *} 
+ DEFINE>{===>} watercoolsteps=500; 
+ DEFINE> 
+ DEFINE>{* write additional PDB files including solvent ?           *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} keepwater=false; 
+ DEFINE> 
+ DEFINE>{================================ Scoring =================================} 
+ DEFINE>{* Settings for the scoring of the docking solutions *} 
+ DEFINE> 
+ DEFINE>{* Define the weights for the various terms for the sorting of structures (scoring) *} 
+ DEFINE>{+ table: rows=14 "Evdw" "Eelec" "Eair" "Erg" "Esani" "Exrdc" "Expcs" "Edani" "Evean" "Ecdih" "Esym" "BSA" "dEint" "Edesolv" 
+ DEFINE>          cols=3 "Rigid body EM" "semi-flexible SA" "Water refinement" +} 
+ DEFINE>{===>} w_vdw_0=0.01; 
+ DEFINE>{===>} w_vdw_1=1.0; 
+ DEFINE>{===>} w_vdw_2=1.0; 
+ DEFINE>{===>} w_elec_0=1.0; 
+ DEFINE>{===>} w_elec_1=1.0; 
+ DEFINE>{===>} w_elec_2=0.2; 
+ DEFINE>{===>} w_dist_0=0.01; 
+ DEFINE>{===>} w_dist_1=0.1; 
+ DEFINE>{===>} w_dist_2=0.1; 
+ DEFINE>{===>} w_rg_0=0.1; 
+ DEFINE>{===>} w_rg_1=1.0; 
+ DEFINE>{===>} w_rg_2=1.0; 
+ DEFINE>{===>} w_sani_0=0.1; 
+ DEFINE>{===>} w_sani_1=0.1; 
+ DEFINE>{===>} w_sani_2=0.1; 
+ DEFINE>{===>} w_xrdc_0=0.1; 
+ DEFINE>{===>} w_xrdc_1=0.1; 
+ DEFINE>{===>} w_xrdc_2=0.1; 
+ DEFINE>{===>} w_xpcs_0=0.1; 
+ DEFINE>{===>} w_xpcs_1=0.1; 
+ DEFINE>{===>} w_xpcs_2=0.1; 
+ DEFINE>{===>} w_dani_0=0.01; 
+ DEFINE>{===>} w_dani_1=0.1; 
+ DEFINE>{===>} w_dani_2=0.1; 
+ DEFINE>{===>} w_vean_0=0.1; 
+ DEFINE>{===>} w_vean_1=0.1; 
+ DEFINE>{===>} w_vean_2=0.1; 
+ DEFINE>{===>} w_cdih_0=0.0; 
+ DEFINE>{===>} w_cdih_1=0.0; 
+ DEFINE>{===>} w_cdih_2=0.0; 
+ DEFINE>{===>} w_sym_0=0.1; 
+ DEFINE>{===>} w_sym_1=0.1; 
+ DEFINE>{===>} w_sym_2=0.1; 
+ DEFINE>{===>} w_zres_0=0.1; 
+ DEFINE>{===>} w_zres_1=0.1; 
+ DEFINE>{===>} w_zres_2=0.1; 
+ DEFINE>{===>} w_bsa_0=-0.01; 
+ DEFINE>{===>} w_bsa_1=-0.01; 
+ DEFINE>{===>} w_bsa_2=0.0; 
+ DEFINE>{===>} w_deint_0=0.0; 
+ DEFINE>{===>} w_deint_1=0.0; 
+ DEFINE>{===>} w_deint_2=0.0; 
+ DEFINE>{===>} w_desolv_0=1.0; 
+ DEFINE>{===>} w_desolv_1=1.0; 
+ DEFINE>{===>} w_desolv_2=1.0; 
+ DEFINE> 
+ DEFINE>{* It is possible to skip structures in the selection of structure in it0 *} 
+ DEFINE>{* Give for this the number of structures to skip: *} 
+ DEFINE>{===>} skip_struc=0; 
+ DEFINE> 
+ DEFINE>{======================= analysis and clustering ==========================} 
+ DEFINE>{* Cutoff distance (proton-acceptor) to define an hydrogen bond? *} 
+ DEFINE>{===>} dist_hb=2.5; 
+ DEFINE> 
+ DEFINE>{* Cutoff distance (carbon-carbon) to define an hydrophobic contact? *} 
+ DEFINE>{===>} dist_nb=3.9; 
+ DEFINE> 
+ DEFINE>{* Clustering method (RMSD or Fraction of Common Contacts (FCC)) *} 
+ DEFINE>{+ choice: "RMSD" "FCC" +} 
+ DEFINE>{===>} clust_meth="FCC"; 
+ DEFINE> 
+ DEFINE>{* RMSD cutoff for clustering? (Recommended values: RMSD 7.5, FCC 0.75) *} 
+ DEFINE>{===>} clust_cutoff=0.6; 
+ DEFINE> 
+ DEFINE>{* Minimum cluster size? *} 
+ DEFINE>{===>} clust_size=4; 
+ DEFINE> 
+ DEFINE>{* Chain-Agnostic Algorithm (used for FCC clustering in symmetrical complexes) *} 
+ DEFINE>{+ choice: "true" "false" +} 
+ DEFINE>{===>} fcc_ignc=false; 
+ DEFINE> 
+ DEFINE>{* Full or limited analysis of results? *} 
+ DEFINE>{+ choice: "full" "cluster" "none" +} 
+ DEFINE>{===>} runana=cluster; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{======================= final clean-up ===================================} 
+ DEFINE>{* Clean up the run directory after completion (only files for struct #1 are kept) ? *} 
+ DEFINE>{+ choice: true false +} 
+ DEFINE>{===>} cleanup=true; 
+ DEFINE> 
+ DEFINE>{============================ parallel jobs ===============================} 
+ DEFINE>{* How many nodes do you want to use in parallel? *} 
+ DEFINE>{* leave unused fields blank, make sure that the queues are actually running *} 
+ DEFINE>{+ table: rows=10 "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" 
+ DEFINE> cols=3 "queue command" "cns executable" "number of jobs" +} 
+ DEFINE> 
+ DEFINE>{===>} queue_1="/trinity/rascar/enmr/software/haddock2.5/batch_tools/diracsubmit-haddock2.5"; 
+ DEFINE>{===>} cns_exe_1="/trinity/rascar/enmr/software/cns/cns_solve_1.31-UU/intel-x86_64bit-linux/bin/cns"; 
+ DEFINE>{===>} cpunumber_1=100; 
+ DEFINE> 
+ DEFINE> 
+ DEFINE>{===========================================================================} 
+ DEFINE>{        things below this line do not normally need to be changed          } 
+ DEFINE>{===========================================================================} 
+ DEFINE> 
+ DEFINE>) {- end block parameter definition -} 
+ CNSsolve> 
+ CNSsolve>!for global parameters (local variables (suffix ) => global variables): 
+ CNSsolve>evaluate (&saprotocol.crossdock=&crossdock) 
+ EVALUATE: symbol $_1_SAPROTOCOL.CROSSDOCK set to TRUE (logical)
+ CNSsolve>evaluate (&saprotocol.randorien=&randorien) 
+ EVALUATE: symbol $_1_SAPROTOCOL.RANDORIEN set to TRUE (logical)
+ CNSsolve>evaluate (&saprotocol.rebuildcplx=&rebuildcplx) 
+ EVALUATE: symbol $_1_SAPROTOCOL.REBUILDCPLX set to FALSE (logical)
+ CNSsolve>evaluate (&saprotocol.rigidmini=&rigidmini) 
+ EVALUATE: symbol $_1_SAPROTOCOL.RIGIDMINI set to TRUE (logical)
+ CNSsolve>evaluate (&saprotocol.rigidtrans=&rigidtrans) 
+ EVALUATE: symbol $_1_SAPROTOCOL.RIGIDTRANS set to TRUE (logical)
+ CNSsolve>evaluate (&saprotocol.expand=&expand) 
+ EVALUATE: symbol $_1_SAPROTOCOL.EXPAND set to FALSE (logical)
+ CNSsolve>evaluate (&saprotocol.expansion=&expansion) 
+ EVALUATE: symbol $_1_SAPROTOCOL.EXPANSION set to   0.400000     (real)
+ CNSsolve>evaluate (&saprotocol.randangle=&randangle) 
+ EVALUATE: symbol $_1_SAPROTOCOL.RANDANGLE set to    6.00000     (real)
+ CNSsolve> 
+ CNSsolve>if (&saprotocol.expand eq true) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&saprotocol.randorien=false) 
+ CNSsolve>  evaluate (&saprotocol.rigidmini=false) 
+ CNSsolve>end if 
+ CNSsolve>evaluate (&saprotocol.ntrials=&ntrials) 
+ EVALUATE: symbol $_1_SAPROTOCOL.NTRIALS set to    5.00000     (real)
+ CNSsolve>evaluate (&saprotocol.iniseed=&iniseed) 
+ EVALUATE: symbol $_1_SAPROTOCOL.INISEED set to    917.000     (real)
+ CNSsolve>evaluate (&saprotocol.tadhigh_t=&tadhigh_t) 
+ EVALUATE: symbol $_1_SAPROTOCOL.TADHIGH_T set to    2000.00     (real)
+ CNSsolve>evaluate (&saprotocol.t1_init=&tadinit1_t) 
+ EVALUATE: symbol $_1_SAPROTOCOL.T1_INIT set to    2000.00     (real)
+ CNSsolve>evaluate (&saprotocol.t2_init=&tadinit2_t) 
+ EVALUATE: symbol $_1_SAPROTOCOL.T2_INIT set to    1000.00     (real)
+ CNSsolve>evaluate (&saprotocol.t3_init=&tadinit3_t) 
+ EVALUATE: symbol $_1_SAPROTOCOL.T3_INIT set to    1000.00     (real)
+ CNSsolve>evaluate (&saprotocol.t1_final=&tadfinal1_t) 
+ EVALUATE: symbol $_1_SAPROTOCOL.T1_FINAL set to    500.000     (real)
+ CNSsolve>evaluate (&saprotocol.t2_final=&tadfinal2_t) 
+ EVALUATE: symbol $_1_SAPROTOCOL.T2_FINAL set to    50.0000     (real)
+ CNSsolve>evaluate (&saprotocol.t3_final=&tadfinal3_t) 
+ EVALUATE: symbol $_1_SAPROTOCOL.T3_FINAL set to    50.0000     (real)
+ CNSsolve>evaluate (&saprotocol.inter_rigid=&inter_rigid) 
+ EVALUATE: symbol $_1_SAPROTOCOL.INTER_RIGID set to    1.00000     (real)
+ CNSsolve>evaluate (&saprotocol.inter_init_rigid=&init_rigid) 
+ EVALUATE: symbol $_1_SAPROTOCOL.INTER_INIT_RIGID set to   0.100000E-02 (real)
+ CNSsolve>evaluate (&saprotocol.inter_fin_rigid=&fin_rigid) 
+ EVALUATE: symbol $_1_SAPROTOCOL.INTER_FIN_RIGID set to   0.100000E-02 (real)
+ CNSsolve>evaluate (&saprotocol.inter_init_cool2=&init_cool2) 
+ EVALUATE: symbol $_1_SAPROTOCOL.INTER_INIT_COOL2 set to   0.100000E-02 (real)
+ CNSsolve>evaluate (&saprotocol.inter_fin_cool2=&fin_cool2) 
+ EVALUATE: symbol $_1_SAPROTOCOL.INTER_FIN_COOL2 set to    1.00000     (real)
+ CNSsolve>evaluate (&saprotocol.inter_init_cool3=&init_cool3) 
+ EVALUATE: symbol $_1_SAPROTOCOL.INTER_INIT_COOL3 set to   0.500000E-01 (real)
+ CNSsolve>evaluate (&saprotocol.inter_fin_cool3=&fin_cool3) 
+ EVALUATE: symbol $_1_SAPROTOCOL.INTER_FIN_COOL3 set to    1.00000     (real)
+ CNSsolve>evaluate (&saprotocol.rotate180_it0=&rotate180_it0) 
+ EVALUATE: symbol $_1_SAPROTOCOL.ROTATE180_IT0 set to TRUE (logical)
+ CNSsolve>evaluate (&saprotocol.rotate180_it1=&rotate180_it1) 
+ EVALUATE: symbol $_1_SAPROTOCOL.ROTATE180_IT1 set to FALSE (logical)
+ CNSsolve>evaluate (&saprotocol.tempstep=50) 
+ EVALUATE: symbol $_1_SAPROTOCOL.TEMPSTEP set to    50.0000     (real)
+ CNSsolve>evaluate (&saprotocol.timestep=&timestep) 
+ EVALUATE: symbol $_1_SAPROTOCOL.TIMESTEP set to   0.200000E-02 (real)
+ CNSsolve>evaluate (&saprotocol.tadfactor=&tadfactor) 
+ EVALUATE: symbol $_1_SAPROTOCOL.TADFACTOR set to    8.00000     (real)
+ CNSsolve>evaluate (&saprotocol.emstepstrans=&emstepstrans) 
+ EVALUATE: symbol $_1_SAPROTOCOL.EMSTEPSTRANS set to    1000.00     (real)
+ CNSsolve>evaluate (&saprotocol.initiosteps=&initiosteps) 
+ EVALUATE: symbol $_1_SAPROTOCOL.INITIOSTEPS set to    500.000     (real)
+ CNSsolve>evaluate (&saprotocol.cool1_steps=&cool1_steps) 
+ EVALUATE: symbol $_1_SAPROTOCOL.COOL1_STEPS set to    500.000     (real)
+ CNSsolve>evaluate (&saprotocol.cool2_steps=&cool2_steps) 
+ EVALUATE: symbol $_1_SAPROTOCOL.COOL2_STEPS set to    1000.00     (real)
+ CNSsolve>evaluate (&saprotocol.cool3_steps=&cool3_steps) 
+ EVALUATE: symbol $_1_SAPROTOCOL.COOL3_STEPS set to    1000.00     (real)
+ CNSsolve>evaluate (&saprotocol.fbeta=100) 
+ EVALUATE: symbol $_1_SAPROTOCOL.FBETA set to    100.000     (real)
+ CNSsolve>evaluate (&saprotocol.mass=100) 
+ EVALUATE: symbol $_1_SAPROTOCOL.MASS set to    100.000     (real)
+ CNSsolve> 
+ CNSsolve>evaluate (&filenames.fileroot=&fileroot) 
+ EVALUATE: symbol $_1_FILENAMES.FILEROOT set to "complex" (string)
+ CNSsolve>evaluate (&filenames.template=&fileroot + "_1.pdb") 
+ EVALUATE: symbol $_1_FILENAMES.TEMPLATE set to "complex_1.pdb" (string)
+ CNSsolve> 
+ CNSsolve>evaluate (&iterations.ini_count    =1) 
+ EVALUATE: symbol $_1_ITERATIONS.INI_COUNT set to    1.00000     (real)
+ CNSsolve>evaluate (&iterations.structures   =&structures_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.STRUCTURES set to    1000.00     (real)
+ CNSsolve>evaluate (&iterations.keepstruct   =&keepstruct_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.KEEPSTRUCT set to    1000.00     (real)
+ CNSsolve>evaluate (&iterations.w_vdw        =&w_vdw_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_VDW set to   0.100000E-01 (real)
+ CNSsolve>evaluate (&iterations.w_elec       =&w_elec_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_ELEC set to    1.00000     (real)
+ CNSsolve>evaluate (&iterations.w_dist       =&w_dist_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_DIST set to   0.100000E-01 (real)
+ CNSsolve>evaluate (&iterations.w_rg         =&w_rg_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_RG set to   0.100000     (real)
+ CNSsolve>evaluate (&iterations.w_sani       =&w_sani_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_SANI set to   0.100000     (real)
+ CNSsolve>evaluate (&iterations.w_xrdc       =&w_xrdc_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_XRDC set to   0.100000     (real)
+ CNSsolve>evaluate (&iterations.w_xpcs       =&w_xpcs_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_XPCS set to   0.100000     (real)
+ CNSsolve>evaluate (&iterations.w_dani       =&w_dani_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_DANI set to   0.100000E-01 (real)
+ CNSsolve>evaluate (&iterations.w_vean       =&w_vean_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_VEAN set to   0.100000     (real)
+ CNSsolve>evaluate (&iterations.w_cdih       =&w_cdih_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_CDIH set to    0.00000     (real)
+ CNSsolve>evaluate (&iterations.w_sym        =&w_sym_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_SYM set to   0.100000     (real)
+ CNSsolve>evaluate (&iterations.w_zres       =&w_zres_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_ZRES set to   0.100000     (real)
+ CNSsolve>evaluate (&iterations.w_bsa        =&w_bsa_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_BSA set to  -0.100000E-01 (real)
+ CNSsolve>evaluate (&iterations.w_deint      =&w_deint_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_DEINT set to    0.00000     (real)
+ CNSsolve>evaluate (&iterations.w_desolv     =&w_desolv_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_DESOLV set to    1.00000     (real)
+ CNSsolve>evaluate (&iterations.anastruc     =&anastruc_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.ANASTRUC set to    200.000     (real)
+ CNSsolve>evaluate (&iterations.w_lcc        = &w_lcc_$iteration) 
+ EVALUATE: symbol $_1_ITERATIONS.W_LCC set to   -400.000     (real)
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>evaluate (&data.ncomponents=&ncomponents) 
+ EVALUATE: symbol $_1_DATA.NCOMPONENTS set to    2.00000     (real)
+ CNSsolve> 
+ CNSsolve>evaluate ($nmol=1) 
+ EVALUATE: symbol $NMOL set to    1.00000     (real)
+ CNSsolve>while ($nmol <= &data.ncomponents) loop mol 
+ NEXTCD: condition evaluated as true
+ CNSsolve> 
+ CNSsolve>  !aa topology, linkage and parameters files 
+ CNSsolve>  evaluate (&toppar.prot_top_$nmol=&prot_top_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_TOP_1 set to "protein-allhdg5-4.top" (string)
+ CNSsolve>  evaluate (&toppar.prot_link_$nmol=&prot_link_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_LINK_1 set to "protein-allhdg5-4-noter.link" (string)
+ CNSsolve>  evaluate (&toppar.prot_par_$nmol=&prot_par_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_PAR_1 set to "protein-allhdg5-4.param" (string)
+ CNSsolve> 
+ CNSsolve>  !coarse grained topology, linkage and parameters files 
+ CNSsolve>  evaluate (&toppar.prot_cg_top_$nmol=&prot_cg_top_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_CG_TOP_1 set to "protein-CG-Martini-2-2.top" (string)
+ CNSsolve>  evaluate (&toppar.prot_cg_link_$nmol=&prot_cg_link_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_CG_LINK_1 set to "protein-CG-Martini-2-2.link" (string)
+ CNSsolve>  evaluate (&toppar.prot_cg_par_$nmol=&prot_cg_par_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_CG_PAR_1 set to "protein-CG-Martini-2-2.param" (string)
+ CNSsolve> 
+ CNSsolve>  !molecule related (coordinate files, rootname, fix, type, coarse grained, segid) 
+ CNSsolve>  evaluate (&toppar.prot_coor_$nmol=&prot_coor_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_COOR_1 set to "protein1.pdb" (string)
+ CNSsolve>  evaluate (&toppar.prot_root_$nmol=&prot_root_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_ROOT_1 set to "protein1" (string)
+ CNSsolve>  evaluate (&toppar.fix_origin_$nmol=&fix_origin_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.FIX_ORIGIN_1 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.dna_$nmol=&dna_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.DNA_1 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.cyclicpept_$nmol=&cyclicpept_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.CYCLICPEPT_1 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.shape_$nmol=&shape_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.SHAPE_1 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.cg_$nmol=&cg_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.CG_1 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.prot_segid_$nmol=&prot_segid_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_SEGID_1 set to "A" (string)
+ CNSsolve> 
+ CNSsolve>  !semi flexible segments 
+ CNSsolve>  evaluate (&toppar.nseg_$nmol=&nseg_$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.NSEG_1 set to   -1.00000     (real)
+ CNSsolve>  evaluate ($nseg = 1) 
+ EVALUATE: symbol $NSEG set to    1.00000     (real)
+ CNSsolve>  while ($nseg <= &toppar.nseg_$nmol) loop seg 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.start_seg_$nmol_$nseg=&start_seg_$nmol_$nseg) 
+ CNSsolve>    evaluate (&toppar.end_seg_$nmol_$nseg=&end_seg_$nmol_$nseg) 
+ CNSsolve>    evaluate ($nseg = $nseg + 1) 
+ CNSsolve>  end loop seg 
+ CNSsolve> 
+ CNSsolve>  !fully flexible segments 
+ CNSsolve>  evaluate (&toppar.nfle_$nmol=&nfle_$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.NFLE_1 set to    0.00000     (real)
+ CNSsolve>  evaluate ($nfle = 1) 
+ EVALUATE: symbol $NFLE set to    1.00000     (real)
+ CNSsolve>  while ($nfle <= &toppar.nfle_$nmol) loop fle 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.start_fle_$nmol_$nfle=&start_fle_$nmol_$nfle) 
+ CNSsolve>    evaluate (&toppar.end_fle_$nmol_$nfle=&end_fle_$nmol_$nfle) 
+ CNSsolve>    evaluate ($nfle = $nfle + 1) 
+ CNSsolve>  end loop fle 
+ CNSsolve> 
+ CNSsolve>  !histidine patches 
+ CNSsolve>  evaluate (&toppar.autohis=&autohis) 
+ EVALUATE: symbol $_1_TOPPAR.AUTOHIS set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.nhisd_$nmol=&numhisd_$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.NHISD_1 set to    0.00000     (real)
+ CNSsolve>  evaluate ($ncc=1) 
+ EVALUATE: symbol $NCC set to    1.00000     (real)
+ CNSsolve>  while ($ncc <= &toppar.nhisd_$nmol) loop hisd 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.hisd_resid_$nmol_$ncc=&hisd_$nmol_$ncc) 
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ CNSsolve>  end loop hisd 
+ CNSsolve> 
+ CNSsolve>  evaluate (&toppar.nhise_$nmol=&numhise_$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.NHISE_1 set to    1.00000     (real)
+ CNSsolve>  evaluate ($ncc=1) 
+ EVALUATE: symbol $NCC set to    1.00000     (real)
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_1_1 set to    5.00000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    2.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ CNSsolve>  end loop hisd 
+ CNSsolve> 
+ CNSsolve>  evaluate ($nmol = $nmol + 1) 
+ EVALUATE: symbol $NMOL set to    2.00000     (real)
+ CNSsolve> 
+ CNSsolve>end loop mol 
+ CNSsolve>while ($nmol <= &data.ncomponents) loop mol 
+ NEXTCD: condition evaluated as true
+ CNSsolve> 
+ CNSsolve>  !aa topology, linkage and parameters files 
+ CNSsolve>  evaluate (&toppar.prot_top_$nmol=&prot_top_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_TOP_2 set to "protein-allhdg5-4.top" (string)
+ CNSsolve>  evaluate (&toppar.prot_link_$nmol=&prot_link_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_LINK_2 set to "protein-allhdg5-4-noter.link" (string)
+ CNSsolve>  evaluate (&toppar.prot_par_$nmol=&prot_par_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_PAR_2 set to "protein-allhdg5-4.param" (string)
+ CNSsolve> 
+ CNSsolve>  !coarse grained topology, linkage and parameters files 
+ CNSsolve>  evaluate (&toppar.prot_cg_top_$nmol=&prot_cg_top_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_CG_TOP_2 set to "protein-CG-Martini-2-2.top" (string)
+ CNSsolve>  evaluate (&toppar.prot_cg_link_$nmol=&prot_cg_link_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_CG_LINK_2 set to "protein-CG-Martini-2-2.link" (string)
+ CNSsolve>  evaluate (&toppar.prot_cg_par_$nmol=&prot_cg_par_mol$nmol ) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_CG_PAR_2 set to "protein-CG-Martini-2-2.param" (string)
+ CNSsolve> 
+ CNSsolve>  !molecule related (coordinate files, rootname, fix, type, coarse grained, segid) 
+ CNSsolve>  evaluate (&toppar.prot_coor_$nmol=&prot_coor_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_COOR_2 set to "protein2.pdb" (string)
+ CNSsolve>  evaluate (&toppar.prot_root_$nmol=&prot_root_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_ROOT_2 set to "protein2" (string)
+ CNSsolve>  evaluate (&toppar.fix_origin_$nmol=&fix_origin_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.FIX_ORIGIN_2 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.dna_$nmol=&dna_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.DNA_2 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.cyclicpept_$nmol=&cyclicpept_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.CYCLICPEPT_2 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.shape_$nmol=&shape_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.SHAPE_2 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.cg_$nmol=&cg_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.CG_2 set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.prot_segid_$nmol=&prot_segid_mol$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.PROT_SEGID_2 set to "B" (string)
+ CNSsolve> 
+ CNSsolve>  !semi flexible segments 
+ CNSsolve>  evaluate (&toppar.nseg_$nmol=&nseg_$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.NSEG_2 set to   -1.00000     (real)
+ CNSsolve>  evaluate ($nseg = 1) 
+ EVALUATE: symbol $NSEG set to    1.00000     (real)
+ CNSsolve>  while ($nseg <= &toppar.nseg_$nmol) loop seg 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.start_seg_$nmol_$nseg=&start_seg_$nmol_$nseg) 
+ CNSsolve>    evaluate (&toppar.end_seg_$nmol_$nseg=&end_seg_$nmol_$nseg) 
+ CNSsolve>    evaluate ($nseg = $nseg + 1) 
+ CNSsolve>  end loop seg 
+ CNSsolve> 
+ CNSsolve>  !fully flexible segments 
+ CNSsolve>  evaluate (&toppar.nfle_$nmol=&nfle_$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.NFLE_2 set to    0.00000     (real)
+ CNSsolve>  evaluate ($nfle = 1) 
+ EVALUATE: symbol $NFLE set to    1.00000     (real)
+ CNSsolve>  while ($nfle <= &toppar.nfle_$nmol) loop fle 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.start_fle_$nmol_$nfle=&start_fle_$nmol_$nfle) 
+ CNSsolve>    evaluate (&toppar.end_fle_$nmol_$nfle=&end_fle_$nmol_$nfle) 
+ CNSsolve>    evaluate ($nfle = $nfle + 1) 
+ CNSsolve>  end loop fle 
+ CNSsolve> 
+ CNSsolve>  !histidine patches 
+ CNSsolve>  evaluate (&toppar.autohis=&autohis) 
+ EVALUATE: symbol $_1_TOPPAR.AUTOHIS set to FALSE (logical)
+ CNSsolve>  evaluate (&toppar.nhisd_$nmol=&numhisd_$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.NHISD_2 set to    4.00000     (real)
+ CNSsolve>  evaluate ($ncc=1) 
+ EVALUATE: symbol $NCC set to    1.00000     (real)
+ CNSsolve>  while ($ncc <= &toppar.nhisd_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hisd_resid_$nmol_$ncc=&hisd_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISD_RESID_2_1 set to    3.00000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    2.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhisd_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hisd_resid_$nmol_$ncc=&hisd_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISD_RESID_2_2 set to    70.0000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    3.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhisd_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hisd_resid_$nmol_$ncc=&hisd_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISD_RESID_2_3 set to    74.0000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    4.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhisd_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hisd_resid_$nmol_$ncc=&hisd_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISD_RESID_2_4 set to    114.000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    5.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhisd_$nmol) loop hisd 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.hisd_resid_$nmol_$ncc=&hisd_$nmol_$ncc) 
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ CNSsolve>  end loop hisd 
+ CNSsolve> 
+ CNSsolve>  evaluate (&toppar.nhise_$nmol=&numhise_$nmol) 
+ EVALUATE: symbol $_1_TOPPAR.NHISE_2 set to    9.00000     (real)
+ CNSsolve>  evaluate ($ncc=1) 
+ EVALUATE: symbol $NCC set to    1.00000     (real)
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_2_1 set to    93.0000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    2.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_2_2 set to    145.000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    3.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_2_3 set to    151.000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    4.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_2_4 set to    188.000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    5.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_2_5 set to    191.000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    6.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_2_6 set to    192.000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    7.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_2_7 set to    197.000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    8.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_2_8 set to    260.000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    9.00000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ EVALUATE: symbol $_1_TOPPAR.HISE_RESID_2_9 set to    263.000     (real)
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ EVALUATE: symbol $NCC set to    10.0000     (real)
+ CNSsolve>  end loop hisd 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ CNSsolve>  end loop hisd 
+ CNSsolve> 
+ CNSsolve>  evaluate ($nmol = $nmol + 1) 
+ EVALUATE: symbol $NMOL set to    3.00000     (real)
+ CNSsolve> 
+ CNSsolve>end loop mol 
+ CNSsolve>while ($nmol <= &data.ncomponents) loop mol 
+ NEXTCD: condition evaluated as false
+ CNSsolve> 
+ CNSsolve>  !aa topology, linkage and parameters files 
+ CNSsolve>  evaluate (&toppar.prot_top_$nmol=&prot_top_mol$nmol ) 
+ CNSsolve>  evaluate (&toppar.prot_link_$nmol=&prot_link_mol$nmol ) 
+ CNSsolve>  evaluate (&toppar.prot_par_$nmol=&prot_par_mol$nmol ) 
+ CNSsolve> 
+ CNSsolve>  !coarse grained topology, linkage and parameters files 
+ CNSsolve>  evaluate (&toppar.prot_cg_top_$nmol=&prot_cg_top_mol$nmol ) 
+ CNSsolve>  evaluate (&toppar.prot_cg_link_$nmol=&prot_cg_link_mol$nmol ) 
+ CNSsolve>  evaluate (&toppar.prot_cg_par_$nmol=&prot_cg_par_mol$nmol ) 
+ CNSsolve> 
+ CNSsolve>  !molecule related (coordinate files, rootname, fix, type, coarse grained, segid) 
+ CNSsolve>  evaluate (&toppar.prot_coor_$nmol=&prot_coor_mol$nmol) 
+ CNSsolve>  evaluate (&toppar.prot_root_$nmol=&prot_root_mol$nmol) 
+ CNSsolve>  evaluate (&toppar.fix_origin_$nmol=&fix_origin_mol$nmol) 
+ CNSsolve>  evaluate (&toppar.dna_$nmol=&dna_mol$nmol) 
+ CNSsolve>  evaluate (&toppar.cyclicpept_$nmol=&cyclicpept_mol$nmol) 
+ CNSsolve>  evaluate (&toppar.shape_$nmol=&shape_mol$nmol) 
+ CNSsolve>  evaluate (&toppar.cg_$nmol=&cg_mol$nmol) 
+ CNSsolve>  evaluate (&toppar.prot_segid_$nmol=&prot_segid_mol$nmol) 
+ CNSsolve> 
+ CNSsolve>  !semi flexible segments 
+ CNSsolve>  evaluate (&toppar.nseg_$nmol=&nseg_$nmol) 
+ CNSsolve>  evaluate ($nseg = 1) 
+ CNSsolve>  while ($nseg <= &toppar.nseg_$nmol) loop seg 
+ CNSsolve>    evaluate (&toppar.start_seg_$nmol_$nseg=&start_seg_$nmol_$nseg) 
+ CNSsolve>    evaluate (&toppar.end_seg_$nmol_$nseg=&end_seg_$nmol_$nseg) 
+ CNSsolve>    evaluate ($nseg = $nseg + 1) 
+ CNSsolve>  end loop seg 
+ CNSsolve> 
+ CNSsolve>  !fully flexible segments 
+ CNSsolve>  evaluate (&toppar.nfle_$nmol=&nfle_$nmol) 
+ CNSsolve>  evaluate ($nfle = 1) 
+ CNSsolve>  while ($nfle <= &toppar.nfle_$nmol) loop fle 
+ CNSsolve>    evaluate (&toppar.start_fle_$nmol_$nfle=&start_fle_$nmol_$nfle) 
+ CNSsolve>    evaluate (&toppar.end_fle_$nmol_$nfle=&end_fle_$nmol_$nfle) 
+ CNSsolve>    evaluate ($nfle = $nfle + 1) 
+ CNSsolve>  end loop fle 
+ CNSsolve> 
+ CNSsolve>  !histidine patches 
+ CNSsolve>  evaluate (&toppar.autohis=&autohis) 
+ CNSsolve>  evaluate (&toppar.nhisd_$nmol=&numhisd_$nmol) 
+ CNSsolve>  evaluate ($ncc=1) 
+ CNSsolve>  while ($ncc <= &toppar.nhisd_$nmol) loop hisd 
+ CNSsolve>    evaluate (&toppar.hisd_resid_$nmol_$ncc=&hisd_$nmol_$ncc) 
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ CNSsolve>  end loop hisd 
+ CNSsolve> 
+ CNSsolve>  evaluate (&toppar.nhise_$nmol=&numhise_$nmol) 
+ CNSsolve>  evaluate ($ncc=1) 
+ CNSsolve>  while ($ncc <= &toppar.nhise_$nmol) loop hisd 
+ CNSsolve>    evaluate (&toppar.hise_resid_$nmol_$ncc=&hise_$nmol_$ncc) 
+ CNSsolve>    evaluate ($ncc = $ncc + 1) 
+ CNSsolve>  end loop hisd 
+ CNSsolve> 
+ CNSsolve>  evaluate ($nmol = $nmol + 1) 
+ CNSsolve> 
+ CNSsolve>end loop mol 
+ CNSsolve> 
+ CNSsolve>! non-bonded parameter set to use 
+ CNSsolve>evaluate (&toppar.par_nonbonded=&par_nonbonded) 
+ EVALUATE: symbol $_1_TOPPAR.PAR_NONBONDED set to "OPLSX" (string)
+ CNSsolve> 
+ CNSsolve>! z-restraining 
+ CNSsolve>evaluate (&Data.flags.zres =  &zres_on) 
+ EVALUATE: symbol $_1_DATA.FLAGS.ZRES set to FALSE (logical)
+ CNSsolve>evaluate (&data.numzres=&numzres) 
+ EVALUATE: symbol $_1_DATA.NUMZRES set to    0.00000     (real)
+ CNSsolve>evaluate ($ncc=1) 
+ EVALUATE: symbol $NCC set to    1.00000     (real)
+ CNSsolve>while ($ncc <= &numzres) loop zres 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&toppar.zres_sta_$ncc=&zres_sta_$ncc) 
+ CNSsolve>  evaluate (&toppar.zres_end_$ncc=&zres_end_$ncc) 
+ CNSsolve>  evaluate (&toppar.zres_seg_$ncc=&zres_seg_$ncc) 
+ CNSsolve>  evaluate (&toppar.zres_type_$ncc=&zres_type_$ncc) 
+ CNSsolve>  evaluate ($ncc = $ncc + 1) 
+ CNSsolve>end loop zres 
+ CNSsolve> 
+ CNSsolve>! NCS restraints 
+ CNSsolve>evaluate (&data.kncs=&kncs) 
+ Assuming literal string "&KNCS"
+ EVALUATE: symbol $_1_DATA.KNCS set to "&KNCS" (string)
+ CNSsolve>evaluate (&Data.flags.ncs  =  &ncs_on) 
+ EVALUATE: symbol $_1_DATA.FLAGS.NCS set to FALSE (logical)
+ CNSsolve>evaluate (&data.numncs=&numncs) 
+ EVALUATE: symbol $_1_DATA.NUMNCS set to    0.00000     (real)
+ CNSsolve>evaluate ($ncc=1) 
+ EVALUATE: symbol $NCC set to    1.00000     (real)
+ CNSsolve>while ($ncc <= &numncs) loop ncs 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&toppar.ncs_sta1_$ncc=&ncs_sta1_$ncc) 
+ CNSsolve>  evaluate (&toppar.ncs_end1_$ncc=&ncs_end1_$ncc) 
+ CNSsolve>  evaluate (&toppar.ncs_seg1_$ncc=&ncs_seg1_$ncc) 
+ CNSsolve>  evaluate (&toppar.ncs_sta2_$ncc=&ncs_sta2_$ncc) 
+ CNSsolve>  evaluate (&toppar.ncs_end2_$ncc=&ncs_end2_$ncc) 
+ CNSsolve>  evaluate (&toppar.ncs_seg2_$ncc=&ncs_seg2_$ncc) 
+ CNSsolve>  evaluate ($ncc = $ncc + 1) 
+ CNSsolve>end loop ncs 
+ CNSsolve> 
+ CNSsolve>! Symmetry restraints 
+ CNSsolve>evaluate (&data.ksym=&ksym) 
+ EVALUATE: symbol $_1_DATA.KSYM set to    10.0000     (real)
+ CNSsolve>evaluate (&Data.flags.sym  =  &sym_on) 
+ EVALUATE: symbol $_1_DATA.FLAGS.SYM set to FALSE (logical)
+ CNSsolve>evaluate (&data.numc2sym=&numc2sym) 
+ EVALUATE: symbol $_1_DATA.NUMC2SYM set to    0.00000     (real)
+ CNSsolve>evaluate ($nsym=1) 
+ EVALUATE: symbol $NSYM set to    1.00000     (real)
+ CNSsolve>while ($nsym <= &numc2sym) loop sym 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&toppar.c2sym_sta1_$nsym=&c2sym_sta1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c2sym_end1_$nsym=&c2sym_end1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c2sym_seg1_$nsym=&c2sym_seg1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c2sym_sta2_$nsym=&c2sym_sta2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c2sym_end2_$nsym=&c2sym_end2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c2sym_seg2_$nsym=&c2sym_seg2_$nsym) 
+ CNSsolve>  evaluate ($nsym = $nsym + 1) 
+ CNSsolve>end loop sym 
+ CNSsolve> 
+ CNSsolve>evaluate (&data.numc3sym=&numc3sym) 
+ EVALUATE: symbol $_1_DATA.NUMC3SYM set to    0.00000     (real)
+ CNSsolve>evaluate ($nsym=1) 
+ EVALUATE: symbol $NSYM set to    1.00000     (real)
+ CNSsolve>while ($nsym <= &numc3sym) loop sym 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&toppar.c3sym_sta1_$nsym=&c3sym_sta1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c3sym_end1_$nsym=&c3sym_end1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c3sym_seg1_$nsym=&c3sym_seg1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c3sym_sta2_$nsym=&c3sym_sta2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c3sym_end2_$nsym=&c3sym_end2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c3sym_seg2_$nsym=&c3sym_seg2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c3sym_sta3_$nsym=&c3sym_sta3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c3sym_end3_$nsym=&c3sym_end3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c3sym_seg3_$nsym=&c3sym_seg3_$nsym) 
+ CNSsolve>  evaluate ($nsym = $nsym + 1) 
+ CNSsolve>end loop sym 
+ CNSsolve> 
+ CNSsolve>evaluate (&data.nums3sym=&nums3sym) 
+ EVALUATE: symbol $_1_DATA.NUMS3SYM set to    0.00000     (real)
+ CNSsolve>evaluate ($nsym=1) 
+ EVALUATE: symbol $NSYM set to    1.00000     (real)
+ CNSsolve>while ($nsym <= &nums3sym) loop sym 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&toppar.s3sym_sta1_$nsym=&s3sym_sta1_$nsym) 
+ CNSsolve>  evaluate (&toppar.s3sym_end1_$nsym=&s3sym_end1_$nsym) 
+ CNSsolve>  evaluate (&toppar.s3sym_seg1_$nsym=&s3sym_seg1_$nsym) 
+ CNSsolve>  evaluate (&toppar.s3sym_sta2_$nsym=&s3sym_sta2_$nsym) 
+ CNSsolve>  evaluate (&toppar.s3sym_end2_$nsym=&s3sym_end2_$nsym) 
+ CNSsolve>  evaluate (&toppar.s3sym_seg2_$nsym=&s3sym_seg2_$nsym) 
+ CNSsolve>  evaluate (&toppar.s3sym_sta3_$nsym=&s3sym_sta3_$nsym) 
+ CNSsolve>  evaluate (&toppar.s3sym_end3_$nsym=&s3sym_end3_$nsym) 
+ CNSsolve>  evaluate (&toppar.s3sym_seg3_$nsym=&s3sym_seg3_$nsym) 
+ CNSsolve>  evaluate ($nsym = $nsym + 1) 
+ CNSsolve>end loop sym 
+ CNSsolve> 
+ CNSsolve>evaluate (&data.numc4sym=&numc4sym) 
+ EVALUATE: symbol $_1_DATA.NUMC4SYM set to    0.00000     (real)
+ CNSsolve>evaluate ($nsym=1) 
+ EVALUATE: symbol $NSYM set to    1.00000     (real)
+ CNSsolve>while ($nsym <= &numc4sym) loop sym 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&toppar.c4sym_sta1_$nsym=&c4sym_sta1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_end1_$nsym=&c4sym_end1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_seg1_$nsym=&c4sym_seg1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_sta2_$nsym=&c4sym_sta2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_end2_$nsym=&c4sym_end2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_seg2_$nsym=&c4sym_seg2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_sta3_$nsym=&c4sym_sta3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_end3_$nsym=&c4sym_end3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_seg3_$nsym=&c4sym_seg3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_sta4_$nsym=&c4sym_sta4_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_end4_$nsym=&c4sym_end4_$nsym) 
+ CNSsolve>  evaluate (&toppar.c4sym_seg4_$nsym=&c4sym_seg4_$nsym) 
+ CNSsolve>  evaluate ($nsym = $nsym + 1) 
+ CNSsolve>end loop sym 
+ CNSsolve> 
+ CNSsolve>evaluate (&data.numc5sym=&numc5sym) 
+ EVALUATE: symbol $_1_DATA.NUMC5SYM set to    0.00000     (real)
+ CNSsolve>evaluate ($nsym=1) 
+ EVALUATE: symbol $NSYM set to    1.00000     (real)
+ CNSsolve>while ($nsym <= &numc5sym) loop sym 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&toppar.c5sym_sta1_$nsym=&c5sym_sta1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_end1_$nsym=&c5sym_end1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_seg1_$nsym=&c5sym_seg1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_sta2_$nsym=&c5sym_sta2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_end2_$nsym=&c5sym_end2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_seg2_$nsym=&c5sym_seg2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_sta3_$nsym=&c5sym_sta3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_end3_$nsym=&c5sym_end3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_seg3_$nsym=&c5sym_seg3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_sta4_$nsym=&c5sym_sta4_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_end4_$nsym=&c5sym_end4_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_seg4_$nsym=&c5sym_seg4_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_sta5_$nsym=&c5sym_sta5_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_end5_$nsym=&c5sym_end5_$nsym) 
+ CNSsolve>  evaluate (&toppar.c5sym_seg5_$nsym=&c5sym_seg5_$nsym) 
+ CNSsolve>  evaluate ($nsym = $nsym + 1) 
+ CNSsolve>end loop sym 
+ CNSsolve> 
+ CNSsolve>evaluate (&data.numc6sym=&numc6sym) 
+ EVALUATE: symbol $_1_DATA.NUMC6SYM set to    0.00000     (real)
+ CNSsolve>evaluate ($nsym=1) 
+ EVALUATE: symbol $NSYM set to    1.00000     (real)
+ CNSsolve>while ($nsym <= &numc6sym) loop sym 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&toppar.c6sym_sta1_$nsym=&c6sym_sta1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_end1_$nsym=&c6sym_end1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_seg1_$nsym=&c6sym_seg1_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_sta2_$nsym=&c6sym_sta2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_end2_$nsym=&c6sym_end2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_seg2_$nsym=&c6sym_seg2_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_sta3_$nsym=&c6sym_sta3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_end3_$nsym=&c6sym_end3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_seg3_$nsym=&c6sym_seg3_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_sta4_$nsym=&c6sym_sta4_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_end4_$nsym=&c6sym_end4_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_seg4_$nsym=&c6sym_seg4_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_sta5_$nsym=&c6sym_sta5_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_end5_$nsym=&c6sym_end5_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_seg5_$nsym=&c6sym_seg5_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_sta6_$nsym=&c6sym_sta6_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_end6_$nsym=&c6sym_end6_$nsym) 
+ CNSsolve>  evaluate (&toppar.c6sym_seg6_$nsym=&c6sym_seg6_$nsym) 
+ CNSsolve>  evaluate ($nsym = $nsym + 1) 
+ CNSsolve>end loop sym 
+ CNSsolve> 
+ CNSsolve>if ( &data.numc2sym eq 6) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&saprotocol.rotate180_it0 = false) 
+ CNSsolve>  evaluate (&saprotocol.rotate180_it1 = false) 
+ CNSsolve>end if 
+ CNSsolve>if ( &data.numc3sym ne 0) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&saprotocol.rotate180_it0 = false) 
+ CNSsolve>  evaluate (&saprotocol.rotate180_it1 = false) 
+ CNSsolve>end if 
+ CNSsolve>if ( &data.numc4sym ne 0) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&saprotocol.rotate180_it0 = false) 
+ CNSsolve>  evaluate (&saprotocol.rotate180_it1 = false) 
+ CNSsolve>end if 
+ CNSsolve>if ( &data.numc5sym ne 0) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&saprotocol.rotate180_it0 = false) 
+ CNSsolve>  evaluate (&saprotocol.rotate180_it1 = false) 
+ CNSsolve>end if 
+ CNSsolve>if ( &data.numc6sym ne 0) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&saprotocol.rotate180_it0 = false) 
+ CNSsolve>  evaluate (&saprotocol.rotate180_it1 = false) 
+ CNSsolve>end if 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>!Dihedrals, DNA and distance restraints 
+ CNSsolve>evaluate (&Data.dnarest = &dnarest_on) 
+ EVALUATE: symbol $_1_DATA.DNAREST set to FALSE (logical)
+ CNSsolve>evaluate (&Data.flags.cdih =  &dihedrals_on) 
+ EVALUATE: symbol $_1_DATA.FLAGS.CDIH set to FALSE (logical)
+ CNSsolve>evaluate (&Data.cdih.on = &dihedrals_on) 
+ EVALUATE: symbol $_1_DATA.CDIH.ON set to FALSE (logical)
+ CNSsolve>evaluate (&Data.ssdihed = &ssdihed) 
+ Assuming literal string "NONE"
+ EVALUATE: symbol $_1_DATA.SSDIHED set to "NONE" (string)
+ CNSsolve>evaluate (&Data.error_dih = &error_dih) 
+ EVALUATE: symbol $_1_DATA.ERROR_DIH set to    10.0000     (real)
+ CNSsolve>evaluate (&data.dihedrals.on=&dihedrals_on) 
+ EVALUATE: symbol $_1_DATA.DIHEDRALS.ON set to FALSE (logical)
+ CNSsolve>evaluate (&data.dihedrals_hot=&dihedrals_hot) 
+ EVALUATE: symbol $_1_DATA.DIHEDRALS_HOT set to    5.00000     (real)
+ CNSsolve>evaluate (&data.dihedrals_cool1=&dihedrals_cool1) 
+ EVALUATE: symbol $_1_DATA.DIHEDRALS_COOL1 set to    5.00000     (real)
+ CNSsolve>evaluate (&data.dihedrals_cool2=&dihedrals_cool2) 
+ EVALUATE: symbol $_1_DATA.DIHEDRALS_COOL2 set to    50.0000     (real)
+ CNSsolve>evaluate (&data.dihedrals_cool3=&dihedrals_cool3) 
+ EVALUATE: symbol $_1_DATA.DIHEDRALS_COOL3 set to    200.000     (real)
+ CNSsolve>evaluate (&data.hbonds_on=&hbonds_on) 
+ EVALUATE: symbol $_1_DATA.HBONDS_ON set to FALSE (logical)
+ CNSsolve> 
+ CNSsolve>! RDC restraints 
+ CNSsolve>evaluate (&Data.flags.vean =  false) 
+ EVALUATE: symbol $_1_DATA.FLAGS.VEAN set to FALSE (logical)
+ CNSsolve>evaluate (&Data.flags.xrdc =  false) 
+ EVALUATE: symbol $_1_DATA.FLAGS.XRDC set to FALSE (logical)
+ CNSsolve>evaluate (&Data.flags.sani =  false) 
+ EVALUATE: symbol $_1_DATA.FLAGS.SANI set to FALSE (logical)
+ CNSsolve>evaluate (&data.numrdc=&numrdc) 
+ EVALUATE: symbol $_1_DATA.NUMRDC set to    0.00000     (real)
+ CNSsolve>evaluate ($ncc=1) 
+ EVALUATE: symbol $NCC set to    1.00000     (real)
+ CNSsolve>while ($ncc <= &data.numrdc) loop rdc 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  if (&rdc_choice_$ncc = "VANGLE") then 
+ CNSsolve>    evaluate (&Data.flags.vean =  true) 
+ CNSsolve>  end if 
+ CNSsolve>  if (&rdc_choice_$ncc = "SANI") then 
+ CNSsolve>    evaluate (&Data.flags.sani =  true) 
+ CNSsolve>  end if 
+ CNSsolve>  if (&rdc_choice_$ncc = "XRDC") then 
+ CNSsolve>    evaluate (&Data.flags.xrdc =  true) 
+ CNSsolve>  end if 
+ CNSsolve>  evaluate (&data.rdc_choice_$ncc=&rdc_choice_$ncc) 
+ CNSsolve>  evaluate (&data.rdc_firstIt_$ncc=&rdc_firstIt_$ncc) 
+ CNSsolve>  evaluate (&data.rdc_lastIt_$ncc=&rdc_lastIt_$ncc) 
+ CNSsolve>  evaluate (&data.rdc_hot_$ncc=&rdc_hot_$ncc) 
+ CNSsolve>  evaluate (&data.rdc_cool1_$ncc=&rdc_cool1_$ncc) 
+ CNSsolve>  evaluate (&data.rdc_cool2_$ncc=&rdc_cool2_$ncc) 
+ CNSsolve>  evaluate (&data.rdc_cool3_$ncc=&rdc_cool3_$ncc) 
+ CNSsolve>  evaluate (&data.rdc_r_$ncc=&rdc_r_$ncc) 
+ CNSsolve>  evaluate (&data.rdc_d_$ncc=&rdc_d_$ncc) 
+ CNSsolve>  evaluate (&data.ini_bor_hot_$ncc=&ini_bor_hot_$ncc) 
+ CNSsolve>  evaluate (&data.ini_bor_cool1_$ncc=&ini_bor_cool1_$ncc) 
+ CNSsolve>  evaluate (&data.ini_bor_cool2_$ncc=&ini_bor_cool2_$ncc) 
+ CNSsolve>  evaluate (&data.ini_bor_cool3_$ncc=&ini_bor_cool3_$ncc) 
+ CNSsolve>  evaluate (&data.ini_cen_hot_$ncc=&ini_cen_hot_$ncc) 
+ CNSsolve>  evaluate (&data.ini_cen_cool1_$ncc=&ini_cen_cool1_$ncc) 
+ CNSsolve>  evaluate (&data.ini_cen_cool2_$ncc=&ini_cen_cool2_$ncc) 
+ CNSsolve>  evaluate (&data.ini_cen_cool3_$ncc=&ini_cen_cool3_$ncc) 
+ CNSsolve>  evaluate (&data.fin_bor_hot_$ncc=&fin_bor_hot_$ncc) 
+ CNSsolve>  evaluate (&data.fin_bor_cool1_$ncc=&fin_bor_cool1_$ncc) 
+ CNSsolve>  evaluate (&data.fin_bor_cool2_$ncc=&fin_bor_cool2_$ncc) 
+ CNSsolve>  evaluate (&data.fin_bor_cool3_$ncc=&fin_bor_cool3_$ncc) 
+ CNSsolve>  evaluate (&data.fin_cen_hot_$ncc=&fin_cen_hot_$ncc) 
+ CNSsolve>  evaluate (&data.fin_cen_cool1_$ncc=&fin_cen_cool1_$ncc) 
+ CNSsolve>  evaluate (&data.fin_cen_cool2_$ncc=&fin_cen_cool2_$ncc) 
+ CNSsolve>  evaluate (&data.fin_cen_cool3_$ncc=&fin_cen_cool3_$ncc) 
+ CNSsolve>  evaluate ($ncc=$ncc+1) 
+ CNSsolve>end loop rdc 
+ CNSsolve> 
+ CNSsolve>! PCS restraints 
+ CNSsolve>evaluate (&Data.flags.xpcs =  false) 
+ EVALUATE: symbol $_1_DATA.FLAGS.XPCS set to FALSE (logical)
+ CNSsolve>evaluate (&data.numpcs=&numpcs) 
+ EVALUATE: symbol $_1_DATA.NUMPCS set to    0.00000     (real)
+ CNSsolve>evaluate ($ncc=1) 
+ EVALUATE: symbol $NCC set to    1.00000     (real)
+ CNSsolve>while ($ncc <= &numpcs) loop pcs 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  if (&pcs_choice_$ncc = "XPCS") then 
+ CNSsolve>    evaluate (&Data.flags.xpcs =  true) 
+ CNSsolve>  end if 
+ CNSsolve>  evaluate (&data.pcs_choice_$ncc=&pcs_choice_$ncc) 
+ CNSsolve>  evaluate (&data.pcs_firstIt_$ncc=&pcs_firstIt_$ncc) 
+ CNSsolve>  evaluate (&data.pcs_lastIt_$ncc=&pcs_lastIt_$ncc) 
+ CNSsolve>  evaluate (&data.pcs_hot_$ncc=&pcs_hot_$ncc) 
+ CNSsolve>  evaluate (&data.pcs_cool1_$ncc=&pcs_cool1_$ncc) 
+ CNSsolve>  evaluate (&data.pcs_cool2_$ncc=&pcs_cool2_$ncc) 
+ CNSsolve>  evaluate (&data.pcs_cool3_$ncc=&pcs_cool3_$ncc) 
+ CNSsolve>  evaluate (&data.pcs_r_$ncc=&pcs_r_$ncc) 
+ CNSsolve>  evaluate (&data.pcs_d_$ncc=&pcs_d_$ncc) 
+ CNSsolve>  evaluate ($ncc=$ncc+1) 
+ CNSsolve>end loop pcs 
+ CNSsolve> 
+ CNSsolve>! DANI restraints 
+ CNSsolve>evaluate (&Data.flags.dani =  false) 
+ EVALUATE: symbol $_1_DATA.FLAGS.DANI set to FALSE (logical)
+ CNSsolve>evaluate (&data.numdani=&numdani) 
+ EVALUATE: symbol $_1_DATA.NUMDANI set to    0.00000     (real)
+ CNSsolve>evaluate ($ncc=1) 
+ EVALUATE: symbol $NCC set to    1.00000     (real)
+ CNSsolve>while ($ncc <= &numdani) loop dani 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  if (&dan_choice_$ncc = "DANI") then 
+ CNSsolve>    evaluate (&Data.flags.dani =  true) 
+ CNSsolve>  end if 
+ CNSsolve>  evaluate (&data.dan_choice_$ncc=&dan_choice_$ncc) 
+ CNSsolve>  evaluate (&data.dan_firstIt_$ncc=&dan_firstIt_$ncc) 
+ CNSsolve>  evaluate (&data.dan_lastIt_$ncc=&dan_lastIt_$ncc) 
+ CNSsolve>  evaluate (&data.dan_hot_$ncc=&dan_hot_$ncc) 
+ CNSsolve>  evaluate (&data.dan_cool1_$ncc=&dan_cool1_$ncc) 
+ CNSsolve>  evaluate (&data.dan_cool2_$ncc=&dan_cool2_$ncc) 
+ CNSsolve>  evaluate (&data.dan_cool3_$ncc=&dan_cool3_$ncc) 
+ CNSsolve>  evaluate (&data.dan_tc_$ncc=&dan_tc_$ncc) 
+ CNSsolve>  evaluate (&data.dan_anis_$ncc=&dan_anis_$ncc) 
+ CNSsolve>  evaluate (&data.dan_r_$ncc=&dan_r_$ncc) 
+ CNSsolve>  evaluate (&data.dan_wh_$ncc=&dan_wh_$ncc) 
+ CNSsolve>  evaluate (&data.dan_wn_$ncc=&dan_wn_$ncc) 
+ CNSsolve>  evaluate ($ncc=$ncc+1) 
+ CNSsolve>end loop dani 
+ CNSsolve> 
+ CNSsolve>! planarity restraints 
+ CNSsolve>evaluate (&Data.flags.plan =  false) 
+ EVALUATE: symbol $_1_DATA.FLAGS.PLAN set to FALSE (logical)
+ CNSsolve> 
+ CNSsolve>! distance restraints 
+ CNSsolve>evaluate (&Data.flags.noe  =  true) 
+ EVALUATE: symbol $_1_DATA.FLAGS.NOE set to TRUE (logical)
+ CNSsolve>evaluate (&data.scaling=&air_scaling) 
+ EVALUATE: symbol $_1_DATA.SCALING set to FALSE (logical)
+ CNSsolve>evaluate (&data.totnoe_unamb=&tot_unamb) 
+ EVALUATE: symbol $_1_DATA.TOTNOE_UNAMB set to    25.0000     (real)
+ CNSsolve>evaluate (&data.unamb_firstit=&unamb_firstit) 
+ EVALUATE: symbol $_1_DATA.UNAMB_FIRSTIT set to    0.00000     (real)
+ CNSsolve>evaluate (&data.unamb_lastit=&unamb_lastit) 
+ EVALUATE: symbol $_1_DATA.UNAMB_LASTIT set to    2.00000     (real)
+ CNSsolve>evaluate (&data.unamb_hot=&unamb_hot) 
+ EVALUATE: symbol $_1_DATA.UNAMB_HOT set to    10.0000     (real)
+ CNSsolve>evaluate (&data.unamb_cool1=&unamb_cool1) 
+ EVALUATE: symbol $_1_DATA.UNAMB_COOL1 set to    10.0000     (real)
+ CNSsolve>evaluate (&data.unamb_cool2=&unamb_cool2) 
+ EVALUATE: symbol $_1_DATA.UNAMB_COOL2 set to    50.0000     (real)
+ CNSsolve>evaluate (&data.unamb_cool3=&unamb_cool3) 
+ EVALUATE: symbol $_1_DATA.UNAMB_COOL3 set to    50.0000     (real)
+ CNSsolve>evaluate (&data.noecv=&noecv) 
+ EVALUATE: symbol $_1_DATA.NOECV set to TRUE (logical)
+ CNSsolve>evaluate (&data.ncvpart=&ncvpart) 
+ EVALUATE: symbol $_1_DATA.NCVPART set to    2.00000     (real)
+ CNSsolve> 
+ CNSsolve>evaluate (&data.totnoe_amb=&tot_amb) 
+ EVALUATE: symbol $_1_DATA.TOTNOE_AMB set to    0.00000     (real)
+ CNSsolve>evaluate (&data.amb_firstit=&amb_firstit) 
+ EVALUATE: symbol $_1_DATA.AMB_FIRSTIT set to    0.00000     (real)
+ CNSsolve>evaluate (&data.amb_lastit=&amb_lastit) 
+ EVALUATE: symbol $_1_DATA.AMB_LASTIT set to    2.00000     (real)
+ CNSsolve>evaluate (&data.amb_hot=&amb_hot) 
+ EVALUATE: symbol $_1_DATA.AMB_HOT set to    10.0000     (real)
+ CNSsolve>evaluate (&data.amb_cool1=&amb_cool1) 
+ EVALUATE: symbol $_1_DATA.AMB_COOL1 set to    10.0000     (real)
+ CNSsolve>evaluate (&data.amb_cool2=&amb_cool2) 
+ EVALUATE: symbol $_1_DATA.AMB_COOL2 set to    50.0000     (real)
+ CNSsolve>evaluate (&data.amb_cool3=&amb_cool3) 
+ EVALUATE: symbol $_1_DATA.AMB_COOL3 set to    50.0000     (real)
+ CNSsolve> 
+ CNSsolve>evaluate (&data.hbond_firstit=&hbond_firstit) 
+ EVALUATE: symbol $_1_DATA.HBOND_FIRSTIT set to    0.00000     (real)
+ CNSsolve>evaluate (&data.hbond_lastit=&hbond_lastit) 
+ EVALUATE: symbol $_1_DATA.HBOND_LASTIT set to    2.00000     (real)
+ CNSsolve>evaluate (&data.hbond_hot=&hbond_hot) 
+ EVALUATE: symbol $_1_DATA.HBOND_HOT set to    10.0000     (real)
+ CNSsolve>evaluate (&data.hbond_cool1=&hbond_cool1) 
+ EVALUATE: symbol $_1_DATA.HBOND_COOL1 set to    10.0000     (real)
+ CNSsolve>evaluate (&data.hbond_cool2=&hbond_cool2) 
+ EVALUATE: symbol $_1_DATA.HBOND_COOL2 set to    50.0000     (real)
+ CNSsolve>evaluate (&data.hbond_cool3=&hbond_cool3) 
+ EVALUATE: symbol $_1_DATA.HBOND_COOL3 set to    50.0000     (real)
+ CNSsolve> 
+ CNSsolve>evaluate (&data.mrswi_hot=&mrswi_hot) 
+ EVALUATE: symbol $_1_DATA.MRSWI_HOT set to   0.500000     (real)
+ CNSsolve>evaluate (&data.mrswi_cool1=&mrswi_cool1) 
+ EVALUATE: symbol $_1_DATA.MRSWI_COOL1 set to   0.500000     (real)
+ CNSsolve>evaluate (&data.mrswi_cool2=&mrswi_cool2) 
+ EVALUATE: symbol $_1_DATA.MRSWI_COOL2 set to   0.500000     (real)
+ CNSsolve>evaluate (&data.mrswi_cool3=&mrswi_cool3) 
+ EVALUATE: symbol $_1_DATA.MRSWI_COOL3 set to   0.500000     (real)
+ CNSsolve> 
+ CNSsolve>evaluate (&data.rswi_hot=&rswi_hot) 
+ EVALUATE: symbol $_1_DATA.RSWI_HOT set to   0.500000     (real)
+ CNSsolve>evaluate (&data.rswi_cool1=&rswi_cool1) 
+ EVALUATE: symbol $_1_DATA.RSWI_COOL1 set to   0.500000     (real)
+ CNSsolve>evaluate (&data.rswi_cool2=&rswi_cool2) 
+ EVALUATE: symbol $_1_DATA.RSWI_COOL2 set to   0.500000     (real)
+ CNSsolve>evaluate (&data.rswi_cool3=&rswi_cool3) 
+ EVALUATE: symbol $_1_DATA.RSWI_COOL3 set to   0.500000     (real)
+ CNSsolve> 
+ CNSsolve>evaluate (&data.masy_hot=&masy_hot) 
+ EVALUATE: symbol $_1_DATA.MASY_HOT set to   -1.00000     (real)
+ CNSsolve>evaluate (&data.masy_cool1=&masy_cool1) 
+ EVALUATE: symbol $_1_DATA.MASY_COOL1 set to   -1.00000     (real)
+ CNSsolve>evaluate (&data.masy_cool2=&masy_cool2) 
+ EVALUATE: symbol $_1_DATA.MASY_COOL2 set to  -0.100000     (real)
+ CNSsolve>evaluate (&data.masy_cool3=&masy_cool3) 
+ EVALUATE: symbol $_1_DATA.MASY_COOL3 set to  -0.100000     (real)
+ CNSsolve> 
+ CNSsolve>evaluate (&data.asy_hot=&asy_hot) 
+ EVALUATE: symbol $_1_DATA.ASY_HOT set to    1.00000     (real)
+ CNSsolve>evaluate (&data.asy_cool1=&asy_cool1) 
+ EVALUATE: symbol $_1_DATA.ASY_COOL1 set to    1.00000     (real)
+ CNSsolve>evaluate (&data.asy_cool2=&asy_cool2) 
+ EVALUATE: symbol $_1_DATA.ASY_COOL2 set to   0.100000     (real)
+ CNSsolve>evaluate (&data.asy_cool3=&asy_cool3) 
+ EVALUATE: symbol $_1_DATA.ASY_COOL3 set to   0.100000     (real)
+ CNSsolve> 
+ CNSsolve>evaluate (&data.ranair=&ranair) 
+ EVALUATE: symbol $_1_DATA.RANAIR set to FALSE (logical)
+ CNSsolve>if (&data.ranair eq true) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&data.noecv = false) 
+ CNSsolve>end if 
+ CNSsolve>evaluate (&data.cmrest=&cmrest) 
+ EVALUATE: symbol $_1_DATA.CMREST set to FALSE (logical)
+ CNSsolve>evaluate (&data.cmtight=&cmtight) 
+ EVALUATE: symbol $_1_DATA.CMTIGHT set to FALSE (logical)
+ CNSsolve>evaluate (&data.kcont=&kcont) 
+ EVALUATE: symbol $_1_DATA.KCONT set to    1.00000     (real)
+ CNSsolve>evaluate (&data.surfrest=&surfrest) 
+ EVALUATE: symbol $_1_DATA.SURFREST set to FALSE (logical)
+ CNSsolve>evaluate (&data.ksurf=&ksurf) 
+ EVALUATE: symbol $_1_DATA.KSURF set to    1.00000     (real)
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>! radius of gydration restraints 
+ CNSsolve>evaluate (&data.flags.rg=&rgrest) 
+ EVALUATE: symbol $_1_DATA.FLAGS.RG set to FALSE (logical)
+ CNSsolve>evaluate (&data.rgtarg=&rgtarg) 
+ Assuming literal string "&RGTARG"
+ EVALUATE: symbol $_1_DATA.RGTARG set to "&RGTARG" (string)
+ CNSsolve>evaluate (&data.krg_hot=&krg_hot) 
+ Assuming literal string "&KRG_HOT"
+ EVALUATE: symbol $_1_DATA.KRG_HOT set to "&KRG_HOT" (string)
+ CNSsolve>evaluate (&data.krg_cool1=&krg_cool1) 
+ Assuming literal string "&KRG_COOL1"
+ EVALUATE: symbol $_1_DATA.KRG_COOL1 set to "&KRG_COOL1" (string)
+ CNSsolve>evaluate (&data.krg_cool2=&krg_cool2) 
+ Assuming literal string "&KRG_COOL2"
+ EVALUATE: symbol $_1_DATA.KRG_COOL2 set to "&KRG_COOL2" (string)
+ CNSsolve>evaluate (&data.krg_cool3=&krg_cool3) 
+ Assuming literal string "&KRG_COOL3"
+ EVALUATE: symbol $_1_DATA.KRG_COOL3 set to "&KRG_COOL3" (string)
+ CNSsolve>evaluate (&data.rgsele=&rgsele) 
+ Assuming literal string "&RGSELE"
+ EVALUATE: symbol $_1_DATA.RGSELE set to "&RGSELE" (string)
+ CNSsolve> 
+ CNSsolve>evaluate (&data.kzres=&kzres) 
+ Assuming literal string "&KZRES"
+ EVALUATE: symbol $_1_DATA.KZRES set to "&KZRES" (string)
+ CNSsolve>evaluate (&data.zresmax=&zresmax) 
+ Assuming literal string "&ZRESMAX"
+ EVALUATE: symbol $_1_DATA.ZRESMAX set to "&ZRESMAX" (string)
+ CNSsolve>evaluate (&data.zresmin=&zresmin) 
+ Assuming literal string "&ZRESMIN"
+ EVALUATE: symbol $_1_DATA.ZRESMIN set to "&ZRESMIN" (string)
+ CNSsolve> 
+ CNSsolve>! keep or delete non-polar hydrogens 
+ CNSsolve>evaluate (&toppar.delenph=&delenph) 
+ EVALUATE: symbol $_1_TOPPAR.DELENPH set to TRUE (logical)
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>!Electrostatics: 
+ CNSsolve>evaluate (&Data.flags.dihed = &dihedflag) 
+ EVALUATE: symbol $_1_DATA.FLAGS.DIHED set to TRUE (logical)
+ CNSsolve>evaluate (&Data.flags.elec0 = &elecflag_0) 
+ EVALUATE: symbol $_1_DATA.FLAGS.ELEC0 set to TRUE (logical)
+ CNSsolve>evaluate (&Data.flags.elec1 = &elecflag_1) 
+ EVALUATE: symbol $_1_DATA.FLAGS.ELEC1 set to TRUE (logical)
+ CNSsolve>evaluate (&Data.epsilon0 = &epsilon_0) 
+ EVALUATE: symbol $_1_DATA.EPSILON0 set to    10.0000     (real)
+ CNSsolve>evaluate (&Data.epsilon1 = &epsilon_1) 
+ EVALUATE: symbol $_1_DATA.EPSILON1 set to    1.00000     (real)
+ CNSsolve>evaluate (&Data.dielec0  = &dielec_0) 
+ Assuming literal string "RDIE"
+ EVALUATE: symbol $_1_DATA.DIELEC0 set to "RDIE" (string)
+ CNSsolve>evaluate (&Data.dielec1  = &dielec_1) 
+ Assuming literal string "RDIE"
+ EVALUATE: symbol $_1_DATA.DIELEC1 set to "RDIE" (string)
+ CNSsolve> 
+ CNSsolve>!Check for CG and if present force cdie 
+ CNSsolve>evaluate($cg = false) 
+ EVALUATE: symbol $CG set to FALSE (logical)
+ CNSsolve>evaluate($nchain1 = 0) 
+ EVALUATE: symbol $NCHAIN1 set to    0.00000     (real)
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop cgmol 
+ NEXTCD: condition evaluated as true
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ EVALUATE: symbol $NCHAIN1 set to    1.00000     (real)
+ CNSsolve>  if ($Toppar.cg_$nchain1 eq true) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate($cg = true) 
+ CNSsolve>  end if 
+ CNSsolve>end loop cgmol 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop cgmol 
+ NEXTCD: condition evaluated as true
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ EVALUATE: symbol $NCHAIN1 set to    2.00000     (real)
+ CNSsolve>  if ($Toppar.cg_$nchain1 eq true) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate($cg = true) 
+ CNSsolve>  end if 
+ CNSsolve>end loop cgmol 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop cgmol 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  if ($Toppar.cg_$nchain1 eq true) then 
+ CNSsolve>    evaluate($cg = true) 
+ CNSsolve>  end if 
+ CNSsolve>end loop cgmol 
+ CNSsolve> 
+ CNSsolve>if ($cg = true) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&Data.dielec0  = cdie) 
+ CNSsolve>  evaluate (&Data.dielec1  = cdie) 
+ CNSsolve>  evaluate (&Data.epsilon1 = &Data.epsilon0) 
+ CNSsolve>  display "FORCING CDIE FOR ELECTROSTATICS BECAUSE OF COARSE GRAINING" 
+ CNSsolve>end if 
+ CNSsolve> 
+ CNSsolve>!Interaction matrix: 
+ CNSsolve>evaluate ($nmol1=1) 
+ EVALUATE: symbol $NMOL1 set to    1.00000     (real)
+ CNSsolve>while ($nmol1 <= &data.ncomponents) loop mol1 
+ NEXTCD: condition evaluated as true
+ CNSsolve>  evaluate ($nmol2=$nmol1 + 1) 
+ EVALUATE: symbol $NMOL2 set to    2.00000     (real)
+ CNSsolve>  evaluate (&toppar.int_$nmol1_$nmol1 = &int_$nmol1_$nmol1) 
+ EVALUATE: symbol $_1_TOPPAR.INT_1_1 set to    1.00000     (real)
+ CNSsolve>  while ($nmol2 <= &data.ncomponents) loop mol2 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.int_$nmol1_$nmol2 = &int_$nmol1_$nmol2) 
+ EVALUATE: symbol $_1_TOPPAR.INT_1_2 set to    1.00000     (real)
+ CNSsolve>    evaluate (&toppar.int_$nmol2_$nmol1 = &int_$nmol1_$nmol2) 
+ EVALUATE: symbol $_1_TOPPAR.INT_2_1 set to    1.00000     (real)
+ CNSsolve>    evaluate ($nmol2=$nmol2 + 1) 
+ EVALUATE: symbol $NMOL2 set to    3.00000     (real)
+ CNSsolve>  end loop mol2 
+ CNSsolve>  while ($nmol2 <= &data.ncomponents) loop mol2 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.int_$nmol1_$nmol2 = &int_$nmol1_$nmol2) 
+ CNSsolve>    evaluate (&toppar.int_$nmol2_$nmol1 = &int_$nmol1_$nmol2) 
+ CNSsolve>    evaluate ($nmol2=$nmol2 + 1) 
+ CNSsolve>  end loop mol2 
+ CNSsolve>  evaluate ($nmol1 = $nmol1 + 1) 
+ EVALUATE: symbol $NMOL1 set to    2.00000     (real)
+ CNSsolve>end loop mol1 
+ CNSsolve>while ($nmol1 <= &data.ncomponents) loop mol1 
+ NEXTCD: condition evaluated as true
+ CNSsolve>  evaluate ($nmol2=$nmol1 + 1) 
+ EVALUATE: symbol $NMOL2 set to    3.00000     (real)
+ CNSsolve>  evaluate (&toppar.int_$nmol1_$nmol1 = &int_$nmol1_$nmol1) 
+ EVALUATE: symbol $_1_TOPPAR.INT_2_2 set to    1.00000     (real)
+ CNSsolve>  while ($nmol2 <= &data.ncomponents) loop mol2 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.int_$nmol1_$nmol2 = &int_$nmol1_$nmol2) 
+ CNSsolve>    evaluate (&toppar.int_$nmol2_$nmol1 = &int_$nmol1_$nmol2) 
+ CNSsolve>    evaluate ($nmol2=$nmol2 + 1) 
+ CNSsolve>  end loop mol2 
+ CNSsolve>  evaluate ($nmol1 = $nmol1 + 1) 
+ EVALUATE: symbol $NMOL1 set to    3.00000     (real)
+ CNSsolve>end loop mol1 
+ CNSsolve>while ($nmol1 <= &data.ncomponents) loop mol1 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate ($nmol2=$nmol1 + 1) 
+ CNSsolve>  evaluate (&toppar.int_$nmol1_$nmol1 = &int_$nmol1_$nmol1) 
+ CNSsolve>  while ($nmol2 <= &data.ncomponents) loop mol2 
+ CNSsolve>    evaluate (&toppar.int_$nmol1_$nmol2 = &int_$nmol1_$nmol2) 
+ CNSsolve>    evaluate (&toppar.int_$nmol2_$nmol1 = &int_$nmol1_$nmol2) 
+ CNSsolve>    evaluate ($nmol2=$nmol2 + 1) 
+ CNSsolve>  end loop mol2 
+ CNSsolve>  evaluate ($nmol1 = $nmol1 + 1) 
+ CNSsolve>end loop mol1 
+ CNSsolve> 
+ CNSsolve>!intermolecular contacts analysis 
+ CNSsolve>evaluate (&data.hb_dist=&dist_hb) 
+ EVALUATE: symbol $_1_DATA.HB_DIST set to    2.50000     (real)
+ CNSsolve>evaluate (&data.nb_dist=&dist_nb) 
+ EVALUATE: symbol $_1_DATA.NB_DIST set to    3.90000     (real)
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>!water refinement 
+ CNSsolve>evaluate (&refine.firstwater=&firstwater) 
+ EVALUATE: symbol $_1_REFINE.FIRSTWATER set to "yes" (string)
+ CNSsolve>evaluate (&refine.solvshell=&solvshell) 
+ EVALUATE: symbol $_1_REFINE.SOLVSHELL set to FALSE (logical)
+ CNSsolve>evaluate (&refine.keepwater=&keepwater) 
+ EVALUATE: symbol $_1_REFINE.KEEPWATER set to FALSE (logical)
+ CNSsolve>evaluate (&refine.waterrefine=min(&structures_1,&waterrefine)) 
+ EVALUATE: symbol $_1_REFINE.WATERREFINE set to    200.000     (real)
+ CNSsolve>evaluate (&refine.solvent=&solvent) 
+ EVALUATE: symbol $_1_REFINE.SOLVENT set to "water" (string)
+ CNSsolve>evaluate (&refine.heatsteps=&waterheatsteps) 
+ EVALUATE: symbol $_1_REFINE.HEATSTEPS set to    100.000     (real)
+ CNSsolve>evaluate (&refine.steps=&watersteps) 
+ EVALUATE: symbol $_1_REFINE.STEPS set to    1250.00     (real)
+ CNSsolve>evaluate (&refine.coolsteps=&watercoolsteps) 
+ EVALUATE: symbol $_1_REFINE.COOLSTEPS set to    500.000     (real)
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>!for the non-bonded parameters (the section was taken out of 
+ CNSsolve>!parallhdg5.0.pro and parallhdg5.1.pro, so be careful!): 
+ CNSsolve>if (&toppar.par_nonbonded eq "PROLSQ") then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.repel_radius = 1.0) 
+ CNSsolve>    evaluate (&toppar.repel_rcons = 20) 
+ CNSsolve>    evaluate (&toppar.repel_rexpo  = 4) 
+ CNSsolve>    evaluate (&toppar.repel_irexp  = 1) 
+ CNSsolve>elseif (&toppar.par_nonbonded eq "PARMALLH6") then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    evaluate (&toppar.repel_radius = 0.8) 
+ CNSsolve>    evaluate (&toppar.repel_rcons = 5.0) 
+ CNSsolve>    evaluate (&toppar.repel_rexpo  = 2) 
+ CNSsolve>    evaluate (&toppar.repel_irexp  = 2) 
+ CNSsolve>elseif (&toppar.par_nonbonded eq "OPLSX") then 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    evaluate (&toppar.repel_radius = 0.0) 
+ EVALUATE: symbol $_1_TOPPAR.REPEL_RADIUS set to    0.00000     (real)
+ CNSsolve>else        {...now the standard PARALLHDG parameters} 
+ CNSsolve>    evaluate (&toppar.repel_radius = 0.78) 
+ CNSsolve>    evaluate (&toppar.repel_rcons = 5.0) 
+ CNSsolve>    evaluate (&toppar.repel_rexpo  = 2) 
+ CNSsolve>    evaluate (&toppar.repel_irexp  = 2) 
+ CNSsolve>end if 
+ CNSsolve> 
+ CNSsolve>! Water in rigid body docking 
+ CNSsolve>evaluate (&data.waterdock=&waterdock) 
+ EVALUATE: symbol $_1_DATA.WATERDOCK set to FALSE (logical)
+ CNSsolve>evaluate (&data.db_method=&db_method) 
+ EVALUATE: symbol $_1_DATA.DB_METHOD set to "kytedoolittle" (string)
+ CNSsolve>evaluate (&data.water_tokeep=&water_tokeep) 
+ EVALUATE: symbol $_1_DATA.WATER_TOKEEP set to   0.500000     (real)
+ CNSsolve>evaluate (&data.dnap_water_tokeep=&dnap_water_tokeep) 
+ EVALUATE: symbol $_1_DATA.DNAP_WATER_TOKEEP set to   0.750000     (real)
+ CNSsolve>evaluate (&data.water_randfrac=&water_randfrac) 
+ EVALUATE: symbol $_1_DATA.WATER_RANDFRAC set to    0.00000     (real)
+ CNSsolve>evaluate (&data.solvate_method=&solvate_method) 
+ EVALUATE: symbol $_1_DATA.SOLVATE_METHOD set to "db" (string)
+ CNSsolve>evaluate (&data.water_surfcutoff=&water_surfcutoff) 
+ EVALUATE: symbol $_1_DATA.WATER_SURFCUTOFF set to    8.00000     (real)
+ CNSsolve>evaluate (&data.water_analysis=&water_analysis) 
+ EVALUATE: symbol $_1_DATA.WATER_ANALYSIS set to FALSE (logical)
+ CNSsolve>evaluate (&data.transwater=&transwater) 
+ EVALUATE: symbol $_1_DATA.TRANSWATER set to TRUE (logical)
+ CNSsolve>evaluate (&data.water_restraint_initial=&water_restraint_initial) 
+ EVALUATE: symbol $_1_DATA.WATER_RESTRAINT_INITIAL set to    5.00000     (real)
+ CNSsolve>evaluate (&data.water_restraint_cutoff=&water_restraint_cutoff) 
+ EVALUATE: symbol $_1_DATA.WATER_RESTRAINT_CUTOFF set to    5.00000     (real)
+ CNSsolve>evaluate (&data.water_restraint_scale=&water_restraint_scale) 
+ EVALUATE: symbol $_1_DATA.WATER_RESTRAINT_SCALE set to    25.0000     (real)
+ CNSsolve>evaluate (&data.waterensemble=&waterensemble) 
+ EVALUATE: symbol $_1_DATA.WATERENSEMBLE set to    1.00000     (real)
+ CNSsolve> 
+ CNSsolve>! Centroid parameters 
+ CNSsolve>eval(&data.flags.centroids = &centroid_rest) 
+ EVALUATE: symbol $_1_DATA.FLAGS.CENTROIDS set to FALSE (logical)
+ CNSsolve>eval(&data.centroids.kscale = &centroid_kscale) 
+ EVALUATE: symbol $_1_DATA.CENTROIDS.KSCALE set to    50.0000     (real)
+ CNSsolve>eval($nchain = 0) 
+ EVALUATE: symbol $NCHAIN set to    0.00000     (real)
+ CNSsolve>while ($nchain < &ncomponents) loop nloop1 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    eval($nchain = $nchain + 1) 
+ EVALUATE: symbol $NCHAIN set to    1.00000     (real)
+ CNSsolve>    eval(&data.centroids.xcom_$nchain = &xcom_$nchain) 
+ Assuming literal string "&XCOM_$NCHAIN"
+ EVALUATE: symbol $_1_DATA.CENTROIDS.XCOM_1 set to "&XCOM_$NCHAIN" (string)
+ CNSsolve>    eval(&data.centroids.ycom_$nchain = &ycom_$nchain) 
+ Assuming literal string "&YCOM_$NCHAIN"
+ EVALUATE: symbol $_1_DATA.CENTROIDS.YCOM_1 set to "&YCOM_$NCHAIN" (string)
+ CNSsolve>    eval(&data.centroids.zcom_$nchain = &zcom_$nchain) 
+ Assuming literal string "&ZCOM_$NCHAIN"
+ EVALUATE: symbol $_1_DATA.CENTROIDS.ZCOM_1 set to "&ZCOM_$NCHAIN" (string)
+ CNSsolve>    eval(&data.centroids.ambi_$nchain = &ambi_$nchain) 
+ Assuming literal string "&AMBI_$NCHAIN"
+ EVALUATE: symbol $_1_DATA.CENTROIDS.AMBI_1 set to "&AMBI_$NCHAIN" (string)
+ CNSsolve>end loop nloop1 
+ CNSsolve>while ($nchain < &ncomponents) loop nloop1 
+ NEXTCD: condition evaluated as true
+ CNSsolve>    eval($nchain = $nchain + 1) 
+ EVALUATE: symbol $NCHAIN set to    2.00000     (real)
+ CNSsolve>    eval(&data.centroids.xcom_$nchain = &xcom_$nchain) 
+ Assuming literal string "&XCOM_$NCHAIN"
+ EVALUATE: symbol $_1_DATA.CENTROIDS.XCOM_2 set to "&XCOM_$NCHAIN" (string)
+ CNSsolve>    eval(&data.centroids.ycom_$nchain = &ycom_$nchain) 
+ Assuming literal string "&YCOM_$NCHAIN"
+ EVALUATE: symbol $_1_DATA.CENTROIDS.YCOM_2 set to "&YCOM_$NCHAIN" (string)
+ CNSsolve>    eval(&data.centroids.zcom_$nchain = &zcom_$nchain) 
+ Assuming literal string "&ZCOM_$NCHAIN"
+ EVALUATE: symbol $_1_DATA.CENTROIDS.ZCOM_2 set to "&ZCOM_$NCHAIN" (string)
+ CNSsolve>    eval(&data.centroids.ambi_$nchain = &ambi_$nchain) 
+ Assuming literal string "&AMBI_$NCHAIN"
+ EVALUATE: symbol $_1_DATA.CENTROIDS.AMBI_2 set to "&AMBI_$NCHAIN" (string)
+ CNSsolve>end loop nloop1 
+ CNSsolve>while ($nchain < &ncomponents) loop nloop1 
+ NEXTCD: condition evaluated as false
+ CNSsolve>    eval($nchain = $nchain + 1) 
+ CNSsolve>    eval(&data.centroids.xcom_$nchain = &xcom_$nchain) 
+ CNSsolve>    eval(&data.centroids.ycom_$nchain = &ycom_$nchain) 
+ CNSsolve>    eval(&data.centroids.zcom_$nchain = &zcom_$nchain) 
+ CNSsolve>    eval(&data.centroids.ambi_$nchain = &ambi_$nchain) 
+ CNSsolve>end loop nloop1 
+ CNSsolve> 
+ CNSsolve>if (&saprotocol.expand eq true) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  eval(&data.flags.centroids = true) 
+ CNSsolve>end if 
+ CNSsolve> 
+ CNSsolve>! Cryo-EM parameters 
+ CNSsolve>eval(&data.flags.em = &em_rest) 
+ EVALUATE: symbol $_1_DATA.FLAGS.EM set to FALSE (logical)
+ CNSsolve>eval(&data.em.kscale = &em_kscale) 
+ EVALUATE: symbol $_1_DATA.EM.KSCALE set to    15000.0     (real)
+ CNSsolve>eval(&data.em.it0 = &em_it0) 
+ EVALUATE: symbol $_1_DATA.EM.IT0 set to FALSE (logical)
+ CNSsolve>eval(&data.em.it1 = &em_it1) 
+ EVALUATE: symbol $_1_DATA.EM.IT1 set to FALSE (logical)
+ CNSsolve>eval(&data.em.itw = &em_itw) 
+ EVALUATE: symbol $_1_DATA.EM.ITW set to FALSE (logical)
+ CNSsolve>eval(&data.em.resolution = &em_resolution) 
+ Assuming literal string "NONE"
+ EVALUATE: symbol $_1_DATA.EM.RESOLUTION set to "NONE" (string)
+ CNSsolve>eval(&data.em.nx = &nx) 
+ EVALUATE: symbol $_1_DATA.EM.NX set to    32.0000     (real)
+ CNSsolve>eval(&data.em.ny = &ny) 
+ EVALUATE: symbol $_1_DATA.EM.NY set to    32.0000     (real)
+ CNSsolve>eval(&data.em.nz = &nz) 
+ EVALUATE: symbol $_1_DATA.EM.NZ set to    32.0000     (real)
+ CNSsolve>eval(&data.em.xlength = &xlength) 
+ EVALUATE: symbol $_1_DATA.EM.XLENGTH set to    80.0000     (real)
+ CNSsolve>eval(&data.em.ylength = &ylength) 
+ EVALUATE: symbol $_1_DATA.EM.YLENGTH set to    80.0000     (real)
+ CNSsolve>eval(&data.em.zlength = &zlength) 
+ EVALUATE: symbol $_1_DATA.EM.ZLENGTH set to    80.0000     (real)
+ CNSsolve> 
+ CNSsolve>if (&data.flags.em eq true) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  eval(&data.waterdock = false) 
+ CNSsolve>  display "EM restraints and solvated docking are incompatible - turning solvated docking OFF" 
+ CNSsolve>end if 
+ CNSsolve> 
+ CNSsolve>if (&data.waterdock eq true) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  evaluate (&saprotocol.rotate180_it0 = false) 
+ CNSsolve>  evaluate (&saprotocol.rotate180_it1 = false) 
+ CNSsolve>  evaluate (&SaProtocol.initiosteps = 0) 
+ CNSsolve>  evaluate (&SaProtocol.cool1_steps = 0) 
+ CNSsolve>  evaluate (&refine.keepwater = true) 
+ CNSsolve>  display SOLVATED DOCKING TURNED ON: initiosteps and cool1_steps set to 0, rotate180 set to false 
+ CNSsolve>end if 
+ CNSsolve> 
+ CNSsolve>! Flexible region cutoff 
+ CNSsolve>evaluate (&data.flcut_nb = &flcut_nb) 
+ EVALUATE: symbol $_1_DATA.FLCUT_NB set to    5.00000     (real)
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>! Read in parameter files 
+ CNSsolve>parameter 
+ PARRDR>   if ( &BLANK%prot_parameter_infile = false ) then 
+ NEXTCD: condition evaluated as true
+ PARRDR>     @@&prot_parameter_infile 
+ ASSFIL: file protein-allhdg5-4.param opened.
+ PARRDR>remarks file toppar/protein-allhdg5-4.param 
+ PARRDR>remark 
+ PARRDR>remark   for file protein-allhdg-ucl.top  version UCL  date 14-MAR-00 
+ PARRDR>remark   for file protein-allhdg-dih-ucl.top  version UCL  date 07-JUL-01 
+ PARRDR>remark   Geometric energy function parameters for distance geometry and 
+ PARRDR>remark   simulated annealing. 
+ PARRDR>remark   Original author: Michael Nilges, EMBL Heidelberg 
+ PARRDR>remark   Modifications: Mark A. Williams, UCL London 
+ PARRDR>remark   Several modifications for HADDOCK: Alexandre Bonvin, Utrecht Uni 
+ PARRDR>remark   Last modification 06-02-2021 
+ PARRDR> 
+ PARRDR>set message ? end eval ($old_message=$result) set echo ? end eval ($old_echo=$result) 
+ MESSage=NORM
+ EVALUATE: symbol $OLD_MESSAGE set to "NORM" (string)
+ ECHO=TRUE {ON}
+ EVALUATE: symbol $OLD_ECHO set to TRUE (logical)
+ PARRDR>set message=off echo=off end 
+ PARRDR> 
+ PARRDR> 
+ PARRDR>   end if 
+ PARRDR>   if ( &BLANK%ion_parameter_infile = false ) then 
+ NEXTCD: condition evaluated as true
+ PARRDR>     @@&ion_parameter_infile 
+ ASSFIL: file ion.param opened.
+ PARRDR>remarks file toppar/ion.param 
+ PARRDR>remarks nonbonded parameters for common ions 
+ PARRDR>remarks new parameters derived from literature for single atom species 
+ PARRDR>remarks PDA 02/09/99 
+ PARRDR> 
+ PARRDR>set echo=off end 
+ PARRDR>   end if 
+ PARRDR>   if ( &BLANK%nucl_parameter_infile = false ) then 
+ NEXTCD: condition evaluated as true
+ PARRDR>     @@&nucl_parameter_infile 
+ ASSFIL: file dna-rna-allatom-hj-opls-1.3.param opened.
+ PARRDR>remarks file toppar/dna-rna-allatom.top 
+ PARRDR>remarks  dna-rna-allatom-hj-opls-1.3.param 
+ PARRDR>remarks  all-hydrogen dna/rna parameters using the OPLS force field 
+ PARRDR> 
+ PARRDR>!RNA PARAMETER FILE 'FRAMEWORK' FROM PARALLHDG.DNA AND ATOM NAMES 
+ PARRDR>! AND HEAVY ATOM PARAMETERS FROM DNA-RNA.PARAM 
+ PARRDR>!INCLUDES ALL NONEXCHANGEABLE HYDROGEN TERMS FOR BOND, ANGLE, AND 
+ PARRDR>!IMPROPERS WITH ENERGY CONSTANT VARIABLES: $kchbond, $kchangle, AND $kchimpr. 
+ PARRDR>!BOND, ANGLE, AND IMPROPERS WERE ESTIMATED FROM VALUES FROM THE STANDARD 
+ PARRDR>!NUCLEOTIDES OF INSIGHTII 95.0 (BIOSYM/MOLECULAR SIMULATIONS). 
+ PARRDR>!CREATED 2/24/96 -- JASON P. RIFE AND PETER B. MOORE 
+ PARRDR>!ADDED OPLSX SECTION 6/2/07 -- HENRY JONKER 
+ PARRDR>!ADAPTED/CLEANED FOR HADDOCK -- ALEXANDRE BONVIN 
+ PARRDR> 
+ PARRDR>set message ? end eval ($old_message=$result) set echo ? end eval ($old_echo=$result) 
+ MESSage=NORM
+ EVALUATE: symbol $OLD_MESSAGE set to "NORM" (string)
+ ECHO=TRUE {ON}
+ EVALUATE: symbol $OLD_ECHO set to TRUE (logical)
+ PARRDR>set message=off echo=off end 
+ PARRDR> 
+ PARRDR>   end if 
+ PARRDR>   if ( &BLANK%carbo_parameter_infile = false ) then 
+ NEXTCD: condition evaluated as true
+ PARRDR>     @@&carbo_parameter_infile 
+ ASSFIL: file carbohydrate.param opened.
+ PARRDR>remarks file toppar/carbohydrate.param 
+ PARRDR>REMARKS Parameter file for pyranose sugars 
+ PARRDR>REMARKS Alexandre Bonvin - adapted to use unique atom types for sugar-specific atoms 
+ PARRDR>REMARKS Joao Rodrigues 11-June-2020 
+ PARRDR>REMARKS Parameters updated to Feng, PLoS One, 2017 
+ PARRDR>REMARKS PMC 5726640 
+ PARRDR> 
+ PARRDR>REMARKS Bill Weis 10-July-1988 
+ PARRDR>REMARKS Additions for atom type combinations not covered in PARAM19X.PRO. 
+ PARRDR>REMARKS Needed additions are for ether oxygen and aliphatic carbon in all-atom 
+ PARRDR>REMARKS representation used for sugars (type CC).  Ditto for type HA. 
+ PARRDR>REMARKS Values from J. Brady glucose parameters unless noted. 
+ PARRDR>REMARKS These should be sufficient for refinement. 
+ PARRDR> 
+ PARRDR>REMARKS Additions 6-March-1992 Bill Weis 
+ PARRDR>REMARKS New atom types CCA, CCE,  OASfor the C1 & O1 positions to account 
+ PARRDR>REMARKS for different BOND and ANGLe values due to the anomeric effect. 
+ PARRDR>REMARKS More accurate equilibrium values for BOND ANGLe around this oxygen 
+ PARRDR>REMARKS in glycosidic linkages.  CCE for equatorial O1, CCA for 
+ PARRDR>REMAKRS axial O1.   For free sugar, keep OH1 as O1 atomtype; changed to OA 
+ PARRDR>REMARKS for linkages. 
+ PARRDR>REMARKS References: G.A. Jeffrey (1990) Acta Cryst B46, 89-103; 
+ PARRDR>REMARKS K. Hirotsu & A.Shimada, (1974) Bull. Chem. Soc. Japan, 47, 1872-1879. 
+ PARRDR> 
+ PARRDR>REMARKS  This set has been modified to be roughly consistent with 
+ PARRDR>REMARKS  the csd-derived protein parameters of Engh and Huber. 
+ PARRDR>REMARKS  New atom type CC6 for exocyclic 6 carbon 
+ PARRDR>REMARKS  Bill Weis 5/11/92 
+ PARRDR> 
+ PARRDR>set message ? end eval ($old_message=$result) set echo ? end eval ($old_echo=$result) 
+ MESSage=NORM
+ EVALUATE: symbol $OLD_MESSAGE set to "NORM" (string)
+ ECHO=TRUE {ON}
+ EVALUATE: symbol $OLD_ECHO set to TRUE (logical)
+ PARRDR>set message=off echo=off end 
+ PARRDR> 
+ PARRDR> 
+ PARRDR>   end if 
+ PARRDR>   if ( &BLANK%solv_parameter_infile = false ) then 
+ NEXTCD: condition evaluated as true
+ PARRDR>     @@&solv_parameter_infile 
+ ASSFIL: file water-allhdg5-4.param opened.
+ PARRDR>remarks file toppar/water-allhdg5-4.param 
+ PARRDR>remarks 
+ PARRDR>remarks   PARAM19.SOL (solvent parameters) 
+ PARRDR>remarks   =========== 
+ PARRDR>remarks   available: TIPS3P and DMSO model 
+ PARRDR> 
+ PARRDR>set message ? end eval ($old_message=$result) set echo ? end eval ($old_echo=$result) 
+ MESSage=NORM
+ EVALUATE: symbol $OLD_MESSAGE set to "NORM" (string)
+ ECHO=TRUE {ON}
+ EVALUATE: symbol $OLD_ECHO set to TRUE (logical)
+ PARRDR>set message=off echo=off end 
+ PARRDR>   end if 
+ PARRDR>   if ( &BLANK%ligands_parameter_infile = false ) then 
+ NEXTCD: condition evaluated as true
+ PARRDR>     @@&ligands_parameter_infile 
+ ASSFIL: file fragment_probes.param opened.
+ PARRDR>Remarks Parameters for Fragment-based Ligand Binding Site Mapping 
+ PARRDR>Remarks created by acpype (Rev: 7268) on Mon Apr 13 10:01:53 2015 
+ PARRDR> 
+ PARRDR>set echo=false end 
+ PARRDR>   end if 
+ PARRDR>   if ( &BLANK%cofac_parameter_infile = false ) then 
+ NEXTCD: condition evaluated as true
+ PARRDR>     @@&cofac_parameter_infile 
+ ASSFIL: file ligand.param opened.
+ PARRDR>   if ( &BLANK%heme_parameter_infile = false ) then 
+ NEXTCD: condition evaluated as true
+ PARRDR>     @@&heme_parameter_infile 
+ ASSFIL: file hemes-allhdg.param opened.
+ PARRDR>remark  file parallhdg.hemes 
+ PARRDR> 
+ PARRDR>set message off echo off end 
+ PARRDR>   end if 
+ PARRDR>end 
+ %PARRDR-info: duplication of bond C    OC  
+ %PARRDR-info: duplication of bond HN   N3T 
+ %PARRDR-info: duplication of angle CH2E C    NH1 
+ %PARRDR-info: duplication of angle CR1E CR1E CY2 
+ %PARRDR-info: duplication of angle OC   C    OC  
+ %PARRDR-info: duplication of nonbonded entry H   
+ %PARRDR-info: duplication of nonbonded entry HA  
+ %PARRDR-info: duplication of nonbonded entry HC  
+ %PARRDR-info: duplication of nonbonded entry HO  
+ %PARRDR-info: duplication of nonbonded entry OH  
+ %PARRDR-info: duplication of nonbonded entry P   
+ %PARRDR-info: duplication of nonbonded entry HO  
+ %PARRDR-info: duplication of nonbonded entry HO  
+ %PARRDR-info: duplication of nonbonded entry HN  
+ %PARRDR-info: duplication of nonbonded entry HA  
+ %PARRDR-info: duplication of nonbonded entry HA  
+ %PARRDR-info: duplication of nonbonded entry OC  
+ %PARRDR-info: duplication of nonbonded entry C   
+ CNSsolve> 
+ CNSsolve>! Read in topologies 
+ CNSsolve>eval($nchain1 = 0) 
+ EVALUATE: symbol $NCHAIN1 set to    0.00000     (real)
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop cloop1 
+ NEXTCD: condition evaluated as true
+ CNSsolve>  eval($nchain1 = $nchain1 + 1) 
+ EVALUATE: symbol $NCHAIN1 set to    1.00000     (real)
+ CNSsolve>  evaluate($psf_infile_$nchain1= "RUN:begin/" + $Toppar.prot_root_$nchain1 + ".psf") 
+ EVALUATE: symbol $PSF_INFILE_1 set to "RUN:begin/protein1.psf" (string)
+ CNSsolve>  structure 
+ STRUcture>    @@$psf_infile_$nchain1 
+ ASSFIL: file protein1.psf opened.
+ STRUcture>data_cns_mtf 
+ REMARKS FILENAME="protein1.psf"
+ REMARKS peptide link removed (applied DPEP): from      129  to      202
+ REMARKS disulphide added: from      23   to      104
+ REMARKS disulphide added: from      223  to      304
+ REMARKS DATE:13-Sep-2024  19:37:21       created by user: enmr
+ REMARKS VERSION:1.3U
+ Status of internal molecular topology database:
+ -> NATOM=       2122(MAXA=     1000000)  NBOND=       2162(MAXB=     1000000)
+ -> NTHETA=      3087(MAXT=     2000000)  NGRP=         229(MAXGRP=   1000000)
+ -> NPHI=        5235(MAXP=     2000000)  NIMPHI=      1084(MAXIMP=   1000000)
+ -> NNB=          144(MAXNB=    1000000) 
+ STRUcture> 
+ STRUcture>  end 
+ CNSsolve>end loop cloop1 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop cloop1 
+ NEXTCD: condition evaluated as true
+ CNSsolve>  eval($nchain1 = $nchain1 + 1) 
+ EVALUATE: symbol $NCHAIN1 set to    2.00000     (real)
+ CNSsolve>  evaluate($psf_infile_$nchain1= "RUN:begin/" + $Toppar.prot_root_$nchain1 + ".psf") 
+ EVALUATE: symbol $PSF_INFILE_2 set to "RUN:begin/protein2.psf" (string)
+ CNSsolve>  structure 
+ STRUcture>    @@$psf_infile_$nchain1 
+ ASSFIL: file protein2.psf opened.
+ STRUcture>data_cns_mtf 
+ REMARKS FILENAME="protein2.psf"
+ REMARKS peptide link removed (applied DPEP): from      276  to      502
+ REMARKS disulphide added: from      101  to      164
+ REMARKS disulphide added: from      203  to      259
+ REMARKS DATE:13-Sep-2024  19:37:52       created by user: enmr
+ REMARKS VERSION:1.3U
+ Status of internal molecular topology database:
+ -> NATOM=       4962(MAXA=     1000000)  NBOND=       5069(MAXB=     1000000)
+ -> NTHETA=      7257(MAXT=     2000000)  NGRP=         518(MAXGRP=   1000000)
+ -> NPHI=       12043(MAXP=     2000000)  NIMPHI=      2692(MAXIMP=   1000000)
+ -> NNB=          336(MAXNB=    1000000) 
+ STRUcture> 
+ STRUcture>  end 
+ CNSsolve>end loop cloop1 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop cloop1 
+ NEXTCD: condition evaluated as false
+ CNSsolve>  eval($nchain1 = $nchain1 + 1) 
+ CNSsolve>  evaluate($psf_infile_$nchain1= "RUN:begin/" + $Toppar.prot_root_$nchain1 + ".psf") 
+ CNSsolve>  structure 
+ CNSsolve>    @@$psf_infile_$nchain1 
+ CNSsolve>  end 
+ CNSsolve>end loop cloop1 
+ CNSsolve> 
+ CNSsolve>! Write structures of complexes 
+ CNSsolve>evaluate ($nstruc = 1) 
+ EVALUATE: symbol $NSTRUC set to    1.00000     (real)
+ CNSsolve>evaluate ($nline = 0) 
+ EVALUATE: symbol $NLINE set to    0.00000     (real)
+ CNSsolve> 
+ CNSsolve>for $molecule in ( @@RUN:begin/combinations.list ) loop write_complexes 
+ ASSFIL: file combinations.list opened.
+ FOR-clause="BEGIN:protein1_1.pdb" 
+ FOR LOOP: symbol MOLECULE set to "BEGIN:protein1_1.pdb" (string)
+ FOR-clause="BEGIN:protein2_1.pdb" 
+ FOR-clause= ) loop write_complexes 
+ CNSsolve>    evaluate ($nline = $nline + 1) 
+ EVALUATE: symbol $NLINE set to    1.00000     (real)
+ CNSsolve>    evaluate ($nummod = mod($nline, $data.ncomponents)) 
+ EVALUATE: symbol $NUMMOD set to    1.00000     (real)
+ CNSsolve> 
+ CNSsolve>    coor @@$molecule 
+ ASSFIL: file protein1_1.pdb opened.
+ COOR>REMARK FILENAME="protein1_1.pdb" 
+ COOR>REMARK peptide link removed (applied DPEP): from      129  to      202 
+ COOR>REMARK disulphide added: from      23   to      104 
+ COOR>REMARK disulphide added: from      223  to      304 
+ COOR>REMARK DATE:13-Sep-2024  19:37:20       created by user: enmr 
+ COOR>REMARK VERSION:1.3U 
+ COOR>ATOM      1  N   SER A   1      35.250  15.985  31.313  1.00 15.00      A    N 
+ COOR>ATOM      2  HN  SER A   1      35.624  15.274  30.752  1.00 15.00      A    H 
+ %READC-WRN: still   2840 missing coordinates (in selected subset)
+ CNSsolve> 
+ CNSsolve>    if ($nummod eq 0) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>      if ($saprotocol.rebuildcplx eq true) then 
+ CNSsolve>        do (store9=0) (all) 
+ CNSsolve>        do (store9=1) (attr q=0.0) 
+ CNSsolve>        @RUN:protocols/rebuild-unknown.cns 
+ ASSFIL: file rebuild-unknown.cns opened.
+ CNSsolve> ! rebuild-unknown.cns 
+ CNSsolve>!    Rebuild unknown atoms in the context of the complex 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2017 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve>show sum(1) (store9) 
+ CNSsolve>evaluate ($tobuild=$result) 
+ CNSsolve>display REBUILDING $tobuild ATOMS 
+ CNSsolve> 
+ CNSsolve>energy end 
+ CNSsolve> 
+ CNSsolve>if ( $tobuild > 0 ) then 
+ CNSsolve> 
+ CNSsolve>   fix selection=(not(store9)) end 
+ CNSsolve> 
+ CNSsolve>   show sum(1) (store9) 
+ CNSsolve>   evaluate ($moving=$result) 
+ CNSsolve> 
+ CNSsolve>   if ( $moving > 0 ) then 
+ CNSsolve>     for $id in id (tag and byres(store9)) loop avco 
+ CNSsolve> 
+ CNSsolve>       show ave(x) (byres(id $id) and known) 
+ CNSsolve>       evaluate ($ave_x=$result) 
+ CNSsolve>       show ave(y) (byres(id $id) and known) 
+ CNSsolve>       evaluate ($ave_y=$result) 
+ CNSsolve>       show ave(z) (byres(id $id) and known) 
+ CNSsolve>       evaluate ($ave_z=$result) 
+ CNSsolve> 
+ CNSsolve>       do (x=$ave_x) (byres(id $id) and store9) 
+ CNSsolve>       do (y=$ave_y) (byres(id $id) and store9) 
+ CNSsolve>       do (z=$ave_z) (byres(id $id) and store9) 
+ CNSsolve> 
+ CNSsolve>     end loop avco 
+ CNSsolve> 
+ CNSsolve>     do (x=x+2*random(1.0)-1) (store9) 
+ CNSsolve>     do (y=y+2*random(1.0)-1) (store9) 
+ CNSsolve>     do (z=z+2*random(1.0)-1) (store9) 
+ CNSsolve> 
+ CNSsolve>     {- start parameter for the side chain building -} 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         rcon=20. nbxmod=-2 repel=0.9  wmin=0.1 tolerance=1. 
+ CNSsolve>         rexp=2 irexp=2 inhibit=0.25 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- Friction coefficient, in 1/ps. -} 
+ CNSsolve>     do (fbeta=100) (store9) 
+ CNSsolve> 
+ CNSsolve>     evaluate ($bath=300.0) 
+ CNSsolve>     evaluate ($nstep=500) 
+ CNSsolve>     evaluate ($timestep=0.0005) 
+ CNSsolve> 
+ CNSsolve>     do (refy=mass) (store9) 
+ CNSsolve> 
+ CNSsolve>     do (mass=20) (store9) 
+ CNSsolve> 
+ CNSsolve>     igroup interaction 
+ CNSsolve>       (store9) (store9 or known) 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- turn on initial energy terms -} 
+ CNSsolve>     flags exclude * include bond angle vdw end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=50  nprint=10 end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     flags exclude vdw include impr end 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=50 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     flags include vdw end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=50 nprint=10 end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=50 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         rcon=2. nbxmod=-3 repel=0.75 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=100 nprint=25 end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=$nstep 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- turn on all energy terms -} 
+ CNSsolve>     flags include dihe ? end 
+ CNSsolve> 
+ CNSsolve>     {- set repel to ~vdw radii -} 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         repel=0.89 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=500 nprint=50 end 
+ CNSsolve> 
+ CNSsolve>     flags exclude * include bond angl impr dihe vdw elec end 
+ CNSsolve> 
+ CNSsolve>     {- return masses to something sensible -} 
+ CNSsolve>     do (mass=refy) (store9) 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=$nstep 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- some minimisation -} 
+ CNSsolve>     minimize powell 
+ CNSsolve>       nstep=500 
+ CNSsolve>       drop=40.0 
+ CNSsolve>       nprint=50 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- turn on electrostatic and proper non-bonded-} 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         repel=0 
+ CNSsolve>         nbxmod=5 atom cdie shift 
+ CNSsolve>         cutnb=9.5 ctofnb=8.5 ctonnb=6.5 eps=10.0 e14fac=0.4 inhibit 0.25 
+ CNSsolve>	 wmin=0.5 
+ CNSsolve>	 tolerance  0.5 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     flags exclude * include bond angl impr dihe vdw elec end 
+ CNSsolve> 
+ CNSsolve>     minimize powell 
+ CNSsolve>       nstep=500 
+ CNSsolve>       drop=40.0 
+ CNSsolve>       nprint=50 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=$nstep 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- some final minimisation -} 
+ CNSsolve>     minimize powell 
+ CNSsolve>       nstep=500 
+ CNSsolve>       drop=40.0 
+ CNSsolve>       nprint=50 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     print thres=0.02 bonds 
+ CNSsolve>     print thres=5. angles 
+ CNSsolve> 
+ CNSsolve>   end if 
+ CNSsolve> 
+ CNSsolve>   energy end 
+ CNSsolve> 
+ CNSsolve>   @RUN:protocols/flex_segment_back.cns 
+ ASSFIL: file flex_segment_back.cns opened.
+ CNSsolve>! flex_segment_back.cns 
+ CNSsolve>!    Define the semi-flexible segments (both side-chains and backbone) 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve> 
+ CNSsolve>do (store5 = 0) (all) 
+ CNSsolve>do (store6 = 0) (all) 
+ CNSsolve>do (store7 = 0) (all) 
+ CNSsolve> 
+ CNSsolve>!first flexible segments for docking 
+ CNSsolve>evaluate($nchain1 = 0) 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop nloop1 
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  evaluate($nf=0) 
+ CNSsolve> 
+ CNSsolve>  if ($Toppar.nseg_$nchain1 = 0) then 
+ CNSsolve>    display NO FLEXIBLE SEGMENTS for molecule $nchain1 
+ CNSsolve>  else 
+ CNSsolve>    if ($Toppar.nseg_$nchain1 < 0) then 
+ CNSsolve>      display AUTOMATIC DEFINITION OF FLEXIBLE SEGMENTS BASED ON INTERMOLECULAR PROXIMITY FOR MOLECULE $nchain1 
+ CNSsolve>      inline @RUN:protocols/flexauto-neighbors.cns 
+ ASSFIL: file flexauto-neighbors.cns opened.
+ CNSsolve>! flexauto-neighbors.cns 
+ CNSsolve>!    Automatic definition of flexible segments for docking for contacting residues 
+ CNSsolve>!    including neighboring residues of residues making contacts 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve>evaluate ($flcut = $Data.flcut_nb) 
+ CNSsolve>!evaluate ($flcut = 5.0) 
+ CNSsolve> 
+ CNSsolve>do (store5 = $nchain1) (byres (segid $Toppar.prot_segid_$nchain1 
+ CNSsolve>                               and (not (segid $Toppar.prot_segid_$nchain1 or resn SHA)) around $flcut)) 
+ CNSsolve>do (store7 = $nchain1) (byres (segid $Toppar.prot_segid_$nchain1 
+ CNSsolve>                               and (not (segid $Toppar.prot_segid_$nchain1 or resn SHA)) around $flcut)) 
+ CNSsolve> 
+ CNSsolve>do (store6 = 0) (segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>for $id in id (tag and attr store5 >0 and not ((resn WAT or resn HOH or resn TIP*) or resn DMSO) and segid $Toppar.prot_segid_$nchain1) loop flexres1 
+ CNSsolve>    show (resid) (id $id) 
+ CNSsolve>    evaluate ($inres = decode($result)) 
+ CNSsolve>    evaluate ($preres = $inres) 
+ CNSsolve>    evaluate ($nexres = $inres) 
+ CNSsolve>    if ($iteration = 1) then 
+ CNSsolve>      evaluate ($preres = $preres - 1) 
+ CNSsolve>!      evaluate ($nexres = $nexres + 1) 
+ CNSsolve>    end if 
+ CNSsolve>    do (store6 = $nchain1) (resid $preres and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>    do (store6 = $nchain1) (resid $nexres and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>end loop flexres1 
+ CNSsolve> 
+ CNSsolve>do (store5 = store6) (segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>do (store7 = store6) (segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve> 
+ CNSsolve>display THE FOLLOWING RESIDUES HAVE BEEN DEFINED AS FLEXIBLE for molecule $nchain1 
+ CNSsolve>for $id in id (tag and attr store5 >0 and not ((resn WAT or resn HOH or resn TIP*) or resn DMSO) and segid $Toppar.prot_segid_$nchain1) loop flexres2 
+ CNSsolve>    show (resid) (id $id) 
+ CNSsolve>    evaluate ($inres = $result) 
+ CNSsolve>    show (resn) (id $id) 
+ CNSsolve>    evaluate ($nares = $result) 
+ CNSsolve>    show (segid) (id $id) 
+ CNSsolve>    evaluate ($seres = $result) 
+ CNSsolve>    display AUTOMATICALLY SELECTED SEGMENT: $nares,$inres,$seres 
+ CNSsolve>end loop flexres2 
+ CNSsolve> 
+ CNSsolve>    else 
+ CNSsolve>      display FLEXIBLE SIDE-CHAINS SEGMENTS for molecule $nchain1 
+ CNSsolve>      while ($nf < $Toppar.nseg_$nchain1) loop Xflex 
+ CNSsolve>        evaluate($nf=$nf + 1) 
+ CNSsolve>        do (store5 = $nchain1) ( resid $Toppar.start_seg_$nchain1_$nf : $Toppar.end_seg_$nchain1_$nf 
+ CNSsolve>                                 and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>        display FLEXIBLE SEGMENT NR $nf FROM $Toppar.start_seg_$nchain1_$nf TO $Toppar.end_seg_$nchain1_$nf 
+ CNSsolve>      end loop Xflex 
+ CNSsolve>    end if 
+ CNSsolve>  end if 
+ CNSsolve>end loop nloop1 
+ CNSsolve> 
+ CNSsolve>!then fully flexible segments for all stages 
+ CNSsolve>evaluate($nchain1 = 0) 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop nloop2 
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  if ($Toppar.nfle_$nchain1 = 0) then 
+ CNSsolve>    display NO FULLY FLEXIBLE SEGMENTS for molecule $nchain1 
+ CNSsolve>  else 
+ CNSsolve>    display FULLY FLEXIBLE SEGMENTS for molecule $nchain1 
+ CNSsolve>    evaluate($nf=0) 
+ CNSsolve>    while ($nf < $Toppar.nfle_$nchain1) loop Xfflex 
+ CNSsolve>      evaluate($nf=$nf + 1) 
+ CNSsolve>      do (store5 = $nchain1) ( resid $Toppar.start_fle_$nchain1_$nf : $Toppar.end_fle_$nchain1_$nf 
+ CNSsolve>                               and segid $Toppar.prot_segid_$nchain1 ) 
+ CNSsolve>      display FULLY FLEXIBLE SEGMENT NR $nf FROM $Toppar.start_fle_$nchain1_$nf TO $Toppar.end_fle_$nchain1_$nf 
+ CNSsolve>    end loop Xfflex 
+ CNSsolve>  end if 
+ CNSsolve>end loop nloop2 
+ CNSsolve> 
+ CNSsolve>do (store5 = 21) (resn WAT or resn HOH or resn TIP*) 
+ CNSsolve>evaluate ($nfletot = 0) 
+ CNSsolve> 
+ CNSsolve>! check number of flexible residues per molecule 
+ CNSsolve>evaluate($nchain1 = 0) 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop nloop3 
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  do (store6 = 0) (all) 
+ CNSsolve>  do (store6 = 1) (tag and (attr store5 = $nchain1)) 
+ CNSsolve>  show sum (store6) (all) 
+ CNSsolve>  evaluate ($numfle=$result) 
+ CNSsolve>  do (store6 = 0) (all) 
+ CNSsolve>  do (store6 = 1) (tag and segid $Toppar.prot_segid_$nchain1 and not (attr store5 = $nchain1)) 
+ CNSsolve>  show sum (store6) (all) 
+ CNSsolve>  evaluate ($numrig=$result) 
+ CNSsolve>  do (store6 = 0) (all) 
+ CNSsolve>  do (store6 = 1) (tag and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>  show sum (store6) (all) 
+ CNSsolve>  evaluate ($numres=$result) 
+ CNSsolve>  display FLEXIBILITY STATISTIC FOR MOLECULE $nchain1 : Nres=$numres Nrigid=$numrig Nflex=$numfle 
+ CNSsolve>  evaluate ($nfletot = $nfletot + $numfle) 
+ CNSsolve>end loop nloop3 
+ CNSsolve> 
+ CNSsolve>do (store1 = 0) (all) 
+ CNSsolve>do (store1 = 1) ((resn WAT or resn HOH or resn TIP*) and name OH2) 
+ CNSsolve>show sum (store1) ((resn WAT or resn HOH or resn TIP*)) 
+ CNSsolve>evaluate ($nfletot = $nfletot + $result) 
+ CNSsolve> 
+ CNSsolve>evaluate ($nfletot = $nfletot + 10) 
+ CNSsolve>   fix sele=((attr store5 = 0) and not name H*) end 
+ CNSsolve>   minimize powell 
+ CNSsolve>     nstep=50 
+ CNSsolve>     drop=40.0 
+ CNSsolve>     nprint=5 
+ CNSsolve>   end 
+ CNSsolve>   fix sele=(not all) end 
+ CNSsolve> 
+ CNSsolve>   energy end 
+ CNSsolve> 
+ CNSsolve>   print thres=0.02 bonds 
+ CNSsolve>   print thres=5. angles 
+ CNSsolve>   flag excl noe cdih end 
+ CNSsolve> 
+ CNSsolve>   do (q=1.0) (store9) 
+ CNSsolve> end if 
+ CNSsolve> 
+ CNSsolve> fix selection=( none ) end 
+ CNSsolve> energy end 
+ CNSsolve> evaluate ($bonded = $bond + $angl + $impr) 
+ CNSsolve> if ($bonded > 10000) then 
+ CNSsolve>    minimize powell nstep=100 drop=10.0 nprint=10 end 
+ CNSsolve> end if 
+ CNSsolve> if ($bonded > 10000) then 
+ CNSsolve>   energy end 
+ CNSsolve>   evaluate ($bonded = $bond + $angl + $impr) 
+ CNSsolve>   evaluate ($dispfile = $coor_outfile - ".pdb" + "_" + encode($nstruc) + ".warn") 
+ CNSsolve>   set display=$dispfile end 
+ CNSsolve>   display WARNING: the bonded energy is very high: 
+ CNSsolve>   display Ebonded-total=$bonded Ebond=$bond Eangl=$angl Eimpr=$impr 
+ CNSsolve>   display Something is possibly wrong with your input structure 
+ CNSsolve>   close $dispfile end 
+ CNSsolve> end if 
+ CNSsolve> 
+ CNSsolve>      end if 
+ CNSsolve> 
+ CNSsolve>      evaluate ($coorfile_$nstruc = "RUN:begin/" + $Filenames.fileroot + "_" + encode($nstruc) + ".pdb") 
+ CNSsolve> 
+ CNSsolve>      write coor format=pdbo output=$coorfile_$nstruc end 
+ CNSsolve>      evaluate ($nstruc = $nstruc + 1) 
+ CNSsolve>    end if 
+ CNSsolve> 
+ CNSsolve>end loop write_complexes 
+ CNSsolve>for $molecule in ( @@RUN:begin/combinations.list ) loop write_complexes 
+ ASSFIL: file combinations.list opened.
+ FOR-clause="BEGIN:protein1_1.pdb" 
+ FOR-clause"BEGIN:protein2_1.pdb" 
+ FOR LOOP: symbol MOLECULE set to "BEGIN:protein2_1.pdb" (string)
+ FOR-clause= ) loop write_complexes 
+ CNSsolve>    evaluate ($nline = $nline + 1) 
+ EVALUATE: symbol $NLINE set to    2.00000     (real)
+ CNSsolve>    evaluate ($nummod = mod($nline, $data.ncomponents)) 
+ EVALUATE: symbol $NUMMOD set to    0.00000     (real)
+ CNSsolve> 
+ CNSsolve>    coor @@$molecule 
+ ASSFIL: file protein2_1.pdb opened.
+ COOR>REMARK FILENAME="protein2_1.pdb" 
+ COOR>REMARK peptide link removed (applied DPEP): from      276  to      502 
+ COOR>REMARK disulphide added: from      101  to      164 
+ COOR>REMARK disulphide added: from      203  to      259 
+ COOR>REMARK DATE:13-Sep-2024  19:37:52       created by user: enmr 
+ COOR>REMARK VERSION:1.3U 
+ COOR>ATOM      1  N   GLY B   1      63.263 -26.931  38.534  1.00 15.00      B    N 
+ COOR>ATOM      2  HN  GLY B   1      62.444 -26.519  38.882  1.00 15.00      B    H 
+ CNSsolve> 
+ CNSsolve>    if ($nummod eq 0) then 
+ NEXTCD: condition evaluated as true
+ CNSsolve>      if ($saprotocol.rebuildcplx eq true) then 
+ NEXTCD: condition evaluated as false
+ CNSsolve>        do (store9=0) (all) 
+ CNSsolve>        do (store9=1) (attr q=0.0) 
+ CNSsolve>         
+ CNSsolve> ! rebuild-unknown.cns 
+ CNSsolve>!    Rebuild unknown atoms in the context of the complex 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2017 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve>show sum(1) (store9) 
+ CNSsolve>evaluate ($tobuild=$result) 
+ CNSsolve>display REBUILDING $tobuild ATOMS 
+ CNSsolve> 
+ CNSsolve>energy end 
+ CNSsolve> 
+ CNSsolve>if ( $tobuild > 0 ) then 
+ CNSsolve> 
+ CNSsolve>   fix selection=(not(store9)) end 
+ CNSsolve> 
+ CNSsolve>   show sum(1) (store9) 
+ CNSsolve>   evaluate ($moving=$result) 
+ CNSsolve> 
+ CNSsolve>   if ( $moving > 0 ) then 
+ CNSsolve>     for $id in id (tag and byres(store9)) loop avco 
+ CNSsolve> 
+ CNSsolve>       show ave(x) (byres(id $id) and known) 
+ CNSsolve>       evaluate ($ave_x=$result) 
+ CNSsolve>       show ave(y) (byres(id $id) and known) 
+ CNSsolve>       evaluate ($ave_y=$result) 
+ CNSsolve>       show ave(z) (byres(id $id) and known) 
+ CNSsolve>       evaluate ($ave_z=$result) 
+ CNSsolve> 
+ CNSsolve>       do (x=$ave_x) (byres(id $id) and store9) 
+ CNSsolve>       do (y=$ave_y) (byres(id $id) and store9) 
+ CNSsolve>       do (z=$ave_z) (byres(id $id) and store9) 
+ CNSsolve> 
+ CNSsolve>     end loop avco 
+ CNSsolve> 
+ CNSsolve>     do (x=x+2*random(1.0)-1) (store9) 
+ CNSsolve>     do (y=y+2*random(1.0)-1) (store9) 
+ CNSsolve>     do (z=z+2*random(1.0)-1) (store9) 
+ CNSsolve> 
+ CNSsolve>     {- start parameter for the side chain building -} 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         rcon=20. nbxmod=-2 repel=0.9  wmin=0.1 tolerance=1. 
+ CNSsolve>         rexp=2 irexp=2 inhibit=0.25 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- Friction coefficient, in 1/ps. -} 
+ CNSsolve>     do (fbeta=100) (store9) 
+ CNSsolve> 
+ CNSsolve>     evaluate ($bath=300.0) 
+ CNSsolve>     evaluate ($nstep=500) 
+ CNSsolve>     evaluate ($timestep=0.0005) 
+ CNSsolve> 
+ CNSsolve>     do (refy=mass) (store9) 
+ CNSsolve> 
+ CNSsolve>     do (mass=20) (store9) 
+ CNSsolve> 
+ CNSsolve>     igroup interaction 
+ CNSsolve>       (store9) (store9 or known) 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- turn on initial energy terms -} 
+ CNSsolve>     flags exclude * include bond angle vdw end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=50  nprint=10 end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     flags exclude vdw include impr end 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=50 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     flags include vdw end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=50 nprint=10 end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=50 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         rcon=2. nbxmod=-3 repel=0.75 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=100 nprint=25 end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=$nstep 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- turn on all energy terms -} 
+ CNSsolve>     flags include dihe ? end 
+ CNSsolve> 
+ CNSsolve>     {- set repel to ~vdw radii -} 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         repel=0.89 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=500 nprint=50 end 
+ CNSsolve> 
+ CNSsolve>     flags exclude * include bond angl impr dihe vdw elec end 
+ CNSsolve> 
+ CNSsolve>     {- return masses to something sensible -} 
+ CNSsolve>     do (mass=refy) (store9) 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=$nstep 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- some minimisation -} 
+ CNSsolve>     minimize powell 
+ CNSsolve>       nstep=500 
+ CNSsolve>       drop=40.0 
+ CNSsolve>       nprint=50 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- turn on electrostatic and proper non-bonded-} 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         repel=0 
+ CNSsolve>         nbxmod=5 atom cdie shift 
+ CNSsolve>         cutnb=9.5 ctofnb=8.5 ctonnb=6.5 eps=10.0 e14fac=0.4 inhibit 0.25 
+ CNSsolve>	 wmin=0.5 
+ CNSsolve>	 tolerance  0.5 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     flags exclude * include bond angl impr dihe vdw elec end 
+ CNSsolve> 
+ CNSsolve>     minimize powell 
+ CNSsolve>       nstep=500 
+ CNSsolve>       drop=40.0 
+ CNSsolve>       nprint=50 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=$nstep 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- some final minimisation -} 
+ CNSsolve>     minimize powell 
+ CNSsolve>       nstep=500 
+ CNSsolve>       drop=40.0 
+ CNSsolve>       nprint=50 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     print thres=0.02 bonds 
+ CNSsolve>     print thres=5. angles 
+ CNSsolve> 
+ CNSsolve>   end if 
+ CNSsolve> 
+ CNSsolve>   energy end 
+ CNSsolve> 
+ CNSsolve>    
+ CNSsolve>! flex_segment_back.cns 
+ CNSsolve>!    Define the semi-flexible segments (both side-chains and backbone) 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve> 
+ CNSsolve>do (store5 = 0) (all) 
+ CNSsolve>do (store6 = 0) (all) 
+ CNSsolve>do (store7 = 0) (all) 
+ CNSsolve> 
+ CNSsolve>!first flexible segments for docking 
+ CNSsolve>evaluate($nchain1 = 0) 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop nloop1 
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  evaluate($nf=0) 
+ CNSsolve> 
+ CNSsolve>  if ($Toppar.nseg_$nchain1 = 0) then 
+ CNSsolve>    display NO FLEXIBLE SEGMENTS for molecule $nchain1 
+ CNSsolve>  else 
+ CNSsolve>    if ($Toppar.nseg_$nchain1 < 0) then 
+ CNSsolve>      display AUTOMATIC DEFINITION OF FLEXIBLE SEGMENTS BASED ON INTERMOLECULAR PROXIMITY FOR MOLECULE $nchain1 
+ CNSsolve>      inline  
+ CNSsolve>! flexauto-neighbors.cns 
+ CNSsolve>!    Automatic definition of flexible segments for docking for contacting residues 
+ CNSsolve>!    including neighboring residues of residues making contacts 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve>evaluate ($flcut = $Data.flcut_nb) 
+ CNSsolve>!evaluate ($flcut = 5.0) 
+ CNSsolve> 
+ CNSsolve>do (store5 = $nchain1) (byres (segid $Toppar.prot_segid_$nchain1 
+ CNSsolve>                               and (not (segid $Toppar.prot_segid_$nchain1 or resn SHA)) around $flcut)) 
+ CNSsolve>do (store7 = $nchain1) (byres (segid $Toppar.prot_segid_$nchain1 
+ CNSsolve>                               and (not (segid $Toppar.prot_segid_$nchain1 or resn SHA)) around $flcut)) 
+ CNSsolve> 
+ CNSsolve>do (store6 = 0) (segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>for $id in id (tag and attr store5 >0 and not ((resn WAT or resn HOH or resn TIP*) or resn DMSO) and segid $Toppar.prot_segid_$nchain1) loop flexres1 
+ CNSsolve>    show (resid) (id $id) 
+ CNSsolve>    evaluate ($inres = decode($result)) 
+ CNSsolve>    evaluate ($preres = $inres) 
+ CNSsolve>    evaluate ($nexres = $inres) 
+ CNSsolve>    if ($iteration = 1) then 
+ CNSsolve>      evaluate ($preres = $preres - 1) 
+ CNSsolve>!      evaluate ($nexres = $nexres + 1) 
+ CNSsolve>    end if 
+ CNSsolve>    do (store6 = $nchain1) (resid $preres and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>    do (store6 = $nchain1) (resid $nexres and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>end loop flexres1 
+ CNSsolve> 
+ CNSsolve>do (store5 = store6) (segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>do (store7 = store6) (segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve> 
+ CNSsolve>display THE FOLLOWING RESIDUES HAVE BEEN DEFINED AS FLEXIBLE for molecule $nchain1 
+ CNSsolve>for $id in id (tag and attr store5 >0 and not ((resn WAT or resn HOH or resn TIP*) or resn DMSO) and segid $Toppar.prot_segid_$nchain1) loop flexres2 
+ CNSsolve>    show (resid) (id $id) 
+ CNSsolve>    evaluate ($inres = $result) 
+ CNSsolve>    show (resn) (id $id) 
+ CNSsolve>    evaluate ($nares = $result) 
+ CNSsolve>    show (segid) (id $id) 
+ CNSsolve>    evaluate ($seres = $result) 
+ CNSsolve>    display AUTOMATICALLY SELECTED SEGMENT: $nares,$inres,$seres 
+ CNSsolve>end loop flexres2 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>    else 
+ CNSsolve>      display FLEXIBLE SIDE-CHAINS SEGMENTS for molecule $nchain1 
+ CNSsolve>      while ($nf < $Toppar.nseg_$nchain1) loop Xflex 
+ CNSsolve>        evaluate($nf=$nf + 1) 
+ CNSsolve>        do (store5 = $nchain1) ( resid $Toppar.start_seg_$nchain1_$nf : $Toppar.end_seg_$nchain1_$nf 
+ CNSsolve>                                 and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>        display FLEXIBLE SEGMENT NR $nf FROM $Toppar.start_seg_$nchain1_$nf TO $Toppar.end_seg_$nchain1_$nf 
+ CNSsolve>      end loop Xflex 
+ CNSsolve>    end if 
+ CNSsolve>  end if 
+ CNSsolve>end loop nloop1 
+ CNSsolve> 
+ CNSsolve>!then fully flexible segments for all stages 
+ CNSsolve>evaluate($nchain1 = 0) 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop nloop2 
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  if ($Toppar.nfle_$nchain1 = 0) then 
+ CNSsolve>    display NO FULLY FLEXIBLE SEGMENTS for molecule $nchain1 
+ CNSsolve>  else 
+ CNSsolve>    display FULLY FLEXIBLE SEGMENTS for molecule $nchain1 
+ CNSsolve>    evaluate($nf=0) 
+ CNSsolve>    while ($nf < $Toppar.nfle_$nchain1) loop Xfflex 
+ CNSsolve>      evaluate($nf=$nf + 1) 
+ CNSsolve>      do (store5 = $nchain1) ( resid $Toppar.start_fle_$nchain1_$nf : $Toppar.end_fle_$nchain1_$nf 
+ CNSsolve>                               and segid $Toppar.prot_segid_$nchain1 ) 
+ CNSsolve>      display FULLY FLEXIBLE SEGMENT NR $nf FROM $Toppar.start_fle_$nchain1_$nf TO $Toppar.end_fle_$nchain1_$nf 
+ CNSsolve>    end loop Xfflex 
+ CNSsolve>  end if 
+ CNSsolve>end loop nloop2 
+ CNSsolve> 
+ CNSsolve>do (store5 = 21) (resn WAT or resn HOH or resn TIP*) 
+ CNSsolve>evaluate ($nfletot = 0) 
+ CNSsolve> 
+ CNSsolve>! check number of flexible residues per molecule 
+ CNSsolve>evaluate($nchain1 = 0) 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop nloop3 
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  do (store6 = 0) (all) 
+ CNSsolve>  do (store6 = 1) (tag and (attr store5 = $nchain1)) 
+ CNSsolve>  show sum (store6) (all) 
+ CNSsolve>  evaluate ($numfle=$result) 
+ CNSsolve>  do (store6 = 0) (all) 
+ CNSsolve>  do (store6 = 1) (tag and segid $Toppar.prot_segid_$nchain1 and not (attr store5 = $nchain1)) 
+ CNSsolve>  show sum (store6) (all) 
+ CNSsolve>  evaluate ($numrig=$result) 
+ CNSsolve>  do (store6 = 0) (all) 
+ CNSsolve>  do (store6 = 1) (tag and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>  show sum (store6) (all) 
+ CNSsolve>  evaluate ($numres=$result) 
+ CNSsolve>  display FLEXIBILITY STATISTIC FOR MOLECULE $nchain1 : Nres=$numres Nrigid=$numrig Nflex=$numfle 
+ CNSsolve>  evaluate ($nfletot = $nfletot + $numfle) 
+ CNSsolve>end loop nloop3 
+ CNSsolve> 
+ CNSsolve>do (store1 = 0) (all) 
+ CNSsolve>do (store1 = 1) ((resn WAT or resn HOH or resn TIP*) and name OH2) 
+ CNSsolve>show sum (store1) ((resn WAT or resn HOH or resn TIP*)) 
+ CNSsolve>evaluate ($nfletot = $nfletot + $result) 
+ CNSsolve> 
+ CNSsolve>evaluate ($nfletot = $nfletot + 10) 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>   fix sele=((attr store5 = 0) and not name H*) end 
+ CNSsolve>   minimize powell 
+ CNSsolve>     nstep=50 
+ CNSsolve>     drop=40.0 
+ CNSsolve>     nprint=5 
+ CNSsolve>   end 
+ CNSsolve>   fix sele=(not all) end 
+ CNSsolve> 
+ CNSsolve>   energy end 
+ CNSsolve> 
+ CNSsolve>   print thres=0.02 bonds 
+ CNSsolve>   print thres=5. angles 
+ CNSsolve>   flag excl noe cdih end 
+ CNSsolve> 
+ CNSsolve>   do (q=1.0) (store9) 
+ CNSsolve> end if 
+ CNSsolve> 
+ CNSsolve> fix selection=( none ) end 
+ CNSsolve> energy end 
+ CNSsolve> evaluate ($bonded = $bond + $angl + $impr) 
+ CNSsolve> if ($bonded > 10000) then 
+ CNSsolve>    minimize powell nstep=100 drop=10.0 nprint=10 end 
+ CNSsolve> end if 
+ CNSsolve> if ($bonded > 10000) then 
+ CNSsolve>   energy end 
+ CNSsolve>   evaluate ($bonded = $bond + $angl + $impr) 
+ CNSsolve>   evaluate ($dispfile = $coor_outfile - ".pdb" + "_" + encode($nstruc) + ".warn") 
+ CNSsolve>   set display=$dispfile end 
+ CNSsolve>   display WARNING: the bonded energy is very high: 
+ CNSsolve>   display Ebonded-total=$bonded Ebond=$bond Eangl=$angl Eimpr=$impr 
+ CNSsolve>   display Something is possibly wrong with your input structure 
+ CNSsolve>   close $dispfile end 
+ CNSsolve> end if 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>      end if 
+ CNSsolve> 
+ CNSsolve>      evaluate ($coorfile_$nstruc = "RUN:begin/" + $Filenames.fileroot + "_" + encode($nstruc) + ".pdb") 
+ EVALUATE: symbol $COORFILE_1 set to "RUN:begin/complex_1.pdb" (string)
+ CNSsolve> 
+ CNSsolve>      write coor format=pdbo output=$coorfile_$nstruc end 
+ ASSFIL: file complex_1.pdb opened.
+ CNSsolve>      evaluate ($nstruc = $nstruc + 1) 
+ EVALUATE: symbol $NSTRUC set to    2.00000     (real)
+ CNSsolve>    end if 
+ CNSsolve> 
+ CNSsolve>end loop write_complexes 
+ CNSsolve>for $molecule in ( @@RUN:begin/combinations.list ) loop write_complexes 
+ ASSFIL: file combinations.list opened.
+ FOR-clause="BEGIN:protein1_1.pdb" 
+ FOR-clause"BEGIN:protein2_1.pdb" 
+ FOR-clause ) loop write_complexes 
+ CNSsolve>    evaluate ($nline = $nline + 1) 
+ CNSsolve>    evaluate ($nummod = mod($nline, $data.ncomponents)) 
+ CNSsolve> 
+ CNSsolve>    coor @@$molecule 
+ CNSsolve> 
+ CNSsolve>    if ($nummod eq 0) then 
+ CNSsolve>      if ($saprotocol.rebuildcplx eq true) then 
+ CNSsolve>        do (store9=0) (all) 
+ CNSsolve>        do (store9=1) (attr q=0.0) 
+ CNSsolve>         
+ CNSsolve> ! rebuild-unknown.cns 
+ CNSsolve>!    Rebuild unknown atoms in the context of the complex 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2017 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve>show sum(1) (store9) 
+ CNSsolve>evaluate ($tobuild=$result) 
+ CNSsolve>display REBUILDING $tobuild ATOMS 
+ CNSsolve> 
+ CNSsolve>energy end 
+ CNSsolve> 
+ CNSsolve>if ( $tobuild > 0 ) then 
+ CNSsolve> 
+ CNSsolve>   fix selection=(not(store9)) end 
+ CNSsolve> 
+ CNSsolve>   show sum(1) (store9) 
+ CNSsolve>   evaluate ($moving=$result) 
+ CNSsolve> 
+ CNSsolve>   if ( $moving > 0 ) then 
+ CNSsolve>     for $id in id (tag and byres(store9)) loop avco 
+ CNSsolve> 
+ CNSsolve>       show ave(x) (byres(id $id) and known) 
+ CNSsolve>       evaluate ($ave_x=$result) 
+ CNSsolve>       show ave(y) (byres(id $id) and known) 
+ CNSsolve>       evaluate ($ave_y=$result) 
+ CNSsolve>       show ave(z) (byres(id $id) and known) 
+ CNSsolve>       evaluate ($ave_z=$result) 
+ CNSsolve> 
+ CNSsolve>       do (x=$ave_x) (byres(id $id) and store9) 
+ CNSsolve>       do (y=$ave_y) (byres(id $id) and store9) 
+ CNSsolve>       do (z=$ave_z) (byres(id $id) and store9) 
+ CNSsolve> 
+ CNSsolve>     end loop avco 
+ CNSsolve> 
+ CNSsolve>     do (x=x+2*random(1.0)-1) (store9) 
+ CNSsolve>     do (y=y+2*random(1.0)-1) (store9) 
+ CNSsolve>     do (z=z+2*random(1.0)-1) (store9) 
+ CNSsolve> 
+ CNSsolve>     {- start parameter for the side chain building -} 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         rcon=20. nbxmod=-2 repel=0.9  wmin=0.1 tolerance=1. 
+ CNSsolve>         rexp=2 irexp=2 inhibit=0.25 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- Friction coefficient, in 1/ps. -} 
+ CNSsolve>     do (fbeta=100) (store9) 
+ CNSsolve> 
+ CNSsolve>     evaluate ($bath=300.0) 
+ CNSsolve>     evaluate ($nstep=500) 
+ CNSsolve>     evaluate ($timestep=0.0005) 
+ CNSsolve> 
+ CNSsolve>     do (refy=mass) (store9) 
+ CNSsolve> 
+ CNSsolve>     do (mass=20) (store9) 
+ CNSsolve> 
+ CNSsolve>     igroup interaction 
+ CNSsolve>       (store9) (store9 or known) 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- turn on initial energy terms -} 
+ CNSsolve>     flags exclude * include bond angle vdw end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=50  nprint=10 end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     flags exclude vdw include impr end 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=50 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     flags include vdw end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=50 nprint=10 end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=50 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         rcon=2. nbxmod=-3 repel=0.75 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=100 nprint=25 end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=$nstep 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- turn on all energy terms -} 
+ CNSsolve>     flags include dihe ? end 
+ CNSsolve> 
+ CNSsolve>     {- set repel to ~vdw radii -} 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         repel=0.89 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     minimize powell nstep=500 nprint=50 end 
+ CNSsolve> 
+ CNSsolve>     flags exclude * include bond angl impr dihe vdw elec end 
+ CNSsolve> 
+ CNSsolve>     {- return masses to something sensible -} 
+ CNSsolve>     do (mass=refy) (store9) 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=$nstep 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- some minimisation -} 
+ CNSsolve>     minimize powell 
+ CNSsolve>       nstep=500 
+ CNSsolve>       drop=40.0 
+ CNSsolve>       nprint=50 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- turn on electrostatic and proper non-bonded-} 
+ CNSsolve>     parameter 
+ CNSsolve>       nbonds 
+ CNSsolve>         repel=0 
+ CNSsolve>         nbxmod=5 atom cdie shift 
+ CNSsolve>         cutnb=9.5 ctofnb=8.5 ctonnb=6.5 eps=10.0 e14fac=0.4 inhibit 0.25 
+ CNSsolve>	 wmin=0.5 
+ CNSsolve>	 tolerance  0.5 
+ CNSsolve>       end 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     flags exclude * include bond angl impr dihe vdw elec end 
+ CNSsolve> 
+ CNSsolve>     minimize powell 
+ CNSsolve>       nstep=500 
+ CNSsolve>       drop=40.0 
+ CNSsolve>       nprint=50 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     do (vx=maxwell($bath)) (store9) 
+ CNSsolve>     do (vy=maxwell($bath)) (store9) 
+ CNSsolve>     do (vz=maxwell($bath)) (store9) 
+ CNSsolve> 
+ CNSsolve>     dynamics cartesian 
+ CNSsolve>       nstep=$nstep 
+ CNSsolve>       timestep=$timestep 
+ CNSsolve>       tcoupling=true temperature=$bath 
+ CNSsolve>       nprint=$nstep 
+ CNSsolve>       cmremove=false 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     {- some final minimisation -} 
+ CNSsolve>     minimize powell 
+ CNSsolve>       nstep=500 
+ CNSsolve>       drop=40.0 
+ CNSsolve>       nprint=50 
+ CNSsolve>     end 
+ CNSsolve> 
+ CNSsolve>     print thres=0.02 bonds 
+ CNSsolve>     print thres=5. angles 
+ CNSsolve> 
+ CNSsolve>   end if 
+ CNSsolve> 
+ CNSsolve>   energy end 
+ CNSsolve> 
+ CNSsolve>    
+ CNSsolve>! flex_segment_back.cns 
+ CNSsolve>!    Define the semi-flexible segments (both side-chains and backbone) 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve> 
+ CNSsolve>do (store5 = 0) (all) 
+ CNSsolve>do (store6 = 0) (all) 
+ CNSsolve>do (store7 = 0) (all) 
+ CNSsolve> 
+ CNSsolve>!first flexible segments for docking 
+ CNSsolve>evaluate($nchain1 = 0) 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop nloop1 
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  evaluate($nf=0) 
+ CNSsolve> 
+ CNSsolve>  if ($Toppar.nseg_$nchain1 = 0) then 
+ CNSsolve>    display NO FLEXIBLE SEGMENTS for molecule $nchain1 
+ CNSsolve>  else 
+ CNSsolve>    if ($Toppar.nseg_$nchain1 < 0) then 
+ CNSsolve>      display AUTOMATIC DEFINITION OF FLEXIBLE SEGMENTS BASED ON INTERMOLECULAR PROXIMITY FOR MOLECULE $nchain1 
+ CNSsolve>      inline  
+ CNSsolve>! flexauto-neighbors.cns 
+ CNSsolve>!    Automatic definition of flexible segments for docking for contacting residues 
+ CNSsolve>!    including neighboring residues of residues making contacts 
+ CNSsolve>! 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! * Copyright 2003-2018 Alexandre Bonvin, Utrecht University.           * 
+ CNSsolve>! * All rights reserved.                                                * 
+ CNSsolve>! * This code is part of the HADDOCK software and governed by its       * 
+ CNSsolve>! * license. Please see the LICENSE file that should have been included * 
+ CNSsolve>! * as part of this package.                                            * 
+ CNSsolve>! *********************************************************************** 
+ CNSsolve>! 
+ CNSsolve>evaluate ($flcut = $Data.flcut_nb) 
+ CNSsolve>!evaluate ($flcut = 5.0) 
+ CNSsolve> 
+ CNSsolve>do (store5 = $nchain1) (byres (segid $Toppar.prot_segid_$nchain1 
+ CNSsolve>                               and (not (segid $Toppar.prot_segid_$nchain1 or resn SHA)) around $flcut)) 
+ CNSsolve>do (store7 = $nchain1) (byres (segid $Toppar.prot_segid_$nchain1 
+ CNSsolve>                               and (not (segid $Toppar.prot_segid_$nchain1 or resn SHA)) around $flcut)) 
+ CNSsolve> 
+ CNSsolve>do (store6 = 0) (segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>for $id in id (tag and attr store5 >0 and not ((resn WAT or resn HOH or resn TIP*) or resn DMSO) and segid $Toppar.prot_segid_$nchain1) loop flexres1 
+ CNSsolve>    show (resid) (id $id) 
+ CNSsolve>    evaluate ($inres = decode($result)) 
+ CNSsolve>    evaluate ($preres = $inres) 
+ CNSsolve>    evaluate ($nexres = $inres) 
+ CNSsolve>    if ($iteration = 1) then 
+ CNSsolve>      evaluate ($preres = $preres - 1) 
+ CNSsolve>!      evaluate ($nexres = $nexres + 1) 
+ CNSsolve>    end if 
+ CNSsolve>    do (store6 = $nchain1) (resid $preres and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>    do (store6 = $nchain1) (resid $nexres and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>end loop flexres1 
+ CNSsolve> 
+ CNSsolve>do (store5 = store6) (segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>do (store7 = store6) (segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve> 
+ CNSsolve>display THE FOLLOWING RESIDUES HAVE BEEN DEFINED AS FLEXIBLE for molecule $nchain1 
+ CNSsolve>for $id in id (tag and attr store5 >0 and not ((resn WAT or resn HOH or resn TIP*) or resn DMSO) and segid $Toppar.prot_segid_$nchain1) loop flexres2 
+ CNSsolve>    show (resid) (id $id) 
+ CNSsolve>    evaluate ($inres = $result) 
+ CNSsolve>    show (resn) (id $id) 
+ CNSsolve>    evaluate ($nares = $result) 
+ CNSsolve>    show (segid) (id $id) 
+ CNSsolve>    evaluate ($seres = $result) 
+ CNSsolve>    display AUTOMATICALLY SELECTED SEGMENT: $nares,$inres,$seres 
+ CNSsolve>end loop flexres2 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>    else 
+ CNSsolve>      display FLEXIBLE SIDE-CHAINS SEGMENTS for molecule $nchain1 
+ CNSsolve>      while ($nf < $Toppar.nseg_$nchain1) loop Xflex 
+ CNSsolve>        evaluate($nf=$nf + 1) 
+ CNSsolve>        do (store5 = $nchain1) ( resid $Toppar.start_seg_$nchain1_$nf : $Toppar.end_seg_$nchain1_$nf 
+ CNSsolve>                                 and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>        display FLEXIBLE SEGMENT NR $nf FROM $Toppar.start_seg_$nchain1_$nf TO $Toppar.end_seg_$nchain1_$nf 
+ CNSsolve>      end loop Xflex 
+ CNSsolve>    end if 
+ CNSsolve>  end if 
+ CNSsolve>end loop nloop1 
+ CNSsolve> 
+ CNSsolve>!then fully flexible segments for all stages 
+ CNSsolve>evaluate($nchain1 = 0) 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop nloop2 
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  if ($Toppar.nfle_$nchain1 = 0) then 
+ CNSsolve>    display NO FULLY FLEXIBLE SEGMENTS for molecule $nchain1 
+ CNSsolve>  else 
+ CNSsolve>    display FULLY FLEXIBLE SEGMENTS for molecule $nchain1 
+ CNSsolve>    evaluate($nf=0) 
+ CNSsolve>    while ($nf < $Toppar.nfle_$nchain1) loop Xfflex 
+ CNSsolve>      evaluate($nf=$nf + 1) 
+ CNSsolve>      do (store5 = $nchain1) ( resid $Toppar.start_fle_$nchain1_$nf : $Toppar.end_fle_$nchain1_$nf 
+ CNSsolve>                               and segid $Toppar.prot_segid_$nchain1 ) 
+ CNSsolve>      display FULLY FLEXIBLE SEGMENT NR $nf FROM $Toppar.start_fle_$nchain1_$nf TO $Toppar.end_fle_$nchain1_$nf 
+ CNSsolve>    end loop Xfflex 
+ CNSsolve>  end if 
+ CNSsolve>end loop nloop2 
+ CNSsolve> 
+ CNSsolve>do (store5 = 21) (resn WAT or resn HOH or resn TIP*) 
+ CNSsolve>evaluate ($nfletot = 0) 
+ CNSsolve> 
+ CNSsolve>! check number of flexible residues per molecule 
+ CNSsolve>evaluate($nchain1 = 0) 
+ CNSsolve>while ($nchain1 < $data.ncomponents) loop nloop3 
+ CNSsolve>  evaluate($nchain1 = $nchain1 + 1) 
+ CNSsolve>  do (store6 = 0) (all) 
+ CNSsolve>  do (store6 = 1) (tag and (attr store5 = $nchain1)) 
+ CNSsolve>  show sum (store6) (all) 
+ CNSsolve>  evaluate ($numfle=$result) 
+ CNSsolve>  do (store6 = 0) (all) 
+ CNSsolve>  do (store6 = 1) (tag and segid $Toppar.prot_segid_$nchain1 and not (attr store5 = $nchain1)) 
+ CNSsolve>  show sum (store6) (all) 
+ CNSsolve>  evaluate ($numrig=$result) 
+ CNSsolve>  do (store6 = 0) (all) 
+ CNSsolve>  do (store6 = 1) (tag and segid $Toppar.prot_segid_$nchain1) 
+ CNSsolve>  show sum (store6) (all) 
+ CNSsolve>  evaluate ($numres=$result) 
+ CNSsolve>  display FLEXIBILITY STATISTIC FOR MOLECULE $nchain1 : Nres=$numres Nrigid=$numrig Nflex=$numfle 
+ CNSsolve>  evaluate ($nfletot = $nfletot + $numfle) 
+ CNSsolve>end loop nloop3 
+ CNSsolve> 
+ CNSsolve>do (store1 = 0) (all) 
+ CNSsolve>do (store1 = 1) ((resn WAT or resn HOH or resn TIP*) and name OH2) 
+ CNSsolve>show sum (store1) ((resn WAT or resn HOH or resn TIP*)) 
+ CNSsolve>evaluate ($nfletot = $nfletot + $result) 
+ CNSsolve> 
+ CNSsolve>evaluate ($nfletot = $nfletot + 10) 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>   fix sele=((attr store5 = 0) and not name H*) end 
+ CNSsolve>   minimize powell 
+ CNSsolve>     nstep=50 
+ CNSsolve>     drop=40.0 
+ CNSsolve>     nprint=5 
+ CNSsolve>   end 
+ CNSsolve>   fix sele=(not all) end 
+ CNSsolve> 
+ CNSsolve>   energy end 
+ CNSsolve> 
+ CNSsolve>   print thres=0.02 bonds 
+ CNSsolve>   print thres=5. angles 
+ CNSsolve>   flag excl noe cdih end 
+ CNSsolve> 
+ CNSsolve>   do (q=1.0) (store9) 
+ CNSsolve> end if 
+ CNSsolve> 
+ CNSsolve> fix selection=( none ) end 
+ CNSsolve> energy end 
+ CNSsolve> evaluate ($bonded = $bond + $angl + $impr) 
+ CNSsolve> if ($bonded > 10000) then 
+ CNSsolve>    minimize powell nstep=100 drop=10.0 nprint=10 end 
+ CNSsolve> end if 
+ CNSsolve> if ($bonded > 10000) then 
+ CNSsolve>   energy end 
+ CNSsolve>   evaluate ($bonded = $bond + $angl + $impr) 
+ CNSsolve>   evaluate ($dispfile = $coor_outfile - ".pdb" + "_" + encode($nstruc) + ".warn") 
+ CNSsolve>   set display=$dispfile end 
+ CNSsolve>   display WARNING: the bonded energy is very high: 
+ CNSsolve>   display Ebonded-total=$bonded Ebond=$bond Eangl=$angl Eimpr=$impr 
+ CNSsolve>   display Something is possibly wrong with your input structure 
+ CNSsolve>   close $dispfile end 
+ CNSsolve> end if 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve> 
+ CNSsolve>      end if 
+ CNSsolve> 
+ CNSsolve>      evaluate ($coorfile_$nstruc = "RUN:begin/" + $Filenames.fileroot + "_" + encode($nstruc) + ".pdb") 
+ CNSsolve> 
+ CNSsolve>      write coor format=pdbo output=$coorfile_$nstruc end 
+ CNSsolve>      evaluate ($nstruc = $nstruc + 1) 
+ CNSsolve>    end if 
+ CNSsolve> 
+ CNSsolve>end loop write_complexes 
+ CNSsolve> 
+ CNSsolve>! Write complex topology (one is enough) 
+ CNSsolve>evaluate ($structurefile = "RUN:begin/" + $Filenames.fileroot + ".psf") 
+ EVALUATE: symbol $STRUCTUREFILE set to "RUN:begin/complex.psf" (string)
+ CNSsolve>write structure output=$structurefile end 
+ ASSFIL: file complex.psf opened.
+ CNSsolve>stop 
+ HEAP: maximum use      =     9857944 current use      =       96000 bytes
+ HEAP: maximum overhead =        1040 current overhead =         752 bytes
+          ============================================================
+           Maximum dynamic memory allocation:     9857944 bytes
+           Maximum dynamic memory overhead:          1040 bytes
+           Program started at: 19:38:09 on 13-Sep-2024
+           Program stopped at: 19:38:09 on 13-Sep-2024
+           CPU time used:       0.3729 seconds
+          ============================================================

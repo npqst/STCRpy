@@ -1,0 +1,118 @@
+#!/bin/csh
+
+set compdir = it0
+if ($# > 0) then 
+  set compdir = $1
+endif
+
+echo 'HADDOCK rigid body compressor' 
+echo 'author: Sjoerd de Vries' 
+echo 'This script will compress all '$compdir' structures to /structures/'$compdir'/file.compress' 
+echo 'Original structures are NOT deleted' 
+echo 'Use haddock-decompress to restore the structures' 
+echo 'Can be used with multiple starting structures and with DNA' 
+echo 'Can be used PRODRG-generated compounds that contain CAx atoms' 
+echo 'DO NOT USE WITH MORE THAN TWO COMPONENTS' 
+
+set selstr = '(substr($3,1,2)=="CA"||substr($3,1,1)=="P")'
+
+if (!(`which profit | awk 'NF == 1'` != "")) then
+  echo 'ERROR: ProFit not found' 
+  exit
+endif
+if (!(-e run.cns)) then
+  echo 'ERROR: run.cns not found' 
+  exit
+endif
+set template1 = begin/`grep 'prot_root_A=' run.cns | awk '{p1 = index($0,"\""); x=substr($0,p1+1); p2 = index(x,"\""); print substr($0,p1+1,p2-1) ".pdb"}'`
+set seg1 = `grep 'prot_segid_A=' run.cns | awk '{p1 = index($2,"="); x=substr($2,p1+1); p2 = index(x,";"); print substr($2,p1+1,p2-1)}'`
+set template2 = begin/`grep 'prot_root_B=' run.cns | awk '{p1 = index($0,"\""); x=substr($0,p1+1); p2 = index(x,"\""); print substr($0,p1+1,p2-1) ".pdb"}'`
+set seg2 = `grep 'prot_segid_B=' run.cns | awk '{p1 = index($2,"="); x=substr($2,p1+1); p2 = index(x,";"); print substr($2,p1+1,p2-1)}'`
+
+if (!(-e $template1 && -e $template2)) then
+  echo 'ERROR: starting structures in begin directory not found' 
+  exit
+endif
+set nrtemplate1 = `ls -1 {$template1:r}_[0-9]*.pdb | wc -l`
+set nrtemplate2 = `ls -1 {$template2:r}_[0-9]*.pdb | wc -l`
+
+if ($nrtemplate1 == 0) then
+  echo 'ERROR: zero starting structures for' $template1 
+  exit
+endif
+
+if ($nrtemplate2 == 0) then
+  echo 'ERROR: zero starting structures for' $template2 
+  exit
+endif
+
+echo $nrtemplate1 'starting structure(s) found for first chain and' $nrtemplate2 'for second chain'
+if (!(-e structures/$compdir/file.nam)) then
+  echo 'ERROR: file.nam in '$compdir' not found' 
+  exit
+endif
+if (!(-e begin/file.nam)) then
+  echo 'ERROR: file.nam in begin directory not found' 
+  exit
+endif
+if (`awk 'NF > 0' structures/$compdir/file.nam | wc -l` > `awk 'NF > 0' begin/file.nam | wc -l`) then
+  echo 'ERROR: file.nam in '$compdir' and begin do not match' 
+  exit
+endif
+
+if (-e structures/$compdir/file.compress) then
+  echo 'ERROR: file.compress already exists' 
+  exit
+endif
+
+set tmpfile1 = `mktemp tmpXXX`
+
+foreach i(`cat structures/$compdir/file.nam | awk 'NF > 0'`) 
+  if (!(-e structures/$compdir/$i)) then
+    echo 'ERROR: cannot find' $i  
+    rm -f structures/$compdir/file.compress
+    exit  
+  endif
+end
+
+set templist = `mktemp tmpXXX`
+ls -1 {$template1:r}_[0-9]*.pdb > $templist
+ls -1 {$template2:r}_[0-9]*.pdb >> $templist
+foreach i(`cat $templist`) 
+  awk '$1 == "ATOM" &&'$selstr'{print substr($0,1,21) substr($0,73,1) substr($0,23)}' $i > {$i}_tempcompress
+end
+
+set counter = 0
+foreach i(`cat structures/$compdir/file.nam | awk 'NF > 0'`) 
+  echo $i
+  @ counter += 1
+  set inr0 = `echo $i:r | awk '{x=length($0); while (substr($0,x,1) != "_") x--; print substr($0,x+1)}'`
+  set inr = `awk 'NR == '$inr0 begin/file.nam | awk '{x=length($0); while (substr($0,x,1) != "_") x--; print substr($0,x+1)}'`
+
+  set tempnr1 = `echo $inr | awk -v n1=$nrtemplate1 -v n2=$nrtemplate2  '{x = ($1-1) % (n1*n2) ; print int(x/n2)+1}'`
+  set tempnr2 = `echo $inr | awk -v n1=$nrtemplate1 -v n2=$nrtemplate2  '{x = ($1-1) % (n1*n2); print x % n2 + 1}'`
+  set tmptemplate1 = {$template1:r}_{$tempnr1}.pdb_tempcompress
+  set tmptemplate2 = {$template2:r}_{$tempnr2}.pdb_tempcompress
+  awk '$1 == "ATOM" &&'$selstr'{print substr($0,1,21) substr($0,73,1) substr($0,23)}' structures/$compdir/$i > $tmpfile1
+  awk '$1 == "REMARK"' structures/$compdir/$i >> structures/$compdir/file.compress
+  profit $tmptemplate1 $tmpfile1 << _Eod_ | grep -v ProFit |awk '$1 == "RMS:" {getline;getline;print $0; getline; getline; print $0; getline; getline; print $0; getline; print $0; getline; print $0}' >> structures/$compdir/file.compress  
+    zone $seg1*
+    fit
+    matrix
+    quit
+_Eod_
+  profit $tmptemplate2 $tmpfile1 << _Eod_ | grep -v ProFit |awk '$1 == "RMS:" {getline;getline; print $0; getline; getline; print $0; getline; getline; print $0; getline; print $0; getline; print $0}' >> structures/$compdir/file.compress  
+    zone $seg2*
+    fit
+    matrix
+    quit
+_Eod_
+end
+
+foreach i(`cat $templist`) 
+  rm -f {$i}_tempcompress
+endif
+rm -f $templist
+rm -f $tmpfile1
+rm -f begin/*.pdb_tempcompress
+

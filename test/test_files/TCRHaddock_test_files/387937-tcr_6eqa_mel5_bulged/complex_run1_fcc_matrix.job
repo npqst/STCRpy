@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+cd ./
+export RUN=./
+export NEWIT=$RUN/structures/it1
+if [ `ls -1 $NEWIT/analysis/*fit_*.pdb | wc -l` -gt 1 ]
+then
+    python3 ./tools/make_contacts.py $NEWIT/analysis/*fit_*pdb
+    for i in $NEWIT/analysis/*fit_*.contacts
+    do
+      grep -v "-" $i >$i.tmp
+      \mv $i.tmp $i
+    done
+    python3 ./tools/calc_fcc_matrix.py $NEWIT/analysis/*fit_*contacts    -o $NEWIT/analysis/complex_fcc.disp -H >& $NEWIT/analysis/fcc.out
+    gzip -f $NEWIT/analysis/fcc.out
+else
+     echo 'Cluster 1 -> 1' >$NEWIT/analysis/cluster.out
+     touch $NEWIT/analysis/CLUST_DONE
+     gzip -f $NEWIT/analysis/cluster.out
+     touch $NEWIT/analysis/MTX_DONE
+fi
