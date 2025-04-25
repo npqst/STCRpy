@@ -1,4 +1,4 @@
-name: stcrpy installation and tests conda workflow
+name: stcrpy unittest conda workflow
 
 on: [push]
 
