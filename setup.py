@@ -7,7 +7,7 @@ setup(
     name="stcrpy",
     version="0.1.33",
     description="Set of methods to parse, annotate, and calculate features of TCR structures",
-    license="BSD 3-clause license",
+    license_files=["./LICENCE", "./stcrpy/tcr_geometry/TCRCoM_LICENCE"],
     maintainer="Nele Quast",
     long_description=long_description,
     long_description_content_type="text/markdown",
