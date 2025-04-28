@@ -1,4 +1,4 @@
-<img src="./stcrpy_logo.png" alt="drawing" width="500"/>
+<img src="./stcrpy_logo.png" alt="drawing" width="300"/>
 
 
 # STCRpy 
