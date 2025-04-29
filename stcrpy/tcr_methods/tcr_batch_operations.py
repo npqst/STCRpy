@@ -1,6 +1,6 @@
-import pandas as pd
 import warnings
 import os
+import pandas as pd
 
 from ..tcr_processing.TCRParser import TCRParser
 from ..tcr_interactions.TCRInteractionProfiler import TCRInteractionProfiler
@@ -70,11 +70,13 @@ class TCRBatchOperator:
         for tcr in tcr_generator:
             if tcr is None:  # handles case where file could not be parsed in generator
                 continue
-            tcr_id = f"{tcr.parent.parent.id}_{tcr.id}"
+
             if isinstance(
                 tcr, tuple
             ):  # handle case where tcr is passed as (key, value)
                 tcr_id, tcr = tcr
+            else:
+                tcr_id = f"{tcr.parent.parent.id}_{tcr.id}"
             try:
                 geometries_dict[tcr_id] = tcr.calculate_docking_geometry(
                     mode=mode, as_df=True

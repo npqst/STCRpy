@@ -25,6 +25,7 @@ class TestTCRDatasets(unittest.TestCase):
     def test_TCRGraphDataset(self):
         dataset = TCRGraphDataset(
             root="./test_files/TCRGraphDataset_test_files",
+            data_paths="./test_files/TCRGraphDataset_test_files/raw_files",
             force_reload=True,
         )
         print(dataset)

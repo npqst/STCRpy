@@ -1,4 +1,4 @@
-name: stcrpy installation and tests conda workflow
+name: stcrpy installation conda workflow
 
 on: [push]
 
@@ -16,7 +16,7 @@ jobs:
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-          channels: conda-forge,schrodinger
+          channels: conda-forge
           channel-priority: flexible
           show-channel-urls: true
       - name: Conda info

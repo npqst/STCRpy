@@ -1,5 +1,6 @@
-import numpy as np
 import math
+import warnings
+import numpy as np
 
 
 def fastcross(v, w):

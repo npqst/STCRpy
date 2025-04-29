@@ -6,7 +6,6 @@ The TCR class.
 
 import sys
 import warnings
-import numpy as np
 
 from .Entity import Entity
 
@@ -289,6 +288,17 @@ class TCR(Entity):
                     f"""pymol was not imported. Interactions were not visualised.
                     \nTo enable pymol visualisations please install pymol in a conda environment with:
                     \nconda install -c conda-forge -c schrodinger numpy pymol-bundle\n\n
+                    """
+                )
+
+            return visualise_interactions
+
+        except ImportError as e:
+
+            def visualise_interactions(import_error=e, **interaction_kwargs):
+                warnings.warn(
+                    f"""pymol was not imported. Interactions were not visualised. This is due to an import error. Perhaps try reinstalling pymol? 
+                    \nThe error trace was: {str(import_error)}
                     """
                 )
 

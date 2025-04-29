@@ -259,7 +259,7 @@ class TCRGraphConstructor:
         if self.config["edge_features"] == "fully_connected":
 
             def fully_connected(nodes, **kwargs):
-                edges = np.argwhere(np.ones((len(nodes), len(nodes)), dtype=np.bool))
+                edges = np.argwhere(np.ones((len(nodes), len(nodes)), dtype=bool))
                 return torch.from_numpy(edges), None, None
 
             return fully_connected
@@ -406,13 +406,28 @@ class TCRGraphConstructor:
 
 class TCRGraphDataset(Dataset):
 
-    def __init__(self, data_paths, root, graph_config=None, *args, **kwargs):
+    def __init__(self, root, data_paths, graph_config=None, *args, **kwargs):
 
         self.graph_constructor = TCRGraphConstructor(
             config=graph_config, *args, **kwargs
         )
 
-        data_files = pd.read_csv(data_paths)
+        if isinstance(data_paths, str):
+            if data_paths.endswith(".csv"):
+                data_files = pd.read_csv(data_paths)
+            elif os.path.isdir(data_paths):
+                data_files = pd.DataFrame(
+                    [
+                        os.path.join(data_paths, p)
+                        for p in os.listdir(data_paths)
+                        if p.endswith(".pdb")
+                        or p.endswith(".cif")
+                        or p.endswith(".mmcif")
+                    ],
+                    columns=["path"],
+                )
+        else:
+            data_files = pd.DataFrame(data_paths, columns=["path"])
 
         self._ids, self._raw_file_names = zip(
             *[

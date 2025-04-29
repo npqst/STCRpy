@@ -1,4 +1,4 @@
-name: stcrpy unittest conda workflow
+name: stcrpy unittests
 
 on: [push]
 
@@ -12,11 +12,12 @@ jobs:
         os: ["ubuntu-latest"]
         python-version: ["3.12"]
     steps:
+      - uses: actions/checkout@v4
       - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-          channels: conda-forge,schrodinger
+          channels: conda-forge
           channel-priority: flexible
           show-channel-urls: true
       - name: Conda info
@@ -32,19 +33,22 @@ jobs:
         run: |
           conda create -n env python==${{ matrix.python-version }}
           conda activate env
-          pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple stcrpy==0.1.33
+          pwd
+          pip install .
           pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |
           conda activate env
           ANARCI --build_models
-      - name: Install pymol
+      - name: Install pymol and pytorch 
         shell: bash -el {0}
         run: |
           conda activate env
           conda install -c conda-forge pymol-open-source 
           conda list
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install torch_geometric
       - name: Test import
         shell: bash -el {0}
         run: |
