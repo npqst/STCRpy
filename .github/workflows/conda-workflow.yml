@@ -1,4 +1,4 @@
-name: stcrpy installation conda workflow
+name: stcrpy installation
 
 on: [push]
 
