@@ -18,5 +18,3 @@ test/test_files/out/*/*.csv
 test/test_files/out/*/*.png
 test/test_files/TCRGraphDataset_test_files/processed
 test/test_files/out/haddock/
-test/test_files/*.pdb
-test/test_files/*.cif
