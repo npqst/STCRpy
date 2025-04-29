@@ -13,9 +13,9 @@ Structural TCR python (STCRpy) is a software suite for analysing and processing 
 
 Please feel free to reach out with any comments or feedback.
 
-Manuscript in preparation, please cite: 
+Under review, please cite: 
 
-**Quast, N. , Deane, C., & Raybould, M. (2025). STCRpy: a software suite for TCR:pMHC structure parsing, interaction profiling, and machine learning dataset preparation (0.1.24). Zenodo. https://doi.org/10.5281/zenodo.14962269**
+**Quast, N. , Deane, C., & Raybould, M. (2025). STCRpy: a software suite for TCR:pMHC structure parsing, interaction profiling, and machine learning dataset preparation. BioRxiv. https://doi.org/10.1101/2025.04.25.650667**
 
 <img src="./stcrpy_main_fig.png" alt="drawing" width="1500"/>
 

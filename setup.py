@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="stcrpy",
-    version="0.1.33",
+    version="1.0.0",
     description="Set of methods to parse, annotate, and calculate features of TCR structures",
     license_files=["./LICENCE", "./stcrpy/tcr_geometry/TCRCoM_LICENCE"],
     maintainer="Nele Quast",
