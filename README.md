@@ -1,9 +1,13 @@
+
+
 <img src="./stcrpy_logo.png" alt="drawing" width="300"/>
 
 
 # STCRpy 
+[![stcrpy installation](https://github.com/npqst/STCRpy/actions/workflows/conda-workflow.yml/badge.svg)](https://github.com/npqst/STCRpy/actions/workflows/conda-workflow.yml)
+[![stcrpy unittests](https://github.com/npqst/STCRpy/actions/workflows/unittest-workflow.yml/badge.svg)](https://github.com/npqst/STCRpy/actions/workflows/unittest-workflow.yml)
+[![stcrpy_docs](https://readthedocs.org/projects/stcrpy/badge/?version=latest)](https://stcrpy.readthedocs.io/en/latest/)
 
-Author: Nele Quast
 
 Structural TCR python (STCRpy) is a software suite for analysing and processing T-cell receptor structures. 
 
