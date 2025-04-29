@@ -64,4 +64,7 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate env
-          python -m unittest discover test "test_*.py"
+          cd test
+          pwd
+          ls -lah
+          python -m unittest discover
