@@ -44,14 +44,6 @@ class TestTCRParser(unittest.TestCase):
             # pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
                 tcr = stcrpy.fetch_TCR(pdb_code)
-                # tcr = parser.get_tcr_structure(pdb_id, pdb_file)
-                if len(list(tcr.get_TCRs())) == 0:
-                    badly_parsed_pdb.append(pdb_code)
-                else:
-                    pdb_types[pdb_code] = (
-                        type(list(tcr.get_TCRs())[0]),
-                        list([str(x) for x in tcr.get_TCRs()]),
-                    )
             except Exception as e:
                 errors[pdb_code] = e
         print(errors)
