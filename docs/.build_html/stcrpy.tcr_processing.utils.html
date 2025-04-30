@@ -122,8 +122,8 @@
 <span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.utils.common.</span></span><span class="sig-name descname"><span class="pre">identity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/utils/common.html#identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.utils.common.identity" title="Link to this definition"></a></dt>
 <dd><p>Find the matched sequence identity between two aligned sequences.
 Can accept lists/strings, but this assumes that the two sequences are of the same length.
-&#64;param seq1: Dictionary with key as the position and value as the single letter amino acid code. or an aligned list or string
-&#64;param seq2: Dictionary with key as the position and value as the single letter amino acid code. or an aligned list or string</p>
+:param seq1: Dictionary with key as the position and value as the single letter amino acid code. or an aligned list or string
+:param seq2: Dictionary with key as the position and value as the single letter amino acid code. or an aligned list or string</p>
 </dd></dl>
 
 </section>
@@ -136,9 +136,13 @@ Can accept lists/strings, but this assumes that the two sequences are of the sam
 <dl class="py function">
 <dt class="sig sig-object py" id="stcrpy.tcr_processing.utils.constants.tuplefy">
 <span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_processing.utils.constants.</span></span><span class="sig-name descname"><span class="pre">tuplefy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stcrpy/tcr_processing/utils/constants.html#tuplefy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_processing.utils.constants.tuplefy" title="Link to this definition"></a></dt>
-<dd><p>Interpretation for converting numbering (in string) into a tuple.</p>
-<p>&#64;param x: A string for the identifier of a numbered position. e.g “H100A”.
-&#64;return : A tuple of the chain tupe followed by a tuple of residue id and insertion code. eg. ( H, (100, “A”) )</p>
+<dd><p>Interpretation for converting numbering (in string) into a tuple.
+:param x: A string for the identifier of a numbered position. e.g “H100A”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple of the chain tupe followed by a tuple of residue id and insertion code. eg. ( H, (100, “A”) )</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

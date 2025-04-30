@@ -70,19 +70,18 @@
              
   <h1>Source code for stcrpy.tcr_interactions.PLIPParser</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">plip_utils</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.TCRpMHC_PLIP_Model_Parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRpMHC_PLIP_Model_Parser</span>
 
-
 <div class="viewcode-block" id="PLIPParser">
 <a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.PLIPParser.PLIPParser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PLIPParser</span><span class="p">:</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class is used to parse the interactions of a TCR-pMHC complex using PLIP.&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="PLIPParser.parse_complex">
 <a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.PLIPParser.PLIPParser.parse_complex">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_complex</span><span class="p">(</span>
@@ -92,6 +91,18 @@
         <span class="n">renumbering</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">domain_assignment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parses PLIP profiled interactions and maps them back onto a syctpy TCR object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            complex (plip.structure.preparation.PDBComplex):</span>
+<span class="sd">            tcr_pmhc_complex (typing.Union[&amp;quot;abTCR&amp;quot;, &amp;quot;gdTCR&amp;quot;], optional): _description_. Defaults to None.</span>
+<span class="sd">            renumbering (_type_, optional): _description_. Defaults to None.</span>
+<span class="sd">            domain_assignment (_type_, optional): _description_. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: _description_</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">all_interactions</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">interaction_set</span> <span class="ow">in</span> <span class="nb">complex</span><span class="o">.</span><span class="n">interaction_sets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">interaction</span> <span class="ow">in</span> <span class="n">interaction_set</span><span class="o">.</span><span class="n">all_itypes</span><span class="p">:</span>

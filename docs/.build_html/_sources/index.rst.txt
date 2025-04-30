@@ -5,11 +5,10 @@
 
 STCRpy documentation
 ====================
+Github: https://github.com/npqst/STCRpy
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
 
+Pre-print: https://www.biorxiv.org/content/10.1101/2025.04.25.650667v1 
 
 .. toctree::
    :maxdepth: 4

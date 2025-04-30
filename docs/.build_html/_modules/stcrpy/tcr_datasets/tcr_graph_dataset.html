@@ -70,10 +70,10 @@
              
   <h1>Source code for stcrpy.tcr_datasets.tcr_graph_dataset</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCR</span><span class="p">,</span> <span class="n">TCRParser</span>
@@ -341,7 +341,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;edge_features&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;fully_connected&quot;</span><span class="p">:</span>
 
             <span class="k">def</span><span class="w"> </span><span class="nf">fully_connected</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-                <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">))</span>
+                <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">edges</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
             <span class="k">return</span> <span class="n">fully_connected</span>
@@ -494,13 +494,28 @@
 <a class="viewcode-back" href="../../../stcrpy.tcr_datasets.html#stcrpy.tcr_datasets.tcr_graph_dataset.TCRGraphDataset">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TCRGraphDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_paths</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">graph_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">data_paths</span><span class="p">,</span> <span class="n">graph_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">graph_constructor</span> <span class="o">=</span> <span class="n">TCRGraphConstructor</span><span class="p">(</span>
             <span class="n">config</span><span class="o">=</span><span class="n">graph_config</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span>
 
-        <span class="n">data_files</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_paths</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_paths</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">data_paths</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">):</span>
+                <span class="n">data_files</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_paths</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">data_paths</span><span class="p">):</span>
+                <span class="n">data_files</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_paths</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">data_paths</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.pdb&quot;</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="n">p</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.cif&quot;</span><span class="p">)</span>
+                        <span class="ow">or</span> <span class="n">p</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.mmcif&quot;</span><span class="p">)</span>
+                    <span class="p">],</span>
+                    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">],</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_files</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_paths</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_file_names</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
             <span class="o">*</span><span class="p">[</span>

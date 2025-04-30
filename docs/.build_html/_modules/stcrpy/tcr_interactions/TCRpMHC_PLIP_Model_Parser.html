@@ -113,9 +113,30 @@
         <span class="n">ligand</span> <span class="o">=</span> <span class="n">PDB</span><span class="o">.</span><span class="n">Model</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="n">peptide_chain</span> <span class="o">=</span> <span class="n">tcr_pmhc_complex</span><span class="o">.</span><span class="n">antigen</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">peptide_chain</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># try to identify correct antigen</span>
+            <span class="c1"># if a chain is longer than 25 residues reject it, this may happen if anarci has failed to label an MHC chain</span>
+            <span class="n">peptide_chain</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">c</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">peptide_chain</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">25</span>
+                    <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">PDB</span><span class="o">.</span><span class="n">Residue</span><span class="o">.</span><span class="n">Residue</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+
         <span class="k">assert</span> <span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">peptide_chain</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;More or less than one peptide chain found: </span><span class="si">{</span><span class="n">peptide_chain</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">peptide_chain</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">PDB</span><span class="o">.</span><span class="n">Residue</span><span class="o">.</span><span class="n">Residue</span>
+        <span class="p">):</span>  <span class="c1"># wrap single residue antigen in chain</span>
+            <span class="n">residue_as_chain</span> <span class="o">=</span> <span class="n">PDB</span><span class="o">.</span><span class="n">Chain</span><span class="o">.</span><span class="n">Chain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
+            <span class="n">residue_as_chain</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">peptide_chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+            <span class="n">peptide_chain</span> <span class="o">=</span> <span class="p">[</span><span class="n">residue_as_chain</span><span class="p">]</span>
+
         <span class="n">ligand</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">peptide_chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
         <span class="n">tcr_and_mhc_chains</span> <span class="o">=</span> <span class="p">[</span>

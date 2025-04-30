@@ -620,6 +620,82 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 </div>
 
+
+
+<div class="viewcode-block" id="scMH2">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH2">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">scMH2</span><span class="p">(</span><span class="n">MHC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Single chain MHC class 2.</span>
+<span class="sd">    Holds single GA or GB chain.</span>
+<span class="sd">    Usually this will only occur if ANARCI has not been identified one of the two chains correctly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">c1</span><span class="o">.</span><span class="n">chain_type</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;GA&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;GB&quot;</span><span class="p">,</span>
+        <span class="p">],</span> <span class="sa">f</span><span class="s2">&quot;Chain </span><span class="si">{</span><span class="n">c1</span><span class="si">}</span><span class="s2"> with can not form a single chain MHC class I.&quot;</span>
+        <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;H&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_domain</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_MHC_type</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">child_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">child_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tcr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">==</span> <span class="s2">&quot;MH2&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> GA=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> GB=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="s2">&quot;&lt;GA </span><span class="si">%s</span><span class="s2"> GA=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="s2">&quot;&lt;GB </span><span class="si">%s</span><span class="s2"> GB=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_MHC_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;MH2&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">MHC_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GA&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GA</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;GB&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">GB</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
+
+        <span class="c1"># Add the chain as a child of this entity.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chain</span><span class="p">)</span>
+
+<div class="viewcode-block" id="scMH2.get_GA">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH2.get_GA">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_GA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GA&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GA</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="scMH2.get_GB">
+<a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.MHC.scMH2.get_GB">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_GB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GB</span><span class="p">]</span></div>
+</div>
+
 </pre></div>
 
            </div>

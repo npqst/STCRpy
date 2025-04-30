@@ -102,10 +102,28 @@
 <dt class="sig sig-object py" id="stcrpy.tcr_interactions.PLIPParser.PLIPParser">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stcrpy.tcr_interactions.PLIPParser.</span></span><span class="sig-name descname"><span class="pre">PLIPParser</span></span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/PLIPParser.html#PLIPParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.PLIPParser.PLIPParser" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is used to parse the interactions of a TCR-pMHC complex using PLIP.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stcrpy.tcr_interactions.PLIPParser.PLIPParser.parse_complex">
 <span class="sig-name descname"><span class="pre">parse_complex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">complex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">plip.structure.preparation.PDBComplex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tcr_pmhc_complex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR" title="stcrpy.tcr_processing.TCR.abTCR"><span class="pre">abTCR</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.gdTCR" title="stcrpy.tcr_processing.TCR.gdTCR"><span class="pre">gdTCR</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renumbering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain_assignment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/stcrpy/tcr_interactions/PLIPParser.html#PLIPParser.parse_complex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stcrpy.tcr_interactions.PLIPParser.PLIPParser.parse_complex" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Parses PLIP profiled interactions and maps them back onto a syctpy TCR object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>complex</strong> (<em>plip.structure.preparation.PDBComplex</em>)</p></li>
+<li><p><strong>tcr_pmhc_complex</strong> (<em>Union</em><em>[</em><em>&amp;quot;abTCR&amp;quot;</em><em>, </em><em>&amp;quot;gdTCR&amp;quot;</em><em>]</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+<li><p><strong>renumbering</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+<li><p><strong>domain_assignment</strong> (<em>_type_</em><em>, </em><em>optional</em>) – _description_. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

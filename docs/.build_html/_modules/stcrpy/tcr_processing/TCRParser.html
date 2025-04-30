@@ -80,6 +80,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">Bio.PDB.PDBParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDBParser</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">Bio.PDB.MMCIFParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">MMCIFParser</span>
@@ -93,7 +94,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.TCRStructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRStructure</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.Model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.TCR</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCR</span><span class="p">,</span> <span class="n">abTCR</span><span class="p">,</span> <span class="n">gdTCR</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.MHC</span><span class="w"> </span><span class="kn">import</span> <span class="n">MHC</span><span class="p">,</span> <span class="n">MH1</span><span class="p">,</span> <span class="n">MH2</span><span class="p">,</span> <span class="n">CD1</span><span class="p">,</span> <span class="n">MR1</span><span class="p">,</span> <span class="n">scMH1</span><span class="p">,</span> <span class="n">scCD1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.MHC</span><span class="w"> </span><span class="kn">import</span> <span class="n">MHC</span><span class="p">,</span> <span class="n">MH1</span><span class="p">,</span> <span class="n">MH2</span><span class="p">,</span> <span class="n">CD1</span><span class="p">,</span> <span class="n">MR1</span><span class="p">,</span> <span class="n">scMH1</span><span class="p">,</span> <span class="n">scCD1</span><span class="p">,</span> <span class="n">scMH2</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.Holder</span><span class="w"> </span><span class="kn">import</span> <span class="n">Holder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.TCRchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRchain</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.MHCchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">MHCchain</span>
@@ -536,6 +537,7 @@
                 <span class="n">newmodel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">mhc</span><span class="p">)</span>
 
             <span class="c1"># allow instantiation of single chain MH1 type MH class if the alpha helices forming chain has been observed</span>
+            <span class="c1"># allow instantiation of single chain MH2 type MH class if one of the GA or GB chain has been observed</span>
             <span class="n">ids_to_detach</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">mhc_chain</span> <span class="ow">in</span> <span class="n">mhchains</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">mhc_chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;MH1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA1&quot;</span><span class="p">,</span> <span class="s2">&quot;GA2&quot;</span><span class="p">]:</span>
@@ -546,6 +548,13 @@
                     <span class="n">ids_to_detach</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mhc_chain</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
                     <span class="n">sc_mhc</span> <span class="o">=</span> <span class="n">scCD1</span><span class="p">(</span><span class="n">mhc_chain</span><span class="p">)</span>
                     <span class="n">newmodel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sc_mhc</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">mhc_chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;GA&quot;</span><span class="p">,</span> <span class="s2">&quot;GB&quot;</span><span class="p">]:</span>
+                    <span class="n">ids_to_detach</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mhc_chain</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                    <span class="n">sc_mhc</span> <span class="o">=</span> <span class="n">scMH2</span><span class="p">(</span><span class="n">mhc_chain</span><span class="p">)</span>
+                    <span class="n">newmodel</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sc_mhc</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Single chain MH class II instantiated with chain type </span><span class="si">{</span><span class="n">mhc_chain</span><span class="o">.</span><span class="n">chain_type</span><span class="si">}</span><span class="s2">. It is possible the other MHC class II chain has not been identified.&quot;</span>
+                    <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">mhc_chain_id</span> <span class="ow">in</span> <span class="n">ids_to_detach</span><span class="p">:</span>
                 <span class="n">mhchains</span><span class="o">.</span><span class="n">detach_child</span><span class="p">(</span><span class="n">mhc_chain_id</span><span class="p">)</span>
@@ -1081,9 +1090,11 @@
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This is a generic method to process which proteins/peptides belong to a TCR or MHC. Needs testing.</span>
-<span class="sd">        @param complexes:       list of TCR/TCRchain objects or MHC/MHCchain objects</span>
-<span class="sd">        @param receptor_atoms:  list of atom subset that will likely contact the antigen (e.g. cdr_atoms)</span>
-<span class="sd">        @param antigen_atoms:   list of atoms in the antigen.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            complexes:       list of TCR/TCRchain objects or MHC/MHCchain objects</span>
+<span class="sd">            receptor_atoms:  list of atom subset that will likely contact the antigen (e.g. cdr_atoms)</span>
+<span class="sd">            antigen_atoms:   list of atoms in the antigen.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ns</span> <span class="o">=</span> <span class="n">NeighborSearch</span><span class="p">(</span>
             <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">receptor_atoms</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">receptor_atoms</span><span class="p">[</span><span class="n">chain</span><span class="p">]]</span>

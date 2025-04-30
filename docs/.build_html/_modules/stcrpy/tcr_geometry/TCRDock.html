@@ -83,8 +83,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCR</span><span class="p">,</span> <span class="n">MHC</span><span class="p">,</span> <span class="n">MHCchain</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils.error_stream</span><span class="w"> </span><span class="kn">import</span> <span class="n">ErrorStream</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 <div class="viewcode-block" id="TCRDock">
@@ -93,7 +94,10 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcr</span><span class="p">,</span> <span class="n">QUIET</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the docking angle between TCR and pMHC.</span>
-<span class="sd">        @param TCR: input a TCR object (abTCR or gdTCR or dbTCR).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tcr (TCR): TCR input</span>
+<span class="sd">            QUIET (bool, optional): Verbosity of error stream. Defaults to False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span> <span class="o">=</span> <span class="n">ErrorStream</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">QUIET</span> <span class="o">=</span> <span class="n">QUIET</span>

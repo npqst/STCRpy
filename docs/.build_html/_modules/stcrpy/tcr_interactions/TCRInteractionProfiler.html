@@ -71,27 +71,13 @@
   <h1>Source code for stcrpy.tcr_interactions.TCRInteractionProfiler</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">reload</span>
-
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_processing.TCRParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRParser</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">plip</span>
-<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;\n\nPLIP package not found. \nProfiling interactions will not be possible \nTo enable interaction profiling, install PLIP with:</span>
-<span class="sd">        \npip install plip --no-deps\n\n&quot;&quot;&quot;</span>
-    <span class="p">)</span>
-
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">plip_utils</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.PLIPParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLIPParser</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.TCRpMHC_PLIP_Model_Parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRpMHC_PLIP_Model_Parser</span>
-
-
-<span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">plip.basic.remote</span><span class="w"> </span><span class="kn">import</span> <span class="n">VisualizerData</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">plip.visualization.visualize</span><span class="w"> </span><span class="kn">import</span> <span class="n">visualize_in_pymol</span>
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -118,6 +104,12 @@
 <span class="s2">            </span><span class="se">\n</span><span class="s2">This is due to an import error. Perhaps try reinstalling plip? </span>
 <span class="s2">            </span><span class="se">\n</span><span class="s2">The error trace was: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
         <span class="p">)</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">plip_utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.PLIPParser</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLIPParser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.TCRpMHC_PLIP_Model_Parser</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRpMHC_PLIP_Model_Parser</span>
+
 
 <div class="viewcode-block" id="TCRInteractionProfiler">
 <a class="viewcode-back" href="../../../stcrpy.tcr_interactions.html#stcrpy.tcr_interactions.TCRInteractionProfiler.TCRInteractionProfiler">[docs]</a>

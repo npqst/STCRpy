@@ -84,7 +84,6 @@
 
 <span class="c1"># Import TCRDB&#39;s constants and common functions.</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.utils.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCR_CHAINS</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">anarci</span><span class="w"> </span><span class="kn">import</span> <span class="n">number</span> <span class="k">as</span> <span class="n">anarci_number</span>
 
 
 <div class="viewcode-block" id="call_anarci">
@@ -112,16 +111,20 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use the ANARCI program to number the sequence.</span>
-<span class="sd">    @param seq: An amino acid sequence that you wish to number.</span>
-<span class="sd">    @type seq: C{str}</span>
 
-<span class="sd">    @return: numbering, chain type</span>
+<span class="sd">    Args:</span>
+<span class="sd">        seq: An amino acid sequence that you wish to number.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numbering, chain type, germline information</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">anarci</span><span class="w"> </span><span class="kn">import</span> <span class="n">number</span> <span class="k">as</span> <span class="n">anarci_number</span>
+
     <span class="n">numbering</span><span class="p">,</span> <span class="n">chain_type</span><span class="p">,</span> <span class="n">germline_info</span> <span class="o">=</span> <span class="n">anarci_number</span><span class="p">(</span>
         <span class="n">seq</span><span class="p">,</span> <span class="n">allow</span><span class="o">=</span><span class="n">allow</span><span class="p">,</span> <span class="n">assign_germline</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">numbering</span> <span class="ow">and</span> <span class="s2">&quot;MR&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chain_type</span> <span class="ow">and</span> <span class="n">chain_type</span> <span class="ow">in</span> <span class="n">allow</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">numbering</span> <span class="ow">and</span> <span class="n">chain_type</span> <span class="ow">in</span> <span class="n">allow</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[(</span><span class="n">_</span><span class="p">,</span> <span class="n">aa</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">aa</span> <span class="ow">in</span> <span class="n">numbering</span> <span class="k">if</span> <span class="n">aa</span> <span class="o">!=</span> <span class="s2">&quot;-&quot;</span><span class="p">],</span> <span class="n">chain_type</span><span class="p">,</span> <span class="n">germline_info</span>
     <span class="k">elif</span> <span class="n">numbering</span> <span class="ow">and</span> <span class="n">chain_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;BA&quot;</span><span class="p">,</span> <span class="s2">&quot;GD&quot;</span><span class="p">,</span> <span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="s2">&quot;DG&quot;</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -160,15 +163,15 @@
         <span class="p">)</span>
         <span class="c1"># aligned_numbering = cleanup_scTCR_numbering(aligned_numbering, sequence_list)</span>
         <span class="n">scTCR</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">elif</span> <span class="n">chtype</span> <span class="o">==</span> <span class="s2">&quot;DC1&quot;</span> <span class="ow">or</span> <span class="n">chtype</span> <span class="o">==</span> <span class="s2">&quot;RM1&quot;</span><span class="p">:</span>
-        <span class="c1"># Use the scTCR numbering trick; since CD1/MR1 numbering only spans up to residue ~87 and</span>
-        <span class="n">aligned_numbering</span> <span class="o">=</span> <span class="n">align_scTCR_numbering</span><span class="p">(</span>
-            <span class="n">numbering</span><span class="p">,</span> <span class="n">sequence_list</span><span class="p">,</span> <span class="n">sequence_str</span>
-        <span class="p">)</span>
-        <span class="n">aligned_numbering</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">aligned_numbering</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">aligned_numbering</span> <span class="o">=</span> <span class="n">aligned_numbering</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># combine the numbering</span>
-        <span class="n">aligned_numbering</span> <span class="o">=</span> <span class="n">cleanup_scTCR_numbering</span><span class="p">(</span><span class="n">aligned_numbering</span><span class="p">,</span> <span class="n">sequence_list</span><span class="p">)</span>
-        <span class="n">scTCR</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># elif chtype == &quot;DC1&quot; or chtype == &quot;RM1&quot;:</span>
+    <span class="c1">#     # Use the scTCR numbering trick; since CD1/MR1 numbering only spans up to residue ~87 and</span>
+    <span class="c1">#     aligned_numbering = align_scTCR_numbering(</span>
+    <span class="c1">#         numbering, sequence_list, sequence_str</span>
+    <span class="c1">#     )</span>
+    <span class="c1">#     aligned_numbering[0].update(aligned_numbering[1])</span>
+    <span class="c1">#     aligned_numbering = aligned_numbering[0]  # combine the numbering</span>
+    <span class="c1">#     aligned_numbering = cleanup_scTCR_numbering(aligned_numbering, sequence_list)</span>
+    <span class="c1">#     scTCR = False</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># align the original residue id&#39;s to the numbering</span>
         <span class="n">aligned_numbering</span> <span class="o">=</span> <span class="n">align_numbering</span><span class="p">(</span><span class="n">numbering</span><span class="p">,</span> <span class="n">sequence_list</span><span class="p">)</span>
@@ -186,16 +189,18 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the amino acid sequence of the chain.</span>
-<span class="sd">    @change:    Residues containing HETATOMs are skipped --&gt;  Residues containing HETATOMs are checked as an amino acid.</span>
+<span class="sd">    Residues containing HETATOMs are skipped --&gt;  Residues containing HETATOMs are checked as an amino acid.</span>
 
 <span class="sd">    Residues containing HETATOMs are checked  to be amino acids and the single letter returned.</span>
 
 <span class="sd">    This works provided the residues in the chain are in the correct order.</span>
 
-<span class="sd">    @param selection: a selection object to select certain residues</span>
-<span class="sd">    @param return_warnings: Flag to return a list of warnings or not</span>
-<span class="sd">    @param backbone: Flag whether to only show residues with a complete backbone (in the structure) or not.</span>
-<span class="sd">    @return: The sequence in a resid:aa tuple list and the sequence as a string.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        selection: a selection object to select certain residues</span>
+<span class="sd">        return_warnings: Flag to return a list of warnings or not</span>
+<span class="sd">        backbone: Flag whether to only show residues with a complete backbone (in the structure) or not.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The sequence in a resid:aa tuple list and the sequence as a string.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sequence_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -344,9 +349,10 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">align_scTCR_numbering</span><span class="p">(</span><span class="n">numbering</span><span class="p">,</span> <span class="n">sequence_list</span><span class="p">,</span> <span class="n">sequence_str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Align the sequence that has been numbered to a scTCR structure.</span>
-<span class="sd">    @param numbering:     numbered list of residues; this is usually a two-element list/tuple from TCRDB.anarci.number</span>
-<span class="sd">    @param sequence_list: list of residues (e.g. from a structure) in its original numbering</span>
-<span class="sd">    @param sequence_str:  string form of sequence_list</span>
+<span class="sd">    Args:</span>
+<span class="sd">        numbering:     numbered list of residues; this is usually a two-element list/tuple from TCRDB.anarci.number</span>
+<span class="sd">        sequence_list: list of residues (e.g. from a structure) in its original numbering</span>
+<span class="sd">        sequence_str:  string form of sequence_list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">numbering</span><span class="p">:</span>
         <span class="n">numbered_sequence</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">n</span><span class="p">])</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">numbering</span><span class="p">]</span>
@@ -411,8 +417,9 @@
 <span class="sd">    This is to close the gaps in the numbering so that residues that were unnumbered by anarci don&#39;t move around</span>
 <span class="sd">    during structural parsing (when they&#39;re probably just connections between domains).</span>
 
-<span class="sd">    @param numbering_dict: numbered dictionary from align_scTCR_numbering</span>
-<span class="sd">    @param sequence_list : sequence list from the structure for alignment.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        numbering_dict: numbered dictionary from align_scTCR_numbering</span>
+<span class="sd">        sequence_list : sequence list from the structure for alignment.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sequence_list</span><span class="p">]</span>
 

@@ -85,9 +85,10 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">tuplefy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interpretation for converting numbering (in string) into a tuple.</span>
-
-<span class="sd">    @param x: A string for the identifier of a numbered position. e.g &quot;H100A&quot;.</span>
-<span class="sd">    @return : A tuple of the chain tupe followed by a tuple of residue id and insertion code. eg. ( H, (100, &quot;A&quot;) )</span>
+<span class="sd">    Args:</span>
+<span class="sd">        x: A string for the identifier of a numbered position. e.g &quot;H100A&quot;.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple of the chain tupe followed by a tuple of residue id and insertion code. eg. ( H, (100, &quot;A&quot;) )</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">chain</span><span class="p">,</span> <span class="n">resi</span><span class="p">,</span> <span class="n">ins</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d+)&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>

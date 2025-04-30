@@ -71,13 +71,12 @@
   <h1>Source code for stcrpy.tcr_processing.TCR</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Created on 3rd April 2024</span>
-<span class="sd">@author: Nele Quast based on work by Dunbar and Leem </span>
+<span class="sd">Nele Quast based on work by Dunbar and Leem</span>
 <span class="sd">The TCR class.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.Entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
 
@@ -94,15 +93,28 @@
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TCR</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    TCR class. This is generic which is inherited later.</span>
-<span class="sd">    Holds paired TCR chains.</span>
+<span class="sd">    TCR class. Inherits from PDB.Entity.</span>
+<span class="sd">    This is a base class for TCR strucutres, enabling antigen and MHC association.</span>
+<span class="sd">    abTCR and gdTCR are the instantiated subclasses of this class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_antigen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antigen</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append associated antigen to TCR antigen field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antigen (Antigen, optional): Antigen to associate with TCR. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">antigen</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antigen</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_mhc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mhc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append associated MHC to TCR MHC field. If antigen are associted with MHC but not TCR, add them to TCR antigen.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mhc (MHC, optional): MHC to associate with TCR. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mhc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mhc</span><span class="p">)</span>
             <span class="c1"># If there are any het antigens that are in the MHC but not in close proximity of the TCR</span>
@@ -114,7 +126,7 @@
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_antigen">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_antigen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a list of bound antigens.</span>
+<span class="sd">        Return a list of TCR associated antigens.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">antigen</span></div>
 
@@ -122,15 +134,19 @@
 <div class="viewcode-block" id="TCR.get_MHC">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_MHC">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_MHC</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of TCR associated MHCs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">MHC</span></div>
 
 
 <div class="viewcode-block" id="TCR.is_bound">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.is_bound">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check whether this TCR is bound to an antigen</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True or False if the TCR is associated with an antigen.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Whether TCR is associated with an antigen.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_antigen</span><span class="p">():</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -141,6 +157,11 @@
 <div class="viewcode-block" id="TCR.get_chains">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_chains">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns generator of TCR chains.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Chain: TCR chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">c</span></div>
 
@@ -148,6 +169,11 @@
 <div class="viewcode-block" id="TCR.get_residues">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_residues">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns generator of TCR residues.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Residue: TCR residue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chains</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">r</span></div>
@@ -156,6 +182,11 @@
 <div class="viewcode-block" id="TCR.get_atoms">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_atoms">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns generator of TCR atoms.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Atom: TCR atoms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_residues</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">a</span></div>
@@ -165,7 +196,10 @@
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_frameworks">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_frameworks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Obtain framework regions from a TCR structure object.</span>
+<span class="sd">        Obtain framework regions from a TCR structure object as generator.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Fragment: TCR framework regions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fragments</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;fw&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
@@ -176,7 +210,10 @@
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_CDRs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_CDRs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Obtain CDR loops from a TCR structure object</span>
+<span class="sd">        Obtain complementarity determining regions (CDRs) from a TCR structure object as generator.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Fragment: TCR CDR regions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fragments</span><span class="p">():</span>
             <span class="k">if</span> <span class="s2">&quot;cdr&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
@@ -186,8 +223,10 @@
 <div class="viewcode-block" id="TCR.get_TCR_type">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_TCR_type">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_TCR_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the TCR type</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get TCR type according to variable region assignments.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: TCR type (abTCR, gdTCR, dbTCR)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;tcr_type&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tcr_type</span>
@@ -205,12 +244,25 @@
 <div class="viewcode-block" id="TCR.get_germline_assignments">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_germline_assignments">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_germline_assignments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrive germline assignments for all TCR chains.</span>
+<span class="sd">        This is a dictionary with the chain ID as key and the germline assignments as value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: dict with TCR chain ID as key and germline assignments as value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">get_germline_assignments</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chains</span><span class="p">()}</span></div>
 
 
 <div class="viewcode-block" id="TCR.get_MHC_allele_assignments">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_MHC_allele_assignments">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_MHC_allele_assignments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve MHC allele assignments for all TCR associated MHCs.</span>
+<span class="sd">        This is a list of dictionaries with the MHC ID as key and the allele assignments as value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: dict with MHC chain ID as key and allele assignments as value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="p">(</span>
                 <span class="n">mhc</span><span class="o">.</span><span class="n">get_allele_assignments</span><span class="p">()</span>
@@ -225,6 +277,11 @@
 <div class="viewcode-block" id="TCR.get_germlines_and_alleles">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_germlines_and_alleles">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_germlines_and_alleles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all germline and allele assignments for TCR and MHC chains as a dictionary with the chain ID as key and the germline assignments as value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Dictionary of TCR germline and MHC allele assignemnts with amino acid sequences.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_formats.tcr_formats</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_sequences</span>
 
         <span class="n">germlines_and_alleles</span> <span class="o">=</span> <span class="p">{}</span>
@@ -279,6 +336,13 @@
 <div class="viewcode-block" id="TCR.save">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.save">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tcr_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pdb&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save TCR object as PDB or MMCIF file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            save_as (str, optional): File path to save TCR to. Defaults to None.</span>
+<span class="sd">            tcr_only (bool, optional): Whether to save TCR only or to include MHC and antigen. Defaults to False.</span>
+<span class="sd">            format (str, optional): Whether to save as PDB or MMCIF. Defaults to &quot;pdb&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRIO</span>
 
         <span class="n">tcrio</span> <span class="o">=</span> <span class="n">TCRIO</span><span class="o">.</span><span class="n">TCRIO</span><span class="p">()</span>
@@ -288,6 +352,16 @@
 <div class="viewcode-block" id="TCR.get_scanning_angle">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_scanning_angle">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_scanning_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rudolph&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns TCR:pMHC complex scanning (aka crossing, incident) angle of TCR to MHC.</span>
+<span class="sd">        See paper for details.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mode (str, optional): Mode for calculating the scanning angle. Options &quot;rudolph&quot;, &quot;cys&quot;, &quot;com&quot;. Defaults to &quot;rudolph&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            flaot: Scanning angle of TCR to MHC in degrees</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="n">mode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calculate_docking_geometry</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_scanning_angle</span><span class="p">()</span></div>
@@ -295,7 +369,17 @@
 
 <div class="viewcode-block" id="TCR.get_pitch_angle">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_pitch_angle">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_pitch_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rudolph&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pitch_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;cys&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns TCR:pMHC complex pitch angle of TCR to MHC.</span>
+<span class="sd">        See paper for details.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mode (str, optional): Mode for calculating the scanning angle. Options &quot;rudolph&quot;, &quot;cys&quot;, &quot;com&quot;. Defaults to &quot;cys&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Pitch angle of TCR to MHC in degrees</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="n">mode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calculate_docking_geometry</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_pitch_angle</span><span class="p">()</span></div>
@@ -304,6 +388,16 @@
 <div class="viewcode-block" id="TCR.calculate_docking_geometry">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.calculate_docking_geometry">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_docking_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rudolph&quot;</span><span class="p">,</span> <span class="n">as_df</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate docking geometry of TCR to MHC.</span>
+<span class="sd">        This is a wrapper function for the TCRGeom class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mode (str, optional): Mode for calculating the geometry. Options &quot;rudolph&quot;, &quot;cys&quot;, &quot;com&quot;. Defaults to &quot;rudolph&quot;.</span>
+<span class="sd">            as_df (bool, optional): Whether to return as dictionary or dataframe. Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            [dict, DataFrame]: TCR to MHC geometry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_MHC</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;No MHC found for TCR </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">. Docking geometry cannot be calcuated&quot;</span>
@@ -327,14 +421,23 @@
 <div class="viewcode-block" id="TCR.score_docking_geometry">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.score_docking_geometry">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">score_docking_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Score docking geometry of TCR to MHC.</span>
+<span class="sd">        This is a wrapper function for the TCRGeomFiltering class.</span>
+<span class="sd">        The score is calculated as the negative log of the TCR:pMHC complex geometry feature probabilities based on the distributions fit by maximum likelihood estimation of TCR to Class I MHC strucutres from STCRDab.</span>
+<span class="sd">        Please see the paper methods for details.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: TCR:pMHC complex score as negative log of TCR:pMHC complex geometry feature probabilities</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_geometry.TCRGeomFiltering</span><span class="w"> </span><span class="kn">import</span> <span class="n">DockingGeometryFilter</span>
 
         <span class="n">geom_filter</span> <span class="o">=</span> <span class="n">DockingGeometryFilter</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calculate_docking_geometry</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">geom_filter</span><span class="o">.</span><span class="n">score_docking_geometry</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_scanning_angle</span><span class="p">(),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_pitch_angle</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_scanning_angle</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_pitch_angle</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">tcr_com</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>  <span class="c1"># z component of TCR centre of mass</span>
         <span class="p">)</span></div>
 
@@ -344,6 +447,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">profile_peptide_interactions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">renumber</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">save_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Profile the interactions of the peptide to the TCR and the MHC.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            renumber (bool, optional): Whether to renumber the interacting residues. Defaults to True.</span>
+<span class="sd">            save_to (str, optional): Path to save intraction data to as csv. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: Dataframe of peptide interactions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_antigen</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;No peptide antigen found for TCR </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">. Peptide interactions cannot be profiled&quot;</span>
@@ -368,6 +481,25 @@
 <div class="viewcode-block" id="TCR.get_interaction_heatmap">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR.get_interaction_heatmap">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_interaction_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plotting_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">interaction_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get interaction heatmap of TCR to MHC and peptide.</span>
+<span class="sd">        Generates heatmap image.</span>
+<span class="sd">        Plotting kwargs are passed to heatmap function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            plotting_kwargs (dict, optional):</span>
+<span class="sd">                save_as: path to save heatmap image to</span>
+<span class="sd">                interaction_type: type of interaction (eg. saltbridge, h_bond) to plot. All interactions are plotted by default.</span>
+<span class="sd">                antigen_name: name of antigen for plot title</span>
+<span class="sd">                mutation_index: index of antigen residues to highlight in plot</span>
+<span class="sd">                Defaults to {</span>
+<span class="sd">                    save_as:None,</span>
+<span class="sd">                    interaction_type:None,</span>
+<span class="sd">                    antigen_name:None,</span>
+<span class="sd">                    mutation_index:None</span>
+<span class="sd">                    }.</span>
+<span class="sd">            interaction_kwargs: kwargs for TCRInteractionProfiler class. See TCRInteractionProfiler for details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_interactions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRInteractionProfiler</span>
 
         <span class="n">interaction_profiler</span> <span class="o">=</span> <span class="n">TCRInteractionProfiler</span><span class="o">.</span><span class="n">TCRInteractionProfiler</span><span class="p">(</span>
@@ -403,6 +535,15 @@
             <span class="k">def</span><span class="w"> </span><span class="nf">visualise_interactions</span><span class="p">(</span>
                 <span class="n">save_as</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antigen_residues_to_highlight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">interaction_kwargs</span>
             <span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Visualise peptide interactions in pymol.</span>
+
+<span class="sd">                Args:</span>
+<span class="sd">                    save_as (str, optional): path to save pymol session to. Defaults to None.</span>
+<span class="sd">                    antigen_residues_to_highlight (list[int], optional): antigen residues to highlight red in pymol session. Defaults to None.</span>
+<span class="sd">                    **interaction_kwargs: kwargs for TCRInteractionProfiler class. See TCRInteractionProfiler for details.</span>
+<span class="sd">                Returns:</span>
+<span class="sd">                    str: path to saved pymol session</span>
+<span class="sd">                &quot;&quot;&quot;</span>
                 <span class="kn">from</span><span class="w"> </span><span class="nn">..tcr_interactions</span><span class="w"> </span><span class="kn">import</span> <span class="n">TCRInteractionProfiler</span>
 
                 <span class="n">interaction_profiler</span> <span class="o">=</span> <span class="n">TCRInteractionProfiler</span><span class="o">.</span><span class="n">TCRInteractionProfiler</span><span class="p">(</span>
@@ -446,7 +587,18 @@
 <div class="viewcode-block" id="abTCR">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">abTCR</span><span class="p">(</span><span class="n">TCR</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    abTCR class. Inherits from TCR.</span>
+<span class="sd">    This is a subclass of TCR for TCRs with alpha and beta chains.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialise abTCR object. This is a subclass of TCR for TCRs with alpha and beta chains.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            c1 (TCRchain): alpha or beta type TCR chain</span>
+<span class="sd">            c2 (TCRchain): alpha or beta type TCR chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">c1</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
             <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c1</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">c2</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -468,9 +620,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">visualise_interactions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_interaction_visualiser</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        String representation of the abTCR object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: String representation of the abTCR objec</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;TCR </span><span class="si">%s%s</span><span class="s2"> beta=</span><span class="si">%s</span><span class="s2">; alpha=</span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">VA</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a variable alpha or variable beta domain to the TCR object.</span>
+<span class="sd">        Links the domain to the chain ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chain (TCRchain): TCR chain whose domain is being added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">VB</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">id</span>
         <span class="k">elif</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span> <span class="ow">or</span> <span class="n">chain</span><span class="o">.</span><span class="n">chain_type</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span>
@@ -482,6 +647,12 @@
 <div class="viewcode-block" id="abTCR.get_VB">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_VB">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_VB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the variable beta chain of the TCR</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            TCRchain: VB chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">]</span></div>
 
@@ -489,6 +660,12 @@
 <div class="viewcode-block" id="abTCR.get_VA">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_VA">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_VA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the variable alpha chain of the TCR</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            TCRchain: VA chain</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;VA&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">child_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">VA</span><span class="p">]</span></div>
 
@@ -496,6 +673,12 @@
 <div class="viewcode-block" id="abTCR.get_domain_assignment">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_domain_assignment">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_domain_assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the domain assignment of the TCR as a dict with variable domain type as key and chain ID as value.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: domain assignment from domain to chain ID, e.g. {&quot;VA&quot;: &quot;D&quot;, &quot;VB&quot;: &quot;E&quot;}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;VA&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VA</span><span class="p">,</span> <span class="s2">&quot;VB&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">VB</span><span class="p">}</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -509,6 +692,12 @@
 <div class="viewcode-block" id="abTCR.is_engineered">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.is_engineered">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_engineered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Flag for engineered TCRs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: Flag for engineered TCRs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">engineered</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
@@ -525,6 +714,12 @@
 <div class="viewcode-block" id="abTCR.get_fragments">
 <a class="viewcode-back" href="../../../stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.abTCR.get_fragments">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the fragments, ie FW and CDR loops of the TCR as a generator.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Fragment: fragment of TCR chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">vb</span><span class="p">,</span> <span class="n">va</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VB</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_VA</span><span class="p">()</span>
 
         <span class="c1"># If a variable domain exists</span>
