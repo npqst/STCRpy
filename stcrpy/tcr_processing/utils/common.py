@@ -23,8 +23,9 @@ def identity(seq1, seq2, positions=[]):
     """
     Find the matched sequence identity between two aligned sequences.
     Can accept lists/strings, but this assumes that the two sequences are of the same length.
-    @param seq1: Dictionary with key as the position and value as the single letter amino acid code. or an aligned list or string
-    @param seq2: Dictionary with key as the position and value as the single letter amino acid code. or an aligned list or string
+    Args:
+        seq1: Dictionary with key as the position and value as the single letter amino acid code. or an aligned list or string
+        seq2: Dictionary with key as the position and value as the single letter amino acid code. or an aligned list or string
     """
     n = 0  # number
     m = 0  # match

@@ -48761,10 +48761,10 @@ def is_common_buffer(residue):
     Is the residue a common buffer?
     If it occurs in the L{common buffers<common_buffers>} list it is considered a common buffer.
 
-    @param residue: A AbPDB residue object or residues identifier e.g. PO4
-
-    @return: Flag if the residue is a common buffer.
-    @rtype: C{bool}
+    Args:
+        residue: A AbPDB residue object or residues identifier e.g. PO4
+    Returns:
+        Flag if the residue is a common buffer.
     """
     if not isinstance(residue, str):
         residue = residue.get_resname()

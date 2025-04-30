@@ -12,9 +12,10 @@ import re
 def tuplefy(x):
     """
     Interpretation for converting numbering (in string) into a tuple.
-
-    @param x: A string for the identifier of a numbered position. e.g "H100A".
-    @return : A tuple of the chain tupe followed by a tuple of residue id and insertion code. eg. ( H, (100, "A") )
+    Args:
+        x: A string for the identifier of a numbered position. e.g "H100A".
+    Returns:
+        A tuple of the chain tupe followed by a tuple of residue id and insertion code. eg. ( H, (100, "A") )
 
     """
     chain, resi, ins = re.split(r"(\d+)", x)

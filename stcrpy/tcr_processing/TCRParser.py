@@ -1014,9 +1014,11 @@ class TCRParser(PDBParser, MMCIFParser):
     ):
         """
         This is a generic method to process which proteins/peptides belong to a TCR or MHC. Needs testing.
-        @param complexes:       list of TCR/TCRchain objects or MHC/MHCchain objects
-        @param receptor_atoms:  list of atom subset that will likely contact the antigen (e.g. cdr_atoms)
-        @param antigen_atoms:   list of atoms in the antigen.
+
+        Args:
+            complexes:       list of TCR/TCRchain objects or MHC/MHCchain objects
+            receptor_atoms:  list of atom subset that will likely contact the antigen (e.g. cdr_atoms)
+            antigen_atoms:   list of atoms in the antigen.
         """
         ns = NeighborSearch(
             [atom for chain in receptor_atoms for atom in receptor_atoms[chain]]

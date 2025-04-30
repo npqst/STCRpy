@@ -1,6 +1,6 @@
 """
 Created on 3rd April 2024
-@author: Nele Quast based on work by Dunbar and Leem 
+Nele Quast based on work by Dunbar and Leem
 The TCR class.
 """
 
@@ -20,15 +20,28 @@ except ImportError as e:
 
 class TCR(Entity):
     """
-    TCR class. This is generic which is inherited later.
-    Holds paired TCR chains.
+    TCR class. Inherits from PDB.Entity.
+    This is a base class for TCR strucutres, enabling antigen and MHC association.
+    abTCR and gdTCR are the instantiated subclasses of this class.
     """
 
     def _add_antigen(self, antigen=None):
+        """
+        Append associated antigen to TCR antigen field.
+
+        Args:
+            antigen (Antigen, optional): Antigen to associate with TCR. Defaults to None.
+        """
         if antigen not in self.antigen:
             self.antigen.append(antigen)
 
     def _add_mhc(self, mhc=None):
+        """
+        Append associated MHC to TCR MHC field. If antigen are associted with MHC but not TCR, add them to TCR antigen.
+
+        Args:
+            mhc (MHC, optional): MHC to associate with TCR. Defaults to None.
+        """
         if mhc not in self.MHC:
             self.MHC.append(mhc)
             # If there are any het antigens that are in the MHC but not in close proximity of the TCR
@@ -38,17 +51,21 @@ class TCR(Entity):
 
     def get_antigen(self):
         """
-        Return a list of bound antigens.
+        Return a list of TCR associated antigens.
         """
         return self.antigen
 
     def get_MHC(self):
-        """ """
+        """
+        Return a list of TCR associated MHCs.
+        """
         return self.MHC
 
     def is_bound(self):
-        """
-        Check whether this TCR is bound to an antigen
+        """True or False if the TCR is associated with an antigen.
+
+        Returns:
+            bool: Whether TCR is associated with an antigen.
         """
         if self.get_antigen():
             return True
@@ -56,22 +73,40 @@ class TCR(Entity):
             return False
 
     def get_chains(self):
+        """Returns generator of TCR chains.
+
+        Yields:
+            Chain: TCR chain
+        """
         for c in self:
             yield c
 
     def get_residues(self):
+        """Returns generator of TCR residues.
+
+        Yields:
+            Residue: TCR residue
+        """
         for c in self.get_chains():
             for r in c:
                 yield r
 
     def get_atoms(self):
+        """Returns generator of TCR atoms.
+
+        Yields:
+            Atom: TCR atoms
+        """
         for r in self.get_residues():
             for a in r:
                 yield a
 
     def get_frameworks(self):
         """
-        Obtain framework regions from a TCR structure object.
+        Obtain framework regions from a TCR structure object as generator.
+
+        Yields:
+            Fragment: TCR framework regions
         """
         for f in self.get_fragments():
             if "fw" in f.id:
@@ -79,15 +114,20 @@ class TCR(Entity):
 
     def get_CDRs(self):
         """
-        Obtain CDR loops from a TCR structure object
+        Obtain complementarity determining regions (CDRs) from a TCR structure object as generator.
+
+        Yields:
+            Fragment: TCR CDR regions
         """
         for f in self.get_fragments():
             if "cdr" in f.id:
                 yield f
 
     def get_TCR_type(self):
-        """
-        Get the TCR type
+        """Get TCR type according to variable region assignments.
+
+        Returns:
+            str: TCR type (abTCR, gdTCR, dbTCR)
         """
         if hasattr(self, "tcr_type"):
             return self.tcr_type
@@ -102,9 +142,22 @@ class TCR(Entity):
             return self.tcr_type
 
     def get_germline_assignments(self):
+        """Retrive germline assignments for all TCR chains.
+        This is a dictionary with the chain ID as key and the germline assignments as value.
+
+        Returns:
+            dict: dict with TCR chain ID as key and germline assignments as value
+        """
         return {c.id: c.get_germline_assignments() for c in self.get_chains()}
 
     def get_MHC_allele_assignments(self):
+        """
+        Retrieve MHC allele assignments for all TCR associated MHCs.
+        This is a list of dictionaries with the MHC ID as key and the allele assignments as value.
+
+        Returns:
+            dict: dict with MHC chain ID as key and allele assignments as value
+        """
         return [
             (
                 mhc.get_allele_assignments()
@@ -116,6 +169,11 @@ class TCR(Entity):
         ]
 
     def get_germlines_and_alleles(self):
+        """Get all germline and allele assignments for TCR and MHC chains as a dictionary with the chain ID as key and the germline assignments as value.
+
+        Returns:
+            dict: Dictionary of TCR germline and MHC allele assignemnts with amino acid sequences.
+        """
         from ..tcr_formats.tcr_formats import get_sequences
 
         germlines_and_alleles = {}
@@ -167,22 +225,59 @@ class TCR(Entity):
         return germlines_and_alleles
 
     def save(self, save_as=None, tcr_only: bool = False, format: str = "pdb"):
+        """Save TCR object as PDB or MMCIF file.
+
+        Args:
+            save_as (str, optional): File path to save TCR to. Defaults to None.
+            tcr_only (bool, optional): Whether to save TCR only or to include MHC and antigen. Defaults to False.
+            format (str, optional): Whether to save as PDB or MMCIF. Defaults to "pdb".
+        """
         from . import TCRIO
 
         tcrio = TCRIO.TCRIO()
         tcrio.save(self, save_as=save_as, tcr_only=tcr_only, format=format)
 
     def get_scanning_angle(self, mode="rudolph"):
+        """
+        Returns TCR:pMHC complex scanning (aka crossing, incident) angle of TCR to MHC.
+        See paper for details.
+
+        Args:
+            mode (str, optional): Mode for calculating the scanning angle. Options "rudolph", "cys", "com". Defaults to "rudolph".
+
+        Returns:
+            float: Scanning angle of TCR to MHC in degrees
+        """
         if not hasattr(self, "geometry") or self.geometry.mode != mode:
             self.calculate_docking_geometry(mode=mode)
         return self.geometry.get_scanning_angle()
 
-    def get_pitch_angle(self, mode="rudolph"):
+    def get_pitch_angle(self, mode="cys"):
+        """
+        Returns TCR:pMHC complex pitch angle of TCR to MHC.
+        See paper for details.
+
+        Args:
+            mode (str, optional): Mode for calculating the scanning angle. Options "rudolph", "cys", "com". Defaults to "cys".
+
+        Returns:
+            float: Pitch angle of TCR to MHC in degrees
+        """
         if not hasattr(self, "geometry") or self.geometry.mode != mode:
             self.calculate_docking_geometry(mode=mode)
         return self.geometry.get_pitch_angle()
 
     def calculate_docking_geometry(self, mode="rudolph", as_df=False):
+        """Calculate docking geometry of TCR to MHC.
+        This is a wrapper function for the TCRGeom class.
+
+        Args:
+            mode (str, optional): Mode for calculating the geometry. Options "rudolph", "cys", "com". Defaults to "rudolph".
+            as_df (bool, optional): Whether to return as dictionary or dataframe. Defaults to False.
+
+        Returns:
+            [dict, DataFrame]: TCR to MHC geometry.
+        """
         if len(self.get_MHC()) == 0:
             warnings.warn(
                 f"No MHC found for TCR {self}. Docking geometry cannot be calcuated"
@@ -203,20 +298,39 @@ class TCR(Entity):
         return self.geometry.to_dict()
 
     def score_docking_geometry(self, **kwargs):
+        """
+        Score docking geometry of TCR to MHC.
+        This is a wrapper function for the TCRGeomFiltering class.
+        The score is calculated as the negative log of the TCR:pMHC complex geometry feature probabilities based on the distributions fit by maximum likelihood estimation of TCR to Class I MHC strucutres from STCRDab.
+        Please see the paper methods for details.
+
+        Returns:
+            float: TCR:pMHC complex score as negative log of TCR:pMHC complex geometry feature probabilities
+        """
         from ..tcr_geometry.TCRGeomFiltering import DockingGeometryFilter
 
         geom_filter = DockingGeometryFilter()
         if not hasattr(self, "geometry"):
             self.calculate_docking_geometry(mode="com")
         return geom_filter.score_docking_geometry(
-            self.geometry.get_scanning_angle(),
-            self.geometry.get_pitch_angle(),
+            self.geometry.get_scanning_angle(mode="com"),
+            self.geometry.get_pitch_angle(mode="com"),
             self.geometry.tcr_com[-1],  # z component of TCR centre of mass
         )
 
     def profile_peptide_interactions(
         self, renumber: bool = True, save_to: str = None, **kwargs
     ) -> "pd.DataFrame":
+        """
+        Profile the interactions of the peptide to the TCR and the MHC.
+
+        Args:
+            renumber (bool, optional): Whether to renumber the interacting residues. Defaults to True.
+            save_to (str, optional): Path to save intraction data to as csv. Defaults to None.
+
+        Returns:
+            pd.DataFrame: Dataframe of peptide interactions
+        """
         if len(self.get_antigen()) == 0:
             warnings.warn(
                 f"No peptide antigen found for TCR {self}. Peptide interactions cannot be profiled"
@@ -238,6 +352,25 @@ class TCR(Entity):
         return interactions
 
     def get_interaction_heatmap(self, plotting_kwargs={}, **interaction_kwargs):
+        """
+        Get interaction heatmap of TCR to MHC and peptide.
+        Generates heatmap image.
+        Plotting kwargs are passed to heatmap function.
+
+        Args:
+            plotting_kwargs (dict, optional):
+                save_as: path to save heatmap image to
+                interaction_type: type of interaction (eg. saltbridge, h_bond) to plot. All interactions are plotted by default.
+                antigen_name: name of antigen for plot title
+                mutation_index: index of antigen residues to highlight in plot
+                Defaults to {
+                    save_as:None,
+                    interaction_type:None,
+                    antigen_name:None,
+                    mutation_index:None
+                    }.
+            interaction_kwargs: kwargs for TCRInteractionProfiler class. See TCRInteractionProfiler for details.
+        """
         from ..tcr_interactions import TCRInteractionProfiler
 
         interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler(
@@ -266,6 +399,15 @@ class TCR(Entity):
             def visualise_interactions(
                 save_as=None, antigen_residues_to_highlight=None, **interaction_kwargs
             ):
+                """Visualise peptide interactions in pymol.
+
+                Args:
+                    save_as (str, optional): path to save pymol session to. Defaults to None.
+                    antigen_residues_to_highlight (list[int], optional): antigen residues to highlight red in pymol session. Defaults to None.
+                    **interaction_kwargs: kwargs for TCRInteractionProfiler class. See TCRInteractionProfiler for details.
+                Returns:
+                    str: path to saved pymol session
+                """
                 from ..tcr_interactions import TCRInteractionProfiler
 
                 interaction_profiler = TCRInteractionProfiler.TCRInteractionProfiler(
@@ -306,7 +448,18 @@ class TCR(Entity):
 
 
 class abTCR(TCR):
+    """
+    abTCR class. Inherits from TCR.
+    This is a subclass of TCR for TCRs with alpha and beta chains.
+    """
     def __init__(self, c1, c2):
+        """
+        Initialise abTCR object. This is a subclass of TCR for TCRs with alpha and beta chains.
+
+        Args:
+            c1 (TCRchain): alpha or beta type TCR chain
+            c2 (TCRchain): alpha or beta type TCR chain
+        """
 
         if c1.chain_type == "B":
             Entity.__init__(self, c1.id + c2.id)
@@ -328,9 +481,22 @@ class abTCR(TCR):
         self.visualise_interactions = self._create_interaction_visualiser()
 
     def __repr__(self):
+        """
+        String representation of the abTCR object.
+
+        Returns:
+            str: String representation of the abTCR objec
+        """
         return "<TCR %s%s beta=%s; alpha=%s>" % (self.VB, self.VA, self.VB, self.VA)
 
     def _add_domain(self, chain):
+        """
+        Add a variable alpha or variable beta domain to the TCR object.
+        Links the domain to the chain ID.
+
+        Args:
+            chain (TCRchain): TCR chain whose domain is being added.
+        """
         if chain.chain_type == "B":
             self.VB = chain.id
         elif chain.chain_type == "A" or chain.chain_type == "D":
@@ -340,14 +506,32 @@ class abTCR(TCR):
         self.add(chain)
 
     def get_VB(self):
+        """
+        Retrieve the variable beta chain of the TCR
+
+        Returns:
+            TCRchain: VB chain
+        """
         if hasattr(self, "VB"):
             return self.child_dict[self.VB]
 
     def get_VA(self):
+        """
+        Retrieve the variable alpha chain of the TCR
+
+        Returns:
+            TCRchain: VA chain
+        """
         if hasattr(self, "VA"):
             return self.child_dict[self.VA]
 
     def get_domain_assignment(self):
+        """
+        Retrieve the domain assignment of the TCR as a dict with variable domain type as key and chain ID as value.
+
+        Returns:
+            dict: domain assignment from domain to chain ID, e.g. {"VA": "D", "VB": "E"}
+        """
         try:
             return {"VA": self.VA, "VB": self.VB}
         except AttributeError:
@@ -358,6 +542,12 @@ class abTCR(TCR):
         return None
 
     def is_engineered(self):
+        """
+        Flag for engineered TCRs.
+
+        Returns:
+            bool: Flag for engineered TCRs
+        """
         if self.engineered:
             return True
         else:
@@ -371,6 +561,12 @@ class abTCR(TCR):
             return False
 
     def get_fragments(self):
+        """
+        Retrieve the fragments, ie FW and CDR loops of the TCR as a generator.
+
+        Yields:
+            Fragment: fragment of TCR chain.
+        """
         vb, va = self.get_VB(), self.get_VA()
 
         # If a variable domain exists

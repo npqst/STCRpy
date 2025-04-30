@@ -38,10 +38,12 @@ def call_anarci(
 ):
     """
     Use the ANARCI program to number the sequence.
-    @param seq: An amino acid sequence that you wish to number.
-    @type seq: C{str}
 
-    @return: numbering, chain type
+    Args:
+        seq: An amino acid sequence that you wish to number.
+
+    Returns:
+        numbering, chain type, germline information
     """
     from anarci import number as anarci_number
 
@@ -108,16 +110,18 @@ def extract_sequence(
 ):
     """
     Get the amino acid sequence of the chain.
-    @change:    Residues containing HETATOMs are skipped -->  Residues containing HETATOMs are checked as an amino acid.
+    Residues containing HETATOMs are skipped -->  Residues containing HETATOMs are checked as an amino acid.
 
     Residues containing HETATOMs are checked  to be amino acids and the single letter returned.
 
     This works provided the residues in the chain are in the correct order.
 
-    @param selection: a selection object to select certain residues
-    @param return_warnings: Flag to return a list of warnings or not
-    @param backbone: Flag whether to only show residues with a complete backbone (in the structure) or not.
-    @return: The sequence in a resid:aa tuple list and the sequence as a string.
+    Args:
+        selection: a selection object to select certain residues
+        return_warnings: Flag to return a list of warnings or not
+        backbone: Flag whether to only show residues with a complete backbone (in the structure) or not.
+    Returns:
+        The sequence in a resid:aa tuple list and the sequence as a string.
 
     """
     sequence_list = []
@@ -257,9 +261,10 @@ def align_numbering(numbering, sequence_list, alignment_dict={}):
 def align_scTCR_numbering(numbering, sequence_list, sequence_str):
     """
     Align the sequence that has been numbered to a scTCR structure.
-    @param numbering:     numbered list of residues; this is usually a two-element list/tuple from TCRDB.anarci.number
-    @param sequence_list: list of residues (e.g. from a structure) in its original numbering
-    @param sequence_str:  string form of sequence_list
+    Args:
+        numbering:     numbered list of residues; this is usually a two-element list/tuple from TCRDB.anarci.number
+        sequence_list: list of residues (e.g. from a structure) in its original numbering
+        sequence_str:  string form of sequence_list
     """
     if numbering:
         numbered_sequence = ["".join([r[1] for r in n]) for n in numbering]
@@ -321,8 +326,9 @@ def cleanup_scTCR_numbering(numbering_dict, sequence_list):
     This is to close the gaps in the numbering so that residues that were unnumbered by anarci don't move around
     during structural parsing (when they're probably just connections between domains).
 
-    @param numbering_dict: numbered dictionary from align_scTCR_numbering
-    @param sequence_list : sequence list from the structure for alignment.
+    Args:
+        numbering_dict: numbered dictionary from align_scTCR_numbering
+        sequence_list : sequence list from the structure for alignment.
     """
     positions = [p[0] for p in sequence_list]
 
