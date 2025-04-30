@@ -170,3 +170,27 @@ class TestTCRParser(unittest.TestCase):
                 errors[pdb_id] = e
         print(badly_parsed_pdb)
         print(len(badly_parsed_pdb))
+
+    def test_MR1_parsing(self):
+        import stcrpy
+
+        tcr1, tcr2 = stcrpy.fetch_TCR("5d7i")
+        tcr1.get_MHC()[0]
+        tcr2.get_MHC()[0]
+
+        tcr1, tcr2 = stcrpy.fetch_TCR("4pjf")
+        tcr1.get_MHC()[0]
+        tcr2.get_MHC()[0]
+
+    def test_scMH2_parsing(self):
+        import stcrpy
+
+        with self.assertWarns(UserWarning):
+            tcr = stcrpy.fetch_TCR("6u3n")
+            # should raise warning saying that other MHC Class II chain is missing
+        tcr.get_MHC()[0].get_MHC_type()
+
+        with self.assertWarns(UserWarning):
+            tcr = stcrpy.fetch_TCR("6mkr")
+            # should raise warning saying that other MHC Class II chain is missing
+        tcr.get_MHC()[0].get_MHC_type()
