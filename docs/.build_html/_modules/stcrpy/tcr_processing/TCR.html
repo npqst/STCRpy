@@ -360,7 +360,7 @@
 <span class="sd">            mode (str, optional): Mode for calculating the scanning angle. Options &quot;rudolph&quot;, &quot;cys&quot;, &quot;com&quot;. Defaults to &quot;rudolph&quot;.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            flaot: Scanning angle of TCR to MHC in degrees</span>
+<span class="sd">            float: Scanning angle of TCR to MHC in degrees</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="n">mode</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calculate_docking_geometry</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
