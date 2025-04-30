@@ -21,7 +21,10 @@ class TCRDock(object):
     def __init__(self, tcr, QUIET=False):
         """
         Calculate the docking angle between TCR and pMHC.
-        @param TCR: input a TCR object (abTCR or gdTCR or dbTCR).
+
+        Args:
+            tcr (TCR): TCR input
+            QUIET (bool, optional): Verbosity of error stream. Defaults to False.
         """
         self.warnings = ErrorStream()
         self.QUIET = QUIET
