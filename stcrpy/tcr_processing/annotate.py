@@ -49,7 +49,7 @@ def call_anarci(
         seq, allow=allow, assign_germline=True
     )
 
-    if numbering and "MR" not in chain_type and chain_type in allow:
+    if numbering and chain_type in allow:
         return [(_, aa) for _, aa in numbering if aa != "-"], chain_type, germline_info
     elif numbering and chain_type in ["BA", "GD", "AB", "DG"]:
         return (
@@ -85,15 +85,15 @@ def annotate(chain):
         )
         # aligned_numbering = cleanup_scTCR_numbering(aligned_numbering, sequence_list)
         scTCR = True
-    elif chtype == "DC1" or chtype == "RM1":
-        # Use the scTCR numbering trick; since CD1/MR1 numbering only spans up to residue ~87 and
-        aligned_numbering = align_scTCR_numbering(
-            numbering, sequence_list, sequence_str
-        )
-        aligned_numbering[0].update(aligned_numbering[1])
-        aligned_numbering = aligned_numbering[0]  # combine the numbering
-        aligned_numbering = cleanup_scTCR_numbering(aligned_numbering, sequence_list)
-        scTCR = False
+    # elif chtype == "DC1" or chtype == "RM1":
+    #     # Use the scTCR numbering trick; since CD1/MR1 numbering only spans up to residue ~87 and
+    #     aligned_numbering = align_scTCR_numbering(
+    #         numbering, sequence_list, sequence_str
+    #     )
+    #     aligned_numbering[0].update(aligned_numbering[1])
+    #     aligned_numbering = aligned_numbering[0]  # combine the numbering
+    #     aligned_numbering = cleanup_scTCR_numbering(aligned_numbering, sequence_list)
+    #     scTCR = False
     else:
         # align the original residue id's to the numbering
         aligned_numbering = align_numbering(numbering, sequence_list)

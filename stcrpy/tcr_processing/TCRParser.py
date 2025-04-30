@@ -9,6 +9,7 @@ from itertools import combinations, product
 import sys
 import os
 from collections import defaultdict
+import warnings
 
 from Bio.PDB.PDBParser import PDBParser
 from Bio.PDB.MMCIFParser import MMCIFParser
@@ -22,7 +23,7 @@ from ..utils.error_stream import ErrorStream
 from .TCRStructure import TCRStructure
 from .Model import Model
 from .TCR import TCR, abTCR, gdTCR
-from .MHC import MHC, MH1, MH2, CD1, MR1, scMH1, scCD1
+from .MHC import MHC, MH1, MH2, CD1, MR1, scMH1, scCD1, scMH2
 from .Holder import Holder
 from .TCRchain import TCRchain
 from .MHCchain import MHCchain
@@ -461,6 +462,7 @@ class TCRParser(PDBParser, MMCIFParser):
                 newmodel.add(mhc)
 
             # allow instantiation of single chain MH1 type MH class if the alpha helices forming chain has been observed
+            # allow instantiation of single chain MH2 type MH class if one of the GA or GB chain has been observed
             ids_to_detach = []
             for mhc_chain in mhchains:
                 if mhc_chain.chain_type in ["MH1", "GA1", "GA2"]:
@@ -471,6 +473,13 @@ class TCRParser(PDBParser, MMCIFParser):
                     ids_to_detach.append(mhc_chain.id)
                     sc_mhc = scCD1(mhc_chain)
                     newmodel.add(sc_mhc)
+                elif mhc_chain.chain_type in ["GA", "GB"]:
+                    ids_to_detach.append(mhc_chain.id)
+                    sc_mhc = scMH2(mhc_chain)
+                    newmodel.add(sc_mhc)
+                    warnings.warn(
+                        f"Single chain MH class II instantiated with chain type {mhc_chain.chain_type}. It is possible the other MHC class II chain has not been identified."
+                    )
 
             for mhc_chain_id in ids_to_detach:
                 mhchains.detach_child(mhc_chain_id)

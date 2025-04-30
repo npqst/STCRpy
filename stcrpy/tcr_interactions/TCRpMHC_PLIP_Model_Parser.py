@@ -38,9 +38,30 @@ class TCRpMHC_PLIP_Model_Parser:
         ligand = PDB.Model.Model(id=0)
 
         peptide_chain = tcr_pmhc_complex.antigen
+        if len(peptide_chain) != 1:
+            # try to identify correct antigen
+            # if a chain is longer than 25 residues reject it, this may happen if anarci has failed to label an MHC chain
+            peptide_chain = [
+                c
+                for c in peptide_chain
+                if (
+                    len(c) < 25
+                    and isinstance(c, PDB.Chain.Chain)
+                    or isinstance(c, PDB.Residue.Residue)
+                )
+            ]
+
         assert (
             len(peptide_chain) == 1
         ), f"More or less than one peptide chain found: {peptide_chain}"
+
+        if isinstance(
+            peptide_chain[0], PDB.Residue.Residue
+        ):  # wrap single residue antigen in chain
+            residue_as_chain = PDB.Chain.Chain(id="Z")
+            residue_as_chain.add(peptide_chain[0].copy())
+            peptide_chain = [residue_as_chain]
+
         ligand.add(peptide_chain[0].copy())
 
         tcr_and_mhc_chains = [

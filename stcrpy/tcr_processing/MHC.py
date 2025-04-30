@@ -447,3 +447,70 @@ class scCD1(MHC):
 
     def get_B2M(self):
         return None
+
+
+class scMH2(MHC):
+    """
+    Single chain MHC class 2.
+    Holds single GA or GB chain.
+    Usually this will only occur if ANARCI has not been identified one of the two chains correctly.
+    """
+
+    def __init__(self, c1):
+        assert c1.chain_type in [
+            "GA",
+            "GB",
+        ], f"Chain {c1} with can not form a single chain MHC class I."
+        Entity.__init__(self, c1.id)
+
+        self.level = "H"
+        self._add_domain(c1)
+        self._set_MHC_type()
+        self.child_list = sorted(self.child_list, key=lambda x: x.id)
+        self.antigen = []
+        self.tcr = []
+        self.engineered = False
+
+    def __repr__(self):
+        if self.MHC_type == "MH2":
+            if hasattr(self, "GA"):
+                return "<%s %s GA=%s>" % (
+                    self.MHC_type,
+                    self.GA,
+                    self.GA,
+                )
+            elif hasattr(self, "GB"):
+                return "<%s %s GB=%s>" % (
+                    self.MHC_type,
+                    self.GB,
+                    self.GB,
+                )
+
+        else:
+            if hasattr(self, "GA"):
+                return "<GA %s GA=%s>" % (self.GA, self.GA)
+            elif hasattr(self, "GB"):
+                return "<GB %s GB=%s>" % (self.GB, self.GB)
+
+    def _set_MHC_type(self):
+        if hasattr(self, "GA") and hasattr(self, "GB"):
+            self.MHC_type = "MH2"
+        else:
+            self.MHC_type = ""
+
+    def _add_domain(self, chain):
+        if chain.chain_type == "GA":
+            self.GA = chain.id
+        elif chain.chain_type == "GB":
+            self.GB = chain.id
+
+        # Add the chain as a child of this entity.
+        self.add(chain)
+
+    def get_GA(self):
+        if hasattr(self, "GA"):
+            return self.child_dict[self.GA]
+
+    def get_GB(self):
+        if hasattr(self, "GB"):
+            return self.child_dict[self.GB]
