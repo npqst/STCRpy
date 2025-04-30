@@ -74,7 +74,7 @@ pip install einops
 STCRpy [documentation](https://stcrpy.readthedocs.io/en/latest/) is hosted on ReadtheDocs.
 
 # Examples
-STCRpy generates and operates on TCR structure objects. The majority of the API can be accessed through functions of the format: `tcr.some_stcrpy_function()`. TCR objects are associated with their MHC and antigen if these are presented in the structure. 
+STCRpy generates and operates on TCR structure objects. The majority of the API can be accessed through functions of the format: [`tcr.some_stcrpy_function()`](https://stcrpy.readthedocs.io/en/latest/stcrpy.tcr_processing.html#stcrpy.tcr_processing.TCR.TCR). TCR objects are associated with their MHC and antigen if these are presented in the structure. 
 
 A notebook with examples can be found under [examples/STCRpy_examples.ipynb](./examples/STCRpy_examples.ipynb)
 
