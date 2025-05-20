@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stcrpy"
+version = "1.0.3"
+description = "Set of methods to parse, annotate, and calculate features of TCR structures"
+readme = "README.md"
+license-files = [
+    "LICENCE",
+    "stcrpy/tcr_geometry/TCRCoM_LICENCE",
+]
+maintainers = [
+  {name = "Nele Quast", email = "quast@stats.ox.ac.uk"}
+]
+requires-python = ">=3.10"
+dependencies = [
+  "biopython",
+  "numpy==1.26.4",
+  "lxml",
+  "openbabel-wheel==3.1.1.21",
+  "rdkit",
+  "anarci-mhc",
+  "pandas",
+  "matplotlib",
+  "scipy",
+  "requests",
+  "scikit-learn"
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["test", "test.*"]
+
+[tool.setuptools.package-data]
+stcrpy = ["tcr_geometry/reference_data/*.pdb"]
