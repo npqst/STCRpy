@@ -55,10 +55,10 @@ pip install plip
 
 To enable pymol visualisations, install pymol open source locally within the environment. Unfortunately, pymol currently needs to be installed even if you already have a pymol version. Be sure to install pymol within a managed conda (or mamba) environment to prevent interference with any existing versions. 
 ```
-conda install -c conda-forge pymol-open-source  numpy -y
+conda install -c conda-forge pymol-open-source -y
 ```
 
-To generate pytorch and pytorch-geometric compatible datasets: 
+To generate pytorch and pytorch-geometric compatible datasets (see the [pytorch docs](https://pytorch.org/get-started/locally/) for hardware specific instructions): 
 ```
 pip install pytorch --index-url https://download.pytorch.org/whl/cpu
 pip install torch_geometric
