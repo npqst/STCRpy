@@ -139,6 +139,39 @@ dataset = TCRGraphDataset(
         )
 ```
 
+### To calculate TCR prediction metrics such as RMSD, interface RMSD (of the TCR:pMHC interface) or DockQ scores:
+To calculate DockQ scores first install DockQ: 
+```
+pip install DockQ
+```
+
+```
+# RMSD
+from stcrpy.tcr_metrics import RMSD
+
+rmsd_calculator = RMSD()
+rmsd = rmsd_calculator.calculate_rmsd(pred_tcr, reference_tcr, save_alignment=False)      # Calculates the RMSD of each region of the TCR. To check the alignment set save_alignment to True.
+
+# To calculate RMSD for a set of predictions against a set of reference structures from files: 
+files = list(zip(prediction_files, reference_files))
+rmsd_df = rmsd_calculator.rmsd_from_files(files)
+
+
+
+# Interface RMSD of TCR:pMHC interface
+from stcrpy.tcr_metrics import InterfaceRMSD
+
+interface_rmsd_calculator = InterfaceRMSD()
+irmsds = interface_rmsd_calculator.get_interface_rmsd(tcr, reference_tcr)
+
+# DockQ
+from stcrpy.tcr_metrics.tcr_dockq import TCRDockQ
+
+dockq_calculator = TCRDockQ()               # by default this will merge the TCR and pMHC chains and calculate DockQ of teh complete TCR:pMHC interface. To calculate DockQ scores per chain, use TCR_pMHC_interface=False
+dockq_results = dockq_calculator.tcr_dockq(tcr, reference_tcr, save_merged_complex=False)           # to investigate the merged TCR:pMHC structure set save_merged_complex=True 
+
+```
+
 
 
 
