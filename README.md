@@ -60,7 +60,7 @@ conda install -c conda-forge pymol-open-source -y
 
 To generate pytorch and pytorch-geometric compatible datasets (see the [pytorch docs](https://pytorch.org/get-started/locally/) for hardware specific instructions): 
 ```
-pip install pytorch --index-url https://download.pytorch.org/whl/cpu
+pip install torch --index-url https://download.pytorch.org/whl/cpu
 pip install torch_geometric
 ```
 Note that this installs the CPU version of pytorch, for GPU / CUDA versions install according to the [pytorch installation docs](https://pytorch.org/get-started/locally/).
