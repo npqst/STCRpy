@@ -202,6 +202,24 @@ class TCRDockQ:
         return model
 
     def tcr_dockq(self, dock: "abTCR", reference: "abTCR", save_merged_complex: bool=False) -> float:
+        """
+        Calculate DockQ metrics for a TCR-pMHC complex.
+
+        This method evaluates the quality of a predicted TCR-pMHC complex (the "dock" structure)
+        against a reference (native) structure using the DockQ scoring system. It supports both
+        merged TCR-pMHC interfaces and separate chain evaluations, depending on the class setting.
+
+        Args:
+            dock (abTCR): The predicted TCR-pMHC complex structure to be evaluated.
+            reference (abTCR): The reference (native) TCR-pMHC complex structure.
+            save_merged_complex (bool, optional): If True, saves the merged complex structures
+                as PDB files for further inspection. Defaults to False.
+
+        Returns:
+            dict: A dictionary containing DockQ results, including DockQ score, F1, iRMSD, LRMSD,
+                fnat, fnonnat, and other relevant metrics for the best mapping.
+        """
+
         try:
             import DockQ
             from DockQ import DockQ as dockq
