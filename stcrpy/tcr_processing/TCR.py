@@ -224,6 +224,25 @@ class TCR(Entity):
 
         return germlines_and_alleles
 
+    def get_chain_mapping(self):
+        """Get a dictionary of chain IDs to chain types.
+
+        Returns:
+            dict: Dictionary of chain IDs to chain types
+        """
+        tcr_chain_mapping = {v: k for k, v in self.get_domain_assignment().items()}
+        antigen_chain_mapping = {c.id: "Ag" for c in self.get_antigen()}
+        mhc_chain_mapping = {
+            c.id: c.chain_type for m in self.get_MHC() for c in m.get_chains()
+        }
+        chain_mapping = {
+            **tcr_chain_mapping,
+            **antigen_chain_mapping,
+            **mhc_chain_mapping,
+        }
+
+        return chain_mapping
+
     def save(self, save_as=None, tcr_only: bool = False, format: str = "pdb"):
         """Save TCR object as PDB or MMCIF file.
 
