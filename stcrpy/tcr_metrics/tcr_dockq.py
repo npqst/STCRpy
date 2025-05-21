@@ -1,4 +1,5 @@
 # Adapted from https://github.com/bjornwallner/DockQ
+# Reference: https://doi.org/10.1093/bioinformatics/btae586
 
 # MIT License applies:
 # MIT License
