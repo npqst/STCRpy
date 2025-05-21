@@ -85,9 +85,9 @@ import stcrpy
 
 ### To fetch a TCR structure from STCRDab or the PDB: 
 ```
-tcr = stcrpy.fetch_TCR("8gvb")
+multiple_tcrs = stcrpy.fetch_TCRs("8gvb")
 ```
-This will return a TCR strcuture or object, or, if there are multiple copies of TCR crystal structures in the PDB file, will return a list containing TCR structure objects. It may be useful to unpack the list into distinct objects, or use python generators to operate on the lists. 
+This will return a list of all of the TCR structures found in the PDB file, represented as TCR structure objects.
 
 ### To load a TCR structure from a PDB or MMCIF file:
 ```
