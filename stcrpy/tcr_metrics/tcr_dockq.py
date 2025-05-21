@@ -201,7 +201,7 @@ class TCRDockQ:
         # structure.add(model)
         return model
 
-    def tcr_dockq(self, dock: "abTCR", reference: "abTCR") -> float:
+    def tcr_dockq(self, dock: "abTCR", reference: "abTCR", save_merged_complex: bool=False) -> float:
         try:
             import DockQ
             from DockQ import DockQ as dockq
@@ -254,8 +254,9 @@ class TCRDockQ:
             small_molecule=self.args.small_molecule,
         )
 
-        os.remove(f"model_structure_{dock.parent.parent.id}_{dock.id}.pdb")
-        os.remove(f"native_structure_{reference.parent.parent.id}_{reference.id}.pdb")
+        if not save_merged_complex:
+            os.remove(f"model_structure_{dock.parent.parent.id}_{dock.id}.pdb")
+            os.remove(f"native_structure_{reference.parent.parent.id}_{reference.id}.pdb")
 
         # check user-given chains are in the structures
         model_chains = (
