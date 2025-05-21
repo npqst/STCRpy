@@ -42,7 +42,7 @@ class TCRDockQ:
 
         Args:
             TCR_pMHC_interface (bool): Whether to use evaluate the entire TCR-pMHC interface or evaluate spearate chains. Deaults to True. This will create a merged psudo-chain for the antigen and the TCR.
-            **kwargs: Keyword arguments from DockQ.
+            **kwargs: Keyword arguments from DockQ: mapping, small_molecule, capri_peptide, no_align, json, n_cpu, max_chunk, allowed_mismatches, verbose, short, print_results.
         """
 
         DockQArgs = namedtuple(
