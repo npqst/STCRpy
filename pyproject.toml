@@ -29,6 +29,13 @@ dependencies = [
   "scikit-learn"
 ]
 
+[project.optional-dependencies]
+ml_datasets = [
+    "einops",
+    "torch",
+    "torch_geometric",
+]
+
 [tool.setuptools]
 include-package-data = true
 
