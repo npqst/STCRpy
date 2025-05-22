@@ -10,6 +10,15 @@ IMGT_CDR_BOUNDARIES = {
     "3": {"imgt": (105, 117)},
 }
 
+IMGT_VARIABLE_DOMAIN: set[int] = set(range(1, 128 + 1))
+'''Variable domain range for IMGT numbered immunoglobulin structures.'''
+
+IMGT_MH1_ABD: set[int] = set(range(1, 92)) | set(range(1001, 1092))
+'''IMGT ranges of the antigen binding domain of MHC class I molecules.'''
+
+IMGT_MH2_ABD: set[int] = set(range(1, 92))
+'''IMGT ranges of the antigen binding domain of MHC class II molecules.'''
+
 # regions for TCR
 _regions = {"imgt": {}}
 _regions["imgt"]["A"] = _regions["imgt"]["B"] = (
