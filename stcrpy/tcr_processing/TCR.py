@@ -655,16 +655,25 @@ class abTCR(TCR):
         self._validate_chain_standardising()
 
         new_id = []
+        new_child_dict = {}
 
         if hasattr(self, 'VB'):
-            self.child_dict[self.VB].id = 'E'
+            new_child_dict['E'] = self.child_dict[self.VB]
             self.VB = 'E'
             new_id.append('E')
 
         if hasattr(self, 'VA'):
-            self.child_dict[self.VA].id = 'D'
+            new_child_dict['D'] = self.child_dict[self.VA]
             self.VA = 'D'
             new_id.append('D')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
 
         if hasattr(self, 'antigen') and self.antigen:
             self._standardise_antigen_chain_names()
@@ -772,16 +781,25 @@ class gdTCR(TCR):
         self._validate_chain_standardising()
 
         new_id = []
+        new_child_dict = {}
 
         if hasattr(self, 'VG'):
-            self.child_dict[self.VG].id = 'E'
+            new_child_dict['E'] = self.child_dict[self.VG]
             self.VG = 'E'
             new_id.append('E')
 
         if hasattr(self, 'VD'):
-            self.child_dict[self.VD].id = 'D'
+            new_child_dict['D'] = self.child_dict[self.VD]
             self.VD = 'D'
             new_id.append('D')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
 
         if hasattr(self, 'antigen') and self.antigen:
             self._standardise_antigen_chain_names()
@@ -889,16 +907,25 @@ class dbTCR(TCR):
         self._validate_chain_standardising()
 
         new_id = []
+        new_child_dict = {}
 
         if hasattr(self, 'VB'):
-            self.child_dict[self.VB].id = 'E'
+            new_child_dict['E'] = self.child_dict[self.VB]
             self.VB = 'E'
             new_id.append('E')
 
         if hasattr(self, 'VD'):
-            self.child_dict[self.VD].id = 'D'
+            new_child_dict['D'] = self.child_dict[self.VD]
             self.VD = 'D'
             new_id.append('D')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
 
         if hasattr(self, 'antigen') and self.antigen:
             self._standardise_antigen_chain_names()

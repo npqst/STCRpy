@@ -255,6 +255,22 @@ class TestabTCR(unittest.TestCase):
         self.assertEqual(tcr.MHC[0].get_alpha().id, 'A')
         self.assertEqual(tcr.MHC[0].get_B2M().id, 'B')
 
+    def test_swapped_chain_ids(self):
+        tcr = stcrpy.load_TCR('./test_files/swapped_chain_ids_5hyj_DECAB.pdb')
+        tcr.standardise_chain_names()
+
+        self.assertEqual(tcr.id, 'ED')
+        self.assertEqual(tcr.VA, 'D')
+        self.assertEqual(tcr.get_VA().id, 'D')
+        self.assertEqual(tcr.VB, 'E')
+        self.assertEqual(tcr.get_VB().id, 'E')
+
+        self.assertEqual(tcr.antigen[0].id, 'C')
+
+        self.assertEqual(tcr.MHC[0].id, 'AB')
+        self.assertEqual(tcr.MHC[0].get_alpha().id, 'A')
+        self.assertEqual(tcr.MHC[0].get_B2M().id, 'B')
+
 
 class TestgdTCR(unittest.TestCase):
     def test_standardise_chain_names(self):

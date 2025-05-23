@@ -194,18 +194,27 @@ class MH1(MHC):
     def standardise_chain_names(self) -> None:
         """Standardise MHC chain name to A and B2M chain name to B."""
         new_id = []
+        new_child_dict = {}
 
         for MH1_domain in set(['MH1', 'GA1', 'GA2']):
             if hasattr(self, MH1_domain):
-                self.child_dict[getattr(self, MH1_domain)].id = 'A'
+                new_child_dict['A'] = self.child_dict[getattr(self, MH1_domain)]
                 setattr(self, MH1_domain, 'A')
                 new_id.append('A')
                 break
 
         if hasattr(self, 'B2M'):
-            self.child_dict[self.B2M].id = 'B'
+            new_child_dict['B'] = self.child_dict[self.B2M]
             self.B2M = 'B'
             new_id.append('B')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
 
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', BiopythonWarning)
@@ -283,16 +292,25 @@ class MH2(MHC):
     def standardise_chain_names(self) -> None:
         """Standardise MHC chain 1 name to A and MHC chain 2 name to B."""
         new_id = []
+        new_child_dict = {}
 
         if hasattr(self, 'GA'):
-            self.child_dict[self.GA].id = 'A'
+            new_child_dict['A'] = self.child_dict[self.GA]
             self.GA = 'A'
             new_id.append('A')
 
         if hasattr(self, 'GB'):
-            self.child_dict[self.GB].id = 'B'
+            new_child_dict['B'] = self.child_dict[self.GB]
             self.GB = 'B'
             new_id.append('B')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
 
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', BiopythonWarning)
@@ -387,16 +405,25 @@ class CD1(MHC):
     def standardise_chain_names(self) -> None:
         """Standardise CD1 chain name to A and B2M chain name to B."""
         new_id = []
+        new_child_dict = {}
 
         if hasattr(self, 'CD1'):
-            self.child_dict[self.CD1].id = 'A'
+            new_child_dict['A'] = self.child_dict[self.CD1]
             self.CD1 = 'A'
             new_id.append('A')
 
         if hasattr(self, 'B2M'):
-            self.child_dict[self.B2M].id = 'B'
+            new_child_dict['B'] = self.child_dict[self.B2M]
             self.B2M = 'B'
             new_id.append('B')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
 
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', BiopythonWarning)
@@ -488,16 +515,25 @@ class MR1(MHC):
     def standardise_chain_names(self) -> None:
         """Standardise MR1 chain name to A and B2M chain name to B."""
         new_id = []
+        new_child_dict = {}
 
         if hasattr(self, 'MR1'):
-            self.child_dict[self.MR1].id = 'A'
+            new_child_dict['A'] = self.child_dict[self.MR1]
             self.MR1 = 'A'
             new_id.append('A')
 
         if hasattr(self, 'B2M'):
-            self.child_dict[self.B2M].id = 'B'
+            new_child_dict['B'] = self.child_dict[self.B2M]
             self.B2M = 'B'
             new_id.append('B')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
 
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', BiopythonWarning)
@@ -806,16 +842,25 @@ class scMH2(MHC):
     def standardise_chain_names(self) -> None:
         """Standardise MHC chain 1 name to A or MHC chain 2 name to B."""
         new_id = []
+        new_child_dict = {}
 
         if hasattr(self, 'GA'):
-            self.child_dict[self.GA].id = 'A'
+            new_child_dict['A'] = self.child_dict[self.GA]
             self.GA = 'A'
             new_id.append('A')
 
         if hasattr(self, 'GB'):
-            self.child_dict[self.GB].id = 'B'
+            new_child_dict['B'] = self.child_dict[self.GB]
             self.GB = 'B'
             new_id.append('B')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
 
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', BiopythonWarning)
