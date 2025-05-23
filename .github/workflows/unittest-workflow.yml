@@ -47,8 +47,7 @@ jobs:
           conda activate env
           conda install -c conda-forge pymol-open-source 
           conda list
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
-          pip install torch_geometric
+          pip install '.[ml_datasets]'
       - name: Test import
         shell: bash -el {0}
         run: |
