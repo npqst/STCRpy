@@ -109,3 +109,39 @@ class TestTCRMetrics(unittest.TestCase):
                 )
             ]
         )
+
+    def test_dockq(self):
+        from stcrpy.tcr_metrics.tcr_dockq import TCRDockQ
+
+        dockq = TCRDockQ()
+
+        dock_files = sorted(
+            glob.glob(
+                "./test_files/TCRHaddock_test_files/387937-tcr_6eqa_mel5_bulged/structures/it1/renumbered_complex_*.pdb"
+            )
+        )[:2]
+        docked_tcrs = stcrpy.load_TCRs(dock_files)
+
+        reference_tcr = stcrpy.load_TCRs(
+            "./test_files/TCRInterfaceRMSD_test_files/6eqa.cif"
+        )[0]
+
+        dockq_results = [
+            TCRDockQ().tcr_dockq(tcr, reference_tcr) for tcr in docked_tcrs
+        ]
+        print(dockq_results)
+        self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['DockQ'], 0.825, places=3)
+        self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['iRMSD'], 0.827, places=3)
+        self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['LRMSD'], 4.025, places=3)
+        self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['fnat'], 0.892, places=3)
+        self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['fnonnat'], 0.266, places=3)
+        self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['F1'], 0.806, places=3)
+        self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['clashes'], 0, places=3)
+
+        self.assertAlmostEqual(dockq_results[1]['best_result']['TM']['DockQ'], 0.872, places=3)
+        self.assertAlmostEqual(dockq_results[1]['best_result']['TM']['iRMSD'], 0.742, places=3)
+        self.assertAlmostEqual(dockq_results[1]['best_result']['TM']['LRMSD'], 3.430, places=3)
+        self.assertAlmostEqual(dockq_results[1]['best_result']['TM']['fnat'], 0.954, places=3)
+        self.assertAlmostEqual(dockq_results[1]['best_result']['TM']['fnonnat'], 0.195, places=3)
+        self.assertAlmostEqual(dockq_results[1]['best_result']['TM']['F1'], 0.873, places=3)
+        self.assertAlmostEqual(dockq_results[1]['best_result']['TM']['clashes'], 0, places=3)

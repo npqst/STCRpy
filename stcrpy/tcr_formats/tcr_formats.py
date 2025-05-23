@@ -99,7 +99,7 @@ def get_sequences(
             for chain in entity.get_chains()
         }
     except AttributeError as e:
-        if entity.level == "C":
+        if entity.level == "C" or entity.level == "F":  # covers chains and fragments
             sequences = {
                 entity.id: seq1(
                     "".join(
@@ -112,3 +112,22 @@ def get_sequences(
     if amino_acids_only:
         sequences = {k: seq.replace("X", "") for k, seq in sequences.items()}
     return sequences
+
+
+def merge_chains(chains, new_chain_id=None):
+    from Bio import PDB
+
+    if new_chain_id is None:
+        new_chain_id = f"{chains[0].id}_{chains[1].id}"
+    new_chain = PDB.Chain.Chain(new_chain_id)
+    new_res_id = 1
+
+    for chain in chains:
+        for residue in chain.get_residues():
+            new_residue = residue.copy()
+            new_residue.id = (" ", new_res_id, " ")
+
+            new_chain.add(new_residue)
+            new_res_id += 1
+
+    return new_chain
