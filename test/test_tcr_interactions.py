@@ -367,22 +367,22 @@ class TestTCRInteractions(unittest.TestCase):
     def test_unconventional_peptide_profiling(self):
         import stcrpy
 
-        tcr = stcrpy.fetch_TCR("6u3n")
+        tcr = stcrpy.fetch_TCRs("6u3n")[0]
         interactions = tcr.profile_peptide_interactions()
         assert len(interactions) == 15
 
-        tcr1, tcr2 = stcrpy.fetch_TCR("4pjf")
+        tcr1, tcr2 = stcrpy.fetch_TCRs("4pjf")
         interactions = tcr1.profile_peptide_interactions()
         assert len(interactions) == 11
         interactions = tcr2.profile_peptide_interactions()
         assert len(interactions) == 10
 
-        tcr1, tcr2 = stcrpy.fetch_TCR("5d7i")
+        tcr1, tcr2 = stcrpy.fetch_TCRs("5d7i")
         interactions = tcr1.profile_peptide_interactions()
         assert len(interactions) == 10
         interactions = tcr2.profile_peptide_interactions()
         assert len(interactions) == 10
 
-        tcr = stcrpy.fetch_TCR("3arb")
+        tcr = stcrpy.fetch_TCRs("3arb")[0]
         interactions = tcr.profile_peptide_interactions()
         assert len(interactions) == 19

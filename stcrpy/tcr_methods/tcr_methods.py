@@ -2,6 +2,7 @@ import warnings
 import requests
 import os
 
+from ..tcr_processing import TCR
 from ..tcr_processing.TCRParser import TCRParser
 from .tcr_batch_operations import batch_load_TCRs, batch_yield_TCRs
 
@@ -71,7 +72,7 @@ def yield_TCRs(tcr_structure_files, tcr_ids=None):
     return batch_yield_TCRs(tcr_structure_files)
 
 
-def fetch_TCR(pdb_id: str):
+def fetch_TCRs(pdb_id: str) -> list[TCR]:
     """
     Fetches and parses a T-cell receptor (TCR) structure from the STCRDab or RCSB PDB databases.
 
@@ -83,9 +84,7 @@ def fetch_TCR(pdb_id: str):
         pdb_id (str): The PDB identifier of the structure to be fetched.
 
     Returns:
-        - A single TCR structure if exactly one is found.
-        - A list of TCR structures if multiple are found.
-        - None if no TCRs are identified (with a `UserWarning` issued).
+        A list of the TCR structures found in the fetched PDB file
 
     Raises:
         - A warning if no TCR structures are found in the downloaded file.
@@ -96,7 +95,7 @@ def fetch_TCR(pdb_id: str):
         - The function temporarily saves the downloaded file and deletes it after parsing.
 
     Example:
-        tcr = fetch_TCR("6eqa")
+        tcr = fetch_TCRs("6eqa")
 
     """
 
@@ -139,12 +138,10 @@ def fetch_TCR(pdb_id: str):
             print("Failed to download file")
 
     tcr_parser = TCRParser()
-    tcr = list(tcr_parser.get_tcr_structure(pdb_id, filename).get_TCRs())
+    tcrs = list(tcr_parser.get_tcr_structure(pdb_id, filename).get_TCRs())
     os.remove(filename)
-    if len(tcr) == 1:
-        return tcr[0]
-    elif len(tcr) == 0:
+
+    if len(tcrs) == 0:
         warnings.warn(f"No TCRs identified in {pdb_id}")
-        return None
-    else:
-        return tcr
+
+    return tcrs

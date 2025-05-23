@@ -19,7 +19,7 @@ class TestTCRDatasets(unittest.TestCase):
             "include_mhc": True,
             "mhc_distance_threshold": 15.0,
         }
-        tcr = stcrpy.fetch_TCR("8gvb")
+        tcr = stcrpy.fetch_TCRs("8gvb")[0]
         graph_constructor.build_graph(tcr)
 
     def test_TCRGraphDataset(self):
