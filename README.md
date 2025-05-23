@@ -167,7 +167,7 @@ irmsds = interface_rmsd_calculator.get_interface_rmsd(tcr, reference_tcr)
 # DockQ
 from stcrpy.tcr_metrics.tcr_dockq import TCRDockQ
 
-dockq_calculator = TCRDockQ()               # by default this will merge the TCR and pMHC chains and calculate DockQ of teh complete TCR:pMHC interface. To calculate DockQ scores per chain, use TCR_pMHC_interface=False
+dockq_calculator = TCRDockQ()               # by default this will merge the TCR and pMHC chains and calculate DockQ of the complete TCR:pMHC interface. To calculate DockQ scores per chain, use TCR_pMHC_interface=False
 dockq_results = dockq_calculator.tcr_dockq(tcr, reference_tcr, save_merged_complex=False)           # to investigate the merged TCR:pMHC structure set save_merged_complex=True 
 
 ```
