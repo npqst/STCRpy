@@ -186,3 +186,29 @@ class TestTCRParser(unittest.TestCase):
             tcrs = stcrpy.fetch_TCRs("6mkr")
             # should raise warning saying that other MHC Class II chain is missing
         tcrs[0].get_MHC()[0].get_MHC_type()
+
+class TestTCR(unittest.TestCase):
+    def test_crop_class_I(self):
+        tcrs = stcrpy.load_TCR('./test_files/5hyj.pdb')
+        tcr = tcrs[0]
+
+        tcr.crop()
+
+        self.assertTrue(max([res.id[1] for chain in tcr for res in chain]) <= 128)
+        self.assertTrue(max([res.id[1] for chain in tcr.MHC[0] for res in chain if res.id[0] == ' ']) % 1000 <= 92)
+
+    def test_crop_class_I_dont_remove_hetatoms(self):
+        tcrs = stcrpy.load_TCR('./test_files/5hyj.pdb')
+        tcr = tcrs[0]
+
+        tcr.crop(remove_het_atoms=False)
+
+        self.assertTrue(max([res.id[1] for chain in tcr for res in chain if res.id[0] == ' ']) <= 128)
+        self.assertFalse(max([res.id[1] for chain in tcr for res in chain]) <= 128)
+
+    def test_crop_class_II(self):
+        tcr = stcrpy.load_TCR('./test_files/8vcy_class_II.pdb')
+        tcr.crop()
+
+        self.assertTrue(max([res.id[1] for chain in tcr for res in chain if res.id[0] == ' ']) <= 128)
+        self.assertTrue(max([res.id[1] for chain in tcr.MHC[0] for res in chain if res.id[0] == ' ']) <= 92)

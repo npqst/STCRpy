@@ -8,6 +8,8 @@ import sys
 import warnings
 
 from .Entity import Entity
+from .TCRchain import TCRchain
+from .utils.region_definitions import IMGT_VARIABLE_DOMAIN
 
 try:
     from .. import tcr_interactions
@@ -383,6 +385,39 @@ class TCR(Entity):
 
     def profile_MHC_interactions(self):
         raise NotImplementedError
+
+    def crop(self, *, crop_mhc: bool = True, remove_het_atoms: bool = True) -> None:
+        """Crop TCR to variable domain and optionally crop MHC to antigen binding domain.
+
+        This method mutates the TCR object.
+
+        Args:
+            crop_mhc: crop mhc to antigen binding domain
+            remove_het_atoms: remove het atoms from structure as well
+
+        """
+        new_child_dict = {}
+        for chain in self:
+            new_chain = TCRchain(chain.id)
+
+            for residue in chain:
+                if residue.id[1] in IMGT_VARIABLE_DOMAIN or (not remove_het_atoms and residue.id[0] != ' '):
+                    new_chain.add(residue.copy())
+
+            new_chain.analyse(chain.chain_type)
+            new_chain.set_engineered(chain.engineered)
+            new_chain.xtra.update(chain.xtra)
+            new_child_dict[new_chain.id] = new_chain
+
+        for chain_id in new_child_dict:
+            del self[chain_id]
+
+        for new_chain in new_child_dict.values():
+            self.add(new_chain)
+
+        if crop_mhc:
+            for mhc in self.get_MHC():
+                mhc.crop(remove_het_atoms=remove_het_atoms)
 
     def _create_interaction_visualiser(self):
         """Function called during TCR initialisation checks if pymol is installed and assigns a visualisation method accordingly.
