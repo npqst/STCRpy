@@ -47,19 +47,18 @@ jobs:
           conda activate env
           conda install -c conda-forge pymol-open-source 
           conda list
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
-          pip install torch_geometric
+          pip install '.[ml_datasets]'
       - name: Test import
         shell: bash -el {0}
         run: |
           conda activate env
-          python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
+          python -c 'import stcrpy; stcrpy.fetch_TCRs("7pb2")'
       - name:  Test interaction profiling
         shell: bash -el {0}
         run: |
           conda activate env
           pip install plip
-          python -c 'import stcrpy; x=stcrpy.fetch_TCR("7pb2"); print(x[0].profile_peptide_interactions())'
+          python -c 'import stcrpy; x=stcrpy.fetch_TCRs("7pb2"); print(x[0].profile_peptide_interactions())'
       - name:  Run unittests
         shell: bash -el {0}
         run: |

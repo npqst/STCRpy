@@ -60,15 +60,22 @@ conda install -c conda-forge pymol-open-source -y
 
 To generate pytorch and pytorch-geometric compatible datasets (see the [pytorch docs](https://pytorch.org/get-started/locally/) for hardware specific instructions): 
 ```
-pip install torch --index-url https://download.pytorch.org/whl/cpu
-pip install torch_geometric
+pip install stcrpy[ml_datasets]
 ```
-Note that this installs the CPU version of pytorch, for GPU / CUDA versions install according to the [pytorch installation docs](https://pytorch.org/get-started/locally/).
 
-The EGNN example also uses `einops`. To install: 
-```
-pip install einops
-```
+> Note that the installs for pytorch can be platform specific.
+> If errors are ecountered here it is best to manually install the depedencies following the [pytorch installation docs](https://pytorch.org/get-started/locally/).
+> For example:
+> ```
+> pip install torch --index-url https://download.pytorch.org/whl/cpu
+> pip install torch_geometric
+> ```
+> This installs the CPU version of pytorch (for GPU / CUDA versions follow the install [pytorch installation docs](https://pytorch.org/get-started/locally/)).
+>
+> The EGNN example also uses `einops`. Which can be manually installed as follows:
+> ```
+> pip install einops
+> ```
 
 # Documentation
 STCRpy [documentation](https://stcrpy.readthedocs.io/en/latest/) is hosted on ReadtheDocs.
@@ -85,9 +92,9 @@ import stcrpy
 
 ### To fetch a TCR structure from STCRDab or the PDB: 
 ```
-tcr = stcrpy.fetch_TCR("8gvb")
+multiple_tcrs = stcrpy.fetch_TCRs("8gvb")
 ```
-This will return a TCR strcuture or object, or, if there are multiple copies of TCR crystal structures in the PDB file, will return a list containing TCR structure objects. It may be useful to unpack the list into distinct objects, or use python generators to operate on the lists. 
+This will return a list of all of the TCR structures found in the PDB file, represented as TCR structure objects.
 
 ### To load a TCR structure from a PDB or MMCIF file:
 ```

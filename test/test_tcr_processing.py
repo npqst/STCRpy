@@ -43,7 +43,7 @@ class TestTCRParser(unittest.TestCase):
         for pdb_code in tqdm(pdb_codes):
             # pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
-                tcr = stcrpy.fetch_TCR(pdb_code)
+                tcr = stcrpy.fetch_TCRs(pdb_code)
             except Exception as e:
                 errors[pdb_code] = e
         print(errors)
@@ -102,7 +102,7 @@ class TestTCRParser(unittest.TestCase):
         for pdb_file in pdb_codes:
             pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
-                tcr = stcrpy.fetch_TCR(pdb_id)
+                tcr = stcrpy.fetch_TCRs(pdb_id)
                 if len(list(tcr.get_TCRs())) == 0:
                     badly_parsed_pdb.append(pdb_id)
                 else:
@@ -147,7 +147,7 @@ class TestTCRParser(unittest.TestCase):
         for pdb_file in pdb_codes:
             pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
-                tcr = stcrpy.fetch_TCR(pdb_id)
+                tcr = stcrpy.fetch_TCRs(pdb_id)
                 if len(list(tcr.get_TCRs())) == 0:
                     badly_parsed_pdb.append(pdb_id)
                 else:
@@ -166,11 +166,11 @@ class TestTCRParser(unittest.TestCase):
     def test_MR1_parsing(self):
         import stcrpy
 
-        tcr1, tcr2 = stcrpy.fetch_TCR("5d7i")
+        tcr1, tcr2 = stcrpy.fetch_TCRs("5d7i")
         tcr1.get_MHC()[0]
         tcr2.get_MHC()[0]
 
-        tcr1, tcr2 = stcrpy.fetch_TCR("4pjf")
+        tcr1, tcr2 = stcrpy.fetch_TCRs("4pjf")
         tcr1.get_MHC()[0]
         tcr2.get_MHC()[0]
 
@@ -178,15 +178,14 @@ class TestTCRParser(unittest.TestCase):
         import stcrpy
 
         with self.assertWarns(UserWarning):
-            tcr = stcrpy.fetch_TCR("6u3n")
+            tcrs = stcrpy.fetch_TCRs("6u3n")
             # should raise warning saying that other MHC Class II chain is missing
-        tcr.get_MHC()[0].get_MHC_type()
+        tcrs[0].get_MHC()[0].get_MHC_type()
 
         with self.assertWarns(UserWarning):
-            tcr = stcrpy.fetch_TCR("6mkr")
+            tcrs = stcrpy.fetch_TCRs("6mkr")
             # should raise warning saying that other MHC Class II chain is missing
-        tcr.get_MHC()[0].get_MHC_type()
-
+        tcrs[0].get_MHC()[0].get_MHC_type()
 
 class TestTCR(unittest.TestCase):
     def test_crop_class_I(self):

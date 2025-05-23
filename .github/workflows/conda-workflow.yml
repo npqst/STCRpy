@@ -49,10 +49,10 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate env
-          python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")'
+          python -c 'import stcrpy; stcrpy.fetch_TCR("7pb2")' # TODO change to fetch_TCRs later
       - name:  Test interaction profiling
         shell: bash -el {0}
         run: |
           conda activate env
           pip install plip
-          python -c 'import stcrpy; x=stcrpy.fetch_TCR("7pb2"); print(x[0].profile_peptide_interactions())'
+          python -c 'import stcrpy; x=stcrpy.fetch_TCR("7pb2"); print(x[0].profile_peptide_interactions())' # TODO change to fetch_TCRs later
