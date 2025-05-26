@@ -638,16 +638,24 @@ class scMH1(MHC):
 
     def standardise_chain_names(self) -> None:
         """Standardise MHC chain name to A."""
+        new_child_dict = {}
         for MH1_domain in set(['MH1', 'GA1', 'GA2']):
             if hasattr(self, MH1_domain):
-                self.child_dict[getattr(self, MH1_domain)] = 'A'
+                new_child_dict['A'] = self.child_dict[getattr(self, MH1_domain)]
                 setattr(self, MH1_domain, 'A')
-
-                with warnings.catch_warnings():
-                    warnings.simplefilter('ignore', BiopythonWarning)
-                    self.id = 'A'
-
                 break
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+            self.id = 'A'
 
 
 class scCD1(MHC):
@@ -737,13 +745,22 @@ class scCD1(MHC):
 
     def standardise_chain_names(self) -> None:
         """Standardise CD1 chain name to A."""
+        new_child_dict = {}
         if hasattr(self, 'CD1'):
-            self.child_dict[self.CD1].id = 'A'
+            new_child_dict['A'] = self.child_dict[self.CD1]
             self.CD1 = 'A'
 
-            with warnings.catch_warnings():
-                warnings.simplefilter('ignore', BiopythonWarning)
-                self.id = 'A'
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+            self.id = 'A'
 
 
 class scMH2(MHC):
