@@ -43,7 +43,7 @@ class TestTCRParser(unittest.TestCase):
         for pdb_code in tqdm(pdb_codes):
             # pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
-                tcr = stcrpy.fetch_TCR(pdb_code)
+                tcr = stcrpy.fetch_TCRs(pdb_code)
             except Exception as e:
                 errors[pdb_code] = e
         print(errors)
@@ -102,7 +102,7 @@ class TestTCRParser(unittest.TestCase):
         for pdb_file in pdb_codes:
             pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
-                tcr = stcrpy.fetch_TCR(pdb_id)
+                tcr = stcrpy.fetch_TCRs(pdb_id)
                 if len(list(tcr.get_TCRs())) == 0:
                     badly_parsed_pdb.append(pdb_id)
                 else:
@@ -147,7 +147,7 @@ class TestTCRParser(unittest.TestCase):
         for pdb_file in pdb_codes:
             pdb_id = pdb_file.split("/")[-1].split(".")[0]
             try:
-                tcr = stcrpy.fetch_TCR(pdb_id)
+                tcr = stcrpy.fetch_TCRs(pdb_id)
                 if len(list(tcr.get_TCRs())) == 0:
                     badly_parsed_pdb.append(pdb_id)
                 else:
@@ -166,11 +166,11 @@ class TestTCRParser(unittest.TestCase):
     def test_MR1_parsing(self):
         import stcrpy
 
-        tcr1, tcr2 = stcrpy.fetch_TCR("5d7i")
+        tcr1, tcr2 = stcrpy.fetch_TCRs("5d7i")
         tcr1.get_MHC()[0]
         tcr2.get_MHC()[0]
 
-        tcr1, tcr2 = stcrpy.fetch_TCR("4pjf")
+        tcr1, tcr2 = stcrpy.fetch_TCRs("4pjf")
         tcr1.get_MHC()[0]
         tcr2.get_MHC()[0]
 
@@ -178,11 +178,127 @@ class TestTCRParser(unittest.TestCase):
         import stcrpy
 
         with self.assertWarns(UserWarning):
-            tcr = stcrpy.fetch_TCR("6u3n")
+            tcrs = stcrpy.fetch_TCRs("6u3n")
             # should raise warning saying that other MHC Class II chain is missing
-        tcr.get_MHC()[0].get_MHC_type()
+        tcrs[0].get_MHC()[0].get_MHC_type()
 
         with self.assertWarns(UserWarning):
-            tcr = stcrpy.fetch_TCR("6mkr")
+            tcrs = stcrpy.fetch_TCRs("6mkr")
             # should raise warning saying that other MHC Class II chain is missing
+        tcrs[0].get_MHC()[0].get_MHC_type()
+
+
+class TestTCR(unittest.TestCase):
+    def test_crop_class_I(self):
+        tcrs = stcrpy.load_TCR('./test_files/5hyj.pdb')
+        tcr = tcrs[0]
+
+        tcr.crop()
+
+        self.assertTrue(max([res.id[1] for chain in tcr for res in chain]) <= 128)
+        self.assertTrue(max([res.id[1] for chain in tcr.MHC[0] for res in chain if res.id[0] == ' ']) % 1000 <= 92)
+
+    def test_crop_class_I_dont_remove_hetatoms(self):
+        tcrs = stcrpy.load_TCR('./test_files/5hyj.pdb')
+        tcr = tcrs[0]
+
+        tcr.crop(remove_het_atoms=False)
+
+        self.assertTrue(max([res.id[1] for chain in tcr for res in chain if res.id[0] == ' ']) <= 128)
+        self.assertFalse(max([res.id[1] for chain in tcr for res in chain]) <= 128)
+
+    def test_crop_class_II(self):
+        tcr = stcrpy.load_TCR('./test_files/8vcy_class_II.pdb')
+        tcr.crop()
+
+        self.assertTrue(max([res.id[1] for chain in tcr for res in chain if res.id[0] == ' ']) <= 128)
+        self.assertTrue(max([res.id[1] for chain in tcr.MHC[0] for res in chain if res.id[0] == ' ']) <= 92)
         tcr.get_MHC()[0].get_MHC_type()
+
+
+class TestabTCR(unittest.TestCase):
+    def setUp(self):
+        pdb_file = "./test_files/5hyj.pdb"
+        self.tcrs = stcrpy.load_TCR(pdb_file)
+
+    def test_standardise_chain_names(self):
+        tcr = self.tcrs[1]
+
+        tcr.standardise_chain_names()
+
+        self.assertEqual(tcr.id, 'ED')
+        self.assertEqual(tcr.VA, 'D')
+        self.assertEqual(tcr.get_VA().id, 'D')
+        self.assertEqual(tcr.VB, 'E')
+        self.assertEqual(tcr.get_VB().id, 'E')
+
+        self.assertEqual(tcr.antigen[0].id, 'C')
+
+        self.assertEqual(tcr.MHC[0].id, 'AB')
+        self.assertEqual(tcr.MHC[0].get_alpha().id, 'A')
+        self.assertEqual(tcr.MHC[0].get_B2M().id, 'B')
+
+    def test_standardise_chain_names_when_already_standard(self):
+        tcr = self.tcrs[0]
+
+        tcr.standardise_chain_names()
+
+        self.assertEqual(tcr.id, 'ED')
+        self.assertEqual(tcr.VA, 'D')
+        self.assertEqual(tcr.get_VA().id, 'D')
+        self.assertEqual(tcr.VB, 'E')
+        self.assertEqual(tcr.get_VB().id, 'E')
+
+        self.assertEqual(tcr.antigen[0].id, 'C')
+
+        self.assertEqual(tcr.MHC[0].id, 'AB')
+        self.assertEqual(tcr.MHC[0].get_alpha().id, 'A')
+        self.assertEqual(tcr.MHC[0].get_B2M().id, 'B')
+
+    def test_standardise_chain_names_mhc_chain_e(self):
+        tcr, _ = stcrpy.load_TCR('./test_files/2e7l.pdb')
+
+        tcr.standardise_chain_names()
+
+        self.assertEqual(tcr.id, 'ED')
+        self.assertEqual(tcr.VA, 'D')
+        self.assertEqual(tcr.get_VA().id, 'D')
+        self.assertEqual(tcr.VB, 'E')
+        self.assertEqual(tcr.get_VB().id, 'E')
+
+        self.assertEqual(tcr.antigen[0].id, 'C')
+
+        self.assertEqual(tcr.MHC[0].id, 'A')
+        self.assertEqual(tcr.MHC[0].get_alpha().id, 'A')
+
+
+    def test_swapped_chain_ids(self):
+        tcr = stcrpy.load_TCR('./test_files/swapped_chain_ids_5hyj_DECAB.pdb')
+        tcr.standardise_chain_names()
+
+        self.assertEqual(tcr.id, 'ED')
+        self.assertEqual(tcr.VA, 'D')
+        self.assertEqual(tcr.get_VA().id, 'D')
+        self.assertEqual(tcr.VB, 'E')
+        self.assertEqual(tcr.get_VB().id, 'E')
+
+        self.assertEqual(tcr.antigen[0].id, 'C')
+
+        self.assertEqual(tcr.MHC[0].id, 'AB')
+        self.assertEqual(tcr.MHC[0].get_alpha().id, 'A')
+        self.assertEqual(tcr.MHC[0].get_B2M().id, 'B')
+
+
+class TestgdTCR(unittest.TestCase):
+    def test_standardise_chain_names(self):
+        pdb_file = "./test_files/1hxm_dbTCRs.pdb"
+        tcrs = stcrpy.load_TCR(pdb_file)
+        tcr = tcrs[0]
+
+        tcr.standardise_chain_names()
+
+        self.assertEqual(tcr.id, 'ED')
+        self.assertEqual(tcr.VD, 'D')
+        self.assertEqual(tcr.get_VD().id, 'D')
+        self.assertEqual(tcr.VG, 'E')
+        self.assertEqual(tcr.get_VG().id, 'E')

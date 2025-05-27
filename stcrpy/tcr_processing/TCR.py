@@ -7,7 +7,11 @@ The TCR class.
 import sys
 import warnings
 
+from Bio import BiopythonWarning
+
 from .Entity import Entity
+from .TCRchain import TCRchain
+from .utils.region_definitions import IMGT_VARIABLE_DOMAIN
 
 try:
     from .. import tcr_interactions
@@ -16,6 +20,10 @@ except ImportError as e:
         "TCR interaction profiling could not be imported. Check PLIP installation"
     )
     print(e)
+
+
+class TCRError(Exception):
+    """Error raised when there is an issue with the TCR."""
 
 
 class TCR(Entity):
@@ -403,6 +411,39 @@ class TCR(Entity):
     def profile_MHC_interactions(self):
         raise NotImplementedError
 
+    def crop(self, *, crop_mhc: bool = True, remove_het_atoms: bool = True) -> None:
+        """Crop TCR to variable domain and optionally crop MHC to antigen binding domain.
+
+        This method mutates the TCR object.
+
+        Args:
+            crop_mhc: crop mhc to antigen binding domain
+            remove_het_atoms: remove het atoms from structure as well
+
+        """
+        new_child_dict = {}
+        for chain in self:
+            new_chain = TCRchain(chain.id)
+
+            for residue in chain:
+                if residue.id[1] in IMGT_VARIABLE_DOMAIN or (not remove_het_atoms and residue.id[0] != ' '):
+                    new_chain.add(residue.copy())
+
+            new_chain.analyse(chain.chain_type)
+            new_chain.set_engineered(chain.engineered)
+            new_chain.xtra.update(chain.xtra)
+            new_child_dict[new_chain.id] = new_chain
+
+        for chain_id in new_child_dict:
+            del self[chain_id]
+
+        for new_chain in new_child_dict.values():
+            self.add(new_chain)
+
+        if crop_mhc:
+            for mhc in self.get_MHC():
+                mhc.crop(remove_het_atoms=remove_het_atoms)
+
     def _create_interaction_visualiser(self):
         """Function called during TCR initialisation checks if pymol is installed and assigns a visualisation method accordingly.
         If pymol is installed, method to generate interaction visualisations is returned.
@@ -464,6 +505,25 @@ class TCR(Entity):
                 )
 
             return visualise_interactions
+
+    def standardise_chain_names(self):
+        """Raises NotImplementedError."""
+        raise NotImplementedError()
+
+    def _validate_chain_standardising(self) -> None:
+        if (hasattr(self, 'antigen') and len(self.antigen) > 1) or (hasattr(self, 'MHC') and len(self.MHC) > 1):
+            msg = 'More than one antigen or MHC molecule is not currently supported for standardising.'
+            raise TCRError(msg)
+
+    def _standardise_antigen_chain_names(self) -> None:
+        """Will give the antigen the chain id C. Does not support multiple antigens."""
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+            self.antigen[0].id = 'C'
+
+    def _standardise_mhc_chain_names(self) -> None:
+        """Will give the MHC first chain id A and second chain B. Does not support more than one MHC molecule."""
+        self.MHC[0].standardise_chain_names()
 
 
 class abTCR(TCR):
@@ -594,6 +654,56 @@ class abTCR(TCR):
                 for frag in var_domain.get_fragments():
                     yield frag
 
+    def standardise_chain_names(self) -> None:
+        """
+        Standardise the TCR, antigen, and MHC chain names to the following convention.
+
+        Convention:
+            - A - MHC chain 1
+            - B - MHC chain 2 (eg B2M)
+            - C - antigen chain
+            - D - TCR alpha chain
+            - E - TCR beta chain
+
+        Note, this mutates the original object.
+
+        Raises:
+            TCRError: if there is more than one antigen or MHC molecules attached to the TCR.
+
+        """
+        self._validate_chain_standardising()
+
+        new_id = []
+        new_child_dict = {}
+
+        if hasattr(self, 'VB'):
+            new_child_dict['E'] = self.child_dict[self.VB]
+            self.VB = 'E'
+            new_id.append('E')
+
+        if hasattr(self, 'VA'):
+            new_child_dict['D'] = self.child_dict[self.VA]
+            self.VA = 'D'
+            new_id.append('D')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
+
+        if hasattr(self, 'antigen') and self.antigen:
+            self._standardise_antigen_chain_names()
+
+        if hasattr(self, 'MHC') and self.MHC:
+            self._standardise_mhc_chain_names()
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+            self.id = ''.join(new_id)
+
 
 class gdTCR(TCR):
 
@@ -670,6 +780,56 @@ class gdTCR(TCR):
                 for frag in var_domain.get_fragments():
                     yield frag
 
+    def standardise_chain_names(self) -> None:
+        """
+        Standardise the TCR, antigen, and MHC chain names to the following convention.
+
+        Convention:
+            - A - MHC chain 1
+            - B - MHC chain 2 (eg B2M)
+            - C - antigen chain
+            - D - TCR delta chain
+            - E - TCR gamma chain
+
+        Note, this mutates the original object.
+
+        Raises:
+            TCRError: if there is more than one antigen or MHC molecules attached to the TCR.
+
+        """
+        self._validate_chain_standardising()
+
+        new_id = []
+        new_child_dict = {}
+
+        if hasattr(self, 'VG'):
+            new_child_dict['E'] = self.child_dict[self.VG]
+            self.VG = 'E'
+            new_id.append('E')
+
+        if hasattr(self, 'VD'):
+            new_child_dict['D'] = self.child_dict[self.VD]
+            self.VD = 'D'
+            new_id.append('D')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
+
+        if hasattr(self, 'antigen') and self.antigen:
+            self._standardise_antigen_chain_names()
+
+        if hasattr(self, 'MHC') and self.MHC:
+            self._standardise_mhc_chain_names()
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+            self.id = ''.join(new_id)
+
 
 class dbTCR(TCR):
     def __init__(self, c1, c2):
@@ -745,3 +905,53 @@ class dbTCR(TCR):
             if var_domain:
                 for frag in var_domain.get_fragments():
                     yield frag
+
+    def standardise_chain_names(self) -> None:
+        """
+        Standardise the TCR, antigen, and MHC chain names to the following convention.
+
+        Convention:
+            - A - MHC chain 1
+            - B - MHC chain 2 (eg B2M)
+            - C - antigen chain
+            - D - TCR delta chain
+            - E - TCR beta chain
+
+        Note, this mutates the original object.
+
+        Raises:
+            TCRError: if there is more than one antigen or MHC molecules attached to the TCR.
+
+        """
+        self._validate_chain_standardising()
+
+        new_id = []
+        new_child_dict = {}
+
+        if hasattr(self, 'VB'):
+            new_child_dict['E'] = self.child_dict[self.VB]
+            self.VB = 'E'
+            new_id.append('E')
+
+        if hasattr(self, 'VD'):
+            new_child_dict['D'] = self.child_dict[self.VD]
+            self.VD = 'D'
+            new_id.append('D')
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+
+            for chain_id, chain in new_child_dict.items():
+                chain.id = chain_id
+
+        self.child_dict = new_child_dict
+
+        if hasattr(self, 'antigen') and self.antigen:
+            self._standardise_antigen_chain_names()
+
+        if hasattr(self, 'MHC') and self.MHC:
+            self._standardise_mhc_chain_names()
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', BiopythonWarning)
+            self.id = ''.join(new_id)
