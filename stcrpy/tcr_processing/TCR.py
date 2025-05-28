@@ -57,6 +57,25 @@ class TCR(Entity):
             if set(mhc.antigen) - set(self.antigen):
                 self.antigen.extend(mhc.antigen)
 
+    def copy(self, copy_siblings = True ):
+        """
+        Return a copy of the TCR object. This returns a shallow copy of the TCR object.
+        If the copy_siblings flag is set to True, the antigen and MHC objects will also be copied. Warning - if the copy_siblings flag is set to False, the antigen and MHC objects will not be copied, and the reference will still point to the same MHC and antigen objects as the original.
+
+        copy_siblings: Whether to copy sibling entities (ie. MHC and Antigen objects). Default True. 
+
+        """
+        shallow = super().copy()
+        if copy_siblings:
+            shallow.antigen = [a.copy() for a in self.get_antigen()]
+            shallow.MHC = [m.copy(copy_siblings=False) for m in self.get_MHC()]
+            for m in shallow.MHC:
+                m.tcr = [t.copy(copy_siblings=False) if t.id != shallow.id else shallow for t in m.tcr]
+                m.antigen = [ag.copy() if ag.id not in [a.id for a in shallow.antigen] else [a for a in shallow.antigen if a.id==ag.id][0] for ag in m.antigen]
+        
+        return shallow
+
+
     def get_antigen(self):
         """
         Return a list of TCR associated antigens.

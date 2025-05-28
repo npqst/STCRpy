@@ -44,6 +44,23 @@ class MHC(Entity):
     def _add_tcr(self, tcr=None):
         self.tcr.append(tcr)
 
+    def copy(self, copy_siblings = True ):
+        """
+        Return a copy of the MHC object. This returns a shallow copy of the MHC object.
+        If the copy_siblings flag is set to True, the antigen and TCR objects will also be copied. Warning - if the copy_siblings flag is set to False, the antigen and TCR objects will not be copied, and the reference will still point to the same TCR and antigen objects as the original.
+
+        copy_siblings: Whether to copy sibling entities (ie. TCR and Antigen objects). Default True. 
+
+        """
+        shallow = super().copy()
+        if copy_siblings:
+            shallow.antigen = [a.copy(copy_siblings=False) for a in self.get_antigen()]
+            shallow.tcr = [t.copy(copy_siblings=False) for t in self.get_TCR()]
+            for t in shallow.tcr:
+                t.MHC = [shallow if m.id == shallow.id else m.copy(copy_siblings=False) for m in t.get_MHC()]
+                t.antigen = [ag.copy(copy_siblings=False) if ag.id not in [a.id for a in shallow.antigen] else [a for a in shallow.antigen if a.id==ag.id][0] for ag in t.antigen]
+        return shallow
+
     def get_TCR(self):
         return self.tcr
 

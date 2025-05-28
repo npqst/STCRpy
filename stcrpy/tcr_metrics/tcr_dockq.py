@@ -27,56 +27,69 @@
 import warnings
 from collections import namedtuple
 import itertools
-import Bio
 import json
 from functools import partial
 import logging
 import numpy as np
-import copy
 import os
+import tempfile
+import shutil
+import Bio
+
+from DockQ import DockQ as dockq
+
+from stcrpy import tcr_formats
 
 
 class TCRDockQ:
-    def __init__(self, TCR_pMHC_interface=True, **kwargs):
+    def __init__(
+            self,
+            TCR_pMHC_interface=True, 
+            mapping=None,
+            small_molecule=None,
+            capri_peptide=False,
+            no_align=False,
+            json=None,
+            n_cpu=8,
+            max_chunk=512,
+            allowed_mismatches=0,
+            verbose=False,
+            short=False,
+            print_results=False
+            ):
         """
-        Initialize the TCRDockQ class. See `Dockq --help` for more information.
+        Initialize the TCRDockQ class. See `Dockq --help` for more information on the arguments. Some of the keyword arguments are inherited from DockQ and are not relevant for TCR:pMHC complexes.
 
         Args:
-            TCR_pMHC_interface (bool): Whether to use evaluate the entire TCR-pMHC interface or evaluate spearate chains. Deaults to True. This will create a merged psudo-chain for the antigen and the TCR.
-            **kwargs: Keyword arguments from DockQ: mapping, small_molecule, capri_peptide, no_align, json, n_cpu, max_chunk, allowed_mismatches, verbose, short, print_results.
-        """
+            TCR_pMHC_interface (bool): Whether to use evaluate the entire TCR-pMHC interface or evaluate spearate chains. Defaults to True. This will create a merged psudo-chain for the antigen and the TCR.
+            capri_peptide (bool): Whether to use a CAPRI peptide for the docking. DockQ cannot not be trusted for this setting.
+            small_molecule (bool): Whether the ligand is a small molecule.
+            short (bool): Short output
+            json (str): Write outputs to a chosen json file
+            verbose (bool): Verbose output
+            no_align (bool): Do not align native and model using sequence alignments, but use the numbering of residues instead
+            n_cpu (int): Number of cores to use
+            max_chunk (int): Maximum size of chunks given to the cores, actual chunksize is min(max_chunk,combos/cpus)
+            allowed_mismatches (int): Number of allowed mismatches when mapping model sequence to native sequence.
+            mapping (str): Specify a chain mapping between model and native structure. If TCR_pMHC_interface is True, this is overwritten to map the merged TCR and MHC chains of the predicted and native complex to one another. If the native contains two chains "H" and "L" while the model contains two chains "A" and "B", and chain A is a model of native chain H and chain B is a model of native chain L, the flag can be set as: '--mapping AB:HL'. This can also help limit the search to specific native interfaces. For example, if the native is a tetramer (ABCD) but the user is only interested in the
+                        interface between chains B and C, the flag can be set as: '--mapping :BC' or the equivalent '--mapping *:BC'.
+            print_results (bool): Print the results to the console.
+            """
 
-        DockQArgs = namedtuple(
-            "DockQArgs",
-            [
-                "mapping",
-                "small_molecule",
-                "capri_peptide",
-                "no_align",
-                "json",
-                "n_cpu",
-                "max_chunk",
-                "allowed_mismatches",
-                "verbose",
-                "short",
-                "print_results",
-            ],
-        )
         self.TCR_pMHC_interface = TCR_pMHC_interface
-        self.args = DockQArgs(
-            mapping=kwargs.get("mapping", None),
-            small_molecule=kwargs.get("small_molecule", None),
-            capri_peptide=kwargs.get("capri_peptide", False),
-            no_align=kwargs.get("no_align", False),
-            json=kwargs.get("json", None),
-            n_cpu=kwargs.get("n_cpu", 8),
-            max_chunk=kwargs.get("max_chunk", 512),
-            allowed_mismatches=kwargs.get("allowed_mismatches", 0),
-            verbose=kwargs.get("verbose", False),
-            short=kwargs.get("short", False),
-            print_results=kwargs.get("print_results", False),
-        )
-        return
+        self.args = {
+            "mapping": mapping,
+            "small_molecule": small_molecule,
+            "capri_peptide": capri_peptide,
+            "no_align": no_align, 
+            "json": json,
+            "n_cpu": n_cpu,
+            "max_chunk": max_chunk,
+            "allowed_mismatches": allowed_mismatches,
+            "verbose": verbose,
+            "short": short,
+            "print_results": print_results
+        }
 
     def try_tcr_mapping(self, dock: "abTCR", reference: "abTCR"):
         try:
@@ -91,7 +104,7 @@ class TCRDockQ:
             mapping = list(zip(*mapping))
             string_mapping = f"{''.join(mapping[0])}:{''.join(mapping[1])}"
             return mapping, string_mapping
-        except Exception:
+        except KeyError:
             return None, None
 
     def retrieve_chain(self, tcr: "TCR", chain_id: str):
@@ -104,18 +117,17 @@ class TCRDockQ:
             return tcr.get_MHC()[0][chain_id]
 
     def filter_residues(self, dock: "abTCR", reference: "abTCR", mapping):
-        from stcrpy.tcr_formats.tcr_formats import get_sequences
 
-        filtered_dock = copy.deepcopy(dock)
-        filtered_reference = copy.deepcopy(reference)
+        filtered_dock = dock.copy()
+        filtered_reference = reference.copy()
 
         for i, c_id in enumerate(mapping[0]):
             dock_chain = self.retrieve_chain(dock, c_id)
             ref_chain = self.retrieve_chain(reference, mapping[1][i])
 
             # get the sequence of the dock chain and ref chain, then align them. Identify any mismathces in the sequence and remove those residues from the chain
-            dock_seq = get_sequences(dock_chain, amino_acids_only=False)[dock_chain.id]
-            ref_seq = get_sequences(ref_chain, amino_acids_only=False)[ref_chain.id]
+            dock_seq = tcr_formats.tcr_formats.get_sequences(dock_chain, amino_acids_only=False)[dock_chain.id]
+            ref_seq = tcr_formats.tcr_formats.get_sequences(ref_chain, amino_acids_only=False)[ref_chain.id]
             aligner = Bio.Align.PairwiseAligner(match=1, mismatch=-1, gap_score=-1)
             alignment = aligner.align(dock_seq, ref_seq)[0]
             dock_indices, ref_indices = alignment.indices
@@ -151,11 +163,9 @@ class TCRDockQ:
 
     def tcr_to_structure(
         self, tcr: "abTCR", mapping_filter=None, merge_chains=True
-    ) -> Bio.PDB.Structure.Structure:
-        # structure = Bio.PDB.Structure.Structure(tcr.parent.parent.id)
-        from stcrpy import tcr_formats
+    ) -> Bio.PDB.Model.Model:
 
-        model = Bio.PDB.Model.Model(tcr.parent.id)
+        model = Bio.PDB.Model.Model(0)
 
         if merge_chains:
             tcr_chains_to_merge = [
@@ -199,7 +209,6 @@ class TCRDockQ:
                     chain.is_het = False
                     chain.sequence = sequences[chain.id]
                     model.add(chain)
-        # structure.add(model)
         return model
 
     def tcr_dockq(self, dock: "abTCR", reference: "abTCR", save_merged_complex: bool=False) -> float:
@@ -221,14 +230,6 @@ class TCRDockQ:
                 fnat, fnonnat, and other relevant metrics for the best mapping.
         """
 
-        try:
-            import DockQ
-            from DockQ import DockQ as dockq
-        except (ImportError, ModuleNotFoundError) as e:
-            warnings.warn(
-                f"DockQ is not installed. Error: {e}. Please install it using `pip install DockQ`."
-            )
-
         mapping, string_mapping = self.try_tcr_mapping(dock, reference)
 
         filtered_dock, filtered_reference = self.filter_residues(
@@ -246,36 +247,34 @@ class TCRDockQ:
             merge_chains=self.TCR_pMHC_interface,
         )
 
-        # save the structures to pdb files
-        import Bio
+        with tempfile.TemporaryDirectory() as tmpdir:
+            io = Bio.PDB.PDBIO()
+            io.set_structure(model_structure)
+            io.save(os.path.join(tmpdir, f"model_structure_{dock.parent.parent.id}_{dock.id}.pdb"))
+            io.set_structure(native_structure)
+            io.save(os.path.join(tmpdir, f"native_structure_{reference.parent.parent.id}_{reference.id}.pdb"))
 
-        io = Bio.PDB.PDBIO()
-        io.set_structure(model_structure)
-        io.save(f"model_structure_{dock.parent.parent.id}_{dock.id}.pdb")
-        io.set_structure(native_structure)
-        io.save(f"native_structure_{reference.parent.parent.id}_{reference.id}.pdb")
+            if self.TCR_pMHC_interface:
+                string_mapping = "TM:TM"
 
-        if self.TCR_pMHC_interface:
-            string_mapping = "TM:TM"
+            initial_mapping, model_chains, native_chains = dockq.format_mapping(
+                string_mapping, small_molecule=self.args["small_molecule"]
+            )
 
-        initial_mapping, model_chains, native_chains = dockq.format_mapping(
-            string_mapping, small_molecule=self.args.small_molecule
-        )
+            model_structure = dockq.load_PDB(
+                os.path.join(tmpdir, f"model_structure_{dock.parent.parent.id}_{dock.id}.pdb"),
+                chains=model_chains,
+                small_molecule=self.args["small_molecule"],
+            )
+            native_structure = dockq.load_PDB(
+                os.path.join(tmpdir, f"native_structure_{reference.parent.parent.id}_{reference.id}.pdb"),
+                chains=native_chains,
+                small_molecule=self.args["small_molecule"],
+            )
 
-        model_structure = dockq.load_PDB(
-            f"model_structure_{dock.parent.parent.id}_{dock.id}.pdb",
-            chains=model_chains,
-            small_molecule=self.args.small_molecule,
-        )
-        native_structure = dockq.load_PDB(
-            f"native_structure_{reference.parent.parent.id}_{reference.id}.pdb",
-            chains=native_chains,
-            small_molecule=self.args.small_molecule,
-        )
-
-        if not save_merged_complex:
-            os.remove(f"model_structure_{dock.parent.parent.id}_{dock.id}.pdb")
-            os.remove(f"native_structure_{reference.parent.parent.id}_{reference.id}.pdb")
+            if save_merged_complex:
+                shutil.copyfile(os.path.join(tmpdir, f"model_structure_{dock.parent.parent.id}_{dock.id}.pdb"), f"model_structure_{dock.parent.parent.id}_{dock.id}.pdb")
+                shutil.copyfile(os.path.join(tmpdir, f"native_structure_{reference.parent.parent.id}_{reference.id}.pdb"), f"native_structure_{reference.parent.parent.id}_{reference.id}.pdb")
 
         # check user-given chains are in the structures
         model_chains = (
@@ -306,7 +305,7 @@ class TCRDockQ:
             native_structure,
             model_chains_to_combo,
             native_chains_to_combo,
-            self.args.allowed_mismatches,
+            self.args["allowed_mismatches"],
         )
         chain_maps = dockq.get_all_chain_maps(
             chain_clusters,
@@ -325,15 +324,15 @@ class TCRDockQ:
             dockq.run_on_all_native_interfaces,
             model_structure,
             native_structure,
-            no_align=self.args.no_align,
-            capri_peptide=self.args.capri_peptide,
+            no_align=self.args["no_align"],
+            capri_peptide=self.args["capri_peptide"],
             low_memory=low_memory,
         )
 
         if num_chain_combinations > 1:
-            cpus = min(num_chain_combinations, self.args.n_cpu)
+            cpus = min(num_chain_combinations, self.args["n_cpu"])
             chunk_size = min(
-                self.args.max_chunk, max(1, num_chain_combinations // cpus)
+                self.args["max_chunk"], max(1, num_chain_combinations // cpus)
             )
 
             # for large num_chain_combinations it should be possible to divide the chain_maps in chunks
@@ -361,8 +360,8 @@ class TCRDockQ:
                     model_structure,
                     native_structure,
                     chain_map=best_mapping,
-                    no_align=self.args.no_align,
-                    capri_peptide=self.args.capri_peptide,
+                    no_align=self.args["no_align"],
+                    capri_peptide=self.args["capri_peptide"],
                     low_memory=False,
                 )
 
@@ -385,21 +384,21 @@ class TCRDockQ:
         info["best_mapping"] = best_mapping
         info["best_mapping_str"] = f"{dockq.format_mapping_string(best_mapping)}"
 
-        if self.args.json:
-            if not isinstance(self.args.json, str):
+        if self.args["json"]:
+            if not isinstance(self.args["json"], str):
                 json_file = f"dockq_{model_structure.id}_{dock.id}_{native_structure.id}_{reference.id}.json"
             else:
-                json_file = self.args.json
+                json_file = self.args["json"]
             with open(json_file, "w") as fp:
                 json.dump(info, fp)
 
-        if self.args.print_results:
+        if self.args["print_results"]:
             dockq.print_results(
                 info,
-                self.args.short,
-                self.args.verbose,
-                self.args.capri_peptide,
-                self.args.small_molecule,
+                self.args["short"],
+                self.args["verbose"],
+                self.args["capri_peptide"],
+                self.args["small_molecule"],
             )
 
         return info

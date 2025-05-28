@@ -147,10 +147,6 @@ dataset = TCRGraphDataset(
 ```
 
 ### To calculate TCR prediction metrics such as RMSD, interface RMSD (of the TCR:pMHC interface) or DockQ scores:
-To calculate DockQ scores first install DockQ: 
-```
-pip install DockQ
-```
 
 ```
 # RMSD
