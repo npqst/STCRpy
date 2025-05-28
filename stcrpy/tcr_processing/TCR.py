@@ -57,6 +57,25 @@ class TCR(Entity):
             if set(mhc.antigen) - set(self.antigen):
                 self.antigen.extend(mhc.antigen)
 
+    def copy(self, copy_siblings = True ):
+        """
+        Return a copy of the TCR object. This returns a shallow copy of the TCR object.
+        If the copy_siblings flag is set to True, the antigen and MHC objects will also be copied. Warning - if the copy_siblings flag is set to False, the antigen and MHC objects will not be copied, and the reference will still point to the same MHC and antigen objects as the original.
+
+        copy_siblings: Whether to copy sibling entities (ie. MHC and Antigen objects). Default True. 
+
+        """
+        shallow = super().copy()
+        if copy_siblings:
+            shallow.antigen = [a.copy() for a in self.get_antigen()]
+            shallow.MHC = [m.copy(copy_siblings=False) for m in self.get_MHC()]
+            for m in shallow.MHC:
+                m.tcr = [t.copy(copy_siblings=False) if t.id != shallow.id else shallow for t in m.tcr]
+                m.antigen = [ag.copy() if ag.id not in [a.id for a in shallow.antigen] else [a for a in shallow.antigen if a.id==ag.id][0] for ag in m.antigen]
+        
+        return shallow
+
+
     def get_antigen(self):
         """
         Return a list of TCR associated antigens.
@@ -231,6 +250,25 @@ class TCR(Entity):
             )
 
         return germlines_and_alleles
+
+    def get_chain_mapping(self):
+        """Get a dictionary of chain IDs to chain types.
+
+        Returns:
+            dict: Dictionary of chain IDs to chain types
+        """
+        tcr_chain_mapping = {v: k for k, v in self.get_domain_assignment().items()}
+        antigen_chain_mapping = {c.id: "Ag" for c in self.get_antigen()}
+        mhc_chain_mapping = {
+            c.id: c.chain_type for m in self.get_MHC() for c in m.get_chains()
+        }
+        chain_mapping = {
+            **tcr_chain_mapping,
+            **antigen_chain_mapping,
+            **mhc_chain_mapping,
+        }
+
+        return chain_mapping
 
     def save(self, save_as=None, tcr_only: bool = False, format: str = "pdb"):
         """Save TCR object as PDB or MMCIF file.

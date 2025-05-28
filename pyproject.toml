@@ -26,7 +26,8 @@ dependencies = [
   "matplotlib",
   "scipy",
   "requests",
-  "scikit-learn"
+  "scikit-learn",
+  "DockQ",
 ]
 
 [project.optional-dependencies]
