@@ -88,13 +88,17 @@ class TCRpMHC_PLIP_Model_Parser:
         io.set_structure(ligand)
         io.save(PEPTIDE_PDB_FILE)
 
-        tcr_mhc_struct = PDB.Model.Model(id=0)
-        # add TCR chains to protein structure
-        for chain in tcr_pmhc_complex.get_chains():
-            tcr_mhc_struct.add(chain)
-        # add MHC chain to protein structure
-        for chain in tcr_pmhc_complex.get_MHC()[0].get_chains():
-            tcr_mhc_struct.add(chain)
+        tcr_mhc_struct = PDB.Structure.Structure('')
+        new_model = PDB.Model.Model(id=0)
+        for tcr_chain in tcr_and_mhc_chains:
+            new_chain = PDB.Chain.Chain(tcr_chain.id)
+
+            for residue in tcr_chain:
+                new_chain.add(residue.copy())
+
+            new_model.add(new_chain)
+
+        tcr_mhc_struct.add(new_model)
 
         io = PDB.PDBIO()
         io.set_structure(tcr_mhc_struct)
