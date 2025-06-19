@@ -241,8 +241,13 @@ def interpret(x):
 
 class AlignmentError(Exception):
     """Raised when there is an error aligning two sequences."""
-    def __init__(self, sequence1: str, sequence2: str) -> None:
-        super().__init__(f'Could not align sequences: {sequence1} and {sequence2}')
+    def __init__(self, sequence1: str, sequence2: str, details: str | None = None) -> None:
+        message = f'Could not align sequences: {sequence1} and {sequence2}'
+
+        if details:
+            message += '. ' + details
+
+        super().__init__(message)
 
 
 def align_numbering(numbering, sequence_list):
@@ -294,7 +299,11 @@ def align_numbering(numbering, sequence_list):
                         break
 
                 else:
-                    raise AlignmentError(numbered_sequence_ali, input_sequence_ali)
+                    raise AlignmentError(
+                        numbered_sequence_ali,
+                        input_sequence_ali,
+                        f'Not enough insertion codes to cover gap in sequences at position {seq_id[0]}.',
+                    )
 
             seq_id = propposed_seq_id
 

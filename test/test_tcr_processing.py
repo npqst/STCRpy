@@ -5,7 +5,7 @@ from Bio.PDB import MMCIFParser, PDBParser
 
 import stcrpy
 from stcrpy.tcr_processing import TCRParser, abTCR, TCR, MHCchain, MHC
-from stcrpy.tcr_processing.annotate import annotate
+from stcrpy.tcr_processing.annotate import annotate, AlignmentError
 
 
 class TestTCRParser(unittest.TestCase):
@@ -680,6 +680,12 @@ class TestAnnotate(unittest.TestCase):
         })
         self.assertFalse(scTCR)
 
+    def test_alignment_error(self):
+        structure = self.mmcif_parser.get_structure('', './test_files/test_annotation_error.cif')
+
+        with self.assertRaises(AlignmentError):
+            annotate(structure[0]['E'])
+
     def test_sc_tcr(self):
         structure = self.pdb_parser.get_structure('', './test_files/1bwm_scTCR.pdb')
         (domain1, domain2), chain_type, germline_info, scTCR = annotate(structure[0]['A'])
@@ -943,6 +949,8 @@ class TestAnnotate(unittest.TestCase):
             'v_gene': [('mouse', 'TRAV14D-2*01'), 0.989247311827957],
         })
         self.assertTrue(scTCR)
+    
+    
 
     def test_mhc_i_chain(self):
         aligned_numbering, chain_type, germline_info, scTCR = annotate(self.mhc_i_chain)
