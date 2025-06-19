@@ -14,6 +14,9 @@ to_one_letter_code = dict(list(zip(aa3, aa1)))
 # Import TCRDB's constants and common functions.
 from .utils.constants import TCR_CHAINS
 
+NUMBERING_OFFSET = 1000
+'''Offset needed to number things like scTCRs where two numberings are present and they may clash.'''
+
 
 def call_anarci(
     seq,
@@ -35,7 +38,7 @@ def call_anarci(
             "MR2",
         ]
     ),
-):
+) -> tuple[list[tuple[tuple[int, str], str]], list[str], dict[str, list[tuple[str, str], float]]]:
     """
     Use the ANARCI program to number the sequence.
 
@@ -47,20 +50,47 @@ def call_anarci(
     """
     from anarci import number as anarci_number
 
-    numbering, chain_type, germline_info = anarci_number(
-        seq, allow=allow, assign_germline=True
-    )
+    finished_numbering = False
 
-    if numbering and chain_type in allow:
-        return [(_, aa) for _, aa in numbering if aa != "-"], chain_type, germline_info
-    elif numbering and chain_type in ["BA", "GD", "AB", "DG"]:
-        return (
-            [[(_, aa) for _, aa in n if aa != "-"] for n in numbering],
-            chain_type,
-            germline_info,
+    numberings = []
+    chain_types = []
+    germline_infos = {}
+
+    seq_position = 0
+    seq_length = len(seq)
+
+    while not finished_numbering:
+        numbering, chain_type, germline_info = anarci_number(
+            seq[seq_position:], allow=allow, assign_germline=True
         )
-    else:
-        return False, False, False
+
+        if numbering and chain_type in allow:
+            clean_numbering = [(_, aa) for _, aa in numbering if aa != "-"]
+
+            # Needed for scTCRs
+            clean_seq_ids = {seq_id for seq_id, _ in clean_numbering}
+            numberings_seq_ids = {seq_id for seq_id, _ in numberings}
+
+            if len(clean_seq_ids & numberings_seq_ids) > 0:
+                clean_numbering = [
+                    ((res_seq_id + NUMBERING_OFFSET, insert_code), res_olc)
+                    for (res_seq_id, insert_code), res_olc in clean_numbering
+                ]
+
+            numberings.extend(clean_numbering)
+            chain_types.append(chain_type)
+            germline_infos.update(germline_info)
+
+            clean_sequence = ''.join([olc for _, olc in clean_numbering])
+            seq_position += seq.index(clean_sequence) + len(clean_sequence)
+
+            if seq_position >= seq_length:
+                finished_numbering = True
+
+        else:
+            finished_numbering = True
+
+    return numberings, chain_types, germline_infos
 
 
 def annotate(chain):
@@ -73,35 +103,40 @@ def annotate(chain):
     and chain type which is B/A/G/D/MH1/GA/GB/B2M or False.
     """
     sequence_list, sequence_str = extract_sequence(chain)
-    numbering, chain_type, germline_info = call_anarci(sequence_str)
+    numbering, chain_types, germline_info = call_anarci(sequence_str)
 
-    # Use
-    if chain_type:
-        chtype = "".join(sorted(chain_type, reverse=True))
-    else:
-        chtype = False
+    aligned_numbering = align_numbering(numbering, sequence_list)
 
-    if chtype in ("BA", "GD"):
-        aligned_numbering = align_scTCR_numbering(
-            numbering, sequence_list, sequence_str
-        )
-        # aligned_numbering = cleanup_scTCR_numbering(aligned_numbering, sequence_list)
+    if ('A' in chain_types and 'B' in chain_types) or ('D' in chain_types and 'G' in chain_types):
         scTCR = True
-    # elif chtype == "DC1" or chtype == "RM1":
-    #     # Use the scTCR numbering trick; since CD1/MR1 numbering only spans up to residue ~87 and
-    #     aligned_numbering = align_scTCR_numbering(
-    #         numbering, sequence_list, sequence_str
-    #     )
-    #     aligned_numbering[0].update(aligned_numbering[1])
-    #     aligned_numbering = aligned_numbering[0]  # combine the numbering
-    #     aligned_numbering = cleanup_scTCR_numbering(aligned_numbering, sequence_list)
-    #     scTCR = False
-    else:
-        # align the original residue id's to the numbering
-        aligned_numbering = align_numbering(numbering, sequence_list)
-        scTCR = False
+        chain_type = ''.join(chain_types)
 
-    # aligned numbering is a dictionary of the original residue ids and the new numbering
+        domain1 = {
+            seq_id_og: (res_seq_id_number, insert_code_number)
+            for seq_id_og, (res_seq_id_number, insert_code_number) in aligned_numbering.items()
+            if res_seq_id_number < NUMBERING_OFFSET
+        }
+        domain2 = {
+            seq_id_og: (res_seq_id_number - NUMBERING_OFFSET, insert_code_number)
+            for seq_id_og, (res_seq_id_number, insert_code_number) in aligned_numbering.items()
+            if res_seq_id_number >= NUMBERING_OFFSET
+        }
+
+        aligned_numbering = (domain1, domain2)
+
+    else:
+        scTCR = False
+        chain_type = '/'.join(chain_types)
+
+        if chain_type == 'GA1/GA2':
+            chain_type = 'MH1'
+
+        elif chain_type == 'MR1/MR2':
+            chain_type = 'MR1'
+
+        elif chain_type == 'GA1L/GA2L':
+            chain_type = 'CD1'
+
     return aligned_numbering, chain_type, germline_info, scTCR
 
 
@@ -204,219 +239,82 @@ def interpret(x):
         return (int(x[1:-1]), x[-1])
 
 
-def align_numbering(numbering, sequence_list, alignment_dict={}):
+class AlignmentError(Exception):
+    """Raised when there is an error aligning two sequences."""
+    def __init__(self, sequence1: str, sequence2: str, details: str | None = None) -> None:
+        message = f'Could not align sequences: {sequence1} and {sequence2}'
+
+        if details:
+            message += '. ' + details
+
+        super().__init__(message)
+
+
+def align_numbering(numbering, sequence_list):
     """
     Align the sequence that has been numbered to the sequence you input.
     The numbered sequence should be "in" the input sequence.
     If not, supply an alignment dictionary.(align sequences and use get_alignment_dict(ali1,ali2))
+
+    Raises:
+        AlignmentError: if the two sequences cannot be aligned
     """
-    if numbering:
-        numbered_sequence = "".join([r[1] for r in numbering])
-        input_sequence = "".join([r[1] for r in sequence_list])
-        if not alignment_dict:
-            try:
-                numbered_sequence_ali, input_sequence_ali = pairwise_alignment(
-                    numbered_sequence, input_sequence
-                )
-                alignment_dict = get_alignment_dict(
-                    input_sequence_ali, numbered_sequence_ali
-                )
-            except Exception:
-                raise Exception(
-                    "Could not align numbered sequence to aligned sequence:"
-                    + " "
-                    + str(numbered_sequence)
-                    + " "
-                    + str(input_sequence)
-                )
-
-        aligned_numbering = {}
-        n = -1
-        after_flag = False
-        for i in range(len(input_sequence)):
-            if i in alignment_dict:
-                # during
-                assert (
-                    after_flag is False
-                ), "Extra residue in structure than expected from provided sequence"
-                assert (
-                    input_sequence[i] == numbered_sequence[alignment_dict[i]]
-                ), "alignment dictionary failed"
-                aligned_numbering[sequence_list[i][0]] = numbering[alignment_dict[i]][0]
-                n = numbering[-1][0][0] + 1
-            elif n > -1:
-                # after
-                after_flag = True
-                aligned_numbering[sequence_list[i][0]] = (n, " ")
-                n += 1
-            else:
-                # before numbering
-                aligned_numbering[sequence_list[i][0]] = ""
-
-        return aligned_numbering
-    else:
+    if not numbering:
         return False
 
+    numbered_sequence = "".join([r[1] for r in numbering])
+    input_sequence = "".join([r[1] for r in sequence_list])
 
-def align_scTCR_numbering(numbering, sequence_list, sequence_str):
-    """
-    Align the sequence that has been numbered to a scTCR structure.
-    Args:
-        numbering:     numbered list of residues; this is usually a two-element list/tuple from TCRDB.anarci.number
-        sequence_list: list of residues (e.g. from a structure) in its original numbering
-        sequence_str:  string form of sequence_list
-    """
-    if numbering:
-        numbered_sequence = ["".join([r[1] for r in n]) for n in numbering]
-        input_sequence = sequence_str
+    try:
+        numbered_sequence_ali, input_sequence_ali = pairwise_alignment(
+            numbered_sequence, input_sequence
+        )
+    except Exception:
+        raise AlignmentError(numbered_sequence, input_sequence)
 
-        aligned_numbering = [{}, {}]
+    input_index = 0
+    numbered_index = 0
 
-        for ii, a_sequence in enumerate(numbered_sequence):
+    seq_id = (1, ' ')
+    start_flag = True
+    numbered_positions = {seq_id for seq_id, _ in numbering}
 
-            # Align each of the joined sequences from the numbering into the target structure sequence in "sequence_str"
-            try:
-                a_sequence_ali, input_sequence_ali = pairwise_alignment(
-                    a_sequence, input_sequence
-                )
-                alignment_dict = get_alignment_dict(input_sequence_ali, a_sequence_ali)
-            except Exception:
-                raise Exception(
-                    "Could not align numbered sequence to aligned sequence"
-                    + "\n"
-                    + str(numbered_sequence)
-                    + "\n"
-                    + str(input_sequence)
-                )
+    aligned_annotations = {}
+    for numbered_residue, input_residue in zip(numbered_sequence_ali, input_sequence_ali, strict=True):
+        if numbered_residue == input_residue:
+            seq_id = numbering[numbered_index][0]
 
-            n = -1
-            after_flag = False
-            # for i in xrange(len(input_sequence)):
-            for i in alignment_dict:
-                if i in alignment_dict:
-                    # during
-                    assert (
-                        after_flag is False
-                    ), "Extra residue in structure than expected from provided sequence"
-                    assert (
-                        input_sequence[i] == numbered_sequence[ii][alignment_dict[i]]
-                    ), "alignment dictionary failed"
-                    aligned_numbering[ii][sequence_list[i][0]] = numbering[ii][
-                        alignment_dict[i]
-                    ][0]
-                    n = numbering[ii][-1][0][0] + 1
-                elif n > -1:
-                    # after
-                    after_flag = True
-                    aligned_numbering[ii][sequence_list[i][0]] = (n, " ")
-                    n += 1
+            numbered_index += 1
+            start_flag = False
+
+        elif numbered_residue == '-':
+            propposed_seq_id = seq_id if start_flag else (seq_id[0] + 1, ' ')
+
+            if propposed_seq_id in numbered_positions:
+                for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+                    propposed_seq_id = (seq_id[0], letter)
+
+                    if propposed_seq_id not in numbered_positions:
+                        seq_id = propposed_seq_id
+                        break
+
                 else:
-                    # before numbering
-                    aligned_numbering[ii][sequence_list[i][0]] = ""
+                    raise AlignmentError(
+                        numbered_sequence_ali,
+                        input_sequence_ali,
+                        f'Not enough insertion codes to cover gap in sequences at position {seq_id[0]}.',
+                    )
 
-        return aligned_numbering
-    else:
-        return False
+            seq_id = propposed_seq_id
 
+        else:
+            raise AlignmentError(numbered_sequence_ali, input_sequence_ali)
 
-def cleanup_scTCR_numbering(numbering_dict, sequence_list):
-    """
-    The scTCR numbering method, while useful for sequences with two domains,
-    can have gaps in between (e.g. CD1 molecule of 4lhu).
-    This is to close the gaps in the numbering so that residues that were unnumbered by anarci don't move around
-    during structural parsing (when they're probably just connections between domains).
+        aligned_annotations[sequence_list[input_index][0]] = seq_id
+        numbered_positions.add(seq_id)
+        input_index += 1
 
-    Args:
-        numbering_dict: numbered dictionary from align_scTCR_numbering
-        sequence_list : sequence list from the structure for alignment.
-    """
-    positions = [p[0] for p in sequence_list]
-
-    # This gets the last numbered residue in numbering_dict
-    lastkey = max(numbering_dict)
-    lastidx = positions.index(lastkey)  # Where is this on sequence_list?
-
-    for index in range(1, len(positions)):
-
-        # If we got to the last key, don't bother.
-        if index > lastidx:
-            break
-
-        key = positions[index]
-
-        # If a target key is not in the numbering dict, see where it fits, then fit a number in it.
-        if key not in numbering_dict:
-
-            # Get the left and right bounds of the gap
-            left, right = False, False
-            lidx, ridx = 0, 0
-            lval = (0, " ")
-            j = 0
-
-            # Continue iterating left from the missing key until we find one that exists
-            while not left:
-                key_left = positions[index - j]
-                if key_left in numbering_dict:
-                    left = True
-                    lidx = (
-                        index - j
-                    )  # Last known index of sequence_list where we know a key exists
-                    lval = numbering_dict[key_left]
-                else:
-                    j += 1
-
-            j = 0
-            while not right:
-                key_right = positions[index + j]
-                if key_right in numbering_dict:
-                    right = True
-                    ridx = (
-                        index + j
-                    )  # Last known index of sequence_list on the right where we know a key exists
-                else:
-                    j += 1
-
-            # For every key between the left and right, fill in
-            for k, missing_key in enumerate(positions[lidx + 1 : ridx]):
-                numbering_dict[missing_key] = (lval[0] + k + 1, " ")
-
-    return numbering_dict
-
-
-def get_alignment_dict(ali1, ali2):
-    """
-    Get a dictionary which tells you the index in sequence 2 that should align with the index in sequence 1 (key)
-
-    ali1:  ----bcde-f---        seq1: bcdef
-    ali2:  ---abcd--f---        seq2: abcdf
-
-    alignment_dict={
-        0:1,
-        1:2,
-        2:3,
-        4:4
-        }
-
-    If the index is aligned with a gap do not include in the dictionary.
-    e.g  1 in alignment_dict  --> True
-    e.g  3 in alignment_dict  --> False
-    """
-    assert len(ali1) == len(
-        ali2
-    ), "aligned sequences must be same lengths (including gaps)"
-    alignment_dict = {}
-    p1 = -1
-    p2 = -1
-    for ap in range(len(ali1)):
-        if ali1[ap] != "-" and ali2[ap] != "-":
-            p1 += 1
-            p2 += 1
-            alignment_dict[p1] = p2
-        elif ali1[ap] != "-":
-            p1 += 1
-        elif ali2[ap] != "-":
-            p2 += 1
-    return alignment_dict
+    return aligned_annotations
 
 
 def pairwise_alignment(seq1, seq2, exact=False):

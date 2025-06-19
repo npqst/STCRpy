@@ -11,7 +11,7 @@ except ModuleNotFoundError:
     )
 
 from rdkit import Chem
-from Bio import PDB
+from Bio import BiopythonWarning, PDB
 from Bio.PDB.PDBParser import PDBParser
 
 from ..tcr_processing.TCRParser import TCRParser
@@ -71,13 +71,16 @@ class TCRpMHC_PLIP_Model_Parser:
         ]
         if renumber:
             # renumber each chain from one to N to avoid automated renumbering issues related to plip and openbabel
-            renumbering = {}
-            for chain in tcr_and_mhc_chains:
-                renumbering[chain.id] = {}
-                for new_idx, res in enumerate(chain.get_residues()):
-                    new_id = (" ", new_idx + 1, " ")
-                    renumbering[chain.id][new_id] = res.id
-                    res.id = new_id
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', BiopythonWarning)
+
+                renumbering = {}
+                for chain in tcr_and_mhc_chains:
+                    renumbering[chain.id] = {}
+                    for new_idx, res in enumerate(chain.get_residues()):
+                        new_id = (" ", new_idx + 1, " ")
+                        renumbering[chain.id][new_id] = res.id
+                        res.id = new_id
             domain_assignment = tcr_pmhc_complex.get_domain_assignment()
 
         TCR_MHC_FILE = os.path.join(self.tmp_dir, "tcr_mhc.pdb")
@@ -88,13 +91,17 @@ class TCRpMHC_PLIP_Model_Parser:
         io.set_structure(ligand)
         io.save(PEPTIDE_PDB_FILE)
 
-        tcr_mhc_struct = PDB.Model.Model(id=0)
-        # add TCR chains to protein structure
-        for chain in tcr_pmhc_complex.get_chains():
-            tcr_mhc_struct.add(chain)
-        # add MHC chain to protein structure
-        for chain in tcr_pmhc_complex.get_MHC()[0].get_chains():
-            tcr_mhc_struct.add(chain)
+        tcr_mhc_struct = PDB.Structure.Structure('')
+        new_model = PDB.Model.Model(id=0)
+        for tcr_chain in tcr_and_mhc_chains:
+            new_chain = PDB.Chain.Chain(tcr_chain.id)
+
+            for residue in tcr_chain:
+                new_chain.add(residue.copy())
+
+            new_model.add(new_chain)
+
+        tcr_mhc_struct.add(new_model)
 
         io = PDB.PDBIO()
         io.set_structure(tcr_mhc_struct)
