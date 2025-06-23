@@ -300,7 +300,6 @@ def align_numbering(numbering, sequence_list):
                     propposed_seq_id = (seq_id[0], letter)
 
                     if propposed_seq_id not in numbered_positions:
-                        seq_id = propposed_seq_id
                         break
 
                 else:
@@ -311,6 +310,7 @@ def align_numbering(numbering, sequence_list):
                     )
 
             seq_id = propposed_seq_id
+            start_flag = False
 
         else:
             raise AlignmentError(numbered_sequence_ali, input_sequence_ali)
