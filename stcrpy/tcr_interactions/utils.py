@@ -38,7 +38,7 @@ class Interaction:
         ligand_atom,
         distance,
         angle,
-        plip_id,
+        plip_binding_site_id,
     ) -> None:
         self.type = type
         self.protein_atom = protein_atom
@@ -48,7 +48,7 @@ class Interaction:
         self.ligand_atom = ligand_atom
         self.distance = distance
         self.angle = angle
-        self.plip_id = plip_id
+        self.plip_binding_site_id = plip_binding_site_id
 
     def to_tuple(self):
         return (
@@ -60,24 +60,24 @@ class Interaction:
             self.ligand_atom,
             self.distance,
             self.angle,
-            self.plip_id,
+            self.plip_binding_site_id,
         )
 
 
-def parse_interaction(interaction) -> Interaction:
+def parse_interaction(interaction, bsid=None) -> Interaction:
     if "saltbridge" in str(type(interaction)):
-        return Interaction("saltbridge", *process_saltbridge(interaction))
+        return Interaction("saltbridge", *process_saltbridge(interaction, bsid))
     elif "hydroph" in str(type(interaction)):
-        return Interaction("hydrophobic", *process_hydrophobic(interaction))
+        return Interaction("hydrophobic", *process_hydrophobic(interaction, bsid))
     elif "hbond" in str(type(interaction)):
-        return Interaction("hbond", *process_hbond(interaction))
+        return Interaction("hbond", *process_hbond(interaction, bsid))
     elif "pistack" in str(type(interaction)):
-        return Interaction("pistack", *process_pi_stack(interaction))
+        return Interaction("pistack", *process_pi_stack(interaction, bsid))
     else:
         raise NotImplementedError(f"Parsing not implemented for {type(interaction)}")
 
 
-def process_pi_stack(interaction):
+def process_pi_stack(interaction, bsid=None):
     protein_ring_atoms = [
         (j.coords, j.atomicnum) for j in interaction.proteinring.atoms
     ]
@@ -87,7 +87,7 @@ def process_pi_stack(interaction):
     ligand_ring_atoms = [(j.coords, j.atomicnum) for j in interaction.ligandring.atoms]
     distance = interaction.distance
     angle = interaction.angle
-    plip_id = None
+    plip_binding_site_id = bsid
     return (
         protein_ring_atoms,
         protein_chain,
@@ -96,18 +96,18 @@ def process_pi_stack(interaction):
         ligand_ring_atoms,
         distance,
         angle,
-        plip_id,
+        plip_binding_site_id,
     )
 
 
-def process_hydrophobic(interaction):
+def process_hydrophobic(interaction, bsid=None):
     protein_atom = [(interaction.bsatom.coords, interaction.bsatom.atomicnum)]
     protein_chain = interaction.reschain
     protein_residue = interaction.restype
     protein_number = interaction.resnr
     ligand_atom = [(interaction.ligatom.coords, interaction.ligatom.atomicnum)]
     distance = interaction.distance
-    plip_id = None
+    plip_binding_site_id = bsid
     return (
         protein_atom,
         protein_chain,
@@ -116,11 +116,11 @@ def process_hydrophobic(interaction):
         ligand_atom,
         distance,
         None,
-        plip_id,
+        plip_binding_site_id,
     )
 
 
-def process_hbond(interaction):
+def process_hbond(interaction, bsid=None):
     if interaction.protisdon:
         protein_atom = [(interaction.d.coords, interaction.d.atomicnum)]
         ligand_atom = [(interaction.a.coords, interaction.a.atomicnum)]
@@ -133,7 +133,7 @@ def process_hbond(interaction):
     protein_number = interaction.resnr
     distance = interaction.distance_ad
     angle = interaction.angle
-    plip_id = None
+    plip_binding_site_id = bsid
     return (
         protein_atom,
         protein_chain,
@@ -142,11 +142,11 @@ def process_hbond(interaction):
         ligand_atom,
         distance,
         angle,
-        plip_id,
+        plip_binding_site_id,
     )
 
 
-def process_saltbridge(interaction):
+def process_saltbridge(interaction, bsid=None):
     if interaction.protispos:
         protein_atom = [(a.coords, a.atomicnum) for a in interaction.positive.atoms]
         ligand_atom = [(a.coords, a.atomicnum) for a in interaction.negative.atoms]
@@ -157,7 +157,7 @@ def process_saltbridge(interaction):
     protein_residue = interaction.restype
     protein_number = interaction.resnr
     distance = interaction.distance
-    plip_id = None
+    plip_binding_site_id = bsid
     return (
         protein_atom,
         protein_chain,
@@ -166,5 +166,5 @@ def process_saltbridge(interaction):
         ligand_atom,
         distance,
         None,
-        plip_id,
+        plip_binding_site_id,
     )
