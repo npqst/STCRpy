@@ -57,7 +57,7 @@ jobs:
         shell: bash -el {0}
         run: |
           conda activate env
-          pip install plip
+          pip install plip==2.4.0
           python -c 'import stcrpy; x=stcrpy.fetch_TCRs("7pb2"); print(x[0].profile_peptide_interactions())'
       - name:  Run unittests
         shell: bash -el {0}
