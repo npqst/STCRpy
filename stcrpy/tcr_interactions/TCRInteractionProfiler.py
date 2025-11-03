@@ -43,7 +43,7 @@ from .TCRpMHC_PLIP_Model_Parser import TCRpMHC_PLIP_Model_Parser
 
 class TCRInteractionProfiler:
 
-    def __init__(self, **kwargs):
+    def __init__(self, renumber=True, **kwargs):
         self.tcr_parser = TCRParser()
         self.model_parser = TCRpMHC_PLIP_Model_Parser()
         self.plip_parser = PLIPParser()
@@ -298,11 +298,18 @@ class TCRInteractionProfiler:
         else:
             df = interactions_df
 
+        # remove "HOH" interactions as these will break the heatmap
+        df = df[df.ligand_residue != "HOH"]
+        df = df[df.protein_residue != "HOH"]
+
         if antigen_name is None:
             antigen_name = "peptide"
 
         TCRA_interactions = df[df.domain.apply(lambda x: x in ["VA", "VD"])]
         TCRB_interactions = df[df.domain == "VB"]
+
+        interactions_df = df
+
         TCRA_tuples = TCRA_interactions.apply(
             lambda x: (
                 (x["protein_residue"], x["protein_number"]),
@@ -322,7 +329,17 @@ class TCRInteractionProfiler:
         heatmap_b = np.zeros((126, peptide_length))
 
         # check peptide numbering
-        offset = max(set(interactions_df.ligand_number)) + 1 - peptide_length
+        offset = (
+            max(
+                set(
+                    interactions_df[
+                        interactions_df.ligand_residue != "HOH"
+                    ].ligand_number
+                )
+            )
+            + 1
+            - peptide_length
+        )
         ligand_number_mapping = {x + int(offset): x for x in range(peptide_length)}
 
         if "original_numbering" in interactions_df.columns:
@@ -391,6 +408,8 @@ class TCRInteractionProfiler:
         plt.subplots_adjust(hspace=0.5)
 
         for pair in TCRA_tuples:
+            if pair[0][0] == "HOH" or pair[1][0] == "HOH":
+                continue
             heatmap_a[pair[0][1], ligand_number_mapping[int(pair[1][1])]] = (
                 heatmap_a[pair[0][1], ligand_number_mapping[int(pair[1][1])]] + 1
             )
@@ -411,6 +430,10 @@ class TCRInteractionProfiler:
             ax_alpha.set_yticks([], [])
 
         for pair in TCRB_tuples:
+            if (
+                pair[0][0] == "HOH" or pair[1][0] == "HOH"
+            ):  # exclude water interactions from heatmap
+                continue
             heatmap_b[pair[0][1], ligand_number_mapping[int(pair[1][1])]] = (
                 heatmap_b[pair[0][1], ligand_number_mapping[int(pair[1][1])]] + 1
             )
