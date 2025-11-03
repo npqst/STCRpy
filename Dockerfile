@@ -1,6 +1,8 @@
 FROM python:3.12-slim
 
-# Install system dependencies including OpenBabel from system packages
+# STCRpy Docker Image with full analysis and visualization support
+# Includes: STCRpy, PLIP (interaction profiling), PyMOL (3D visualization)
+# Install system dependencies including OpenBabel and PyMOL dependencies
 # Using python3-openbabel from Debian avoids building from source
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
@@ -14,6 +16,22 @@ RUN apt-get update && apt-get install -y \
     libopenbabel7 \
     libopenbabel-dev \
     python3-openbabel \
+    # PyMOL build dependencies
+    libglew-dev \
+    libpng-dev \
+    libfreetype6-dev \
+    libmsgpack-dev \
+    python3-dev \
+    libglm-dev \
+    # Qt5 dependencies for PyMOL GUI
+    libqt5core5a \
+    libqt5gui5 \
+    libqt5widgets5 \
+    libqt5opengl5 \
+    qt5-qmake \
+    qtbase5-dev \
+    libxcb-xinerama0 \
+    libxkbcommon-x11-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv
@@ -29,6 +47,7 @@ COPY . .
 RUN uv venv /opt/venv --system-site-packages && \
     . /opt/venv/bin/activate && \
     uv pip install -e . && \
+    uv pip install pymol-open-source PyQt5 && \
     ANARCI --build_models
 
 # Install PLIP source code directly (avoids pip build issues)
