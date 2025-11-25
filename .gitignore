@@ -23,17 +23,3 @@ test/test_files/out/haddock/*/*
 test/test_files/out/haddock/** */
 test/test_files/** */
 test/test_files
-
-# Docker Environment
-.env
-
-# Data directories (contain user data)
-data/*
-output/*
-models/*
-scratch/*
-
-# Keep directory structure
-!data/.gitkeep
-!output/.gitkeep
-!models/.gitkeep
