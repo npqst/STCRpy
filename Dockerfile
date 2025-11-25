@@ -34,10 +34,7 @@ RUN apt-get update && apt-get install -y \
     libxkbcommon-x11-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
-
-# Copy project files
 COPY . .
 
 # Install STCRpy and dependencies
@@ -50,5 +47,4 @@ RUN pip install --no-cache-dir --root-user-action ignore -e ".[ml_datasets]" \
 RUN git clone https://github.com/pharmai/plip.git /opt/plip && \
     ln -s /opt/plip/plip /usr/local/lib/python3.12/site-packages/
 
-# Default command
 CMD ["/bin/bash"]
