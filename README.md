@@ -99,6 +99,30 @@ pip install stcrpy[ml_datasets]
 > pip install einops
 > ```
 
+### Docker container installation
+
+This directory contains [Docker](https://www.docker.com/) configuration for running STCRpy in a containerized environment with uv dependency management. To build the docker image run:
+
+```
+docker build -t stcrpy .
+```
+
+And then run and example with:
+
+```
+mkdir output
+docker run --rm \
+  -v $(pwd)/output:/app/output \
+  stcrpy python -c "
+import stcrpy
+tcr = stcrpy.fetch_TCRs('8gvb')[0]
+tcr.profile_peptide_interactions()
+tcr.get_interaction_heatmap(plotting_kwargs={'save_as': '/app/output/heatmap.png'})
+"
+```
+
+If all goes well, there should be a heatmap.png file in the "./output" folder.
+
 # Documentation
 STCRpy [documentation](https://stcrpy.readthedocs.io/en/latest/) is hosted on ReadtheDocs.
 
