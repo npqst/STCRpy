@@ -1,7 +1,7 @@
 FROM python:3.12-slim
 
-# STCRpy Docker Image with full analysis and visualization support
-# Includes: STCRpy, PLIP (interaction profiling), PyMOL (3D visualization)
+# STCRpy Docker Image with full analysis, ML, and visualization support
+# Includes: STCRpy, PLIP, PyMOL, scikit-learn, PyTorch, transformers
 # Install system dependencies including OpenBabel and PyMOL dependencies
 # Using python3-openbabel from Debian avoids building from source
 ENV DEBIAN_FRONTEND=noninteractive
@@ -46,8 +46,8 @@ COPY . .
 # Create virtual environment with system-site-packages to access python3-openbabel
 RUN uv venv /opt/venv --system-site-packages && \
     . /opt/venv/bin/activate && \
-    uv pip install -e . && \
-    uv pip install pymol-open-source PyQt5 && \
+    uv pip install -e ".[ml_datasets]" && \
+    uv pip install einops pymol-open-source PyQt5 && \
     ANARCI --build_models
 
 # Install PLIP source code directly (avoids pip build issues)
