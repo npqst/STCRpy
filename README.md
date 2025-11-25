@@ -101,7 +101,7 @@ pip install stcrpy[ml_datasets]
 
 ### Docker container installation
 
-This directory contains [Docker](https://www.docker.com/) configuration for running STCRpy in a containerized environment with uv dependency management. To build the docker image run:
+This directory contains [Docker](https://www.docker.com/) configuration for running STCRpy in a containerized environment. To build the docker image run:
 
 ```
 docker build -t stcrpy .

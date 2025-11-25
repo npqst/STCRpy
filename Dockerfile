@@ -34,30 +34,21 @@ RUN apt-get update && apt-get install -y \
     libxkbcommon-x11-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
-
 # Set working directory
 WORKDIR /app
 
 # Copy project files
 COPY . .
 
-# Create virtual environment with system-site-packages to access python3-openbabel
-RUN uv venv /opt/venv --system-site-packages && \
-    . /opt/venv/bin/activate && \
-    uv pip install -e ".[ml_datasets]" && \
-    uv pip install einops pymol-open-source PyQt5 && \
-    ANARCI --build_models
+# Install STCRpy and dependencies
+RUN pip install --no-cache-dir --root-user-action ignore -e ".[ml_datasets]" \
+    && pip install --no-cache-dir --root-user-action ignore einops pymol-open-source PyQt5 \
+    && ANARCI --build_models
 
 # Install PLIP source code directly (avoids pip build issues)
 # PLIP is pure Python and uses system openbabel bindings
 RUN git clone https://github.com/pharmai/plip.git /opt/plip && \
-    ln -s /opt/plip/plip /opt/venv/lib/python3.12/site-packages/plip
-
-# Set environment to use venv
-ENV PATH="/opt/venv/bin:$PATH"
-ENV VIRTUAL_ENV="/opt/venv"
+    ln -s /opt/plip/plip /usr/local/lib/python3.12/site-packages/
 
 # Default command
 CMD ["/bin/bash"]
