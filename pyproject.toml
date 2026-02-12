@@ -17,11 +17,11 @@ maintainers = [
 requires-python = ">=3.10"
 dependencies = [
   "biopython",
-  "numpy==1.26.4",      # required by DockQ
+  "numpy==1.26.4",                                      # required by DockQ
   "lxml",
-  "openbabel-wheel==3.1.1.21",
   "rdkit",
-  "pyhmmer==0.11.4",        # fix pyhmmer version to prevent string encoding bu. TODO:fix this within anarci-mhc directly and redeploy
+  "plip@git+https://github.com/benjaminhwilliams/plip",
+  "pyhmmer==0.11.4",                                    # fix pyhmmer version to prevent string encoding bu. TODO:fix this within anarci-mhc directly and redeploy
   "anarci-mhc",
   "pandas",
   "matplotlib",
@@ -46,4 +46,4 @@ where = ["."]
 exclude = ["test", "test.*"]
 
 [tool.setuptools.package-data]
-stcrpy = ["tcr_geometry/reference_data/*", ]
+stcrpy = ["tcr_geometry/reference_data/*"]
