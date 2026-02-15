@@ -57,7 +57,7 @@ class TestTCRInteractions(unittest.TestCase):
 
         assert len(interactions[interactions.domain == "VB"]) == 1
         assert interactions[interactions.domain == "VB"].protein_residue.item() == "ASP"
-        assert interactions[interactions.domain == "VB"].protein_number.item() == 110
+        assert interactions[interactions.domain == "VB"].protein_number.item() == 96
 
     def test_TCR_interaction_profiler(self):
         tcr = stcrpy.fetch_TCRs("8gvb")[0]
@@ -73,7 +73,7 @@ class TestTCRInteractions(unittest.TestCase):
 
         assert len(interactions[interactions.domain == "VB"]) == 1
         assert interactions[interactions.domain == "VB"].protein_residue.item() == "ASP"
-        assert interactions[interactions.domain == "VB"].protein_number.item() == 110
+        assert interactions[interactions.domain == "VB"].protein_number.item() == 96
 
         interactions = interaction_profiler.get_interactions(tcr, renumber=False)
         assert len(interactions) == 27
@@ -104,7 +104,7 @@ class TestTCRInteractions(unittest.TestCase):
 
         assert len(interactions[interactions.domain == "VB"]) == 1
         assert interactions[interactions.domain == "VB"].protein_residue.item() == "ASP"
-        assert interactions[interactions.domain == "VB"].protein_number.item() == 110
+        assert interactions[interactions.domain == "VB"].protein_number.item() == 96
 
     def test_pymol_visualisation(self):
         model_parser = TCRpMHC_PLIP_Model_Parser()
