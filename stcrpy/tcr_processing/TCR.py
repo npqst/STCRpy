@@ -157,13 +157,13 @@ class TCR(Entity):
         """
         if hasattr(self, "tcr_type"):
             return self.tcr_type
-        elif hasattr(self, "VB") and hasattr(self, "VA"):
+        elif hasattr(self, "VA") and hasattr(self, "VB"):
             self.tcr_type = "abTCR"
             return self.tcr_type
-        elif hasattr(self, "VD") and hasattr(self, "VG"):
+        elif hasattr(self, "VG") and hasattr(self, "VD"):
             self.tcr_type = "gdTCR"
             return self.tcr_type
-        elif hasattr(self, "VB") and hasattr(self, "VD"):
+        elif hasattr(self, "VD") and hasattr(self, "VB"):
             self.tcr_type = "dbTCR"
             return self.tcr_type
 
@@ -563,7 +563,7 @@ class abTCR(TCR):
             c2 (TCRchain): alpha or beta type TCR chain
         """
 
-        if c1.chain_type == "B":
+        if c1.chain_type == "A":
             Entity.__init__(self, c1.id + c2.id)
         else:
             Entity.__init__(self, c2.id + c1.id)
@@ -572,9 +572,9 @@ class abTCR(TCR):
         self.level = "H"
         self._add_domain(c1)
         self._add_domain(c2)
-        self.child_list = sorted(
-            self.child_list, key=lambda x: x.chain_type, reverse=True
-        )  # make sure that the list goes B->A or G->D
+        # make sure that the list goes A->B, D->B, or D->G
+        chain_ordering = {'A': 1, 'B': 2, 'D': 1, 'G': 2}
+        self.child_list = sorted(self.child_list, key=lambda x: chain_ordering[x.chain_type])
         self.antigen = []
         self.MHC = []
         self.engineered = False
@@ -589,7 +589,7 @@ class abTCR(TCR):
         Returns:
             str: String representation of the abTCR objec
         """
-        return "<TCR %s%s beta=%s; alpha=%s>" % (self.VB, self.VA, self.VB, self.VA)
+        return f"<TCR {self.VA}{self.VB} alpha={self.VA}; beta={self.VB}>"
 
     def _add_domain(self, chain):
         """
@@ -599,23 +599,14 @@ class abTCR(TCR):
         Args:
             chain (TCRchain): TCR chain whose domain is being added.
         """
-        if chain.chain_type == "B":
-            self.VB = chain.id
-        elif chain.chain_type == "A" or chain.chain_type == "D":
+        if chain.chain_type == "A" or chain.chain_type == "D":
             self.VA = chain.id
+
+        elif chain.chain_type == "B":
+            self.VB = chain.id
 
         # Add the chain as a child of this entity.
         self.add(chain)
-
-    def get_VB(self):
-        """
-        Retrieve the variable beta chain of the TCR
-
-        Returns:
-            TCRchain: VB chain
-        """
-        if hasattr(self, "VB"):
-            return self.child_dict[self.VB]
 
     def get_VA(self):
         """
@@ -627,6 +618,16 @@ class abTCR(TCR):
         if hasattr(self, "VA"):
             return self.child_dict[self.VA]
 
+    def get_VB(self):
+        """
+        Retrieve the variable beta chain of the TCR
+
+        Returns:
+            TCRchain: VB chain
+        """
+        if hasattr(self, "VB"):
+            return self.child_dict[self.VB]
+
     def get_domain_assignment(self):
         """
         Retrieve the domain assignment of the TCR as a dict with variable domain type as key and chain ID as value.
@@ -637,10 +638,10 @@ class abTCR(TCR):
         try:
             return {"VA": self.VA, "VB": self.VB}
         except AttributeError:
-            if hasattr(self, "VB"):
-                return {"VB": self.VB}
             if hasattr(self, "VA"):
                 return {"VA": self.VA}
+            if hasattr(self, "VB"):
+                return {"VB": self.VB}
         return None
 
     def is_engineered(self):
@@ -653,8 +654,8 @@ class abTCR(TCR):
         if self.engineered:
             return True
         else:
-            vb, va = self.get_VB(), self.get_VA()
-            for var_domain in [vb, va]:
+            va, vb = self.get_VA(), self.get_VB()
+            for var_domain in [va, vb]:
                 if var_domain and var_domain.is_engineered():
                     self.engineered = True
                     return self.engineered
@@ -669,10 +670,10 @@ class abTCR(TCR):
         Yields:
             Fragment: fragment of TCR chain.
         """
-        vb, va = self.get_VB(), self.get_VA()
+        va, vb = self.get_VA(), self.get_VB()
 
         # If a variable domain exists
-        for var_domain in [vb, va]:
+        for var_domain in [va, vb]:
             if var_domain:
                 for frag in var_domain.get_fragments():
                     yield frag
@@ -699,15 +700,15 @@ class abTCR(TCR):
         new_id = []
         new_child_dict = {}
 
-        if hasattr(self, 'VB'):
-            new_child_dict['E'] = self.child_dict[self.VB]
-            self.VB = 'E'
-            new_id.append('E')
-
         if hasattr(self, 'VA'):
             new_child_dict['D'] = self.child_dict[self.VA]
             self.VA = 'D'
             new_id.append('D')
+
+        if hasattr(self, 'VB'):
+            new_child_dict['E'] = self.child_dict[self.VB]
+            self.VB = 'E'
+            new_id.append('E')
 
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', BiopythonWarning)
@@ -732,7 +733,7 @@ class gdTCR(TCR):
 
     def __init__(self, c1, c2):
 
-        if c1.chain_type == "D":
+        if c1.chain_type == "G":
             Entity.__init__(self, c1.id + c2.id)
         else:
             Entity.__init__(self, c2.id + c1.id)
@@ -741,9 +742,9 @@ class gdTCR(TCR):
         self.level = "H"
         self._add_domain(c1)
         self._add_domain(c2)
-        self.child_list = sorted(
-            self.child_list, key=lambda x: x.chain_type
-        )  # make sure that the list goes B->A or D->G
+        # make sure that the list goes A->B, D->B, or D->G
+        chain_ordering = {'A': 1, 'B': 2, 'D': 1, 'G': 2}
+        self.child_list = sorted(self.child_list, key=lambda x: chain_ordering[x.chain_type])
         self.antigen = []
         self.MHC = []
         self.engineered = False
@@ -752,41 +753,44 @@ class gdTCR(TCR):
         self.visualise_interactions = self._create_interaction_visualiser()
 
     def __repr__(self):
-        return "<TCR %s%s delta=%s; gamma=%s>" % (self.VD, self.VG, self.VD, self.VG)
+        return f"<TCR {self.VG}{self.VD} gamma={self.VG}; delta={self.VD}>"
 
     def _add_domain(self, chain):
-        if chain.chain_type == "D":
-            self.VD = chain.id
-        elif chain.chain_type == "G":
+        if chain.chain_type == "G":
             self.VG = chain.id
+
+        elif chain.chain_type == "D":
+            self.VD = chain.id
 
         # Add the chain as a child of this entity.
         self.add(chain)
-
-    def get_VD(self):
-        if hasattr(self, "VD"):
-            return self.child_dict[self.VD]
 
     def get_VG(self):
         if hasattr(self, "VG"):
             return self.child_dict[self.VG]
 
+    def get_VD(self):
+        if hasattr(self, "VD"):
+            return self.child_dict[self.VD]
+
     def get_domain_assignment(self):
         try:
             return {"VG": self.VG, "VD": self.VD}
         except AttributeError:
-            if hasattr(self, "VD"):
-                return {"VD": self.VD}
             if hasattr(self, "VG"):
                 return {"VG": self.VG}
+
+            if hasattr(self, "VD"):
+                return {"VD": self.VD}
+
         return None
 
     def is_engineered(self):
         if self.engineered:
             return True
         else:
-            vd, vg = self.get_VD(), self.get_VG()
-            for var_domain in [vd, vg]:
+            vg, vd = self.get_VG(), self.get_VD()
+            for var_domain in [vg, vd]:
                 if var_domain and var_domain.is_engineered():
                     self.engineered = True
                     return self.engineered
@@ -795,7 +799,7 @@ class gdTCR(TCR):
             return False
 
     def get_fragments(self):
-        vd, vg = self.get_VD(), self.get_VG()
+        vg, vd = self.get_VG(), self.get_VD()
 
         # If a variable domain exists
         for var_domain in [vg, vd]:
@@ -858,7 +862,7 @@ class dbTCR(TCR):
     def __init__(self, c1, c2):
         super(TCR, self).__init__()
 
-        if c1.chain_type == "B":
+        if c1.chain_type == "D":
             Entity.__init__(self, c1.id + c2.id)
         else:
             Entity.__init__(self, c2.id + c1.id)
@@ -867,9 +871,9 @@ class dbTCR(TCR):
         self.level = "H"
         self._add_domain(c1)
         self._add_domain(c2)
-        self.child_list = sorted(
-            self.child_list, key=lambda x: x.chain_type, reverse=False
-        )  # make sure that the list goes B->D
+        # make sure that the list goes A->B, D->B, or D->G
+        chain_ordering = {'A': 1, 'B': 2, 'D': 1, 'G': 2}
+        self.child_list = sorted(self.child_list, key=lambda x: chain_ordering[x.chain_type])
         self.antigen = []
         self.MHC = []
         self.engineered = False
@@ -878,41 +882,42 @@ class dbTCR(TCR):
         self.visualise_interactions = self._create_interaction_visualiser()
 
     def __repr__(self):
-        return "<TCR %s%s beta=%s; delta=%s>" % (self.VB, self.VD, self.VB, self.VD)
+        return f"<TCR {self.VD}{self.VB} delta={self.VD}; beta={self.VB}>"
 
     def _add_domain(self, chain):
-        if chain.chain_type == "B":
-            self.VB = chain.id
-        elif chain.chain_type == "D":
+        if chain.chain_type == "D":
             self.VD = chain.id
+
+        elif chain.chain_type == "B":
+            self.VB = chain.id
 
         # Add the chain as a child of this entity.
         self.add(chain)
-
-    def get_VB(self):
-        if hasattr(self, "VB"):
-            return self.child_dict[self.VB]
 
     def get_VD(self):
         if hasattr(self, "VD"):
             return self.child_dict[self.VD]
 
+    def get_VB(self):
+        if hasattr(self, "VB"):
+            return self.child_dict[self.VB]
+
     def get_domain_assignment(self):
         try:
             return {"VD": self.VD, "VB": self.VB}
         except AttributeError:
-            if hasattr(self, "VB"):
-                return {"VB": self.VB}
             if hasattr(self, "VD"):
                 return {"VD": self.VD}
+            if hasattr(self, "VB"):
+                return {"VB": self.VB}
         return None
 
     def is_engineered(self):
         if self.engineered:
             return True
         else:
-            vb, vd = self.get_VB(), self.get_VD()
-            for var_domain in [vb, vd]:
+            vd, vb, = self.get_VD(), self.get_VB()
+            for var_domain in [vd, vb]:
                 if var_domain and var_domain.is_engineered():
                     self.engineered = True
                     return self.engineered
@@ -921,10 +926,10 @@ class dbTCR(TCR):
             return False
 
     def get_fragments(self):
-        vb, vd = self.get_VB(), self.get_VD()
+        vd, vb = self.get_VD(), self.get_VB()
 
         # If a variable domain exists
-        for var_domain in [vb, vd]:
+        for var_domain in [vd, vb]:
             if var_domain:
                 for frag in var_domain.get_fragments():
                     yield frag
@@ -951,15 +956,15 @@ class dbTCR(TCR):
         new_id = []
         new_child_dict = {}
 
-        if hasattr(self, 'VB'):
-            new_child_dict['E'] = self.child_dict[self.VB]
-            self.VB = 'E'
-            new_id.append('E')
-
         if hasattr(self, 'VD'):
             new_child_dict['D'] = self.child_dict[self.VD]
             self.VD = 'D'
             new_id.append('D')
+
+        if hasattr(self, 'VB'):
+            new_child_dict['E'] = self.child_dict[self.VB]
+            self.VB = 'E'
+            new_id.append('E')
 
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', BiopythonWarning)

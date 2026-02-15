@@ -5,10 +5,10 @@ from .Entity import Entity
 from .Fragment import Fragment
 
 regions = {
-    "B": ["fwb1", "cdrb1", "fwb2", "cdrb2", "fwb3", "cdrb3", "fwb4"],
     "A": ["fwa1", "cdra1", "fwa2", "cdra2", "fwa3", "cdra3", "fwa4"],
-    "D": ["fwd1", "cdrd1", "fwd2", "cdrd2", "fwd3", "cdrd3", "fwd4"],
+    "B": ["fwb1", "cdrb1", "fwb2", "cdrb2", "fwb3", "cdrb3", "fwb4"],
     "G": ["fwg1", "cdrg1", "fwg2", "cdrg2", "fwg3", "cdrg3", "fwg4"],
+    "D": ["fwd1", "cdrd1", "fwd2", "cdrd2", "fwd3", "cdrd3", "fwd4"],
 }
 
 
@@ -55,7 +55,7 @@ class TCRchain(Chain.Chain, Entity):
 
     def set_chain_type(self, chain_type):
         """
-        Set the chain type to B, A, D, or G
+        Set the chain type to A, B, G, or D
         """
         self.chain_type = chain_type
 

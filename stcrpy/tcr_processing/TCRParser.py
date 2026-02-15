@@ -69,7 +69,7 @@ class TCRParser(PDBParser, MMCIFParser):
         Create a new TCR or MHC chain.
         Residues before the numbered region are now ignored.
         """
-        if chain_type in ["D", "A", "B", "G"]:
+        if chain_type in {"A", "B", "G", "D"}:
             newchain = TCRchain(new_chain_id)
         elif chain_type in [
             "MH1",
@@ -334,7 +334,7 @@ class TCRParser(PDBParser, MMCIFParser):
                     tcrstructure, chain, germline_info
                 )
 
-                if numbering and chain_type in ["G", "D", "B", "A"]:
+                if numbering and chain_type in {"A",  "B", "G", "D"}:
                     # create a new TCR chain
                     newchain = self._create_chain(
                         chain, chain.id, numbering, chain_type
@@ -385,10 +385,8 @@ class TCRParser(PDBParser, MMCIFParser):
                             tcr = abTCR(chain1, chain2)
                         elif not obs_chaintypes - set(["G", "D"]):
                             tcr = gdTCR(chain1, chain2)
-                        elif not obs_chaintypes - set(["B", "D"]):
-                            tcr = abTCR(
-                                chain1, chain2
-                            )  # initial way to deal with anarci missclassification of alpha chains as delta chains
+                        elif not obs_chaintypes - set(["D", "B"]):
+                            tcr = abTCR(chain1, chain2)         # initial way to deal with narci missclassification of alpha chains as delta chains
                             # tcr = dbTCR(chain1, chain2)
 
                         tcr.scTCR = True  #
@@ -422,7 +420,7 @@ class TCRParser(PDBParser, MMCIFParser):
                         tcr = abTCR(pair[0], pair[1])
                     elif not obs_chaintypes - set(["G", "D"]):
                         tcr = gdTCR(pair[0], pair[1])
-                    elif not obs_chaintypes - set(["B", "D"]):
+                    elif not obs_chaintypes - set(["D", "B"]):
                         # tcr = dbTCR(pair[0], pair[1])
                         tcr = abTCR(pair[0], pair[1])
 
@@ -453,7 +451,7 @@ class TCRParser(PDBParser, MMCIFParser):
                         tcr = abTCR(pair[0], pair[1])
                     elif not obs_chaintypes - set(["G", "D"]):
                         tcr = gdTCR(pair[0], pair[1])
-                    elif not obs_chaintypes - set(["B", "D"]):
+                    elif not obs_chaintypes - set(["D", "B"]):
                         tcr = abTCR(pair[0], pair[1])
                         # tcr = dbTCR(pair[0], pair[1])
                     else:
