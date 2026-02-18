@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Test outputs (exclude these, but keep test/ directory)
+.pytest_cache/
+.coverage
+htmlcov/
+test/test_files/out/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Images
+*.png
+!stcrpy_logo.png
+
+# OS
+.DS_Store
+Thumbs.db

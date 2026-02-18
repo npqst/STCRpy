@@ -29,10 +29,10 @@ class PLIPParser:
             pd.DataFrame: _description_
         """
         all_interactions = []
-        for _, interaction_set in complex.interaction_sets.items():
+        for bsid, interaction_set in complex.interaction_sets.items():
             for interaction in interaction_set.all_itypes:
                 try:
-                    all_interactions.append(plip_utils.parse_interaction(interaction))
+                    all_interactions.append(plip_utils.parse_interaction(interaction, bsid))
                 except NotImplementedError as e:
                     print(e)
                     continue
@@ -104,7 +104,7 @@ class PLIPParser:
             "ligand_atom",
             "distance",
             "angle",
-            "plip_id",
+            "plip_binding_site_id",
         ]
 
         interactions_as_tuples = [
