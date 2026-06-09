@@ -1,7 +1,7 @@
 import unittest
 
 
-class TestAnnotaions(unittest.TestCase):
+class TestAnnotations(unittest.TestCase):
 
     def test_anarci_import(self):
         import anarci

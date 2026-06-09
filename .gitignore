@@ -1,3 +1,4 @@
+claude_log.md
 __pycache__
 stcrpy.egg-info
 build
@@ -19,7 +20,4 @@ test/test_files/out/*/*.png
 test/test_files/TCRGraphDataset_test_files/processed
 test/test_files/out/haddock/*
 test/test_files/out/haddock/*/*
-test/test_files/out/haddock/*/*
-test/test_files/out/haddock/** */
-test/test_files/** */
-test/test_files
+test/test_files/CI_test_files/

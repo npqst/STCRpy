@@ -1,21 +1,31 @@
 import unittest
-
 import os
-import stcrpy.tcr_methods
-import pandas as pd
 import glob
 
+import pandas as pd
 
 import stcrpy
 import stcrpy.tcr_metrics
+from stcrpy.tcr_geometry.TCRAngle import TCRAngle
+
+STRUCTURES = "./test_files/structures"
+RMSD_FILES = "./test_files/TCRRMSD_test_files"
+HADDOCK_FILES = "./test_files/TCRHaddock_test_files"
+IRMSD_FILES = "./test_files/TCRInterfaceRMSD_test_files"
 
 
 class TestTCRMetrics(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.ab_tcr = stcrpy.load_TCRs(f"{STRUCTURES}/8gvb.cif")[0]
+        cls.gd_tcr = stcrpy.load_TCRs(f"{STRUCTURES}/8jbv.cif")[0]
+
     def test_tcr_rmsd(self):
         true_tcr, pred_tcr = stcrpy.load_TCRs(
             {
-                "true_7su9": "./test_files/TCRRMSD_test_files/true_7su9_0_ED.pdb",
-                "pred_7su9": "./test_files/TCRRMSD_test_files/pred_7su9.pdb",
+                "true_7su9": f"{RMSD_FILES}/true_7su9_0_ED.pdb",
+                "pred_7su9": f"{RMSD_FILES}/pred_7su9.pdb",
             }
         ).values()
 
@@ -38,13 +48,11 @@ class TestTCRMetrics(unittest.TestCase):
         assert all([abs(correct_rmsd[k] - rmsds[k]) < 0.00001 for k in rmsds])
 
     def test_tcr_rmsd_from_file_list(self):
-        target_file_path = "./test_files/TCRRMSD_test_files/true_structures"
-        target_files = os.listdir(target_file_path)
-        prediction_file_path = "./test_files/TCRRMSD_test_files/pred_structures/"
-        prediction_files = os.listdir(prediction_file_path)
+        target_file_path = f"{RMSD_FILES}/true_structures"
+        prediction_file_path = f"{RMSD_FILES}/pred_structures/"
 
-        target_files.sort()
-        prediction_files.sort()
+        target_files = sorted(os.listdir(target_file_path))
+        prediction_files = sorted(os.listdir(prediction_file_path))
 
         files = list(
             zip(
@@ -59,7 +67,7 @@ class TestTCRMetrics(unittest.TestCase):
         assert len(rmsd_df) == 3
 
         correct_rmsd = pd.read_csv(
-            "test_files/TCRRMSD_test_files/rmsd_testing.csv",
+            f"{RMSD_FILES}/rmsd_testing.csv",
             index_col="Unnamed: 0",
         )
         map_column_names = lambda c: c.lower() if len(c) > 1 else c
@@ -69,67 +77,44 @@ class TestTCRMetrics(unittest.TestCase):
                 assert idx == "7sg0"
                 continue
             assert all(
-                [
-                    abs(reference_row[map_column_names(col)].item() - rmsd_row[col])
-                    < 0.00001
-                    for col in rmsd_row.index
-                ]
+                abs(reference_row[map_column_names(col)].item() - rmsd_row[col]) < 0.00001
+                for col in rmsd_row.index
             )
 
     def test_interface_rmsd(self):
         from stcrpy.tcr_metrics import InterfaceRMSD
 
-        interface_rmsd = InterfaceRMSD()
-
         dock_files = sorted(
-            glob.glob(
-                "./test_files/TCRHaddock_test_files/predictions/renumbered_complex_*.pdb"
-            )
+            glob.glob(f"{HADDOCK_FILES}/predictions/renumbered_complex_*.pdb")
         )
         docked_tcrs = stcrpy.load_TCRs(dock_files)
-
-        reference_tcr = stcrpy.load_TCRs(
-            "./test_files/TCRInterfaceRMSD_test_files/6eqa.cif"
-        )[0]
+        reference_tcr = stcrpy.load_TCRs(f"{IRMSD_FILES}/6eqa.cif")[0]
 
         irmsds = [
-            interface_rmsd.get_interface_rmsd(tcr, reference_tcr) for tcr in docked_tcrs
+            InterfaceRMSD().get_interface_rmsd(tcr, reference_tcr) for tcr in docked_tcrs
         ]
         assert len(irmsds) == 4
         detached_peptide_indices = [13, 35, 37, 127]
         assert all(
-            [
-                r > 0.0
-                for i, r in enumerate(irmsds)
-                if not any(
-                    [
-                        f"renumbered_complex_{p_idx}" in dock_files[i]
-                        for p_idx in detached_peptide_indices
-                    ]
-                )
-            ]
+            r > 0.0
+            for i, r in enumerate(irmsds)
+            if not any(
+                f"renumbered_complex_{p_idx}" in dock_files[i]
+                for p_idx in detached_peptide_indices
+            )
         )
 
     def test_dockq(self):
         from stcrpy.tcr_metrics.tcr_dockq import TCRDockQ
 
-        dockq = TCRDockQ()
-
         dock_files = sorted(
-            glob.glob(
-                "./test_files/TCRHaddock_test_files/predictions/renumbered_complex_*.pdb"
-            )
+            glob.glob(f"{HADDOCK_FILES}/predictions/renumbered_complex_*.pdb")
         )[:2]
         docked_tcrs = stcrpy.load_TCRs(dock_files)
+        reference_tcr = stcrpy.load_TCRs(f"{IRMSD_FILES}/6eqa.cif")[0]
 
-        reference_tcr = stcrpy.load_TCRs(
-            "./test_files/TCRInterfaceRMSD_test_files/6eqa.cif"
-        )[0]
+        dockq_results = [TCRDockQ().tcr_dockq(tcr, reference_tcr) for tcr in docked_tcrs]
 
-        dockq_results = [
-            TCRDockQ().tcr_dockq(tcr, reference_tcr) for tcr in docked_tcrs
-        ]
-        print(dockq_results)
         self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['DockQ'], 0.825, places=3)
         self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['iRMSD'], 0.827, places=3)
         self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['LRMSD'], 4.025, places=3)
@@ -139,18 +124,10 @@ class TestTCRMetrics(unittest.TestCase):
         self.assertAlmostEqual(dockq_results[0]['best_result']['TM']['clashes'], 0, places=3)
 
     def test_TCRAngles(self):
-        ab_tcr = stcrpy.fetch_TCRs("8gvb")[0]
-        from stcrpy.tcr_geometry.TCRAngle import TCRAngle
-
         tcr_angle = TCRAngle()
-        angles = tcr_angle.calculate_angles(ab_tcr)
 
-        assert ab_tcr.get_TCR_angles() == angles
+        angles = tcr_angle.calculate_angles(self.ab_tcr)
+        assert self.ab_tcr.get_TCR_angles() == angles
 
-        gd_tcr = stcrpy.fetch_TCRs("8JBV")[0]
-        from stcrpy.tcr_geometry.TCRAngle import TCRAngle
-
-        tcr_angle = TCRAngle()
-        angles = tcr_angle.calculate_angles(gd_tcr)
-
-        assert gd_tcr.get_TCR_angles() == angles
+        angles = tcr_angle.calculate_angles(self.gd_tcr)
+        assert self.gd_tcr.get_TCR_angles() == angles

@@ -1,11 +1,22 @@
 import unittest
 
 import stcrpy
-from stcrpy.tcr_processing.TCRParser import TCRParser
-from stcrpy.tcr_datasets.tcr_graph_dataset import TCRGraphConstructor, TCRGraphDataset
+
+try:
+    from stcrpy.tcr_datasets.tcr_graph_dataset import TCRGraphConstructor
+    HAS_ML_PKGS = True
+except ImportError:
+    HAS_ML_PKGS = False
+
+STRUCTURES = "./test_files/structures"
 
 
+@unittest.skipUnless(HAS_ML_PKGS, "ml_datasets extras not installed (torch/torch_geometric)")
 class TestTCRDatasets(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tcr = stcrpy.load_TCRs(f"{STRUCTURES}/8gvb.cif")[0]
 
     def test_TCRGraphConstructor(self):
         graph_constructor = TCRGraphConstructor()
@@ -19,16 +30,4 @@ class TestTCRDatasets(unittest.TestCase):
             "include_mhc": True,
             "mhc_distance_threshold": 15.0,
         }
-        tcr = stcrpy.fetch_TCRs("8gvb")[0]
-        graph_constructor.build_graph(tcr)
-
-    # def test_TCRGraphDataset(self):
-    #     dataset = TCRGraphDataset(
-    #         root="./test_files/TCRGraphDataset_test_files",
-    #         data_paths="./test_files/TCRGraphDataset_test_files/raw_files",
-    #         force_reload=True,
-    #     )
-    #     print(dataset)
-    #     for i in range(len(dataset)):
-    #         datapoint = dataset[i]
-    #         print(datapoint)
+        graph_constructor.build_graph(self.tcr)

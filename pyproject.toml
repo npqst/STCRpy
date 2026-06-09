@@ -37,6 +37,13 @@ ml_datasets = [
     "torch",
     "torch_geometric",
 ]
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+markers = [
+    "slow: marks tests as slow (large dataset, network-heavy); deselect with '-m \"not slow\"'",
+]
 
 [tool.setuptools]
 include-package-data = true

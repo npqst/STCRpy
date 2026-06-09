@@ -1,10 +1,12 @@
 name: stcrpy unittests
 
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
-  unittests:
-    name: Ex1 (${{ matrix.python-version }}, ${{ matrix.os }})
+  fast-tests:
+    name: Fast tests (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -33,15 +35,14 @@ jobs:
         run: |
           conda create -n env python==${{ matrix.python-version }}
           conda activate env
-          pwd
-          pip install .
+          pip install '.[dev]'
           pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |
           conda activate env
           ANARCI --build_models
-      - name: Install pymol and pytorch 
+      - name: Install pymol and pytorch
         shell: bash -el {0}
         run: |
           conda activate env
@@ -53,17 +54,43 @@ jobs:
         run: |
           conda activate env
           python -c 'import stcrpy; stcrpy.fetch_TCRs("7pb2")'
-      # - name:  Test interaction profiling
-      #   shell: bash -el {0}
-      #   run: |
-      #     conda activate env
-      #     pip install plip==2.4.0
-      #     python -c 'import stcrpy; x=stcrpy.fetch_TCRs("7pb2"); print(x[0].profile_peptide_interactions())'
-      - name:  Run unittests
+      - name: Run fast tests
         shell: bash -el {0}
         run: |
           conda activate env
-          cd test
-          pwd
-          ls -lah
-          python -m unittest discover
+          pytest -m "not slow" -v
+
+  slow-tests:
+    name: Full dataset tests (${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+          channel-priority: flexible
+          show-channel-urls: true
+      - name: Install dependencies
+        shell: bash -el {0}
+        run: |
+          conda create -n env python==${{ matrix.python-version }}
+          conda activate env
+          pip install '.[dev]'
+      - name: Build ANARCI Models
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          ANARCI --build_models
+      - name: Run slow tests
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          pytest -m slow -v
