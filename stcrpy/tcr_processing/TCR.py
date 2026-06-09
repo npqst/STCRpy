@@ -355,7 +355,10 @@ class TCR(Entity):
         from ..tcr_geometry.TCRGeomFiltering import DockingGeometryFilter
 
         geom_filter = DockingGeometryFilter()
-        if not hasattr(self, "geometry"):
+        # The scoring distributions are fit on "com" mode geometry, which also
+        # populates tcr_com (None in "rudolph" mode). Ensure the geometry is in
+        # "com" mode before scoring, recalculating if it was computed otherwise.
+        if not hasattr(self, "geometry") or self.geometry.mode != "com":
             self.calculate_docking_geometry(mode="com")
         return geom_filter.score_docking_geometry(
             self.geometry.get_scanning_angle(mode="com"),

@@ -72,6 +72,69 @@ class TestTCRGeometry(unittest.TestCase):
         geometry = tcr.calculate_docking_geometry()
         assert "scanning_angle" in geometry
 
+    def _get_8gvb_MH1_tcr(self):
+        """Return the single MHC class I TCR (chains BA) from the 8gvb structure."""
+        parser = TCRParser.TCRParser()
+        tcrs = [
+            tcr
+            for tcr in parser.get_tcr_structure(
+                "8gvb", f"{STRUCTURES}/8gvb.cif"
+            ).get_TCRs()
+            if tcr.get_MHC() and tcr.get_MHC()[0].get_MHC_type() == "MH1"
+        ]
+        self.assertEqual(len(tcrs), 1, "Expected exactly one MHC class I TCR in 8gvb")
+        return tcrs[0]
+
+    def test_score_docking_geometry(self):
+        """Regression test for issue #88.
+
+        score_docking_geometry previously raised
+        `TypeError: TCRGeom.get_scanning_angle() got an unexpected keyword argument 'mode'`
+        because the TCRGeom getters did not accept the `mode` kwarg it passes.
+        The score is the negative log probability of the complex geometry features;
+        assert against the known value for the 8gvb class I complex.
+        """
+        tcr = self._get_8gvb_MH1_tcr()
+        score = tcr.score_docking_geometry()
+        self.assertIsInstance(score, float)
+        self.assertFalse(np.isnan(score))
+        self.assertAlmostEqual(score, -7.9487, places=2)
+        # Scoring requires "com" geometry (rudolph mode leaves tcr_com undefined),
+        # so the geometry must end up in "com" mode regardless of prior state.
+        self.assertEqual(tcr.geometry.mode, "com")
+
+    def test_geometry_getters_accept_mode(self):
+        """Regression test for issue #88.
+
+        The TCRGeom getters must accept a `mode` kwarg consistently with the TCR
+        wrapper, recalculating the geometry if the requested mode differs.
+        """
+        tcr = self._get_8gvb_MH1_tcr()
+
+        # Build the geometry in "rudolph" mode first.
+        tcr.calculate_docking_geometry(mode="rudolph")
+        self.assertEqual(tcr.geometry.mode, "rudolph")
+        rudolph_scanning = tcr.geometry.get_scanning_angle()
+        self.assertAlmostEqual(rudolph_scanning, 56.9894, places=2)
+
+        # Requesting "com" on the geometry object must recalculate it: both the
+        # stored mode and the returned value change away from the rudolph result.
+        com_scanning = tcr.geometry.get_scanning_angle(mode="com")
+        self.assertEqual(tcr.geometry.mode, "com")
+        self.assertAlmostEqual(com_scanning, 81.7693, places=2)
+        self.assertNotAlmostEqual(com_scanning, rudolph_scanning, places=1)
+
+        # The recalculated com geometry also exposes the pitch angle, and both
+        # angles must match the equivalent TCR-level wrapper calls.
+        com_pitch = tcr.geometry.get_pitch_angle(mode="com")
+        self.assertAlmostEqual(com_pitch, 6.5407, places=2)
+        self.assertAlmostEqual(
+            com_scanning, tcr.get_scanning_angle(mode="com"), places=4
+        )
+        self.assertAlmostEqual(
+            com_pitch, tcr.get_pitch_angle(mode="com"), places=4
+        )
+
     def test_calculate_docking_angle_cys_method(self):
         pdb_files = [
             f"{PARSER_FILES}/5hyj.pdb",

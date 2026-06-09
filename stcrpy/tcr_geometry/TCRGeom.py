@@ -23,6 +23,26 @@ class TCRGeom:
             polarity_as_sign (bool, optional): Use the sign of the angle to indicate non-canonical pose. ie reverse binding angles are assigned negative sign. Defaults to True.
             mode (str, optional): Method to calculate geometry with, see STCRpy paper for details. Defaults to "cys". Options: 'rudolph', 'com', 'cys'.
         """
+        # Retain the inputs so the geometry can be recalculated in a different
+        # mode on demand (e.g. via get_scanning_angle(mode=...)).
+        self.tcr = tcr
+        self.save_aligned_as = save_aligned_as
+        self.polarity_as_sign = polarity_as_sign
+
+        self._type_checks(tcr)
+
+        self._calculate_geometry(mode)
+
+    def _calculate_geometry(self, mode: str = "cys"):
+        """Compute (or recompute) the TCR:pMHC complex geometry in the requested mode.
+
+        Separated from the constructor so the geometry can be recalculated in a
+        different mode without re-instantiating the class. All mode dependent
+        attributes are reset here before being (re)populated.
+
+        Args:
+            mode (str, optional): Method to calculate geometry with. Options: 'rudolph', 'com', 'cys'. Defaults to "cys".
+        """
         self.tcr_com = None
         self.mhc_com = None
         self.tcr_VA_com = None
@@ -36,8 +56,7 @@ class TCRGeom:
         self.tcr_mhc_dist = None
         self.mode = mode
 
-        self._type_checks(tcr)
-
+        tcr = self.tcr
         mhc = tcr.get_MHC()[0]
 
         self._set_mhc_reference(mhc)
@@ -45,7 +64,7 @@ class TCRGeom:
         if self.mode != "rudolph":
             (self.tcr_com, self.mhc_com, self.tcr_VA_com, self.tcr_VB_com) = (
                 self.mhc_tcr_com_calculator.calculate_centres_of_mass(
-                    tcr, save_aligned_as=save_aligned_as
+                    tcr, save_aligned_as=self.save_aligned_as
                 )
             )
 
@@ -77,7 +96,7 @@ class TCRGeom:
         else:
             self.scanning_angle, self.tcr_pitch_angle = (
                 self.calculate_tcr_docking_angles(
-                    self.tcr_vector, polarity_as_sign=polarity_as_sign
+                    self.tcr_vector, polarity_as_sign=self.polarity_as_sign
                 )
             )
 
@@ -141,29 +160,41 @@ class TCRGeom:
 
         return pd.DataFrame.from_dict(self.to_dict())
 
-    def get_scanning_angle(self, rad: bool = False) -> float:
+    def get_scanning_angle(self, rad: bool = False, mode: str = None) -> float:
         """Return TCR:pMHC complex scanning (aka crossing, incident angle) of TCR to MHC.
 
         Args:
             rad (bool, optional): Return angle in radians. Defaults to False.
+            mode (str, optional): Recalculate the geometry in this mode before
+                returning the angle if it differs from the mode the geometry was
+                calculated with. Options: 'rudolph', 'com', 'cys'. If None (default)
+                the angle is returned for the mode the geometry currently holds.
 
         Returns:
             float: TCR:pMHC scanning angle.
         """
+        if mode is not None and mode != self.mode:
+            self._calculate_geometry(mode)
         if rad:
             return self.scanning_angle
         else:
             return np.degrees(self.scanning_angle)
 
-    def get_pitch_angle(self, rad: bool = False) -> float:
+    def get_pitch_angle(self, rad: bool = False, mode: str = None) -> float:
         """Return TCR:pMHC pitch angle, ie tilt of the TCR over the MHC.
 
         Args:
             rad (bool, optional): Return angle in radians. Defaults to False.
+            mode (str, optional): Recalculate the geometry in this mode before
+                returning the angle if it differs from the mode the geometry was
+                calculated with. Options: 'rudolph', 'com', 'cys'. If None (default)
+                the angle is returned for the mode the geometry currently holds.
 
         Returns:
             float: TCR:pMHC pitch angle
         """
+        if mode is not None and mode != self.mode:
+            self._calculate_geometry(mode)
         if rad:
             return self.tcr_pitch_angle
         else:
