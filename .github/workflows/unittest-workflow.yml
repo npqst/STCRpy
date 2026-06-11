@@ -19,6 +19,7 @@ jobs:
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
+          activate-environment: env
           channels: conda-forge
           channel-priority: flexible
           show-channel-urls: true
@@ -33,31 +34,26 @@ jobs:
       - name: Install dependencies
         shell: bash -el {0}
         run: |
-          conda create -n env python==${{ matrix.python-version }}
-          conda activate env
+          python --version
           pip install '.[dev]'
           pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |
-          conda activate env
           python -c "from anarci.build_models import build_models; build_models()"
       - name: Install pymol and pytorch
         shell: bash -el {0}
         run: |
-          conda activate env
           conda install -c conda-forge pymol-open-source numpy==1.26.4      # freeze numpy to prevent dockQ incompatibility
           conda list
           pip install '.[ml_datasets]'
       - name: Test import
         shell: bash -el {0}
         run: |
-          conda activate env
           python -c 'import stcrpy; stcrpy.fetch_TCRs("7pb2")'
       - name: Run fast tests
         shell: bash -el {0}
         run: |
-          conda activate env
           pytest -m "not slow" -v
 
   slow-tests:
@@ -75,22 +71,20 @@ jobs:
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
+          activate-environment: env
           channels: conda-forge
           channel-priority: flexible
           show-channel-urls: true
       - name: Install dependencies
         shell: bash -el {0}
         run: |
-          conda create -n env python==${{ matrix.python-version }}
-          conda activate env
+          python --version
           pip install '.[dev]'
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |
-          conda activate env
           python -c "from anarci.build_models import build_models; build_models()"
       - name: Run slow tests
         shell: bash -el {0}
         run: |
-          conda activate env
           pytest -m slow -v

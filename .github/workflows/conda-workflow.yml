@@ -10,12 +10,13 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest"]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13","3.14"]
     steps:
       - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
+          activate-environment: env
           channels: conda-forge
           channel-priority: flexible
           show-channel-urls: true
@@ -30,26 +31,22 @@ jobs:
       - name: Install dependencies
         shell: bash -el {0}
         run: |
-          conda create -n env python==${{ matrix.python-version }}
-          conda activate env
+          python --version
           pip install stcrpy
           pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |
-          conda activate env
           ANARCI --build_models
       - name: Install pymol
         shell: bash -el {0}
         run: |
-          conda activate env
-          conda install -c conda-forge pymol-open-source 
+          conda install -c conda-forge pymol-open-source
           conda list
       - name: Test import
         shell: bash -el {0}
         run: |
-          conda activate env
-          python -c 'import stcrpy; stcrpy.fetch_TCRs("7pb2")' 
+          python -c 'import stcrpy; stcrpy.fetch_TCRs("7pb2")'
       # - name:  Test interaction profiling
       #   shell: bash -el {0}
       #   run: |
