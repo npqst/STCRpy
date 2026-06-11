@@ -48,9 +48,9 @@ jobs:
         shell: bash -el {0}
         run: |
           python -c 'import stcrpy; stcrpy.fetch_TCRs("7pb2")'
-      # - name:  Test interaction profiling
-      #   shell: bash -el {0}
-      #   run: |
-      #     conda activate env
-      #     pip install plip==2.4.0
-      #     python -c 'import stcrpy; x=stcrpy.fetch_TCRs("7pb2"); print(x[0].profile_peptide_interactions())' 
+      - name:  Test interaction profiling
+        shell: bash -el {0}
+        run: |
+          conda activate env
+          pip install plip==2.4.0
+          python -c 'import stcrpy; x=stcrpy.fetch_TCRs("7pb2"); print(x[0].profile_peptide_interactions())' 
