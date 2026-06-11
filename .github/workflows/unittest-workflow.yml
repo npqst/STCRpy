@@ -35,8 +35,9 @@ jobs:
         shell: bash -el {0}
         run: |
           python --version
-          pip install '.[dev]'
-          pip list
+          conda install -y pip            # macos-latest ships a framework python whose pip shadows the env; ensure env-local pip
+          python -m pip install '.[dev]'  # -m pip targets the active env interpreter, not the framework python
+          python -m pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |
@@ -46,7 +47,7 @@ jobs:
         run: |
           conda install -c conda-forge pymol-open-source numpy==1.26.4      # freeze numpy to prevent dockQ incompatibility
           conda list
-          pip install '.[ml_datasets]'
+          python -m pip install '.[ml_datasets]'
       - name: Test import
         shell: bash -el {0}
         run: |
@@ -79,7 +80,8 @@ jobs:
         shell: bash -el {0}
         run: |
           python --version
-          pip install '.[dev]'
+          conda install -y pip            # macos-latest ships a framework python whose pip shadows the env; ensure env-local pip
+          python -m pip install '.[dev]'  # -m pip targets the active env interpreter, not the framework python
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |

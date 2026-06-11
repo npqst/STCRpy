@@ -32,8 +32,9 @@ jobs:
         shell: bash -el {0}
         run: |
           python --version
-          pip install stcrpy
-          pip list
+          conda install -y pip          # macos-latest ships a framework python whose pip shadows the env; ensure env-local pip
+          python -m pip install stcrpy  # -m pip targets the active env interpreter, not the framework python
+          python -m pip list
       - name: Build ANARCI Models
         shell: bash -el {0}
         run: |
