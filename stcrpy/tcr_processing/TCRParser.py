@@ -1192,7 +1192,15 @@ class TCRParser(PDBParser, MMCIFParser):
         # all_cpx_chains is a dictionary that has a TCR/MHC chain as a key and the ID of the TCR/MHC as value
         all_cpx_chains = dict()
         for cpx in complexes:
-            cpx_ch = list(cpx.id)
+            # cpx.id is the CONCATENATION of the complex's chain ids, so list() only
+            # decomposes it correctly while every chain id is a single character. Chain ids
+            # are two characters once a structure exceeds 26 chains, and then e.g. "AAZ"
+            # becomes ['A','A','Z'] instead of ['AA','Z'] -- so the real chain never
+            # registers and is later mistaken for antigen. Take the chain objects instead.
+            try:
+                cpx_ch = [c.id for c in cpx.get_chains()]
+            except AttributeError:      # a bare TCRchain/MHCchain, not a paired complex
+                cpx_ch = [cpx.id]
             for c in cpx_ch:
                 all_cpx_chains[c] = cpx.id
 
